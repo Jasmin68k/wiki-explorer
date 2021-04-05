@@ -1,19 +1,25 @@
 <template>
   <form @submit.prevent="getJson">
-    <input id="page" v-model="page" />
+    <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
   <h1>Redirects</h1>
   <ul>
     <!-- text extracts and possible other info not fetched/displayed yet -->
     <!-- error case with page not existing  this.jsonDataFull = error/message (change later) not handled yet, then redirects does not exist, atm browser error -->
-    <li v-for="(redirect, index) in jsonDataFull.query.redirects" :key="index">
+    <li
+      v-for="(redirect, index) in jsonDataFullQuery.query.redirects"
+      :key="index"
+    >
       {{ redirect.from }} -> {{ redirect.to }}
     </li>
   </ul>
   <h1>Linked Wikipedia pages</h1>
   <ul>
-    <template v-for="(page, index) in jsonDataFull.query.pages" :key="index">
+    <template
+      v-for="(page, index) in jsonDataFullQuery.query.pages"
+      :key="index"
+    >
       <!-- if pageid exists, then actual wikipedia page, otherwise page negative and just link, no actual page -->
       <li v-if="page.pageid">
         Title: {{ page.title }} - Full URL:
@@ -29,11 +35,14 @@ export default {
 
   data() {
     return {
-      jsonDataFull: {
+      title: '',
+      jsonDataFullQuery: {
         // placeholder for no error before GetJson button pressed
-        query: ''
+        query: { pages: '', redirects: '' }
       },
-      page: ''
+      jsonDataFullQueryPart: {
+        query: { pages: '', redirects: '' }
+      }
     }
   },
 
@@ -57,10 +66,20 @@ export default {
       // for testing malformed url etc.
       // 'htXXXtps://httpstat.us/404'
 
-      const url =
+      // origin=* important for CORS on wikimedia api
+
+      let url =
         'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&&gplnamespace=0&format=json&titles=' +
-        this.page +
+        this.title +
         '&prop=info&inprop=url&origin=*'
+
+      if (this.jsonDataFullQueryPart.continue) {
+        url += '&continue='
+        url += this.jsonDataFullQueryPart.continue.continue
+        url += '&gplcontinue='
+        url += this.jsonDataFullQueryPart.continue.gplcontinue
+      }
+
       return url
     }
   },
@@ -70,22 +89,43 @@ export default {
       // !!! no handling yet of wikimedia continue.gplcontinue case. fetch more results !!!
 
       // try catch block for catching network errors from Promise, otherwise error in browser console - getJson().catch in computed not possible (no async in computed)
-      try {
-        // origin=* important for CORS on wikimedia api
-        const response = await fetch(this.pageUrl)
 
-        // ok = true on http 200-299 good response
-        if (!response.ok) {
-          const message = `ERROR: ${response.status} ${response.statusText}`
-          this.jsonDataFull = message
-          throw new Error(message)
-        } else {
-          const data = await response.json()
-          this.jsonDataFull = data
-        }
-      } catch (error) {
-        this.jsonDataFull = error
+      // clean old
+      this.jsonDataFullQuery = {
+        query: { pages: '', redirects: '' }
       }
+
+      // this.jsonDataFullQueryPart = {
+      //   query: { pages: '', redirects: '' }
+      // }
+
+      do {
+        try {
+          // console.log(this.pageUrl)
+
+          const response = await fetch(this.pageUrl)
+
+          // ok = true on http 200-299 good response
+          if (!response.ok) {
+            const message = `ERROR: ${response.status} ${response.statusText}`
+            this.jsonDataFullQuery = message
+            throw new Error(message)
+          } else {
+            this.jsonDataFullQueryPart = await response.json()
+
+            this.jsonDataFullQuery.query.pages = {
+              ...this.jsonDataFullQuery.query.pages,
+              ...this.jsonDataFullQueryPart.query.pages
+            }
+            this.jsonDataFullQuery.query.redirects = {
+              ...this.jsonDataFullQuery.query.redirects,
+              ...this.jsonDataFullQueryPart.query.redirects
+            }
+          }
+        } catch (error) {
+          this.jsonDataFullQuery = error
+        }
+      } while (this.jsonDataFullQueryPart.continue)
     }
   }
 }
