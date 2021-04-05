@@ -13,11 +13,13 @@
   </ul>
   <h1>Linked Wikipedia pages</h1>
   <ul>
-    <li v-for="(page, index) in jsonDataFull.query.pages" :key="index">
-      Title: {{ page.title }} - Full URL:
-      <a :href="page.fullurl">{{ page.fullurl }}</a>
-      <!-- also accessible page.pageid for pageid exposed as jsonDataFull.query.pages.123456 -->
-    </li>
+    <template v-for="(page, index) in jsonDataFull.query.pages" :key="index">
+      <!-- if pageid exists, then actual wikipedia page, otherwise page negative and just link, no actual page -->
+      <li v-if="page.pageid">
+        Title: {{ page.title }} - Full URL:
+        <a :href="page.fullurl">{{ page.fullurl }}</a>
+      </li>
+    </template>
   </ul>
 </template>
 
