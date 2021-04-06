@@ -3,6 +3,28 @@
     <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
+  <h1>Linked Wikipedia pages</h1>
+
+  <form>
+    <label for="filter">Filter:</label>
+    <input id="filter" v-model="filter" />
+  </form>
+  <ul>
+    <template
+      v-for="(page, index) in jsonDataFullQuery.query.pages"
+      :key="index"
+    >
+      <!-- if pageid exists, then actual wikipedia page, otherwise page negative and just link, no actual page -->
+      <li
+        v-if="
+          page.pageid && page.title.toLowerCase().includes(filter.toLowerCase())
+        "
+      >
+        Title: {{ page.title }} - Full URL:
+        <a :href="page.fullurl">{{ page.fullurl }}</a>
+      </li>
+    </template>
+  </ul>
   <h1>Redirects</h1>
   <ul>
     <!-- text extracts and possible other info not fetched/displayed yet -->
@@ -14,19 +36,6 @@
       {{ redirect.from }} -> {{ redirect.to }}
     </li>
   </ul>
-  <h1>Linked Wikipedia pages</h1>
-  <ul>
-    <template
-      v-for="(page, index) in jsonDataFullQuery.query.pages"
-      :key="index"
-    >
-      <!-- if pageid exists, then actual wikipedia page, otherwise page negative and just link, no actual page -->
-      <li v-if="page.pageid">
-        Title: {{ page.title }} - Full URL:
-        <a :href="page.fullurl">{{ page.fullurl }}</a>
-      </li>
-    </template>
-  </ul>
 </template>
 
 <script>
@@ -36,6 +45,7 @@ export default {
   data() {
     return {
       title: '',
+      filter: '',
       jsonDataFullQuery: {
         // placeholder for no error before GetJson button pressed
         query: { pages: '', redirects: '' }
