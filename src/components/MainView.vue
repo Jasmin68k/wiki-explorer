@@ -3,33 +3,34 @@
     <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
-  <h1>Linked Wikipedia pages</h1>
-
   <form>
     <label for="filter">Filter:</label>
     <input id="filter" v-model="filter" />
   </form>
+  <form>
+    <label for="indexFrom">Index From:</label>
+    <input id="indexFrom" v-model="indexFrom" />
+  </form>
+  <form>
+    <label for="indexTo">Index To:</label>
+    <input id="indexTo" v-model="indexTo" />
+  </form>
+
+  <h1>Linked Wikipedia pages</h1>
   <ul>
-    <!-- not all pages have pageid, so title as key -->
-    <template v-for="page in jsonDataFullQuery.query.pages" :key="page.title">
-      <!-- if pageid exists, then actual wikipedia page, otherwise page negative and just link, no actual page -->
-      <li
-        v-if="
-          page.pageid && page.title.toLowerCase().includes(filter.toLowerCase())
-        "
-      >
-        Title: {{ page.title }} - Full URL:
-        <a :href="page.fullurl">{{ page.fullurl }}</a>
-      </li>
-    </template>
+    <li v-for="page in filteredResultsArray" :key="page.pageid">
+      Title: {{ page.title }} - Full URL:
+      <a :href="page.fullurl">{{ page.fullurl }}</a>
+    </li>
   </ul>
+
   <h1>Redirects</h1>
   <ul>
     <!-- text extracts and possible other info not fetched/displayed yet -->
     <!-- error case with page not existing  this.jsonDataFull = error/message (change later) not handled yet, then redirects does not exist, atm browser error -->
     <li
-      v-for="(redirect, index) in jsonDataFullQuery.query.redirects"
-      :key="index"
+      v-for="redirect in jsonDataFullQuery.query.redirects"
+      :key="redirect.from"
     >
       {{ redirect.from }} -> {{ redirect.to }}
     </li>
@@ -44,6 +45,8 @@ export default {
     return {
       title: '',
       filter: '',
+      indexFrom: 0,
+      indexTo: 10000,
       jsonDataFullQuery: {
         // placeholder for no error before GetJson button pressed
         query: { pages: '', redirects: '' }
@@ -89,6 +92,30 @@ export default {
       }
 
       return url
+    },
+    filteredResultsArray() {
+      let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
+
+      let filteredArray
+      // filter unused first index (equals pageid in second index)
+      filteredArray = resultsArray.map((entry, index, array) => array[index][1])
+
+      // apply filter
+      filteredArray = filteredArray.filter((page) =>
+        page.title.toLowerCase().includes(this.filter.toLowerCase())
+      )
+
+      // sort
+      //....TODO
+
+      // filter index range - no check if indexTo > length, doesn't matter atm
+      filteredArray = filteredArray.filter(
+        (page, index) => index >= this.indexFrom && index <= this.indexTo
+      )
+
+      return filteredArray
+
+      // return resultsArray[5][1]['title']
     }
   },
 
