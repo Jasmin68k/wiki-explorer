@@ -10,10 +10,8 @@
     <input id="filter" v-model="filter" />
   </form>
   <ul>
-    <template
-      v-for="(page, index) in jsonDataFullQuery.query.pages"
-      :key="index"
-    >
+    <!-- not all pages have pageid, so title as key -->
+    <template v-for="page in jsonDataFullQuery.query.pages" :key="page.title">
       <!-- if pageid exists, then actual wikipedia page, otherwise page negative and just link, no actual page -->
       <li
         v-if="
