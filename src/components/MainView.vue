@@ -100,13 +100,18 @@ export default {
       // filter unused first index (equals pageid in second index)
       filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
+      // remove unused array fields?
+      // ...
+
       // apply filter
       filteredArray = filteredArray.filter((page) =>
         page.title.toLowerCase().includes(this.filter.toLowerCase())
       )
 
       // sort
-      //....TODO
+      filteredArray = filteredArray.sort((a, b) => {
+        return a.title.localeCompare(b.title)
+      })
 
       // filter index range - no check if indexTo > length, doesn't matter atm
       filteredArray = filteredArray.filter(
