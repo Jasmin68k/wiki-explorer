@@ -100,8 +100,19 @@ export default {
       // filter unused first index (equals pageid in second index)
       filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
-      // remove unused array fields?
-      // ...
+      // remove unused array fields - is there a more elegant way?
+      const usedKeys = ['pageid', 'title', 'fullurl']
+      filteredArray.forEach((element) => {
+        let filteredArrayKeys = Object.keys(element)
+        filteredArrayKeys.forEach((key) => {
+          if (!usedKeys.includes(key)) {
+            delete element[key]
+          }
+        })
+      })
+
+      // filter missing (no pageid) - or mark/make optional? do in above loop?
+      // ... example "Commodore 64" -> missing Phoenix Park Hotel
 
       // apply filter
       filteredArray = filteredArray.filter((page) =>
