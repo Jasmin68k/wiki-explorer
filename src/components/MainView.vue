@@ -19,7 +19,8 @@
   <h1>Linked Wikipedia pages</h1>
   <ul>
     <li v-for="page in filteredResultsArray" :key="page.pageid">
-      Title: {{ page.title }} - Full URL:
+      <span :class="{ missing: page.missing }">Title: {{ page.title }}</span>
+      - Full URL:
       <a :href="page.fullurl">{{ page.fullurl }}</a>
     </li>
   </ul>
@@ -100,19 +101,21 @@ export default {
       // filter unused first index (equals pageid in second index)
       filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
-      // remove unused array fields - is there a more elegant way?
-      const usedKeys = ['pageid', 'title', 'fullurl']
+      // remove unused array fields and mark missing- is there a more elegant way?
+      const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
       filteredArray.forEach((element) => {
         let filteredArrayKeys = Object.keys(element)
         filteredArrayKeys.forEach((key) => {
           if (!usedKeys.includes(key)) {
             delete element[key]
           }
+          // for easy class binding in template, otherwise missing just empty
+          // ... example "Commodore 64" -> missing Phoenix Park Hotel
+          if (key === 'missing') {
+            element[key] = true
+          }
         })
       })
-
-      // filter missing (no pageid) - or mark/make optional? do in above loop?
-      // ... example "Commodore 64" -> missing Phoenix Park Hotel
 
       // apply filter
       filteredArray = filteredArray.filter((page) =>
@@ -188,5 +191,8 @@ ul {
   list-style-type: none; /* Remove bullets */
   padding: 0; /* Remove padding */
   margin: 0; /* Remove margins */
+}
+.missing {
+  color: red;
 }
 </style>
