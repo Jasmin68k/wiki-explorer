@@ -1,14 +1,17 @@
 <template>
   <MainView />
+  <Canvas />
 </template>
 
 <script>
 import MainView from './components/MainView.vue'
+import Canvas from './components/Canvas.vue'
 
 export default {
   name: 'App',
   components: {
-    MainView
+    MainView,
+    Canvas
   }
 }
 </script>
