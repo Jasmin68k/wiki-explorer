@@ -1,6 +1,6 @@
 <template>
   <MainView />
-  <Canvas />
+  <Canvas :moo="moo" />
 </template>
 
 <script>
@@ -12,6 +12,11 @@ export default {
   components: {
     MainView,
     Canvas
+  },
+  data() {
+    return {
+      moo: 'MOOOOOOOOOOOOO'
+    }
   }
 }
 </script>
