@@ -15,7 +15,10 @@
     <label for="indexTo">Index To:</label>
     <input id="indexTo" v-model="indexTo" />
   </form>
-
+  <h1>Output</h1>
+  <div id="testdiv">
+    <button id="testbutton" @click.prevent="buttonTest">TestButton</button>
+  </div>
   <h1>Linked Wikipedia pages</h1>
   <ul>
     <li v-for="page in filteredResultsArray" :key="page.pageid">
@@ -180,6 +183,9 @@ export default {
           this.jsonDataFullQuery = error
         }
       } while (this.jsonDataFullQueryPart.continue)
+    },
+    buttonTest() {
+      console.log('Button clicked.')
     }
   }
 }
@@ -194,5 +200,19 @@ ul {
 }
 .missing {
   color: red;
+}
+#testdiv {
+  margin: auto;
+  position: relative;
+  width: 600px;
+  height: 200px;
+  border: 1px solid blue;
+}
+#testbutton {
+  position: absolute;
+  left: 300px;
+  top: 100px;
+  /* move pixel position to center of button */
+  transform: translate(-50%, -50%);
 }
 </style>
