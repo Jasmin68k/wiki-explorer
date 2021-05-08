@@ -14,7 +14,8 @@ export default {
       rectY: 200,
       rectW: 150,
       rectH: 75,
-      bgColor: 50
+      bgColor: 50,
+      button: ''
     }
   },
 
@@ -26,6 +27,9 @@ export default {
     const script = (p5) => {
       p5.setup = () => {
         p5.createCanvas(window.innerWidth, window.innerHeight)
+        this.button = p5.createButton('bg color')
+        this.button.position(300, 150)
+        this.button.mousePressed(() => (this.bgColor = p5.random(255)))
       }
       p5.draw = () => {
         p5.clear()
