@@ -16,9 +16,22 @@
     <input id="indexTo" v-model="indexTo" />
   </form>
   <h1>Output</h1>
-  <div id="testdiv">
-    <button id="testbutton" @click.prevent="buttonTest">TestButton</button>
+  <div id="outgraph">
+    <button id="titlebutton" @click.prevent="titleButton">{{ title }}</button>
+    <!-- 270 offset for first button on top -->
+    <button
+      id="circlebutton"
+      v-for="(page, index) in filteredResultsArray"
+      :style="{
+        '--angle': 270 + (360 / filteredResultsArray.length) * index + 'deg'
+      }"
+      :key="index"
+      @click.prevent="circleButton(index)"
+    >
+      {{ page.title }}
+    </button>
   </div>
+
   <h1>Linked Wikipedia pages</h1>
   <ul>
     <li v-for="page in filteredResultsArray" :key="page.pageid">
@@ -184,8 +197,11 @@ export default {
         }
       } while (this.jsonDataFullQueryPart.continue)
     },
-    buttonTest() {
-      console.log('Button clicked.')
+    titleButton() {
+      console.log('Title button clicked.')
+    },
+    circleButton(index) {
+      console.log(`Circle button ${index} clicked.`)
     }
   }
 }
@@ -201,18 +217,26 @@ ul {
 .missing {
   color: red;
 }
-#testdiv {
+#outgraph {
   margin: auto;
   position: relative;
-  width: 600px;
-  height: 200px;
-  border: 1px solid blue;
+  width: 800px;
+  height: 600px;
+  border: 1px solid black;
 }
-#testbutton {
+#titlebutton {
   position: absolute;
-  left: 300px;
-  top: 100px;
+  left: 50%;
+  top: 50%;
   /* move pixel position to center of button */
   transform: translate(-50%, -50%);
+}
+#circlebutton {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(250px)
+    rotate(calc(-1 * var(--angle)));
 }
 </style>
