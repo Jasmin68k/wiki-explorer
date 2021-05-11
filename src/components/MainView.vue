@@ -18,7 +18,9 @@
   <h1>Output</h1>
   <div id="outgraph">
     <canvas id="outgraphcanvas"></canvas>
-    <button id="titlebutton" @click.prevent="titleButton">{{ title }}</button>
+    <button id="titlebutton" @click.prevent="titleButton">
+      {{ title }} / Draw lines!
+    </button>
     <!-- 270 offset for first button on top -->
     <button
       id="circlebutton"
@@ -198,7 +200,30 @@ export default {
         }
       } while (this.jsonDataFullQueryPart.continue)
     },
+    drawLines() {
+      const canvas = document.getElementById('outgraphcanvas')
+      const ctx = canvas.getContext('2d')
+      const width = canvas.offsetWidth
+      const height = canvas.offsetHeight
+      canvas.width = width
+      canvas.height = height
+      const middleX = width / 2
+      const middleY = height / 2
+      for (let i = 0; i < this.filteredResultsArray.length; i++) {
+        ctx.beginPath()
+        ctx.moveTo(middleX, middleY)
+        const angle =
+          ((270 + (360 / this.filteredResultsArray.length) * i) * Math.PI) / 180
+        const length = 250
+        ctx.lineTo(
+          length * Math.cos(angle) + middleX,
+          length * Math.sin(angle) + middleY
+        )
+        ctx.stroke()
+      }
+    },
     titleButton() {
+      this.drawLines()
       console.log('Title button clicked.')
     },
     circleButton(index) {
@@ -226,8 +251,8 @@ ul {
   border: 1px solid black;
 }
 #outgraphcanvas {
-  width: 800px;
-  height: 600px;
+  width: 100%;
+  height: 100%;
 }
 
 #titlebutton {
