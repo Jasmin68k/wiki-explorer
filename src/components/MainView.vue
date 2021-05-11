@@ -17,6 +17,7 @@
   </form>
   <h1>Output</h1>
   <div id="outgraph">
+    <canvas id="outgraphcanvas"></canvas>
     <button id="titlebutton" @click.prevent="titleButton">{{ title }}</button>
     <!-- 270 offset for first button on top -->
     <button
@@ -224,6 +225,11 @@ ul {
   height: 600px;
   border: 1px solid black;
 }
+#outgraphcanvas {
+  width: 800px;
+  height: 600px;
+}
+
 #titlebutton {
   position: absolute;
   left: 50%;
