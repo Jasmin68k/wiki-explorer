@@ -1,32 +1,46 @@
 <template>
-  <form @submit.prevent="getJson">
+  <form @submit.prevent="clearCanvas(), getJson()">
     <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
-  <form>
+  <form @submit.prevent="">
     <label for="filter">Filter:</label>
-    <input id="filter" v-model="filter" />
+    <input id="filter" v-model="filter" @input="resetPageNumber" />
   </form>
   <form>
-    <label for="indexFrom">Index From:</label>
-    <input id="indexFrom" v-model="indexFrom" />
+    <button @click.prevent="prevPage">Prev. page</button>
+    <button @click.prevent="nextPage">Next page</button>
   </form>
-  <form>
-    <label for="indexTo">Index To:</label>
-    <input id="indexTo" v-model="indexTo" />
-  </form>
+
+  <input
+    type="range"
+    min="1"
+    :max="
+      filteredResultsArray.length === 0
+        ? sizePerPage
+        : filteredResultsArray.length <= 24
+        ? filteredResultsArray.length
+        : 24
+    "
+    v-model="sizePerPage"
+    @input="drawLines(), resetPageNumber()"
+  />
+
+  <p>Size per page: {{ sizePerPage }}</p>
+  <p>Page: {{ pageNumber + 1 }}</p>
+  <p>Results: {{ filteredResultsArray.length }}</p>
+  <p>Showing from {{ indexStart + 1 }} to {{ indexEnd + 1 }}</p>
   <h1>Output</h1>
   <div id="outgraph">
     <canvas id="outgraphcanvas"></canvas>
     <button id="titlebutton" @click.prevent="titleButton">
-      {{ title }} / Draw lines!
+      {{ title }}
     </button>
-    <!-- 270 offset for first button on top -->
     <button
       id="circlebutton"
-      v-for="(page, index) in filteredResultsArray"
+      v-for="(page, index) in displayResultsArray"
       :style="{
-        '--angle': 270 + (360 / filteredResultsArray.length) * index + 'deg'
+        '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg'
       }"
       :key="index"
       @click.prevent="circleButton(index)"
@@ -65,19 +79,40 @@ export default {
     return {
       title: '',
       filter: '',
-      indexFrom: 0,
-      indexTo: 10000,
       jsonDataFullQuery: {
         // placeholder for no error before GetJson button pressed
         query: { pages: '', redirects: '' }
       },
       jsonDataFullQueryPart: {
         query: { pages: '', redirects: '' }
-      }
+      },
+      pageNumber: 0,
+      sizePerPage: 12
     }
   },
 
   computed: {
+    indexStart() {
+      let indexStart = this.pageNumber * this.sizePerPage
+      if (indexStart > this.filteredResultsArray.length - 1) {
+        indexStart = this.filteredResultsArray.length - 1
+      }
+
+      return indexStart
+    },
+    indexEnd() {
+      let indexEnd = (this.pageNumber + 1) * this.sizePerPage - 1
+
+      if (indexEnd > this.filteredResultsArray.length - 1) {
+        indexEnd = this.filteredResultsArray.length - 1
+      }
+
+      if (indexEnd < 0) {
+        indexEnd = 0
+      }
+
+      return indexEnd
+    },
     pageUrl() {
       // origin=* important for CORS on wikimedia api
 
@@ -146,14 +181,16 @@ export default {
         return a.title.localeCompare(b.title)
       })
 
-      // filter index range - no check if indexTo > length, doesn't matter atm
-      filteredArray = filteredArray.filter(
-        (page, index) => index >= this.indexFrom && index <= this.indexTo
+      return filteredArray
+    },
+
+    displayResultsArray() {
+      let displayArray = this.filteredResultsArray
+      displayArray = displayArray.filter(
+        (page, index) => index >= this.indexStart && index <= this.indexEnd
       )
 
-      return filteredArray
-
-      // return resultsArray[5][1]['title']
+      return displayArray
     }
   },
 
@@ -199,6 +236,8 @@ export default {
           this.jsonDataFullQuery = error
         }
       } while (this.jsonDataFullQueryPart.continue)
+
+      this.resetPageNumber()
     },
     drawLines() {
       const canvas = document.getElementById('outgraphcanvas')
@@ -207,13 +246,14 @@ export default {
       const height = canvas.offsetHeight
       canvas.width = width
       canvas.height = height
+
       const middleX = width / 2
       const middleY = height / 2
-      for (let i = 0; i < this.filteredResultsArray.length; i++) {
+      for (let i = 0; i < this.displayResultsArray.length; i++) {
         ctx.beginPath()
         ctx.moveTo(middleX, middleY)
         const angle =
-          ((270 + (360 / this.filteredResultsArray.length) * i) * Math.PI) / 180
+          ((270 + (360 / this.displayResultsArray.length) * i) * Math.PI) / 180
         const length = 250
         ctx.lineTo(
           length * Math.cos(angle) + middleX,
@@ -222,12 +262,39 @@ export default {
         ctx.stroke()
       }
     },
+    clearCanvas() {
+      const canvas = document.getElementById('outgraphcanvas')
+      const ctx = canvas.getContext('2d')
+      const width = canvas.offsetWidth
+      const height = canvas.offsetHeight
+      canvas.width = width
+      canvas.height = height
+      ctx.clearRect(0, 0, width, height)
+    },
     titleButton() {
-      this.drawLines()
       console.log('Title button clicked.')
     },
     circleButton(index) {
       console.log(`Circle button ${index} clicked.`)
+    },
+    nextPage() {
+      if (
+        this.pageNumber + 1 <
+        this.filteredResultsArray.length / this.sizePerPage
+      ) {
+        this.pageNumber++
+      }
+      this.drawLines()
+    },
+    prevPage() {
+      if (this.pageNumber > 0) {
+        this.pageNumber--
+      }
+      this.drawLines()
+    },
+    resetPageNumber() {
+      this.pageNumber = 0
+      this.drawLines()
     }
   }
 }
