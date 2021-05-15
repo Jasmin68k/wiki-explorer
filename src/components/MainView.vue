@@ -33,9 +33,11 @@
   <h1>Output</h1>
   <div id="outgraph">
     <canvas id="outgraphcanvas"></canvas>
+
     <button id="titlebutton" @click.prevent="titleButton">
       {{ returnedTitle }}
     </button>
+
     <button
       class="circlebutton"
       v-for="(page, index) in displayResultsArray"
@@ -92,7 +94,8 @@ export default {
       extract: '',
       pageNumber: 0,
       sizePerPage: 12,
-      returnedTitle: ''
+      returnedTitle: '',
+      returnedUrl: ''
     }
   },
 
@@ -125,7 +128,7 @@ export default {
       //   '&origin=*'
 
       let url =
-        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&redirects=1&indexpageids&titles=' +
+        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro&redirects=1&indexpageids&inprop=url&titles=' +
         this.title +
         '&origin=*'
 
@@ -265,6 +268,7 @@ export default {
           const pageId = responseFull.query.pageids[0]
           this.extract = responseFull.query.pages[pageId].extract
           this.returnedTitle = responseFull.query.pages[pageId].title
+          this.returnedUrl = responseFull.query.pages[pageId].fullurl
         }
       } catch (error) {
         this.jsonDataFullQuery = error
@@ -303,7 +307,8 @@ export default {
       ctx.clearRect(0, 0, width, height)
     },
     titleButton() {
-      console.log('Title button clicked.')
+      // window.location = this.returnedUrl
+      window.open(this.returnedUrl, '_blank')
     },
     circleButton(index) {
       // console.log(
