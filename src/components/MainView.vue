@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="clearCanvas(), getJson(), getExtract()">
+  <form @submit.prevent="clearCanvas(), getJson(), getMainInfo()">
     <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
@@ -53,7 +53,10 @@
   <h1>Extract</h1>
   <!-- <p>{{ extract }}</p> -->
   <p id="extract" v-html="extract"></p>
-
+  <h1>Image</h1>
+  <div id="returnedImageContainer">
+    <img id="returnedImage" :src="returnedImage" />
+  </div>
   <h1>Linked Wikipedia pages</h1>
   <ul>
     <li v-for="page in filteredResultsArray" :key="page.pageid">
@@ -95,7 +98,8 @@ export default {
       pageNumber: 0,
       sizePerPage: 12,
       returnedTitle: '',
-      returnedUrl: ''
+      returnedUrl: '',
+      returnedImage: ''
     }
   },
 
@@ -121,14 +125,19 @@ export default {
 
       return indexEnd
     },
-    extractUrl() {
+    mainInfoUrl() {
       // let url =
       //   'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&indexpageids&titles=' +
       //   this.title +
       //   '&origin=*'
 
+      // let url =
+      //   'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro&redirects=1&indexpageids&inprop=url&titles=' +
+      //   this.title +
+      //   '&origin=*'
+
       let url =
-        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro&redirects=1&indexpageids&inprop=url&titles=' +
+        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
         this.title +
         '&origin=*'
 
@@ -252,11 +261,11 @@ export default {
 
       this.resetPageNumber()
     },
-    async getExtract() {
+    async getMainInfo() {
       this.extract = ''
 
       try {
-        const response = await fetch(this.extractUrl)
+        const response = await fetch(this.mainInfoUrl)
 
         // ok = true on http 200-299 good response
         if (!response.ok) {
@@ -264,11 +273,21 @@ export default {
           this.extract = message
           throw new Error(message)
         } else {
+          // add error handling
           const responseFull = await response.json()
           const pageId = responseFull.query.pageids[0]
           this.extract = responseFull.query.pages[pageId].extract
           this.returnedTitle = responseFull.query.pages[pageId].title
           this.returnedUrl = responseFull.query.pages[pageId].fullurl
+          // check if image exists
+          if (
+            (this.returnedImage = responseFull.query.pages[pageId].original)
+          ) {
+            this.returnedImage =
+              responseFull.query.pages[pageId].original.source
+          } else {
+            this.returnedImage = ''
+          }
         }
       } catch (error) {
         this.jsonDataFullQuery = error
@@ -317,7 +336,7 @@ export default {
       this.title = this.displayResultsArray[index].title
       this.clearCanvas()
       this.getJson()
-      this.getExtract()
+      this.getMainInfo()
     },
     nextPage() {
       if (
@@ -382,5 +401,15 @@ ul {
 }
 #extract {
   text-align: left;
+}
+#returnedImageContainer {
+  margin: auto;
+  position: relative;
+  width: 800px;
+  height: 600px;
+}
+#returnedImage {
+  max-width: 100%;
+  max-height: 100%;
 }
 </style>
