@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="clearCanvas(), getJson()">
+  <form @submit.prevent="clearCanvas(), getJson(), getExtract()">
     <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
@@ -48,6 +48,9 @@
       {{ page.title }}
     </button>
   </div>
+  <h1>Extract</h1>
+  <!-- <p>{{ extract }}</p> -->
+  <p id="extract" v-html="extract"></p>
 
   <h1>Linked Wikipedia pages</h1>
   <ul>
@@ -86,6 +89,7 @@ export default {
       jsonDataFullQueryPart: {
         query: { pages: '', redirects: '' }
       },
+      extract: '',
       pageNumber: 0,
       sizePerPage: 12
     }
@@ -112,6 +116,19 @@ export default {
       }
 
       return indexEnd
+    },
+    extractUrl() {
+      // let url =
+      //   'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&indexpageids&titles=' +
+      //   this.title +
+      //   '&origin=*'
+
+      let url =
+        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&redirects=1&indexpageids&titles=' +
+        this.title +
+        '&origin=*'
+
+      return url
     },
     pageUrl() {
       // origin=* important for CORS on wikimedia api
@@ -231,6 +248,26 @@ export default {
 
       this.resetPageNumber()
     },
+    async getExtract() {
+      this.extract = ''
+
+      try {
+        const response = await fetch(this.extractUrl)
+
+        // ok = true on http 200-299 good response
+        if (!response.ok) {
+          const message = `ERROR: ${response.status} ${response.statusText}`
+          this.extract = message
+          throw new Error(message)
+        } else {
+          const responseFull = await response.json()
+          const pageId = responseFull.query.pageids[0]
+          this.extract = responseFull.query.pages[pageId].extract
+        }
+      } catch (error) {
+        this.jsonDataFullQuery = error
+      }
+    },
     drawLines() {
       const canvas = document.getElementById('outgraphcanvas')
       const ctx = canvas.getContext('2d')
@@ -273,6 +310,7 @@ export default {
       this.title = this.displayResultsArray[index].title
       this.clearCanvas()
       this.getJson()
+      this.getExtract()
     },
     nextPage() {
       if (
@@ -334,5 +372,8 @@ ul {
   /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(250px)
     rotate(calc(-1 * var(--angle)));
+}
+#extract {
+  text-align: left;
 }
 </style>
