@@ -138,10 +138,10 @@ export default {
       // origin=* important for CORS on wikimedia api
 
       // API Query Namespace 0 filtered incl full URL plus redirects
-      // 'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&&gplnamespace=0&format=json&titles=Commodore_64&prop=info&inprop=url&origin=*'
+      // 'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore_64&prop=info&inprop=url&origin=*'
 
       // API Query Namespace 0 filtered incl full URL
-      // 'https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&&gplnamespace=0&format=json&titles=Commodore_64&prop=info&inprop=url&origin=*'
+      // 'https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=Commodore_64&prop=info&inprop=url&origin=*'
 
       // API Query Namespace 0 filtered titles only
       // 'https://en.wikipedia.org/w/api.php?action=query&prop=links&redirects&pllimit=500&format=json&titles=Commodore_64&format=json&plnamespace=0&origin=*'
@@ -156,7 +156,7 @@ export default {
       // origin=* important for CORS on wikimedia api
 
       let url =
-        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&&gplnamespace=0&format=json&titles=' +
+        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
         this.title +
         '&prop=info&inprop=url&origin=*'
 
