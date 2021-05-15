@@ -34,7 +34,7 @@
   <div id="outgraph">
     <canvas id="outgraphcanvas"></canvas>
     <button id="titlebutton" @click.prevent="titleButton">
-      {{ title }}
+      {{ returnedTitle }}
     </button>
     <button
       class="circlebutton"
@@ -91,7 +91,8 @@ export default {
       },
       extract: '',
       pageNumber: 0,
-      sizePerPage: 12
+      sizePerPage: 12,
+      returnedTitle: ''
     }
   },
 
@@ -263,6 +264,7 @@ export default {
           const responseFull = await response.json()
           const pageId = responseFull.query.pageids[0]
           this.extract = responseFull.query.pages[pageId].extract
+          this.returnedTitle = responseFull.query.pages[pageId].title
         }
       } catch (error) {
         this.jsonDataFullQuery = error
