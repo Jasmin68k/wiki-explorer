@@ -37,7 +37,7 @@
       {{ title }}
     </button>
     <button
-      id="circlebutton"
+      class="circlebutton"
       v-for="(page, index) in displayResultsArray"
       :style="{
         '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg'
@@ -365,7 +365,7 @@ ul {
   /* move pixel position to center of button */
   transform: translate(-50%, -50%);
 }
-#circlebutton {
+.circlebutton {
   position: absolute;
   left: 50%;
   top: 50%;
