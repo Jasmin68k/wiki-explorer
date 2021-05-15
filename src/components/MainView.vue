@@ -196,8 +196,6 @@ export default {
 
   methods: {
     async getJson() {
-      // !!! no handling yet of wikimedia continue.gplcontinue case. fetch more results !!!
-
       // try catch block for catching network errors from Promise, otherwise error in browser console - getJson().catch in computed not possible (no async in computed)
 
       // clean old
@@ -205,14 +203,8 @@ export default {
         query: { pages: '', redirects: '' }
       }
 
-      // this.jsonDataFullQueryPart = {
-      //   query: { pages: '', redirects: '' }
-      // }
-
       do {
         try {
-          // console.log(this.pageUrl)
-
           const response = await fetch(this.pageUrl)
 
           // ok = true on http 200-299 good response
@@ -275,7 +267,12 @@ export default {
       console.log('Title button clicked.')
     },
     circleButton(index) {
-      console.log(`Circle button ${index} clicked.`)
+      // console.log(
+      //   `Circle button ${index} - ${this.displayResultsArray[index].title} clicked.`
+      // )
+      this.title = this.displayResultsArray[index].title
+      this.clearCanvas()
+      this.getJson()
     },
     nextPage() {
       if (
@@ -290,6 +287,7 @@ export default {
       if (this.pageNumber > 0) {
         this.pageNumber--
       }
+
       this.drawLines()
     },
     resetPageNumber() {
