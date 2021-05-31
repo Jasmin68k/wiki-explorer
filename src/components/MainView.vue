@@ -1,5 +1,7 @@
 <template>
-  <form @submit.prevent="clearCanvas(), getJson(), getMainInfo()">
+  <form
+    @submit.prevent="clearCanvas(), getJson(), getMainInfo(), getCategories()"
+  >
     <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
@@ -57,6 +59,13 @@
   <div id="returnedImageContainer">
     <img id="returnedImage" :src="returnedImage" />
   </div>
+  <h1>Categories</h1>
+  <ul>
+    <li v-for="category in categoriesArray" :key="category">
+      {{ category }}
+    </li>
+  </ul>
+
   <h1>Linked Wikipedia pages</h1>
   <ul>
     <li v-for="page in filteredResultsArray" :key="page.pageid">
@@ -93,6 +102,10 @@ export default {
       },
       jsonDataFullQueryPart: {
         query: { pages: '', redirects: '' }
+      },
+      categoriesArray: [],
+      categoriesQueryPart: {
+        query: { pages: '' }
       },
       extract: '',
       pageNumber: 0,
@@ -140,6 +153,31 @@ export default {
         'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
         this.title +
         '&origin=*'
+
+      return url
+    },
+
+    // separate categories fetch, instead of adding to main info, for simple continue handling
+    categoriesUrl() {
+      // non hidden categories only
+
+      let url =
+        'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&&redirects&cllimit=max&clshow=!hidden&titles=' +
+        this.title +
+        '&origin=*'
+
+      //    TEMP     limit 2 for continue testing
+      // let url =
+      //   'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&&redirects&cllimit=2&clshow=!hidden&titles=' +
+      //   this.title +
+      //   '&origin=*'
+
+      if (this.categoriesQueryPart.continue) {
+        url += '&continue='
+        url += this.categoriesQueryPart.continue.continue
+        url += '&clcontinue='
+        url += this.categoriesQueryPart.continue.clcontinue
+      }
 
       return url
     },
@@ -292,6 +330,45 @@ export default {
       } catch (error) {
         this.jsonDataFullQuery = error
       }
+    },
+    async getCategories() {
+      this.categoriesArray = []
+      do {
+        try {
+          const response = await fetch(this.categoriesUrl)
+
+          // ok = true on http 200-299 good response
+          if (!response.ok) {
+            const message = `ERROR: ${response.status} ${response.statusText}`
+            this.categoriesArray = message
+            throw new Error(message)
+          } else {
+            this.categoriesQueryPart = await response.json()
+
+            let resultsArray = Object.entries(
+              this.categoriesQueryPart.query.pages
+            )
+
+            for (let i = 0; i < resultsArray[0][1].categories.length; i++) {
+              this.categoriesArray.push(resultsArray[0][1].categories[i].title)
+            }
+          }
+        } catch (error) {
+          this.categoriesQuery = error
+        }
+      } while (this.categoriesQueryPart.continue)
+
+      // filter "Category:" at beginning
+      for (let i = 0; i < this.categoriesArray.length; i++) {
+        // not sure it always starts with "Category:", check and only remove if it does
+        if (this.categoriesArray[i].startsWith('Category:')) {
+          this.categoriesArray[i] = this.categoriesArray[i].substring(9)
+        }
+      }
+
+      //results seem sorted, but just to be sure
+      // sort
+      this.categoriesArray.sort()
     },
     drawLines() {
       const canvas = document.getElementById('outgraphcanvas')
