@@ -414,6 +414,7 @@ export default {
       this.clearCanvas()
       this.getJson()
       this.getMainInfo()
+      this.getCategories()
     },
     nextPage() {
       if (
