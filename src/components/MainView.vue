@@ -79,10 +79,7 @@
   <ul>
     <!-- text extracts and possible other info not fetched/displayed yet -->
     <!-- error case with page not existing  this.jsonDataFull = error/message (change later) not handled yet, then redirects does not exist, atm browser error -->
-    <li
-      v-for="redirect in jsonDataFullQuery.query.redirects"
-      :key="redirect.from"
-    >
+    <li v-for="redirect in redirectsArray" :key="redirect.from">
       {{ redirect.from }} -> {{ redirect.to }}
     </li>
   </ul>
@@ -112,7 +109,8 @@ export default {
       sizePerPage: 12,
       returnedTitle: '',
       returnedUrl: '',
-      returnedImage: ''
+      returnedImage: '',
+      redirectsArray: []
     }
   },
 
@@ -234,6 +232,7 @@ export default {
         filteredArrayKeys.forEach((key) => {
           if (!usedKeys.includes(key)) {
             // this also removes them in this.jsonDataFullQuery.query.pages and this.jsonDataFullQueryPart.query.pages - WHY?
+            // -> object reference...
             delete element[key]
           }
           // for easy class binding in template, otherwise missing just empty
@@ -276,6 +275,8 @@ export default {
         query: { pages: '', redirects: '' }
       }
 
+      this.redirectsArray = []
+
       do {
         try {
           const response = await fetch(this.pageUrl)
@@ -292,15 +293,32 @@ export default {
               ...this.jsonDataFullQuery.query.pages,
               ...this.jsonDataFullQueryPart.query.pages
             }
-            this.jsonDataFullQuery.query.redirects = {
-              ...this.jsonDataFullQuery.query.redirects,
-              ...this.jsonDataFullQueryPart.query.redirects
+            // this overwrites old existing redirects, same problem as in later old categories implementation
+            // pages have unique keys (same as pageid) - redirects is an array of objects [{from / to}]
+            // this.jsonDataFullQuery.query.redirects = {
+            //   ...this.jsonDataFullQuery.query.redirects,
+            //   ...this.jsonDataFullQueryPart.query.redirects
+            // }
+
+            if (this.jsonDataFullQueryPart.query.redirects) {
+              for (
+                let i = 0;
+                i < this.jsonDataFullQueryPart.query.redirects.length;
+                i++
+              ) {
+                this.redirectsArray.push(
+                  this.jsonDataFullQueryPart.query.redirects[i]
+                )
+              }
             }
           }
         } catch (error) {
           this.jsonDataFullQuery = error
         }
       } while (this.jsonDataFullQueryPart.continue)
+
+      // not sure if necessary
+      this.redirectsArray.sort()
 
       this.resetPageNumber()
     },
