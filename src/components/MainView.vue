@@ -233,6 +233,7 @@ export default {
         let filteredArrayKeys = Object.keys(element)
         filteredArrayKeys.forEach((key) => {
           if (!usedKeys.includes(key)) {
+            // this also removes them in this.jsonDataFullQuery.query.pages and this.jsonDataFullQueryPart.query.pages - WHY?
             delete element[key]
           }
           // for easy class binding in template, otherwise missing just empty
