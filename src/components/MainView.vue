@@ -174,11 +174,19 @@ export default {
       //   this.title +
       //   '&origin=*'
 
+      // if (this.categoriesQueryPart.continue) {
+      //   url += '&continue='
+      //   url += this.categoriesQueryPart.continue.continue
+      //   url += '&clcontinue='
+      //   url += this.categoriesQueryPart.continue.clcontinue
+      // }
+
       if (this.categoriesQueryPart.continue) {
-        url += '&continue='
-        url += this.categoriesQueryPart.continue.continue
-        url += '&clcontinue='
-        url += this.categoriesQueryPart.continue.clcontinue
+        const continueArray = Object.entries(this.categoriesQueryPart.continue)
+
+        continueArray.forEach((element) => {
+          url += '&' + element[0] + '=' + element[1]
+        })
       }
 
       return url
@@ -204,16 +212,59 @@ export default {
 
       // origin=* important for CORS on wikimedia api
 
+      // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden
+      // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info&inprop=url
+
       let url =
         'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
         this.title +
         '&prop=info&inprop=url&origin=*'
 
+      // let url =
+      //   'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+      //   this.title +
+      //   '&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden&origin=*'
+
+      //!!!
+      // what about both continue at same time...possible? handle!
+      //!!!
+
       if (this.jsonDataFullQueryPart.continue) {
-        url += '&continue='
-        url += this.jsonDataFullQueryPart.continue.continue
-        url += '&gplcontinue='
-        url += this.jsonDataFullQueryPart.continue.gplcontinue
+        // url += '&continue='
+        // url += this.jsonDataFullQueryPart.continue.continue
+
+        const continueArray = Object.entries(
+          this.jsonDataFullQueryPart.continue
+        )
+
+        continueArray.forEach((element) => {
+          url += '&' + element[0] + '=' + element[1]
+        })
+
+        // console.log(url)
+        // console.log(
+        //   continueArray[0][0],
+        //   continueArray[0][1],
+        //   continueArray[1][0],
+        //   continueArray[1][1],
+        //   continueArray[2][0],
+        //   continueArray[2][1],
+        //   continueArray[3][0],
+        //   continueArray[3][1]
+        // )
+
+        // url +=
+        //   '&' +
+        //   continueArray[0][0] +
+        //   '=' +
+        //   continueArray[0][1] +
+        //   '&' +
+        //   continueArray[1][0] +
+        //   '=' +
+        //   continueArray[1][1]
+
+        // url += '&gplcontinue='
+        // url += this.jsonDataFullQueryPart.continue.gplcontinue
       }
 
       return url
@@ -226,6 +277,7 @@ export default {
       filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
       // remove unused array fields and mark missing- is there a more elegant way?
+      // const usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
       const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
       filteredArray.forEach((element) => {
         let filteredArrayKeys = Object.keys(element)
@@ -276,6 +328,7 @@ export default {
       }
 
       this.redirectsArray = []
+      this.pagesObjectArray = []
 
       do {
         try {
@@ -290,9 +343,21 @@ export default {
             this.jsonDataFullQueryPart = await response.json()
 
             this.jsonDataFullQuery.query.pages = {
-              ...this.jsonDataFullQuery.query.pages,
-              ...this.jsonDataFullQueryPart.query.pages
+              // reversed - don't delete existing categories - not working properly
+              // clcontinue returns whole list, with categories going through
+              ...this.jsonDataFullQueryPart.query.pages,
+              ...this.jsonDataFullQuery.query.pages
             }
+
+            // let pagesArray = Object.entries(
+            //   this.jsonDataFullQueryPart.query.pages
+            // )
+            // pagesArray = pagesArray.map(
+            //   (entry, index, array) => array[index][1]
+            // )
+            // // sum varies with differing gpllimit not always example commodore 64...why?
+            // console.log(pagesArray.length)
+
             // this overwrites old existing redirects, same problem as in later old categories implementation
             // pages have unique keys (same as pageid) - redirects is an array of objects [{from / to}]
             // this.jsonDataFullQuery.query.redirects = {
@@ -300,6 +365,7 @@ export default {
             //   ...this.jsonDataFullQueryPart.query.redirects
             // }
 
+            // this also seems buggy and varying - maybe? only with categories...
             if (this.jsonDataFullQueryPart.query.redirects) {
               for (
                 let i = 0;
@@ -321,6 +387,21 @@ export default {
       this.redirectsArray.sort()
 
       this.resetPageNumber()
+
+      // //temp categories full test
+      // let counter = 0
+      // let testArray = Object.entries(this.jsonDataFullQuery.query.pages)
+      // let testFiltered = testArray.map((entry, index, array) => array[index][1])
+      // testFiltered.forEach((element) => {
+      //   let keys = Object.keys(element)
+      //   keys.forEach((key) => {
+      //     if (key === 'categories') {
+      //       // console.log(element[key])
+      //       counter++
+      //     }
+      //   })
+      // })
+      // console.log(counter)
     },
     async getMainInfo() {
       this.extract = ''
