@@ -72,6 +72,7 @@
       <span :class="{ missing: page.missing }">Title: {{ page.title }}</span>
       - Full URL:
       <a :href="page.fullurl">{{ page.fullurl }}</a>
+      <div>{{ page.categories }}</div>
     </li>
   </ul>
 
@@ -215,15 +216,15 @@ export default {
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info&inprop=url
 
-      let url =
-        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-        this.title +
-        '&prop=info&inprop=url&origin=*'
-
       // let url =
       //   'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
       //   this.title +
-      //   '&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden&origin=*'
+      //   '&prop=info&inprop=url&origin=*'
+
+      let url =
+        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+        this.title +
+        '&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden&origin=*'
 
       //!!!
       // what about both continue at same time...possible? handle!
@@ -277,8 +278,8 @@ export default {
       filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
       // remove unused array fields and mark missing- is there a more elegant way?
-      // const usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
-      const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
+      const usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
+      // const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
       filteredArray.forEach((element) => {
         let filteredArrayKeys = Object.keys(element)
         filteredArrayKeys.forEach((key) => {
@@ -319,6 +320,28 @@ export default {
   },
 
   methods: {
+    // https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
+    mergeDeep(target, ...sources) {
+      if (!sources.length) return target
+      const source = sources.shift()
+
+      if (this.isObject(target) && this.isObject(source)) {
+        for (const key in source) {
+          if (this.isObject(source[key])) {
+            if (!target[key]) Object.assign(target, { [key]: {} })
+            this.mergeDeep(target[key], source[key])
+          } else {
+            Object.assign(target, { [key]: source[key] })
+          }
+        }
+      }
+
+      return this.mergeDeep(target, ...sources)
+    },
+    isObject(item) {
+      return item && typeof item === 'object' && !Array.isArray(item)
+    },
+
     async getJson() {
       // try catch block for catching network errors from Promise, otherwise error in browser console - getJson().catch in computed not possible (no async in computed)
 
@@ -328,7 +351,6 @@ export default {
       }
 
       this.redirectsArray = []
-      this.pagesObjectArray = []
 
       do {
         try {
@@ -342,12 +364,72 @@ export default {
           } else {
             this.jsonDataFullQueryPart = await response.json()
 
-            this.jsonDataFullQuery.query.pages = {
-              // reversed - don't delete existing categories - not working properly
-              // clcontinue returns whole list, with categories going through
-              ...this.jsonDataFullQueryPart.query.pages,
-              ...this.jsonDataFullQuery.query.pages
-            }
+            // this.jsonDataFullQuery.query.pages = {
+            //   // reversed - don't delete existing categories - not working properly
+            //   // clcontinue returns whole list, with categories going through
+            //   ...this.jsonDataFullQueryPart.query.pages,
+            //   ...this.jsonDataFullQuery.query.pages
+            // }
+
+            // this.jsonDataFullQuery.query.pages = {
+            //   ...this.jsonDataFullQuery.query.pages,
+            //   ...this.jsonDataFullQueryPart.query.pages
+            // }
+
+            // this joins categories etc
+
+            this.jsonDataFullQuery.query.pages = this.mergeDeep(
+              this.jsonDataFullQueryPart.query.pages,
+              this.jsonDataFullQuery.query.pages
+            )
+
+            // deep merge since introduction of categories...with clcontinue for categories, generator returns full list of pages again
+            // but categories only piece by piece....old approach overwrote old info, since generator with categories does not return
+            // info like fullurl, title, missing...
+            // could be separated in separate fetch functions, but who cares
+            // https://stackoverflow.com/questions/56256758/how-to-merge-nested-objects-in-javascript
+
+            // console.log(Object.entries(this.jsonDataFullQueryPart.query.pages))
+
+            //!!!
+            //still buggy/missing categories?
+            //
+            // this.jsonDataFullQuery.query.pages = Object.assign(
+            //   {},
+            //   JSON.parse(
+            //     JSON.stringify(this.jsonDataFullQueryPart.query.pages)
+            //   ),
+            //   JSON.parse(JSON.stringify(this.jsonDataFullQuery.query.pages))
+            // )
+
+            // this.jsonDataFullQuery.query.redirects = Object.assign(
+            //   {},
+            //   JSON.parse(
+            //     JSON.stringify(this.jsonDataFullQueryPart.query.redirects)
+            //   ),
+            //   JSON.parse(JSON.stringify(this.jsonDataFullQuery.query.redirects))
+            // )
+
+            // for (const property in this.jsonDataFullQueryPart.query.pages) {
+            //   // console.log(
+            //   //   `${property}: ${this.jsonDataFullQueryPart.query.pages[property]}`
+            //   // )
+            //   for (const property2 in this.jsonDataFullQueryPart.query.pages[
+            //     property
+            //   ]) {
+            //     console.log(
+            //       `${property2}: ${this.jsonDataFullQueryPart.query.pages[property][property2]}`
+            //     )
+            //     // this.jsonDataFullQuery.query.pages[property][
+            //     //   property2
+            //     // ] = this.jsonDataFullQueryPart.query.pages[property][property2]
+            //   }
+            // }
+
+            // move first steps from filteredarray computed here?...
+            // 2/3 steps gpl und cl continue!
+            // define(d) order in query?
+            // generator = categores|links!?
 
             // let pagesArray = Object.entries(
             //   this.jsonDataFullQueryPart.query.pages
@@ -365,18 +447,25 @@ export default {
             //   ...this.jsonDataFullQueryPart.query.redirects
             // }
 
-            // this also seems buggy and varying - maybe? only with categories...
-            if (this.jsonDataFullQueryPart.query.redirects) {
-              for (
-                let i = 0;
-                i < this.jsonDataFullQueryPart.query.redirects.length;
-                i++
-              ) {
-                this.redirectsArray.push(
-                  this.jsonDataFullQueryPart.query.redirects[i]
-                )
-              }
-            }
+            //
+            // INSERT REDIRECTS
+            //
+
+            // !!!!!!!!!
+
+            // this also seems buggy and varying - maybe? only with categories...repetitions with categories
+            // FIX
+            // if (this.jsonDataFullQueryPart.query.redirects) {
+            //   for (
+            //     let i = 0;
+            //     i < this.jsonDataFullQueryPart.query.redirects.length;
+            //     i++
+            //   ) {
+            //     this.redirectsArray.push(
+            //       this.jsonDataFullQueryPart.query.redirects[i]
+            //     )
+            //   }
+            // }
           }
         } catch (error) {
           this.jsonDataFullQuery = error
