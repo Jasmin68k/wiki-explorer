@@ -162,13 +162,13 @@ export default {
       // non hidden categories only
 
       let url =
-        'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&&redirects&cllimit=max&clshow=!hidden&titles=' +
+        'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
         this.title +
         '&origin=*'
 
       //    TEMP     limit 2 for continue testing
       // let url =
-      //   'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&&redirects&cllimit=2&clshow=!hidden&titles=' +
+      //   'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=2&clshow=!hidden&titles=' +
       //   this.title +
       //   '&origin=*'
 
