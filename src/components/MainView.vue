@@ -161,6 +161,10 @@ export default {
     categoriesUrl() {
       // non hidden categories only
 
+      // !!!
+      // maybe switch to https://en.wikipedia.org/w/api.php?action=query&generator=categories&redirects&gcllimit=max&gclshow=!hidden&format=jsonfm&titles=Commodore%2064 later...gives simpler data structure
+      // !!!
+
       let url =
         'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
         this.title +
