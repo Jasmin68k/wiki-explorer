@@ -3,7 +3,7 @@
     @submit.prevent="clearCanvas(), getJson(), getMainInfo(), getCategories()"
   >
     <input id="title" v-model="title" :disabled="inputsDisabled" />
-    <button type="submit" :disabled="inputsDisabled">Get JSON</button>
+    <button type="submit" :disabled="inputsDisabled">Fetch data</button>
   </form>
   <form>
     <input
@@ -25,14 +25,6 @@
       :disabled="inputsDisabled"
     />
   </form>
-  <form>
-    <button @click.prevent="prevPage" :disabled="inputsDisabled">
-      Prev. page
-    </button>
-    <button @click.prevent="nextPage" :disabled="inputsDisabled">
-      Next page
-    </button>
-  </form>
 
   <input
     type="range"
@@ -45,14 +37,56 @@
         : 24
     "
     v-model="sizePerPage"
-    :disabled="inputsDisabled"
+    :disabled="inputsDisabled || filteredResultsArray.length === 0"
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
     @input="drawLines(), resetPageNumber()"
   />
+  <div
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    Results per page: {{ sizePerPage }}
+  </div>
+  <br />
 
-  <p>Size per page: {{ sizePerPage }}</p>
-  <p>Page: {{ pageNumber + 1 }}</p>
+  <div
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    Page: {{ pageNumber + 1 }} of
+    {{ Math.ceil(filteredResultsArray.length / sizePerPage) }}
+  </div>
   <p>Results: {{ filteredResultsArray.length }}</p>
-  <p>Showing from {{ indexStart + 1 }} to {{ indexEnd + 1 }}</p>
+  <p
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    Showing from {{ indexStart + 1 }} to {{ indexEnd + 1 }}
+  </p>
+  <form
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    <button
+      @click.prevent="prevPage"
+      :disabled="inputsDisabled || filteredResultsArray.length === 0"
+    >
+      Prev. page
+    </button>
+    <button
+      @click.prevent="nextPage"
+      :disabled="inputsDisabled || filteredResultsArray.length === 0"
+    >
+      Next page
+    </button>
+  </form>
+
   <h1>Output</h1>
   <div id="outgraph">
     <canvas id="outgraphcanvas"></canvas>
@@ -80,21 +114,21 @@
       {{ page.title }}
     </button>
   </div>
-  <h1>Extract</h1>
+  <h1 v-show="extract">Extract</h1>
   <!-- <p>{{ extract }}</p> -->
   <p id="extract" v-html="extract"></p>
   <div v-show="returnedImage">
     <h1>Image</h1>
     <img id="returnedImage" :src="returnedImage" />
   </div>
-  <h1>Categories</h1>
+  <h1 v-show="categoriesArray.length > 0">Categories</h1>
   <ul>
     <li v-for="category in categoriesArray" :key="category">
       {{ category }}
     </li>
   </ul>
 
-  <h1>Linked Wikipedia pages</h1>
+  <h1 v-show="filteredResultsArray.length > 0">Linked Wikipedia pages</h1>
 
   <ul>
     <li v-for="page in filteredResultsArray" :key="page.pageid">
@@ -102,9 +136,13 @@
       <p>
         <a :href="page.fullurl">{{ page.fullurl }}</a>
       </p>
-      <h3 v-show="resultsCategoriesEnabled && page.categories">Categories</h3>
+      <h3
+        v-show="resultsCategoriesEnabled && page.categories && !inputsDisabled"
+      >
+        Categories
+      </h3>
       <ul
-        v-show="resultsCategoriesEnabled"
+        v-show="resultsCategoriesEnabled && !inputsDisabled"
         v-for="category in page.categories"
         :key="category.title"
       >
@@ -119,7 +157,7 @@
     </li>
   </ul>
 
-  <h1>Redirects</h1>
+  <h1 v-show="redirectsArray.length > 0">Redirects</h1>
   <ul>
     <!-- text extracts and possible other info not fetched/displayed yet -->
     <!-- error case with page not existing  this.jsonDataFull = error/message (change later) not handled yet, then redirects does not exist, atm browser error -->
@@ -549,7 +587,7 @@ export default {
             delete element[key]
           }
           // for easy class binding in template, otherwise missing just empty
-          // ... example "Commodore 64" -> missing Phoenix Park Hotel
+          // ... example "Commodore" -> missing Phoenix Park Hotel
           if (key === 'missing') {
             element[key] = true
           }
