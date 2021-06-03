@@ -306,30 +306,6 @@ export default {
       // filter unused first index (equals pageid in second index)
       filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
-      // remove unused array fields and mark missing- is there a more elegant way?
-      let usedKeys
-      if (!this.resultsCategoriesEnabled) {
-        usedKeys = ['pageid', 'title', 'fullurl', 'missing']
-      } else {
-        usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
-      }
-      // const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
-      filteredArray.forEach((element) => {
-        let filteredArrayKeys = Object.keys(element)
-        filteredArrayKeys.forEach((key) => {
-          if (!usedKeys.includes(key)) {
-            // this also removes them in this.jsonDataFullQuery.query.pages and this.jsonDataFullQueryPart.query.pages - WHY?
-            // -> object reference...
-            delete element[key]
-          }
-          // for easy class binding in template, otherwise missing just empty
-          // ... example "Commodore 64" -> missing Phoenix Park Hotel
-          if (key === 'missing') {
-            element[key] = true
-          }
-        })
-      })
-
       // apply filter
       filteredArray = filteredArray.filter((page) =>
         page.title.toLowerCase().includes(this.filter.toLowerCase())
@@ -519,6 +495,50 @@ export default {
         }
       } while (this.jsonDataFullQueryPart.continue)
 
+      let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
+
+      // console.log(resultsArray[0][0])
+      // console.log(resultsArray[0][1])
+
+      // console.log(resultsArray[1][0])
+      // console.log(resultsArray[1][1])
+
+      let filteredArray
+      // filter unused first index (equals pageid in second index)
+      filteredArray = resultsArray.map((entry, index, array) => array[index][1])
+
+      // console.log(filteredArray[0])
+      // console.log(filteredArray[1])
+
+      // remove unused array fields and mark missing- is there a more elegant way?
+      // is this needed at all for performence in computed filteredresultsarray?
+      // reduce even further? remove query.pages?
+      let usedKeys
+      if (!this.resultsCategoriesEnabled) {
+        usedKeys = ['pageid', 'title', 'fullurl', 'missing']
+      } else {
+        usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
+      }
+      // const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
+      filteredArray.forEach((element) => {
+        let filteredArrayKeys = Object.keys(element)
+        filteredArrayKeys.forEach((key) => {
+          if (!usedKeys.includes(key)) {
+            // this also removes them in this.jsonDataFullQuery.query.pages and this.jsonDataFullQueryPart.query.pages - WHY?
+            // -> object reference...
+            delete element[key]
+          }
+          // for easy class binding in template, otherwise missing just empty
+          // ... example "Commodore 64" -> missing Phoenix Park Hotel
+          if (key === 'missing') {
+            element[key] = true
+          }
+        })
+      })
+
+      // let testArray = Object.entries(this.jsonDataFullQuery.query.pages)
+      // console.log(testArray)
+
       // not sure if necessary
       // this.redirectsArray.sort()
 
@@ -597,7 +617,7 @@ export default {
             }
           }
         } catch (error) {
-          this.categoriesQuery = error
+          this.categoriesQueryPart = error
         }
       } while (this.categoriesQueryPart.continue)
 
