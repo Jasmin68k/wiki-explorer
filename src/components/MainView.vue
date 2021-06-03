@@ -5,6 +5,16 @@
     <input id="title" v-model="title" />
     <button type="submit">Get JSON</button>
   </form>
+  <form>
+    <input
+      id="resultsCategories"
+      type="checkbox"
+      v-model="resultsCategoriesEnabled"
+    />
+    <label for="resultsCategories"
+      >Results categories enabled (slow, esp. on big pages)</label
+    >
+  </form>
   <form @submit.prevent="">
     <label for="filter">Filter:</label>
     <input id="filter" v-model="filter" @input="resetPageNumber" />
@@ -74,8 +84,12 @@
       <p>
         <a :href="page.fullurl">{{ page.fullurl }}</a>
       </p>
-      <h3>Categories</h3>
-      <ul v-for="category in page.categories" :key="category.title">
+      <h3 v-show="resultsCategoriesEnabled">Categories</h3>
+      <ul
+        v-show="resultsCategoriesEnabled"
+        v-for="category in page.categories"
+        :key="category.title"
+      >
         <li>
           {{
             category.title.startsWith('Category:')
@@ -122,7 +136,8 @@ export default {
       returnedTitle: '',
       returnedUrl: '',
       returnedImage: '',
-      redirectsArray: []
+      redirectsArray: [],
+      resultsCategoriesEnabled: true
     }
   },
 
@@ -227,16 +242,19 @@ export default {
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info&inprop=url
 
-      // let url =
-      //   'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-      //   this.title +
-      //   '&prop=info&inprop=url&origin=*'
+      let url
 
-      let url =
-        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-        this.title +
-        '&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden&origin=*'
-
+      if (!this.resultsCategoriesEnabled) {
+        url =
+          'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+          this.title +
+          '&prop=info&inprop=url&origin=*'
+      } else {
+        url =
+          'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+          this.title +
+          '&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden&origin=*'
+      }
       //!!!
       // what about both continue at same time...possible? handle!
       //!!!
@@ -289,7 +307,12 @@ export default {
       filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
       // remove unused array fields and mark missing- is there a more elegant way?
-      const usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
+      let usedKeys
+      if (!this.resultsCategoriesEnabled) {
+        usedKeys = ['pageid', 'title', 'fullurl', 'missing']
+      } else {
+        usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
+      }
       // const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
       filteredArray.forEach((element) => {
         let filteredArrayKeys = Object.keys(element)
@@ -382,17 +405,18 @@ export default {
             //   ...this.jsonDataFullQuery.query.pages
             // }
 
-            // this.jsonDataFullQuery.query.pages = {
-            //   ...this.jsonDataFullQuery.query.pages,
-            //   ...this.jsonDataFullQueryPart.query.pages
-            // }
-
-            // this joins categories etc - order matters
-            this.jsonDataFullQuery.query.pages = this.mergeDeep(
-              this.jsonDataFullQueryPart.query.pages,
-              this.jsonDataFullQuery.query.pages
-            )
-
+            if (!this.resultsCategoriesEnabled) {
+              this.jsonDataFullQuery.query.pages = {
+                ...this.jsonDataFullQuery.query.pages,
+                ...this.jsonDataFullQueryPart.query.pages
+              }
+            } else {
+              // this joins categories etc - order matters
+              this.jsonDataFullQuery.query.pages = this.mergeDeep(
+                this.jsonDataFullQueryPart.query.pages,
+                this.jsonDataFullQuery.query.pages
+              )
+            }
             // deep merge since introduction of categories...with clcontinue for categories, generator returns full list of pages again
             // but categories only piece by piece....old approach overwrote old info, since generator with categories does not return
             // info like fullurl, title, missing...
