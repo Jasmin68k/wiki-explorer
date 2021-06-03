@@ -58,7 +58,7 @@
     }"
   >
     Page: {{ pageNumber + 1 }} of
-    {{ Math.ceil(filteredResultsArray.length / sizePerPage) }}
+    {{ numberOfPages }}
   </div>
   <p>Results: {{ filteredResultsArray.length }}</p>
   <p
@@ -75,13 +75,19 @@
   >
     <button
       @click.prevent="prevPage"
-      :disabled="inputsDisabled || filteredResultsArray.length === 0"
+      :disabled="
+        inputsDisabled || filteredResultsArray.length === 0 || pageNumber === 0
+      "
     >
       Prev. page
     </button>
     <button
       @click.prevent="nextPage"
-      :disabled="inputsDisabled || filteredResultsArray.length === 0"
+      :disabled="
+        inputsDisabled ||
+        filteredResultsArray.length === 0 ||
+        pageNumber + 1 === numberOfPages
+      "
     >
       Next page
     </button>
@@ -199,6 +205,9 @@ export default {
   },
 
   computed: {
+    numberOfPages() {
+      return Math.ceil(this.filteredResultsArray.length / this.sizePerPage)
+    },
     indexStart() {
       let indexStart = this.pageNumber * this.sizePerPage
       if (indexStart > this.filteredResultsArray.length - 1) {
