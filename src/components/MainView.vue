@@ -2,26 +2,36 @@
   <form
     @submit.prevent="clearCanvas(), getJson(), getMainInfo(), getCategories()"
   >
-    <input id="title" v-model="title" />
-    <button type="submit">Get JSON</button>
+    <input id="title" v-model="title" :disabled="inputsDisabled" />
+    <button type="submit" :disabled="inputsDisabled">Get JSON</button>
   </form>
   <form>
     <input
       id="resultsCategories"
       type="checkbox"
+      :disabled="inputsDisabled"
       v-model="resultsCategoriesEnabled"
     />
     <label for="resultsCategories"
-      >Results categories enabled (slow, esp. on big pages)</label
+      >Results categories enabled (slower init, esp. on big pages)</label
     >
   </form>
   <form @submit.prevent="">
     <label for="filter">Filter:</label>
-    <input id="filter" v-model="filter" @input="resetPageNumber" />
+    <input
+      id="filter"
+      v-model="filter"
+      @input="resetPageNumber"
+      :disabled="inputsDisabled"
+    />
   </form>
   <form>
-    <button @click.prevent="prevPage">Prev. page</button>
-    <button @click.prevent="nextPage">Next page</button>
+    <button @click.prevent="prevPage" :disabled="inputsDisabled">
+      Prev. page
+    </button>
+    <button @click.prevent="nextPage" :disabled="inputsDisabled">
+      Next page
+    </button>
   </form>
 
   <input
@@ -35,6 +45,7 @@
         : 24
     "
     v-model="sizePerPage"
+    :disabled="inputsDisabled"
     @input="drawLines(), resetPageNumber()"
   />
 
@@ -46,17 +57,24 @@
   <div id="outgraph">
     <canvas id="outgraphcanvas"></canvas>
 
-    <button id="titlebutton" @click.prevent="titleButton">
+    <button
+      id="titlebutton"
+      v-show="!inputsDisabled && returnedTitle"
+      @click.prevent="titleButton"
+    >
       {{ returnedTitle }}
     </button>
 
     <button
+      v-show="!inputsDisabled"
       class="circlebutton"
       v-for="(page, index) in displayResultsArray"
+      :key="index"
+      :class="{ missing: page.missing }"
       :style="{
         '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg'
       }"
-      :key="index"
+      :disabled="page.missing"
       @click.prevent="circleButton(index)"
     >
       {{ page.title }}
@@ -65,8 +83,8 @@
   <h1>Extract</h1>
   <!-- <p>{{ extract }}</p> -->
   <p id="extract" v-html="extract"></p>
-  <h1>Image</h1>
-  <div id="returnedImageContainer">
+  <div v-show="returnedImage">
+    <h1>Image</h1>
     <img id="returnedImage" :src="returnedImage" />
   </div>
   <h1>Categories</h1>
@@ -84,7 +102,7 @@
       <p>
         <a :href="page.fullurl">{{ page.fullurl }}</a>
       </p>
-      <h3 v-show="resultsCategoriesEnabled">Categories</h3>
+      <h3 v-show="resultsCategoriesEnabled && page.categories">Categories</h3>
       <ul
         v-show="resultsCategoriesEnabled"
         v-for="category in page.categories"
@@ -137,7 +155,8 @@ export default {
       returnedUrl: '',
       returnedImage: '',
       redirectsArray: [],
-      resultsCategoriesEnabled: true
+      resultsCategoriesEnabled: true,
+      inputsDisabled: false
     }
   },
 
@@ -353,6 +372,7 @@ export default {
     },
 
     async getJson() {
+      this.inputsDisabled = true
       // try catch block for catching network errors from Promise, otherwise error in browser console - getJson().catch in computed not possible (no async in computed)
 
       // clean old
@@ -561,9 +581,11 @@ export default {
       //   })
       // })
       // console.log(counter)
+      this.inputsDisabled = false
     },
     async getMainInfo() {
       this.extract = ''
+      this.returnedImage = ''
 
       try {
         const response = await fetch(this.mainInfoUrl)
@@ -586,9 +608,10 @@ export default {
           ) {
             this.returnedImage =
               responseFull.query.pages[pageId].original.source
-          } else {
-            this.returnedImage = ''
           }
+          //  else {
+          //   this.returnedImage = ''
+          // }
         }
       } catch (error) {
         this.jsonDataFullQuery = error
@@ -743,14 +766,20 @@ ul {
 #extract {
   text-align: left;
 }
-#returnedImageContainer {
-  margin: auto;
+/* #returnedImageContainer { */
+/* margin: auto;
   position: relative;
   width: 800px;
-  height: 600px;
-}
+  height: 600px; */
+/* } */
 #returnedImage {
-  max-width: 100%;
-  max-height: 100%;
+  margin: auto;
+  position: relative;
+  max-width: 800px;
+  max-height: 600px;
+  width: auto;
+  height: auto;
+  /* max-width: 100%;
+  max-height: 100%; */
 }
 </style>
