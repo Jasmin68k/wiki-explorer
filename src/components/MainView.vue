@@ -67,12 +67,23 @@
   </ul>
 
   <h1>Linked Wikipedia pages</h1>
+
   <ul>
     <li v-for="page in filteredResultsArray" :key="page.pageid">
-      <span :class="{ missing: page.missing }">Title: {{ page.title }}</span>
-      - Full URL:
-      <a :href="page.fullurl">{{ page.fullurl }}</a>
-      <div>{{ page.categories }}</div>
+      <h2 :class="{ missing: page.missing }">{{ page.title }}</h2>
+      <p>
+        <a :href="page.fullurl">{{ page.fullurl }}</a>
+      </p>
+      <h3>Categories</h3>
+      <ul v-for="category in page.categories" :key="category.title">
+        <li>
+          {{
+            category.title.startsWith('Category:')
+              ? category.title.substring(9)
+              : category.title
+          }}
+        </li>
+      </ul>
     </li>
   </ul>
 
@@ -376,8 +387,7 @@ export default {
             //   ...this.jsonDataFullQueryPart.query.pages
             // }
 
-            // this joins categories etc
-
+            // this joins categories etc - order matters
             this.jsonDataFullQuery.query.pages = this.mergeDeep(
               this.jsonDataFullQueryPart.query.pages,
               this.jsonDataFullQuery.query.pages
@@ -453,6 +463,19 @@ export default {
 
             // !!!!!!!!!
 
+            if (this.jsonDataFullQueryPart.query.redirects) {
+              const redir = this.jsonDataFullQueryPart.query.redirects
+
+              for (let i = 0; i < redir.length; i++) {
+                let found = false
+                for (let j = 0; j < this.redirectsArray.length && !found; j++) {
+                  found = this.redirectsArray[j].from === redir[i].from
+                }
+                if (!found) {
+                  this.redirectsArray.push(redir[i])
+                }
+              }
+            }
             // this also seems buggy and varying - maybe? only with categories...repetitions with categories
             // FIX
             // if (this.jsonDataFullQueryPart.query.redirects) {
@@ -473,7 +496,10 @@ export default {
       } while (this.jsonDataFullQueryPart.continue)
 
       // not sure if necessary
-      this.redirectsArray.sort()
+      // this.redirectsArray.sort()
+
+      // sort arrayobject by from
+      this.redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
 
       this.resetPageNumber()
 
