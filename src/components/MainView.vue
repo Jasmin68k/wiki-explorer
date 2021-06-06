@@ -426,6 +426,19 @@ export default {
         }
       } while (this.jsonDataFullQueryPart.continue)
 
+      let usedKeys = ['pageid', 'title', 'fullurl', 'missing']
+
+      for (const property in this.resultsObject) {
+        for (const key in this.resultsObject[property]) {
+          if (!usedKeys.includes(key)) {
+            delete this.resultsObject[property][key]
+          }
+          if (key === 'missing') {
+            this.resultsObject[property][key] = true
+          }
+        }
+      }
+
       if (this.resultsCategoriesEnabled) {
         do {
           try {
@@ -450,24 +463,6 @@ export default {
             throw new Error(error)
           }
         } while (this.jsonDataFullQueryPart.continue)
-      }
-
-      let usedKeys
-      if (!this.resultsCategoriesEnabled) {
-        usedKeys = ['pageid', 'title', 'fullurl', 'missing']
-      } else {
-        usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
-      }
-
-      for (const property in this.resultsObject) {
-        for (const key in this.resultsObject[property]) {
-          if (!usedKeys.includes(key)) {
-            delete this.resultsObject[property][key]
-          }
-          if (key === 'missing') {
-            this.resultsObject[property][key] = true
-          }
-        }
       }
 
       this.redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
