@@ -288,12 +288,7 @@ export default {
     },
 
     filteredResultsArray() {
-      // let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
-      let resultsArray = Object.entries(this.resultsObject)
-
-      let filteredArray
-      // filter unused first index (equals pageid in second index)
-      filteredArray = resultsArray.map((entry, index, array) => array[index][1])
+      let filteredArray = Object.values(this.resultsObject)
 
       // apply filter
       filteredArray = filteredArray.filter((page) =>
