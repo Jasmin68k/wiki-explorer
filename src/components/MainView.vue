@@ -141,24 +141,31 @@
       <p>
         <a :href="page.fullurl">{{ page.fullurl }}</a>
       </p>
-      <h3
-        v-show="resultsCategoriesEnabled && page.categories && !inputsDisabled"
-      >
-        Categories
-      </h3>
-      <ul
-        v-show="resultsCategoriesEnabled && !inputsDisabled"
-        v-for="category in page.categories"
-        :key="category.title"
-      >
-        <li>
-          {{
-            category.title.startsWith('Category:')
-              ? category.title.substring(9)
-              : category.title
-          }}
-        </li>
-      </ul>
+      <!-- avoid error when ...[page.pageid].categories does not exist -->
+      <div v-if="resultsCategoriesObject[page.pageid]">
+        <h3
+          v-show="
+            resultsCategoriesEnabled &&
+            resultsCategoriesObject[page.pageid].categories &&
+            !inputsDisabled
+          "
+        >
+          Categories
+        </h3>
+        <ul
+          v-show="resultsCategoriesEnabled && !inputsDisabled"
+          v-for="category in resultsCategoriesObject[page.pageid].categories"
+          :key="category.title"
+        >
+          <li>
+            {{
+              category.title.startsWith('Category:')
+                ? category.title.substring(9)
+                : category.title
+            }}
+          </li>
+        </ul>
+      </div>
     </li>
   </ul>
 
@@ -194,7 +201,8 @@ export default {
       redirectsArray: [],
       resultsCategoriesEnabled: true,
       inputsDisabled: false,
-      resultsObject: {}
+      resultsObject: {},
+      resultsCategoriesObject: {}
     }
   },
 
@@ -296,6 +304,22 @@ export default {
       return filteredArray
     },
 
+    // filteredResultsCategoriesArray() {
+    //   let filteredArray = Object.values(this.resultsCategoriesObject)
+
+    //   // // apply filter
+    //   // filteredArray = filteredArray.filter((page) =>
+    //   //   page.title.toLowerCase().includes(this.filter.toLowerCase())
+    //   // )
+
+    //   // // sort
+    //   // filteredArray = filteredArray.sort((a, b) => {
+    //   //   return a.title.localeCompare(b.title)
+    //   // })
+
+    //   return filteredArray
+    // },
+
     displayResultsArray() {
       let displayArray = this.filteredResultsArray
       displayArray = displayArray.filter(
@@ -312,6 +336,7 @@ export default {
 
       this.redirectsArray = []
       this.resultsObject = {}
+      this.resultsCategoriesObject = {}
 
       do {
         try {
@@ -378,8 +403,12 @@ export default {
                 if (
                   this.jsonDataFullQueryPart.query.pages[property].categories
                 ) {
-                  this.resultsObject[property].categories =
+                  this.resultsCategoriesObject[property] = {}
+                  this.resultsCategoriesObject[property].categories =
                     this.jsonDataFullQueryPart.query.pages[property].categories
+
+                  // this.resultsObject[property].categories =
+                  //   this.jsonDataFullQueryPart.query.pages[property].categories
                 }
               }
             }
