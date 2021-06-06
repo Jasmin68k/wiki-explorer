@@ -454,12 +454,12 @@ export default {
           } else {
             this.categoriesQueryPart = await response.json()
 
-            let resultsArray = Object.entries(
+            let resultsArray = Object.values(
               this.categoriesQueryPart.query.pages
             )
-
-            for (let i = 0; i < resultsArray[0][1].categories.length; i++) {
-              this.categoriesArray.push(resultsArray[0][1].categories[i].title)
+            // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+            for (let i = 0; i < resultsArray[0].categories.length; i++) {
+              this.categoriesArray.push(resultsArray[0].categories[i].title)
             }
           }
         } catch (error) {
