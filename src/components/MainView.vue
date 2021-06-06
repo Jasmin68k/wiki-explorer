@@ -452,35 +452,43 @@ export default {
             //   ...this.jsonDataFullQuery.query.pages
             // }
 
-            if (!this.resultsCategoriesEnabled) {
-              // this.jsonDataFullQuery.query.pages = {
-              //   ...this.jsonDataFullQuery.query.pages,
-              //   ...this.jsonDataFullQueryPart.query.pages
-              // }
+            // if (!this.resultsCategoriesEnabled) {
+            //   // this.jsonDataFullQuery.query.pages = {
+            //   //   ...this.jsonDataFullQuery.query.pages,
+            //   //   ...this.jsonDataFullQueryPart.query.pages
+            //   // }
 
-              this.resultsObject = {
-                ...this.resultsObject,
-                ...this.jsonDataFullQueryPart.query.pages
-              }
-            } else {
-              for (const property in this.jsonDataFullQueryPart.query.pages) {
-                // console.log(
-                //   `${property}: ${this.jsonDataFullQueryPart.query.pages[property]}`
-                // )
+            //   this.resultsObject = {
+            //     ...this.resultsObject,
+            //     ...this.jsonDataFullQueryPart.query.pages
+            //   }
+            // } else {
 
-                // console.log(this.jsonDataFullQueryPart.query.pages[property].title)
+            for (const property in this.jsonDataFullQueryPart.query.pages) {
+              // console.log(
+              //   `${property}: ${this.jsonDataFullQueryPart.query.pages[property]}`
+              // )
 
-                if (typeof this.resultsObject[property] === 'undefined') {
-                  this.resultsObject[property] = {
-                    ...this.jsonDataFullQueryPart.query.pages[property]
-                  }
+              // console.log(this.jsonDataFullQueryPart.query.pages[property].title)
+
+              if (typeof this.resultsObject[property] === 'undefined') {
+                this.resultsObject[property] = {
+                  ...this.jsonDataFullQueryPart.query.pages[property]
                 }
+              }
 
+              if (this.resultsCategoriesEnabled) {
                 if (
-                  typeof this.jsonDataFullQueryPart.query.pages[property]
-                    .categories !== 'undefined'
+                  // typeof this.jsonDataFullQueryPart.query.pages[property]
+                  //   .categories !== 'undefined'
+                  this.jsonDataFullQueryPart.query.pages[property].categories
                 ) {
                   // this seems to work, but why? should be reference not copy?
+                  //... categories array would be changed, when I do smth to categories, f. e. push.
+                  // setting categories to smth else (or deleting it), does not change the array
+                  // so resultsObject[...].categories points to Array from ...Part, then part categories
+                  // is deleted (or overwritten with new array (object)), that does not change resultsObject[...].categories
+
                   this.resultsObject[property].categories =
                     this.jsonDataFullQueryPart.query.pages[property].categories
 
