@@ -307,10 +307,6 @@ export default {
   },
 
   methods: {
-    isObject(item) {
-      return item && typeof item === 'object' && !Array.isArray(item)
-    },
-
     async getJson() {
       this.inputsDisabled = true
 
