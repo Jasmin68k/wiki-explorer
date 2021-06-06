@@ -286,50 +286,12 @@ export default {
       return url
     },
     pageUrl() {
-      // origin=* important for CORS on wikimedia api
-
-      // API Query Namespace 0 filtered incl full URL plus redirects
-      // 'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore_64&prop=info&inprop=url&origin=*'
-
-      // API Query Namespace 0 filtered incl full URL
-      // 'https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=Commodore_64&prop=info&inprop=url&origin=*'
-
-      // API Query Namespace 0 filtered titles only
-      // 'https://en.wikipedia.org/w/api.php?action=query&prop=links&redirects&pllimit=500&format=json&titles=Commodore_64&format=json&plnamespace=0&origin=*'
-
-      // for testing random json data
-      // 'https://jsonplaceholder.typicode.com/todos/1'
-      // for testing error code
-      // 'https://httpstat.us/404'
-      // for testing malformed url etc.
-      // 'htXXXtps://httpstat.us/404'
-
-      // origin=* important for CORS on wikimedia api
-
-      // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden
-      // https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=Commodore%2064&prop=info&inprop=url
-
-      let url
-
-      if (!this.resultsCategoriesEnabled) {
-        url =
-          'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-          this.title +
-          '&prop=info&inprop=url&origin=*'
-      } else {
-        url =
-          'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-          this.title +
-          '&prop=info|categories&inprop=url&cllimit=max&clshow=!hidden&origin=*'
-      }
-      //!!!
-      // what about both continue at same time...possible? handle!
-      //!!!
+      let url =
+        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+        this.title +
+        '&prop=info&inprop=url&origin=*'
 
       if (this.jsonDataFullQueryPart.continue) {
-        // url += '&continue='
-        // url += this.jsonDataFullQueryPart.continue.continue
-
         const continueArray = Object.entries(
           this.jsonDataFullQueryPart.continue
         )
@@ -337,35 +299,29 @@ export default {
         continueArray.forEach((element) => {
           url += '&' + element[0] + '=' + element[1]
         })
-
-        // console.log(url)
-        // console.log(
-        //   continueArray[0][0],
-        //   continueArray[0][1],
-        //   continueArray[1][0],
-        //   continueArray[1][1],
-        //   continueArray[2][0],
-        //   continueArray[2][1],
-        //   continueArray[3][0],
-        //   continueArray[3][1]
-        // )
-
-        // url +=
-        //   '&' +
-        //   continueArray[0][0] +
-        //   '=' +
-        //   continueArray[0][1] +
-        //   '&' +
-        //   continueArray[1][0] +
-        //   '=' +
-        //   continueArray[1][1]
-
-        // url += '&gplcontinue='
-        // url += this.jsonDataFullQueryPart.continue.gplcontinue
       }
 
       return url
     },
+    pageUrlCategories() {
+      let url =
+        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+        this.title +
+        '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
+
+      if (this.jsonDataFullQueryPart.continue) {
+        const continueArray = Object.entries(
+          this.jsonDataFullQueryPart.continue
+        )
+
+        continueArray.forEach((element) => {
+          url += '&' + element[0] + '=' + element[1]
+        })
+      }
+
+      return url
+    },
+
     filteredResultsArray() {
       // let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
       let resultsArray = Object.entries(this.resultsObject)
@@ -437,145 +393,19 @@ export default {
         try {
           const response = await fetch(this.pageUrl)
 
-          // ok = true on http 200-299 good response
           if (!response.ok) {
             const message = `ERROR: ${response.status} ${response.statusText}`
-            // this.jsonDataFullQuery = message
             throw new Error(message)
           } else {
             this.jsonDataFullQueryPart = await response.json()
 
-            // this.jsonDataFullQuery.query.pages = {
-            //   // reversed - don't delete existing categories - not working properly
-            //   // clcontinue returns whole list, with categories going through
-            //   ...this.jsonDataFullQueryPart.query.pages,
-            //   ...this.jsonDataFullQuery.query.pages
-            // }
-
-            // if (!this.resultsCategoriesEnabled) {
-            //   // this.jsonDataFullQuery.query.pages = {
-            //   //   ...this.jsonDataFullQuery.query.pages,
-            //   //   ...this.jsonDataFullQueryPart.query.pages
-            //   // }
-
-            //   this.resultsObject = {
-            //     ...this.resultsObject,
-            //     ...this.jsonDataFullQueryPart.query.pages
-            //   }
-            // } else {
-
             for (const property in this.jsonDataFullQueryPart.query.pages) {
-              // console.log(
-              //   `${property}: ${this.jsonDataFullQueryPart.query.pages[property]}`
-              // )
-
-              // console.log(this.jsonDataFullQueryPart.query.pages[property].title)
-
-              // if (typeof this.resultsObject[property] === 'undefined') {
               if (!this.resultsObject[property]) {
                 this.resultsObject[property] = {
                   ...this.jsonDataFullQueryPart.query.pages[property]
                 }
               }
-
-              if (this.resultsCategoriesEnabled) {
-                if (
-                  // typeof this.jsonDataFullQueryPart.query.pages[property]
-                  //   .categories !== 'undefined'
-                  this.jsonDataFullQueryPart.query.pages[property].categories
-                ) {
-                  // this seems to work, but why? should be reference not copy?
-                  //... categories array would be changed, when I do smth to categories, f. e. push.
-                  // setting categories to smth else (or deleting it), does not change the array
-                  // so resultsObject[...].categories points to Array from ...Part, then part categories
-                  // is deleted (or overwritten with new array (object)), that does not change resultsObject[...].categories
-
-                  this.resultsObject[property].categories =
-                    this.jsonDataFullQueryPart.query.pages[property].categories
-
-                  // this.jsonDataFullQueryPart.query.pages[property].categories =
-                  //   'Moo'
-
-                  // console.log(this.jsonDataFullQueryPart.query.pages[property])
-                  // console.log(this.resultsObject[property])
-                }
-              }
-
-              // this joins categories etc - order matters
-              // this.jsonDataFullQuery.query.pages = this.mergeDeep(
-              //   this.jsonDataFullQueryPart.query.pages,
-              //   this.jsonDataFullQuery.query.pages
-              // )
             }
-            // deep merge since introduction of categories...with clcontinue for categories, generator returns full list of pages again
-            // but categories only piece by piece....old approach overwrote old info, since generator with categories does not return
-            // info like fullurl, title, missing...
-            // could be separated in separate fetch functions, but who cares
-            // https://stackoverflow.com/questions/56256758/how-to-merge-nested-objects-in-javascript
-
-            // console.log(Object.entries(this.jsonDataFullQueryPart.query.pages))
-
-            //!!!
-            //still buggy/missing categories?
-            //
-            // this.jsonDataFullQuery.query.pages = Object.assign(
-            //   {},
-            //   JSON.parse(
-            //     JSON.stringify(this.jsonDataFullQueryPart.query.pages)
-            //   ),
-            //   JSON.parse(JSON.stringify(this.jsonDataFullQuery.query.pages))
-            // )
-
-            // this.jsonDataFullQuery.query.redirects = Object.assign(
-            //   {},
-            //   JSON.parse(
-            //     JSON.stringify(this.jsonDataFullQueryPart.query.redirects)
-            //   ),
-            //   JSON.parse(JSON.stringify(this.jsonDataFullQuery.query.redirects))
-            // )
-
-            // for (const property in this.jsonDataFullQueryPart.query.pages) {
-            //   // console.log(
-            //   //   `${property}: ${this.jsonDataFullQueryPart.query.pages[property]}`
-            //   // )
-            //   for (const property2 in this.jsonDataFullQueryPart.query.pages[
-            //     property
-            //   ]) {
-            //     console.log(
-            //       `${property2}: ${this.jsonDataFullQueryPart.query.pages[property][property2]}`
-            //     )
-            //     // this.jsonDataFullQuery.query.pages[property][
-            //     //   property2
-            //     // ] = this.jsonDataFullQueryPart.query.pages[property][property2]
-            //   }
-            // }
-
-            // move first steps from filteredarray computed here?...
-            // 2/3 steps gpl und cl continue!
-            // define(d) order in query?
-            // generator = categores|links!?
-
-            // let pagesArray = Object.entries(
-            //   this.jsonDataFullQueryPart.query.pages
-            // )
-            // pagesArray = pagesArray.map(
-            //   (entry, index, array) => array[index][1]
-            // )
-            // // sum varies with differing gpllimit not always example commodore 64...why?
-            // console.log(pagesArray.length)
-
-            // this overwrites old existing redirects, same problem as in later old categories implementation
-            // pages have unique keys (same as pageid) - redirects is an array of objects [{from / to}]
-            // this.jsonDataFullQuery.query.redirects = {
-            //   ...this.jsonDataFullQuery.query.redirects,
-            //   ...this.jsonDataFullQueryPart.query.redirects
-            // }
-
-            //
-            // INSERT REDIRECTS
-            //
-
-            // !!!!!!!!!
 
             if (this.jsonDataFullQueryPart.query.redirects) {
               const redir = this.jsonDataFullQueryPart.query.redirects
@@ -590,68 +420,44 @@ export default {
                 }
               }
             }
-            // this also seems buggy and varying - maybe? only with categories...repetitions with categories
-            // FIX
-            // if (this.jsonDataFullQueryPart.query.redirects) {
-            //   for (
-            //     let i = 0;
-            //     i < this.jsonDataFullQueryPart.query.redirects.length;
-            //     i++
-            //   ) {
-            //     this.redirectsArray.push(
-            //       this.jsonDataFullQueryPart.query.redirects[i]
-            //     )
-            //   }
-            // }
           }
         } catch (error) {
-          // this.jsonDataFullQuery = error
           throw new Error(error)
         }
       } while (this.jsonDataFullQueryPart.continue)
 
-      // let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
+      if (this.resultsCategoriesEnabled) {
+        do {
+          try {
+            const response = await fetch(this.pageUrlCategories)
 
-      // let resultsArray = Object.entries(this.resultsObject)
+            if (!response.ok) {
+              const message = `ERROR: ${response.status} ${response.statusText}`
+              throw new Error(message)
+            } else {
+              this.jsonDataFullQueryPart = await response.json()
 
-      // console.log(resultsArray[0][0])
-      // console.log(resultsArray[0][1])
+              for (const property in this.jsonDataFullQueryPart.query.pages) {
+                if (
+                  this.jsonDataFullQueryPart.query.pages[property].categories
+                ) {
+                  this.resultsObject[property].categories =
+                    this.jsonDataFullQueryPart.query.pages[property].categories
+                }
+              }
+            }
+          } catch (error) {
+            throw new Error(error)
+          }
+        } while (this.jsonDataFullQueryPart.continue)
+      }
 
-      // console.log(resultsArray[1][0])
-      // console.log(resultsArray[1][1])
-
-      // let filteredArray
-      // filter unused first index (equals pageid in second index)
-      // filteredArray = resultsArray.map((entry, index, array) => array[index][1])
-
-      // console.log(filteredArray[0])
-      // console.log(filteredArray[1])
-
-      // remove unused array fields and mark missing- is there a more elegant way?
-      // is this needed at all for performence in computed filteredresultsarray?
-      // reduce even further? remove query.pages?
       let usedKeys
       if (!this.resultsCategoriesEnabled) {
         usedKeys = ['pageid', 'title', 'fullurl', 'missing']
       } else {
         usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
       }
-      // // const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
-      // filteredArray.forEach((element) => {
-      //   let filteredArrayKeys = Object.keys(element)
-      //   filteredArrayKeys.forEach((key) => {
-      //     if (!usedKeys.includes(key)) {
-      //       // this also removes them in this.jsonDataFullQuery.query.pages and this.jsonDataFullQueryPart.query.pages - WHY?
-      //       // -> object reference...
-      //       delete element[key]
-      //     }
-      //     // for easy class binding in template, otherwise missing just empty
-      //     // ... example "Commodore" -> missing Phoenix Park Hotel
-      //     if (key === 'missing') {
-      //       element[key] = true
-      //     }
-      //   })
-      // })
 
       for (const property in this.resultsObject) {
         for (const key in this.resultsObject[property]) {
@@ -664,31 +470,9 @@ export default {
         }
       }
 
-      // let testArray = Object.entries(this.jsonDataFullQuery.query.pages)
-      // console.log(testArray)
-
-      // not sure if necessary
-      // this.redirectsArray.sort()
-
-      // sort arrayobject by from
       this.redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
 
       this.resetPageNumber()
-
-      // //temp categories full test
-      // let counter = 0
-      // let testArray = Object.entries(this.jsonDataFullQuery.query.pages)
-      // let testFiltered = testArray.map((entry, index, array) => array[index][1])
-      // testFiltered.forEach((element) => {
-      //   let keys = Object.keys(element)
-      //   keys.forEach((key) => {
-      //     if (key === 'categories') {
-      //       // console.log(element[key])
-      //       counter++
-      //     }
-      //   })
-      // })
-      // console.log(counter)
       this.inputsDisabled = false
     },
     async getMainInfo() {
