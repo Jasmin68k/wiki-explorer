@@ -13,7 +13,8 @@
       v-model="resultsCategoriesEnabled"
     />
     <label for="resultsCategories"
-      >Results categories enabled (slower init, esp. on big pages)</label
+      >Results categories enabled (slower init, esp. on big pages, requires lots
+      of API fetches)</label
     >
   </form>
   <form @submit.prevent="">
@@ -178,13 +179,9 @@ export default {
     return {
       title: '',
       filter: '',
-      jsonDataFullQueryPart: {
-        query: { pages: '', redirects: '' }
-      },
+      jsonDataFullQueryPart: {},
       categoriesArray: [],
-      categoriesQueryPart: {
-        query: { pages: '' }
-      },
+      categoriesQueryPart: {},
       extract: '',
       pageNumber: 0,
       sizePerPage: 12,
@@ -363,6 +360,7 @@ export default {
         }
       }
 
+      // with big pages this requires lots of api fetches, which makes up majority of the wait time
       if (this.resultsCategoriesEnabled) {
         do {
           try {
