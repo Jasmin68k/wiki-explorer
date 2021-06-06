@@ -121,7 +121,6 @@
     </button>
   </div>
   <h1 v-show="extract">Extract</h1>
-  <!-- <p>{{ extract }}</p> -->
   <p id="extract" v-html="extract"></p>
   <div v-show="returnedImage">
     <h1>Image</h1>
@@ -165,8 +164,6 @@
 
   <h1 v-show="redirectsArray.length > 0">Redirects</h1>
   <ul>
-    <!-- text extracts and possible other info not fetched/displayed yet -->
-    <!-- error case with page not existing  this.jsonDataFull = error/message (change later) not handled yet, then redirects does not exist, atm browser error -->
     <li v-for="redirect in redirectsArray" :key="redirect.from">
       {{ redirect.from }} -> {{ redirect.to }}
     </li>
@@ -181,10 +178,6 @@ export default {
     return {
       title: '',
       filter: '',
-      // jsonDataFullQuery: {
-      //   // placeholder for no error before GetJson button pressed
-      //   query: { pages: '', redirects: '' }
-      // },
       jsonDataFullQueryPart: {
         query: { pages: '', redirects: '' }
       },
@@ -431,12 +424,8 @@ export default {
             this.returnedImage =
               responseFull.query.pages[pageId].original.source
           }
-          //  else {
-          //   this.returnedImage = ''
-          // }
         }
       } catch (error) {
-        // this.jsonDataFullQuery = error
         throw new Error(error)
       }
     },
@@ -516,9 +505,6 @@ export default {
       window.open(this.returnedUrl, '_blank')
     },
     circleButton(index) {
-      // console.log(
-      //   `Circle button ${index} - ${this.displayResultsArray[index].title} clicked.`
-      // )
       this.title = this.displayResultsArray[index].title
       this.clearCanvas()
       this.getJson()
