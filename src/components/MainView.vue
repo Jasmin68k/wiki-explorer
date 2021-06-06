@@ -181,10 +181,10 @@ export default {
     return {
       title: '',
       filter: '',
-      jsonDataFullQuery: {
-        // placeholder for no error before GetJson button pressed
-        query: { pages: '', redirects: '' }
-      },
+      // jsonDataFullQuery: {
+      //   // placeholder for no error before GetJson button pressed
+      //   query: { pages: '', redirects: '' }
+      // },
       jsonDataFullQueryPart: {
         query: { pages: '', redirects: '' }
       },
@@ -200,7 +200,8 @@ export default {
       returnedImage: '',
       redirectsArray: [],
       resultsCategoriesEnabled: true,
-      inputsDisabled: false
+      inputsDisabled: false,
+      resultsObject: {}
     }
   },
 
@@ -366,7 +367,8 @@ export default {
       return url
     },
     filteredResultsArray() {
-      let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
+      // let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
+      let resultsArray = Object.entries(this.resultsObject)
 
       let filteredArray
       // filter unused first index (equals pageid in second index)
@@ -396,24 +398,24 @@ export default {
   },
 
   methods: {
-    // https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
-    mergeDeep(target, ...sources) {
-      if (!sources.length) return target
-      const source = sources.shift()
+    // // https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
+    // mergeDeep(target, ...sources) {
+    //   if (!sources.length) return target
+    //   const source = sources.shift()
 
-      if (this.isObject(target) && this.isObject(source)) {
-        for (const key in source) {
-          if (this.isObject(source[key])) {
-            if (!target[key]) Object.assign(target, { [key]: {} })
-            this.mergeDeep(target[key], source[key])
-          } else {
-            Object.assign(target, { [key]: source[key] })
-          }
-        }
-      }
+    //   if (this.isObject(target) && this.isObject(source)) {
+    //     for (const key in source) {
+    //       if (this.isObject(source[key])) {
+    //         if (!target[key]) Object.assign(target, { [key]: {} })
+    //         this.mergeDeep(target[key], source[key])
+    //       } else {
+    //         Object.assign(target, { [key]: source[key] })
+    //       }
+    //     }
+    //   }
 
-      return this.mergeDeep(target, ...sources)
-    },
+    //   return this.mergeDeep(target, ...sources)
+    // },
     isObject(item) {
       return item && typeof item === 'object' && !Array.isArray(item)
     },
@@ -423,11 +425,13 @@ export default {
       // try catch block for catching network errors from Promise, otherwise error in browser console - getJson().catch in computed not possible (no async in computed)
 
       // clean old
-      this.jsonDataFullQuery = {
-        query: { pages: '', redirects: '' }
-      }
+      // this.jsonDataFullQuery = {
+      //   query: { pages: '', redirects: '' }
+      // }
 
       this.redirectsArray = []
+
+      this.resultsObject = {}
 
       do {
         try {
@@ -436,7 +440,7 @@ export default {
           // ok = true on http 200-299 good response
           if (!response.ok) {
             const message = `ERROR: ${response.status} ${response.statusText}`
-            this.jsonDataFullQuery = message
+            // this.jsonDataFullQuery = message
             throw new Error(message)
           } else {
             this.jsonDataFullQueryPart = await response.json()
@@ -449,16 +453,50 @@ export default {
             // }
 
             if (!this.resultsCategoriesEnabled) {
-              this.jsonDataFullQuery.query.pages = {
-                ...this.jsonDataFullQuery.query.pages,
+              // this.jsonDataFullQuery.query.pages = {
+              //   ...this.jsonDataFullQuery.query.pages,
+              //   ...this.jsonDataFullQueryPart.query.pages
+              // }
+
+              this.resultsObject = {
+                ...this.resultsObject,
                 ...this.jsonDataFullQueryPart.query.pages
               }
             } else {
+              for (const property in this.jsonDataFullQueryPart.query.pages) {
+                // console.log(
+                //   `${property}: ${this.jsonDataFullQueryPart.query.pages[property]}`
+                // )
+
+                // console.log(this.jsonDataFullQueryPart.query.pages[property].title)
+
+                if (typeof this.resultsObject[property] === 'undefined') {
+                  this.resultsObject[property] = {
+                    ...this.jsonDataFullQueryPart.query.pages[property]
+                  }
+                }
+
+                if (
+                  typeof this.jsonDataFullQueryPart.query.pages[property]
+                    .categories !== 'undefined'
+                ) {
+                  // this seems to work, but why? should be reference not copy?
+                  this.resultsObject[property].categories =
+                    this.jsonDataFullQueryPart.query.pages[property].categories
+
+                  // this.jsonDataFullQueryPart.query.pages[property].categories =
+                  //   'Moo'
+
+                  // console.log(this.jsonDataFullQueryPart.query.pages[property])
+                  // console.log(this.resultsObject[property])
+                }
+              }
+
               // this joins categories etc - order matters
-              this.jsonDataFullQuery.query.pages = this.mergeDeep(
-                this.jsonDataFullQueryPart.query.pages,
-                this.jsonDataFullQuery.query.pages
-              )
+              // this.jsonDataFullQuery.query.pages = this.mergeDeep(
+              //   this.jsonDataFullQueryPart.query.pages,
+              //   this.jsonDataFullQuery.query.pages
+              // )
             }
             // deep merge since introduction of categories...with clcontinue for categories, generator returns full list of pages again
             // but categories only piece by piece....old approach overwrote old info, since generator with categories does not return
@@ -558,11 +596,14 @@ export default {
             // }
           }
         } catch (error) {
-          this.jsonDataFullQuery = error
+          // this.jsonDataFullQuery = error
+          throw new Error(error)
         }
       } while (this.jsonDataFullQueryPart.continue)
 
-      let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
+      // let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
+
+      let resultsArray = Object.entries(this.resultsObject)
 
       // console.log(resultsArray[0][0])
       // console.log(resultsArray[0][1])
@@ -661,7 +702,8 @@ export default {
           // }
         }
       } catch (error) {
-        this.jsonDataFullQuery = error
+        // this.jsonDataFullQuery = error
+        throw new Error(error)
       }
     },
     async getCategories() {
