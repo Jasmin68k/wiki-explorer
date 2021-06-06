@@ -471,7 +471,8 @@ export default {
 
               // console.log(this.jsonDataFullQueryPart.query.pages[property].title)
 
-              if (typeof this.resultsObject[property] === 'undefined') {
+              // if (typeof this.resultsObject[property] === 'undefined') {
+              if (!this.resultsObject[property]) {
                 this.resultsObject[property] = {
                   ...this.jsonDataFullQueryPart.query.pages[property]
                 }
@@ -611,7 +612,7 @@ export default {
 
       // let resultsArray = Object.entries(this.jsonDataFullQuery.query.pages)
 
-      let resultsArray = Object.entries(this.resultsObject)
+      // let resultsArray = Object.entries(this.resultsObject)
 
       // console.log(resultsArray[0][0])
       // console.log(resultsArray[0][1])
@@ -619,9 +620,9 @@ export default {
       // console.log(resultsArray[1][0])
       // console.log(resultsArray[1][1])
 
-      let filteredArray
+      // let filteredArray
       // filter unused first index (equals pageid in second index)
-      filteredArray = resultsArray.map((entry, index, array) => array[index][1])
+      // filteredArray = resultsArray.map((entry, index, array) => array[index][1])
 
       // console.log(filteredArray[0])
       // console.log(filteredArray[1])
@@ -635,22 +636,33 @@ export default {
       } else {
         usedKeys = ['pageid', 'title', 'fullurl', 'missing', 'categories']
       }
-      // const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
-      filteredArray.forEach((element) => {
-        let filteredArrayKeys = Object.keys(element)
-        filteredArrayKeys.forEach((key) => {
+      // // const usedKeys = ['pageid', 'title', 'fullurl', 'missing']
+      // filteredArray.forEach((element) => {
+      //   let filteredArrayKeys = Object.keys(element)
+      //   filteredArrayKeys.forEach((key) => {
+      //     if (!usedKeys.includes(key)) {
+      //       // this also removes them in this.jsonDataFullQuery.query.pages and this.jsonDataFullQueryPart.query.pages - WHY?
+      //       // -> object reference...
+      //       delete element[key]
+      //     }
+      //     // for easy class binding in template, otherwise missing just empty
+      //     // ... example "Commodore" -> missing Phoenix Park Hotel
+      //     if (key === 'missing') {
+      //       element[key] = true
+      //     }
+      //   })
+      // })
+
+      for (const property in this.resultsObject) {
+        for (const key in this.resultsObject[property]) {
           if (!usedKeys.includes(key)) {
-            // this also removes them in this.jsonDataFullQuery.query.pages and this.jsonDataFullQueryPart.query.pages - WHY?
-            // -> object reference...
-            delete element[key]
+            delete this.resultsObject[property][key]
           }
-          // for easy class binding in template, otherwise missing just empty
-          // ... example "Commodore" -> missing Phoenix Park Hotel
           if (key === 'missing') {
-            element[key] = true
+            this.resultsObject[property][key] = true
           }
-        })
-      })
+        }
+      }
 
       // let testArray = Object.entries(this.jsonDataFullQuery.query.pages)
       // console.log(testArray)
