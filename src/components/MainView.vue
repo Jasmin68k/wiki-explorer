@@ -231,16 +231,6 @@ export default {
       return indexEnd
     },
     mainInfoUrl() {
-      // let url =
-      //   'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&indexpageids&titles=' +
-      //   this.title +
-      //   '&origin=*'
-
-      // let url =
-      //   'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro&redirects=1&indexpageids&inprop=url&titles=' +
-      //   this.title +
-      //   '&origin=*'
-
       let url =
         'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
         this.title +
@@ -251,36 +241,16 @@ export default {
 
     // separate categories fetch, instead of adding to main info, for simple continue handling
     categoriesUrl() {
-      // non hidden categories only
-
-      // !!!
-      // maybe switch to https://en.wikipedia.org/w/api.php?action=query&generator=categories&redirects&gcllimit=max&gclshow=!hidden&format=jsonfm&titles=Commodore%2064 later...gives simpler data structure
-      // !!!
-
       let url =
         'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
         this.title +
         '&origin=*'
 
-      //    TEMP     limit 2 for continue testing
-      // let url =
-      //   'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=2&clshow=!hidden&titles=' +
-      //   this.title +
-      //   '&origin=*'
-
-      // if (this.categoriesQueryPart.continue) {
-      //   url += '&continue='
-      //   url += this.categoriesQueryPart.continue.continue
-      //   url += '&clcontinue='
-      //   url += this.categoriesQueryPart.continue.clcontinue
-      // }
-
       if (this.categoriesQueryPart.continue) {
-        const continueArray = Object.entries(this.categoriesQueryPart.continue)
-
-        continueArray.forEach((element) => {
-          url += '&' + element[0] + '=' + element[1]
-        })
+        for (const property in this.categoriesQueryPart.continue) {
+          url +=
+            '&' + property + '=' + this.categoriesQueryPart.continue[property]
+        }
       }
 
       return url
@@ -292,17 +262,15 @@ export default {
         '&prop=info&inprop=url&origin=*'
 
       if (this.jsonDataFullQueryPart.continue) {
-        const continueArray = Object.entries(
-          this.jsonDataFullQueryPart.continue
-        )
-
-        continueArray.forEach((element) => {
-          url += '&' + element[0] + '=' + element[1]
-        })
+        for (const property in this.jsonDataFullQueryPart.continue) {
+          url +=
+            '&' + property + '=' + this.jsonDataFullQueryPart.continue[property]
+        }
       }
 
       return url
     },
+    // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
     pageUrlCategories() {
       let url =
         'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
@@ -310,13 +278,10 @@ export default {
         '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
 
       if (this.jsonDataFullQueryPart.continue) {
-        const continueArray = Object.entries(
-          this.jsonDataFullQueryPart.continue
-        )
-
-        continueArray.forEach((element) => {
-          url += '&' + element[0] + '=' + element[1]
-        })
+        for (const property in this.jsonDataFullQueryPart.continue) {
+          url +=
+            '&' + property + '=' + this.jsonDataFullQueryPart.continue[property]
+        }
       }
 
       return url
@@ -354,39 +319,14 @@ export default {
   },
 
   methods: {
-    // // https://stackoverflow.com/questions/27936772/how-to-deep-merge-instead-of-shallow-merge
-    // mergeDeep(target, ...sources) {
-    //   if (!sources.length) return target
-    //   const source = sources.shift()
-
-    //   if (this.isObject(target) && this.isObject(source)) {
-    //     for (const key in source) {
-    //       if (this.isObject(source[key])) {
-    //         if (!target[key]) Object.assign(target, { [key]: {} })
-    //         this.mergeDeep(target[key], source[key])
-    //       } else {
-    //         Object.assign(target, { [key]: source[key] })
-    //       }
-    //     }
-    //   }
-
-    //   return this.mergeDeep(target, ...sources)
-    // },
     isObject(item) {
       return item && typeof item === 'object' && !Array.isArray(item)
     },
 
     async getJson() {
       this.inputsDisabled = true
-      // try catch block for catching network errors from Promise, otherwise error in browser console - getJson().catch in computed not possible (no async in computed)
-
-      // clean old
-      // this.jsonDataFullQuery = {
-      //   query: { pages: '', redirects: '' }
-      // }
 
       this.redirectsArray = []
-
       this.resultsObject = {}
 
       do {
