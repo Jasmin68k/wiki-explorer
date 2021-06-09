@@ -310,20 +310,26 @@ export default {
       this.redirectsArray = []
       this.resultsObject = {}
 
-      let start2, end2, start3, end3
+      let start2, end2, start3, end3, start4, end4, start5, end5
 
       let timecountertitle = 0
       do {
         const start = performance.now()
 
         try {
+          start4 = performance.now()
+
           const response = await fetch(this.pageUrl)
+
+          end4 = performance.now()
 
           if (!response.ok) {
             const message = `ERROR: ${response.status} ${response.statusText}`
             throw new Error(message)
           } else {
+            start5 = performance.now()
             this.jsonDataFullQueryPart = await response.json()
+            end5 = performance.now()
 
             start2 = performance.now()
 
@@ -360,11 +366,13 @@ export default {
 
         const end = performance.now()
         console.log(
-          `Time title full: ${end - start} ms - Title insert alone: ${
+          `Time title full: ${end - start} ms - API fetch: ${
+            end4 - start4
+          } ms - JSONify ${end5 - start5} ms - Title insert alone: ${
             end2 - start2
           } ms - Redirects push alone: ${end3 - start3} ms`
         )
-        timecountertitle += end
+        timecountertitle += end - start
       } while (this.jsonDataFullQueryPart.continue)
       console.log(`Time title: ${timecountertitle} ms`)
 
@@ -387,20 +395,22 @@ export default {
       if (this.resultsCategoriesEnabled) {
         let timecountercategories = 0
 
-        let start2, end2
+        let start2, end2, start3, end3, start4, end4
 
         do {
           const start = performance.now()
 
           try {
+            start3 = performance.now()
             const response = await fetch(this.pageUrlCategories)
-
+            end3 = performance.now()
             if (!response.ok) {
               const message = `ERROR: ${response.status} ${response.statusText}`
               throw new Error(message)
             } else {
+              start4 = performance.now()
               this.jsonDataFullQueryPart = await response.json()
-
+              end4 = performance.now()
               start2 = performance.now()
 
               for (const property in this.jsonDataFullQueryPart.query.pages) {
@@ -420,11 +430,13 @@ export default {
 
           const end = performance.now()
           console.log(
-            `Time categories: ${end - start} ms - Categories insert alone: ${
+            `Time categories: ${end - start} ms - API fetch: ${
+              end3 - start3
+            } ms - JSONify: ${end4 - start4} ms - Categories insert alone: ${
               end2 - start2
             } ms`
           )
-          timecountercategories += end
+          timecountercategories += end - start
         } while (this.jsonDataFullQueryPart.continue)
         console.log(`Time categories all: ${timecountercategories} ms`)
       }
