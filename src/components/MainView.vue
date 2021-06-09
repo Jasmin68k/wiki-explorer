@@ -191,7 +191,13 @@ export default {
       redirectsArray: [],
       resultsCategoriesEnabled: true,
       inputsDisabled: false,
-      resultsObject: {}
+      resultsObject: {},
+      // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
+      // User-Agent might not be possible to set in every browser
+      fetchHeaders: new Headers({
+        'Api-User-Agent': 'WikiExplorer/0.1',
+        'User-Agent': 'WikiExplorer/0.1'
+      })
     }
   },
 
@@ -322,7 +328,9 @@ export default {
         try {
           start4 = performance.now()
 
-          const response = await fetch(this.pageUrl)
+          const response = await fetch(this.pageUrl, {
+            headers: this.fetchHeaders
+          })
 
           end4 = performance.now()
 
@@ -409,7 +417,9 @@ export default {
 
           try {
             start3 = performance.now()
-            const response = await fetch(this.pageUrlCategories)
+            const response = await fetch(this.pageUrlCategories, {
+              headers: this.fetchHeaders
+            })
             end3 = performance.now()
             if (!response.ok) {
               const message = `ERROR: ${response.status} ${response.statusText}`
@@ -468,7 +478,9 @@ export default {
       this.returnedImage = ''
 
       try {
-        const response = await fetch(this.mainInfoUrl)
+        const response = await fetch(this.mainInfoUrl, {
+          headers: this.fetchHeaders
+        })
 
         // ok = true on http 200-299 good response
         if (!response.ok) {
@@ -498,7 +510,9 @@ export default {
       this.categoriesArray = []
       do {
         try {
-          const response = await fetch(this.categoriesUrl)
+          const response = await fetch(this.categoriesUrl, {
+            headers: this.fetchHeaders
+          })
 
           // ok = true on http 200-299 good response
           if (!response.ok) {
