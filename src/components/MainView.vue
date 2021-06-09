@@ -310,7 +310,12 @@ export default {
       this.redirectsArray = []
       this.resultsObject = {}
 
+      let start2, end2, start3, end3
+
+      let timecountertitle = 0
       do {
+        const start = performance.now()
+
         try {
           const response = await fetch(this.pageUrl)
 
@@ -320,6 +325,8 @@ export default {
           } else {
             this.jsonDataFullQueryPart = await response.json()
 
+            start2 = performance.now()
+
             for (const property in this.jsonDataFullQueryPart.query.pages) {
               if (!this.resultsObject[property]) {
                 this.resultsObject[property] = {
@@ -327,6 +334,9 @@ export default {
                 }
               }
             }
+            end2 = performance.now()
+
+            start3 = performance.now()
 
             if (this.jsonDataFullQueryPart.query.redirects) {
               const redir = this.jsonDataFullQueryPart.query.redirects
@@ -342,13 +352,24 @@ export default {
               }
             }
           }
+
+          end3 = performance.now()
         } catch (error) {
           throw new Error(error)
         }
+
+        const end = performance.now()
+        console.log(
+          `Time title full: ${end - start} ms - Title insert alone: ${
+            end2 - start2
+          } ms - Redirects push alone: ${end3 - start3} ms`
+        )
+        timecountertitle += end
       } while (this.jsonDataFullQueryPart.continue)
+      console.log(`Time title: ${timecountertitle} ms`)
 
+      let start = performance.now()
       let usedKeys = ['pageid', 'title', 'fullurl', 'missing']
-
       for (const property in this.resultsObject) {
         for (const key in this.resultsObject[property]) {
           if (!usedKeys.includes(key)) {
@@ -359,10 +380,18 @@ export default {
           }
         }
       }
+      let end = performance.now()
+      console.log(`Time remove unused keys: ${end - start} ms`)
 
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
       if (this.resultsCategoriesEnabled) {
+        let timecountercategories = 0
+
+        let start2, end2
+
         do {
+          const start = performance.now()
+
           try {
             const response = await fetch(this.pageUrlCategories)
 
@@ -372,6 +401,8 @@ export default {
             } else {
               this.jsonDataFullQueryPart = await response.json()
 
+              start2 = performance.now()
+
               for (const property in this.jsonDataFullQueryPart.query.pages) {
                 if (
                   this.jsonDataFullQueryPart.query.pages[property].categories
@@ -380,16 +411,34 @@ export default {
                     this.jsonDataFullQueryPart.query.pages[property].categories
                 }
               }
+
+              end2 = performance.now()
             }
           } catch (error) {
             throw new Error(error)
           }
+
+          const end = performance.now()
+          console.log(
+            `Time categories: ${end - start} ms - Categories insert alone: ${
+              end2 - start2
+            } ms`
+          )
+          timecountercategories += end
         } while (this.jsonDataFullQueryPart.continue)
+        console.log(`Time categories all: ${timecountercategories} ms`)
       }
 
+      start = performance.now()
       this.redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
+      end = performance.now()
+      console.log(`Time sort redirects: ${end - start} ms`)
 
+      start = performance.now()
       this.resetPageNumber()
+      end = performance.now()
+      console.log(`Time reset pagenumber: ${end - start} ms`)
+
       this.inputsDisabled = false
     },
     async getMainInfo() {
