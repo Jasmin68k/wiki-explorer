@@ -316,33 +316,31 @@ export default {
       this.redirectsArray = []
       this.resultsObject = {}
 
-      let start2, end2, start3, end3, start4, end4, start5, end5
-
-      let timecountertitle = 0
-
-      let rounds = 0
+      // let start2, end2, start3, end3, start4, end4, start5, end5
+      // let timecountertitle = 0
+      // let rounds = 0
 
       do {
-        const start = performance.now()
+        // const start = performance.now()
 
         try {
-          start4 = performance.now()
+          // start4 = performance.now()
 
           const response = await fetch(this.pageUrl, {
             headers: this.fetchHeaders
           })
 
-          end4 = performance.now()
+          // end4 = performance.now()
 
           if (!response.ok) {
             const message = `ERROR: ${response.status} ${response.statusText}`
             throw new Error(message)
           } else {
-            start5 = performance.now()
+            // start5 = performance.now()
             this.jsonDataFullQueryPart = await response.json()
-            end5 = performance.now()
 
-            start2 = performance.now()
+            // end5 = performance.now()
+            // start2 = performance.now()
 
             for (const property in this.jsonDataFullQueryPart.query.pages) {
               if (!this.resultsObject[property]) {
@@ -351,9 +349,9 @@ export default {
                 }
               }
             }
-            end2 = performance.now()
 
-            start3 = performance.now()
+            // end2 = performance.now()
+            // start3 = performance.now()
 
             if (this.jsonDataFullQueryPart.query.redirects) {
               const redir = this.jsonDataFullQueryPart.query.redirects
@@ -370,26 +368,25 @@ export default {
             }
           }
 
-          end3 = performance.now()
+          // end3 = performance.now()
         } catch (error) {
           throw new Error(error)
         }
 
-        rounds++
-
-        const end = performance.now()
-        console.log(
-          `Time title full (round ${rounds}): ${end - start} ms / API fetch: ${
-            end4 - start4
-          } ms - JSONify ${end5 - start5} ms - Title insert alone: ${
-            end2 - start2
-          } ms - Redirects push alone: ${end3 - start3} ms`
-        )
-        timecountertitle += end - start
+        // rounds++
+        // const end = performance.now()
+        // console.log(
+        //   `Time title full (round ${rounds}): ${end - start} ms / API fetch: ${
+        //     end4 - start4
+        //   } ms - JSONify ${end5 - start5} ms - Title insert alone: ${
+        //     end2 - start2
+        //   } ms - Redirects push alone: ${end3 - start3} ms`
+        // )
+        // timecountertitle += end - start
       } while (this.jsonDataFullQueryPart.continue)
-      console.log(`Time title all (${rounds} rounds): ${timecountertitle} ms`)
+      // console.log(`Time title all (${rounds} rounds): ${timecountertitle} ms`)
 
-      let start = performance.now()
+      // let start = performance.now()
       let usedKeys = ['pageid', 'title', 'fullurl', 'missing']
       for (const property in this.resultsObject) {
         for (const key in this.resultsObject[property]) {
@@ -401,34 +398,34 @@ export default {
           }
         }
       }
-      let end = performance.now()
-      console.log(`Time remove unused keys: ${end - start} ms`)
+      // let end = performance.now()
+      // console.log(`Time remove unused keys: ${end - start} ms`)
 
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
       if (this.resultsCategoriesEnabled) {
-        let timecountercategories = 0
-
-        let start2, end2, start3, end3, start4, end4
-
-        let rounds = 0
+        // let timecountercategories = 0
+        // let start2, end2, start3, end3, start4, end4
+        // let rounds = 0
 
         do {
-          const start = performance.now()
+          // const start = performance.now()
 
           try {
-            start3 = performance.now()
+            // start3 = performance.now()
+
             const response = await fetch(this.pageUrlCategories, {
               headers: this.fetchHeaders
             })
-            end3 = performance.now()
+
+            // end3 = performance.now()
             if (!response.ok) {
               const message = `ERROR: ${response.status} ${response.statusText}`
               throw new Error(message)
             } else {
-              start4 = performance.now()
+              // start4 = performance.now()
               this.jsonDataFullQueryPart = await response.json()
-              end4 = performance.now()
-              start2 = performance.now()
+              // end4 = performance.now()
+              // start2 = performance.now()
 
               for (const property in this.jsonDataFullQueryPart.query.pages) {
                 if (
@@ -439,37 +436,37 @@ export default {
                 }
               }
 
-              end2 = performance.now()
+              // end2 = performance.now()
             }
           } catch (error) {
             throw new Error(error)
           }
 
-          rounds++
-          const end = performance.now()
-          console.log(
-            `Time categories full (round ${rounds}): ${
-              end - start
-            } ms / API fetch: ${end3 - start3} ms - JSONify: ${
-              end4 - start4
-            } ms - Categories insert alone: ${end2 - start2} ms`
-          )
-          timecountercategories += end - start
+          // rounds++
+          // const end = performance.now()
+          // console.log(
+          //   `Time categories full (round ${rounds}): ${
+          //     end - start
+          //   } ms / API fetch: ${end3 - start3} ms - JSONify: ${
+          //     end4 - start4
+          //   } ms - Categories insert alone: ${end2 - start2} ms`
+          // )
+          // timecountercategories += end - start
         } while (this.jsonDataFullQueryPart.continue)
-        console.log(
-          `Time categories all (${rounds} rounds): ${timecountercategories} ms`
-        )
+        // console.log(
+        //   `Time categories all (${rounds} rounds): ${timecountercategories} ms`
+        // )
       }
 
-      start = performance.now()
+      // start = performance.now()
       this.redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
-      end = performance.now()
-      console.log(`Time sort redirects: ${end - start} ms`)
+      // end = performance.now()
+      // console.log(`Time sort redirects: ${end - start} ms`)
 
-      start = performance.now()
+      // start = performance.now()
       this.resetPageNumber()
-      end = performance.now()
-      console.log(`Time reset pagenumber: ${end - start} ms`)
+      // end = performance.now()
+      // console.log(`Time reset pagenumber: ${end - start} ms`)
 
       this.inputsDisabled = false
     },
