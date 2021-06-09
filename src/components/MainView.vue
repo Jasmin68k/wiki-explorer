@@ -95,11 +95,11 @@
   </form>
 
   <h1>Output</h1>
-  <div id="outgraph">
-    <canvas id="outgraphcanvas"></canvas>
+  <div class="outgraph">
+    <canvas class="outgraphcanvas"></canvas>
 
     <button
-      id="titlebutton"
+      class="titlebutton"
       v-show="!inputsDisabled && returnedTitle"
       @click.prevent="titleButton"
     >
@@ -122,10 +122,10 @@
     </button>
   </div>
   <h1 v-show="extract">Extract</h1>
-  <p id="extract" v-html="extract"></p>
+  <p class="extract" v-html="extract"></p>
   <div v-show="returnedImage">
     <h1>Image</h1>
-    <img id="returnedImage" :src="returnedImage" />
+    <img class="returnedImage" :src="returnedImage" />
   </div>
   <h1 v-show="categoriesArray.length > 0">Categories</h1>
   <ul>
@@ -463,7 +463,7 @@ export default {
       this.categoriesArray.sort()
     },
     drawLines() {
-      const canvas = document.getElementById('outgraphcanvas')
+      const canvas = document.getElementsByClassName('outgraphcanvas')[0]
       const ctx = canvas.getContext('2d')
       const width = canvas.offsetWidth
       const height = canvas.offsetHeight
@@ -486,7 +486,7 @@ export default {
       }
     },
     clearCanvas() {
-      const canvas = document.getElementById('outgraphcanvas')
+      const canvas = document.getElementsByClassName('outgraphcanvas')[0]
       const ctx = canvas.getContext('2d')
       const width = canvas.offsetWidth
       const height = canvas.offsetHeight
@@ -539,19 +539,19 @@ ul {
 .missing {
   color: red;
 }
-#outgraph {
+.outgraph {
   margin: auto;
   position: relative;
   width: 800px;
   height: 600px;
   border: 1px solid black;
 }
-#outgraphcanvas {
+.outgraphcanvas {
   width: 100%;
   height: 100%;
 }
 
-#titlebutton {
+.titlebutton {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -566,7 +566,7 @@ ul {
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(250px)
     rotate(calc(-1 * var(--angle)));
 }
-#extract {
+.extract {
   text-align: left;
 }
 /* #returnedImageContainer { */
@@ -575,7 +575,7 @@ ul {
   width: 800px;
   height: 600px; */
 /* } */
-#returnedImage {
+.returnedImage {
   margin: auto;
   position: relative;
   max-width: 800px;
