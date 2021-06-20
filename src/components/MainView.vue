@@ -17,6 +17,17 @@
       of API fetches)</label
     >
   </form>
+  <div
+    :style="{
+      visibility:
+        resultsCategoriesEnabled && !resultsCategoriesDone
+          ? 'visible'
+          : 'hidden'
+    }"
+  >
+    Fetching categories...
+  </div>
+
   <form>
     <input
       id="resultsRedirects"
@@ -197,7 +208,7 @@ export default {
       returnedUrl: '',
       returnedImage: '',
       resultsCategoriesEnabled: true,
-      resultsCategoriesDone: false,
+      resultsCategoriesDone: true,
       resultsRedirectsEnabled: true,
       inputsDisabled: false,
       resultsObject: {},
