@@ -17,6 +17,19 @@
       of API fetches)</label
     >
   </form>
+  <form>
+    <input
+      id="resultsRedirects"
+      type="checkbox"
+      :disabled="inputsDisabled"
+      v-model="resultsRedirectsEnabled"
+    />
+    <label for="resultsRedirects"
+      >Results redirects enabled (show redirects used on searched page, not all
+      possible ones)</label
+    >
+  </form>
+
   <form @submit.prevent="">
     <label for="filter">Filter:</label>
     <input
@@ -118,7 +131,9 @@
       :disabled="page.missing"
       @click.prevent="circleButton(index)"
     >
-      {{ page.title }}<br />{{ page.redirectFrom }}
+      {{ page.title }}<br />{{
+        resultsRedirectsEnabled ? page.redirectFrom : ''
+      }}
     </button>
   </div>
   <h1 v-show="extract">Extract</h1>
@@ -182,6 +197,7 @@ export default {
       returnedUrl: '',
       returnedImage: '',
       resultsCategoriesEnabled: true,
+      resultsRedirectsEnabled: true,
       inputsDisabled: false,
       resultsObject: {},
       // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
@@ -459,6 +475,10 @@ export default {
       // otherwise, sort above not needed.
       // could also maybe scrape this from redirectsarray directly on display, but going for
       // having it all in one data structure
+      // THESE ARE ONLY REDIRECTS USED ON SEARCHED PAGE, NOT ALL POSSIBLE ONES
+      // for all redirects for a given page use prop=redirects
+      // https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=C64&prop=redirects&rdlimit=max
+      // can possibly be combined into api fetch for all results, but not useful here, long list for each result and does not have any direct relation to searched page
 
       // let counter = 0
       for (const property in this.resultsObject) {
