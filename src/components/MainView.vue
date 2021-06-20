@@ -13,8 +13,7 @@
       v-model="resultsCategoriesEnabled"
     />
     <label for="resultsCategories"
-      >Results categories enabled (slower init, esp. on big pages, requires lots
-      of API fetches)</label
+      >Show results with categories (slower init, esp. on big pages)</label
     >
   </form>
   <div
@@ -25,7 +24,7 @@
           : 'hidden'
     }"
   >
-    Fetching categories...
+    Fetching categories for results...
   </div>
 
   <form>
@@ -36,8 +35,7 @@
       v-model="resultsRedirectsEnabled"
     />
     <label for="resultsRedirects"
-      >Results redirects enabled (show redirects used on searched page, not all
-      possible ones)</label
+      >Show used redirects (not all possible ones)</label
     >
   </form>
 
@@ -128,6 +126,11 @@
       @click.prevent="titleButton"
     >
       {{ returnedTitle }}
+      <br />{{
+        resultsRedirectsEnabled && returnedRedirect
+          ? `["${returnedRedirect}"]`
+          : ''
+      }}
     </button>
 
     <button
@@ -207,6 +210,7 @@ export default {
       returnedTitle: '',
       returnedUrl: '',
       returnedImage: '',
+      returnedRedirect: '',
       resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
       resultsRedirectsEnabled: true,
@@ -542,6 +546,7 @@ export default {
     async getMainInfo() {
       this.extract = ''
       this.returnedImage = ''
+      this.returnedRedirect = ''
 
       try {
         const response = await fetch(this.mainInfoUrl, {
@@ -560,6 +565,11 @@ export default {
           this.extract = responseFull.query.pages[pageId].extract
           this.returnedTitle = responseFull.query.pages[pageId].title
           this.returnedUrl = responseFull.query.pages[pageId].fullurl
+
+          if (responseFull.query.redirects[0].from) {
+            this.returnedRedirect = responseFull.query.redirects[0].from
+          }
+
           // check if image exists
           if (
             (this.returnedImage = responseFull.query.pages[pageId].original)
