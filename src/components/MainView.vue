@@ -140,19 +140,21 @@
       class="circlebutton"
       v-for="(page, index) in displayResultsArray"
       :key="index"
-      :class="{ missing: page.missing }"
       :style="{
         '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg'
       }"
-      :disabled="page.missing"
       :ref="`circlebutton${index}`"
       @mouseover="hoverButtonOn(index)"
       @mouseleave="hoverButtonOff"
     >
-      <button @click.prevent="circleButton(index)">
+      <button
+        :class="{ missing: page.missing }"
+        :disabled="page.missing"
+        @click.prevent="circleButton(index)"
+      >
         {{ page.title }}
       </button>
-      <div>
+      <div v-if="!page.missing">
         <a
           :style="{ 'font-size': '0.7rem' }"
           :href="displayResultsArray[index].fullurl"
@@ -193,7 +195,8 @@
         hoverButton &&
         displayResultsArray.length > 0 &&
         resultsCategoriesEnabled &&
-        resultsCategoriesDone
+        resultsCategoriesDone &&
+        displayResultsArray[hoverButtonIndex].categories
       "
       class="circlebuttonhover"
       :style="{
