@@ -118,7 +118,7 @@
       :disabled="page.missing"
       @click.prevent="circleButton(index)"
     >
-      {{ page.title }}
+      {{ page.title }}<br />{{ page.redirectFrom }}
     </button>
   </div>
   <h1 v-show="extract">Extract</h1>
@@ -163,12 +163,12 @@
     </li>
   </ul>
 
-  <h1 v-show="redirectsArray.length > 0">Redirects</h1>
+  <!-- <h1 v-show="redirectsArray.length > 0">Redirects</h1>
   <ul>
     <li v-for="redirect in redirectsArray" :key="redirect.from">
       {{ redirect.from }} -> {{ redirect.to }}
     </li>
-  </ul>
+  </ul> -->
 </template>
 
 <script>
@@ -462,6 +462,36 @@ export default {
       this.redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
       // end = performance.now()
       // console.log(`Time sort redirects: ${end - start} ms`)
+
+      // attaching redirects to appropriate pages in resultsobject - if redirectsArray not used
+      // otherwise, sort above not needed.
+      // could also maybe scrape this from redirectsarray directly on display, but going for
+      // having it all in one data structure
+
+      // let counter = 0
+      for (const property in this.resultsObject) {
+        let redirectFrom = []
+
+        for (let i = 0; i < this.redirectsArray.length; i++) {
+          if (
+            this.resultsObject[property].title === this.redirectsArray[i].to
+          ) {
+            // console.log(
+            //   `${counter} to: ${this.redirectsArray[i].to} from: ${this.redirectsArray[i].from}`
+            // )
+            // counter++
+            redirectFrom.push(this.redirectsArray[i].from)
+            // break - do not break here, several possible!
+          }
+        }
+        if (redirectFrom.length > 0) {
+          // console.log(
+          //   `${this.resultsObject[property].title} from ${redirectFrom}`
+          // )
+          this.resultsObject[property].redirectFrom = [...redirectFrom]
+          redirectFrom = []
+        }
+      }
 
       // start = performance.now()
       this.resetPageNumber()
