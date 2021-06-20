@@ -13,7 +13,7 @@
       v-model="resultsCategoriesEnabled"
     />
     <label for="resultsCategories"
-      >Show results with categories (slower init, esp. on big pages)</label
+      >Show categories on hover (slow init, esp. on big pages)</label
     >
   </form>
   <div
@@ -21,10 +21,11 @@
       visibility:
         resultsCategoriesEnabled && !resultsCategoriesDone
           ? 'visible'
-          : 'hidden'
+          : 'hidden',
+      color: 'red'
     }"
   >
-    Fetching categories for results...
+    Fetching categories...
   </div>
 
   <form>
@@ -116,24 +117,25 @@
     </button>
   </form>
 
-  <h1>Output</h1>
+  <br />
   <div class="outgraph">
-    <canvas class="outgraphcanvas"></canvas>
+    <canvas class="outgraphcanvas" ref="outgraphcanvas"></canvas>
 
-    <button
+    <div
       class="titlebutton"
       v-show="!inputsDisabled && returnedTitle"
-      @click.prevent="titleButton"
+      ref="titlebutton"
+      @mouseover="hoverButtonTitleOn"
+      @mouseleave="hoverButtonTitleOff"
     >
-      {{ returnedTitle }}
-      <br />{{
-        resultsRedirectsEnabled && returnedRedirect
-          ? `["${returnedRedirect}"]`
-          : ''
-      }}
-    </button>
-
-    <button
+      <button @click.prevent="titleButton">
+        {{ returnedTitle }}
+      </button>
+      <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
+        {{ returnedRedirect }}
+      </div>
+    </div>
+    <div
       v-show="!inputsDisabled"
       class="circlebutton"
       v-for="(page, index) in displayResultsArray"
@@ -143,42 +145,64 @@
         '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg'
       }"
       :disabled="page.missing"
-      @click.prevent="circleButton(index)"
+      :ref="`circlebutton${index}`"
+      @mouseover="hoverButtonOn(index)"
+      @mouseleave="hoverButtonOff"
     >
-      {{ page.title }}<br />{{
-        resultsRedirectsEnabled ? page.redirectFrom : ''
-      }}
-    </button>
-  </div>
-  <h1 v-show="extract">Extract</h1>
-  <p class="extract" v-html="extract"></p>
-  <div v-show="returnedImage">
-    <h1>Image</h1>
-    <img class="returnedImage" :src="returnedImage" />
-  </div>
-  <h1 v-show="categoriesArray.length > 0">Categories</h1>
-  <ul>
-    <li v-for="category in categoriesArray" :key="category">
-      {{ category }}
-    </li>
-  </ul>
+      <button @click.prevent="circleButton(index)">
+        {{ page.title }}
+      </button>
+      <div>
+        <a
+          :style="{ 'font-size': '0.7rem' }"
+          :href="displayResultsArray[index].fullurl"
+          target="_blank"
+          >Show on Wikipedia</a
+        >
+      </div>
+      <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
+        <ul v-for="(redirect, index) in page.redirectFrom" :key="index">
+          <li>{{ redirect }}</li>
+        </ul>
+      </div>
+    </div>
 
-  <h1 v-show="filteredResultsArray.length > 0">Linked Wikipedia pages</h1>
+    <div
+      v-if="
+        !inputsDisabled &&
+        hoverButtonTitle &&
+        categoriesArray.length > 0 &&
+        resultsCategoriesEnabled
+      "
+      class="titlebuttonhover"
+      :style="{
+        '--poslefttitle': hoverRightTitle + 'px',
+        '--postoptitle': hoverBottomTitle + 'px'
+      }"
+    >
+      <ul v-for="category in categoriesArray" :key="category">
+        <li>
+          {{ category }}
+        </li>
+      </ul>
+    </div>
 
-  <ul>
-    <li v-for="page in filteredResultsArray" :key="page.pageid">
-      <h2 :class="{ missing: page.missing }">{{ page.title }}</h2>
-      <p>
-        <a :href="page.fullurl">{{ page.fullurl }}</a>
-      </p>
-      <h3
-        v-show="resultsCategoriesEnabled && page.categories && !inputsDisabled"
-      >
-        Categories
-      </h3>
+    <div
+      v-if="
+        !inputsDisabled &&
+        hoverButton &&
+        displayResultsArray.length > 0 &&
+        resultsCategoriesEnabled &&
+        resultsCategoriesDone
+      "
+      class="circlebuttonhover"
+      :style="{
+        '--posleft': hoverRight + 'px',
+        '--postop': hoverBottom + 'px'
+      }"
+    >
       <ul
-        v-show="resultsCategoriesEnabled && !inputsDisabled"
-        v-for="category in page.categories"
+        v-for="category in displayResultsArray[hoverButtonIndex].categories"
         :key="category.title"
       >
         <li>
@@ -189,8 +213,14 @@
           }}
         </li>
       </ul>
-    </li>
-  </ul>
+    </div>
+  </div>
+  <div v-show="extract">
+    <p class="extract" v-html="extract"></p>
+  </div>
+  <div v-show="returnedImage">
+    <img class="returnedImage" :src="returnedImage" />
+  </div>
 </template>
 
 <script>
@@ -207,6 +237,13 @@ export default {
       extract: '',
       pageNumber: 0,
       sizePerPage: 12,
+      hoverButton: false,
+      hoverButtonIndex: -1,
+      hoverRight: 0,
+      hoverBottom: 0,
+      hoverButtonTitle: false,
+      hoverRightTitle: 0,
+      hoverBottomTitle: 0,
       returnedTitle: '',
       returnedUrl: '',
       returnedImage: '',
@@ -473,6 +510,7 @@ export default {
           // console.log(
           //   `${this.resultsObject[property].title} from ${redirectFrom}`
           // )
+          redirectFrom.sort()
           this.resultsObject[property].redirectFrom = [...redirectFrom]
           redirectFrom = []
         }
@@ -566,10 +604,11 @@ export default {
           this.returnedTitle = responseFull.query.pages[pageId].title
           this.returnedUrl = responseFull.query.pages[pageId].fullurl
 
-          if (responseFull.query.redirects[0].from) {
-            this.returnedRedirect = responseFull.query.redirects[0].from
+          if (responseFull.query.redirects) {
+            if (responseFull.query.redirects[0].from) {
+              this.returnedRedirect = responseFull.query.redirects[0].from
+            }
           }
-
           // check if image exists
           if (
             (this.returnedImage = responseFull.query.pages[pageId].original)
@@ -685,6 +724,40 @@ export default {
     resetPageNumber() {
       this.pageNumber = 0
       this.drawLines()
+    },
+    // hoverButtonUpdate(state, index) {
+    //   this.hoverButtonIndex = index
+    //   this.hoverButton = state
+    // },
+    hoverButtonOn(index) {
+      this.hoverButtonIndex = index
+      this.hoverRight =
+        this.$refs[`circlebutton${index}`].getBoundingClientRect().right -
+        this.$refs['outgraphcanvas'].getBoundingClientRect().left
+      this.hoverBottom =
+        this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
+        this.$refs['outgraphcanvas'].getBoundingClientRect().top
+
+      // setTimeout(() => (this.hoverButton = true), 1000)
+      this.hoverButton = true
+    },
+    hoverButtonOff() {
+      this.hoverButton = false
+      this.hoverButtonIndex = -1
+    },
+    hoverButtonTitleOn() {
+      this.hoverRightTitle =
+        this.$refs['titlebutton'].getBoundingClientRect().right -
+        this.$refs['outgraphcanvas'].getBoundingClientRect().left
+      this.hoverBottomTitle =
+        this.$refs['titlebutton'].getBoundingClientRect().bottom -
+        this.$refs['outgraphcanvas'].getBoundingClientRect().top
+
+      // setTimeout(() => (this.hoverButtonTitle = true), 1000)
+      this.hoverButtonTitle = true
+    },
+    hoverButtonTitleOff() {
+      this.hoverButtonTitle = false
     }
   }
 }
@@ -703,9 +776,9 @@ ul {
 .outgraph {
   margin: auto;
   position: relative;
-  width: 800px;
+  width: 1200px;
   height: 600px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 .outgraphcanvas {
   width: 100%;
@@ -713,6 +786,8 @@ ul {
 }
 
 .titlebutton {
+  background-color: lightgrey;
+  border: 1px solid black;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -720,6 +795,8 @@ ul {
   transform: translate(-50%, -50%);
 }
 .circlebutton {
+  background-color: lightgrey;
+  border: 1px solid black;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -727,6 +804,27 @@ ul {
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(250px)
     rotate(calc(-1 * var(--angle)));
 }
+.circlebuttonhover {
+  font-size: 0.7rem;
+  background-color: lightgrey;
+  border: 1px solid black;
+  position: absolute;
+  left: var(--posleft);
+  top: var(--postop);
+  /* left: 0px;
+  top: 0px; */
+}
+.titlebuttonhover {
+  font-size: 0.7rem;
+  background-color: lightgrey;
+  border: 1px solid black;
+  position: absolute;
+  left: var(--poslefttitle);
+  top: var(--postoptitle);
+  /* left: 0px;
+  top: 0px; */
+}
+
 .extract {
   text-align: left;
 }
@@ -739,7 +837,7 @@ ul {
 .returnedImage {
   margin: auto;
   position: relative;
-  max-width: 800px;
+  max-width: 1200px;
   max-height: 600px;
   width: auto;
   height: auto;
