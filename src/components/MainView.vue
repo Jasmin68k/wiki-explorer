@@ -162,13 +162,6 @@
       </ul>
     </li>
   </ul>
-
-  <!-- <h1 v-show="redirectsArray.length > 0">Redirects</h1>
-  <ul>
-    <li v-for="redirect in redirectsArray" :key="redirect.from">
-      {{ redirect.from }} -> {{ redirect.to }}
-    </li>
-  </ul> -->
 </template>
 
 <script>
@@ -188,7 +181,6 @@ export default {
       returnedTitle: '',
       returnedUrl: '',
       returnedImage: '',
-      redirectsArray: [],
       resultsCategoriesEnabled: true,
       inputsDisabled: false,
       resultsObject: {},
@@ -313,7 +305,7 @@ export default {
     async getJson() {
       this.inputsDisabled = true
 
-      this.redirectsArray = []
+      let redirectsArray = []
       this.resultsObject = {}
 
       // let start2, end2, start3, end3, start4, end4, start5, end5
@@ -358,11 +350,11 @@ export default {
 
               for (let i = 0; i < redir.length; i++) {
                 let found = false
-                for (let j = 0; j < this.redirectsArray.length && !found; j++) {
-                  found = this.redirectsArray[j].from === redir[i].from
+                for (let j = 0; j < redirectsArray.length && !found; j++) {
+                  found = redirectsArray[j].from === redir[i].from
                 }
                 if (!found) {
-                  this.redirectsArray.push(redir[i])
+                  redirectsArray.push(redir[i])
                 }
               }
             }
@@ -459,7 +451,7 @@ export default {
       }
 
       // start = performance.now()
-      this.redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
+      // redirectsArray.sort((a, b) => (a.from > b.from ? 1 : -1))
       // end = performance.now()
       // console.log(`Time sort redirects: ${end - start} ms`)
 
@@ -472,15 +464,13 @@ export default {
       for (const property in this.resultsObject) {
         let redirectFrom = []
 
-        for (let i = 0; i < this.redirectsArray.length; i++) {
-          if (
-            this.resultsObject[property].title === this.redirectsArray[i].to
-          ) {
+        for (let i = 0; i < redirectsArray.length; i++) {
+          if (this.resultsObject[property].title === redirectsArray[i].to) {
             // console.log(
-            //   `${counter} to: ${this.redirectsArray[i].to} from: ${this.redirectsArray[i].from}`
+            //   `${counter} to: ${redirectsArray[i].to} from: ${redirectsArray[i].from}`
             // )
             // counter++
-            redirectFrom.push(this.redirectsArray[i].from)
+            redirectFrom.push(redirectsArray[i].from)
             // break - do not break here, several possible!
           }
         }
