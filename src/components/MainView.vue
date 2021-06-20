@@ -197,6 +197,7 @@ export default {
       returnedUrl: '',
       returnedImage: '',
       resultsCategoriesEnabled: true,
+      resultsCategoriesDone: false,
       resultsRedirectsEnabled: true,
       inputsDisabled: false,
       resultsObject: {},
@@ -206,6 +207,17 @@ export default {
         'Api-User-Agent': 'WikiExplorer/0.1',
         'User-Agent': 'WikiExplorer/0.1'
       })
+    }
+  },
+
+  watch: {
+    resultsCategoriesEnabled() {
+      if (
+        this.resultsCategoriesEnabled === true &&
+        this.resultsCategoriesDone === false
+      ) {
+        this.getResultsCategories()
+      }
     }
   },
 
@@ -320,6 +332,7 @@ export default {
   methods: {
     async getJson() {
       this.inputsDisabled = true
+      this.resultsCategoriesDone = false
 
       let redirectsArray = []
       this.resultsObject = {}
@@ -409,61 +422,8 @@ export default {
       // let end = performance.now()
       // console.log(`Time remove unused keys: ${end - start} ms`)
 
-      // with big pages this requires lots of api fetches, which makes up majority of the wait time
       if (this.resultsCategoriesEnabled) {
-        // let timecountercategories = 0
-        // let start2, end2, start3, end3, start4, end4
-        // let rounds = 0
-
-        do {
-          // const start = performance.now()
-
-          try {
-            // start3 = performance.now()
-
-            const response = await fetch(this.pageUrlCategories, {
-              headers: this.fetchHeaders
-            })
-
-            // end3 = performance.now()
-            if (!response.ok) {
-              const message = `ERROR: ${response.status} ${response.statusText}`
-              throw new Error(message)
-            } else {
-              // start4 = performance.now()
-              this.jsonDataFullQueryPart = await response.json()
-              // end4 = performance.now()
-              // start2 = performance.now()
-
-              for (const property in this.jsonDataFullQueryPart.query.pages) {
-                if (
-                  this.jsonDataFullQueryPart.query.pages[property].categories
-                ) {
-                  this.resultsObject[property].categories =
-                    this.jsonDataFullQueryPart.query.pages[property].categories
-                }
-              }
-
-              // end2 = performance.now()
-            }
-          } catch (error) {
-            throw new Error(error)
-          }
-
-          // rounds++
-          // const end = performance.now()
-          // console.log(
-          //   `Time categories full (round ${rounds}): ${
-          //     end - start
-          //   } ms / API fetch: ${end3 - start3} ms - JSONify: ${
-          //     end4 - start4
-          //   } ms - Categories insert alone: ${end2 - start2} ms`
-          // )
-          // timecountercategories += end - start
-        } while (this.jsonDataFullQueryPart.continue)
-        // console.log(
-        //   `Time categories all (${rounds} rounds): ${timecountercategories} ms`
-        // )
+        this.getResultsCategories()
       }
 
       // start = performance.now()
@@ -510,6 +470,64 @@ export default {
 
       this.inputsDisabled = false
     },
+
+    async getResultsCategories() {
+      // with big pages this requires lots of api fetches, which makes up majority of the wait time
+
+      // let timecountercategories = 0
+      // let start2, end2, start3, end3, start4, end4
+      // let rounds = 0
+
+      do {
+        // const start = performance.now()
+
+        try {
+          // start3 = performance.now()
+
+          const response = await fetch(this.pageUrlCategories, {
+            headers: this.fetchHeaders
+          })
+
+          // end3 = performance.now()
+          if (!response.ok) {
+            const message = `ERROR: ${response.status} ${response.statusText}`
+            throw new Error(message)
+          } else {
+            // start4 = performance.now()
+            this.jsonDataFullQueryPart = await response.json()
+            // end4 = performance.now()
+            // start2 = performance.now()
+
+            for (const property in this.jsonDataFullQueryPart.query.pages) {
+              if (this.jsonDataFullQueryPart.query.pages[property].categories) {
+                this.resultsObject[property].categories =
+                  this.jsonDataFullQueryPart.query.pages[property].categories
+              }
+            }
+
+            // end2 = performance.now()
+          }
+        } catch (error) {
+          throw new Error(error)
+        }
+
+        // rounds++
+        // const end = performance.now()
+        // console.log(
+        //   `Time categories full (round ${rounds}): ${
+        //     end - start
+        //   } ms / API fetch: ${end3 - start3} ms - JSONify: ${
+        //     end4 - start4
+        //   } ms - Categories insert alone: ${end2 - start2} ms`
+        // )
+        // timecountercategories += end - start
+      } while (this.jsonDataFullQueryPart.continue)
+      // console.log(
+      //   `Time categories all (${rounds} rounds): ${timecountercategories} ms`
+      // )
+      this.resultsCategoriesDone = true
+    },
+
     async getMainInfo() {
       this.extract = ''
       this.returnedImage = ''
