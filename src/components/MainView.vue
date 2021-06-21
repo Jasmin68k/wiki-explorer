@@ -41,10 +41,20 @@
   </form>
 
   <form @submit.prevent="">
-    <label for="filter">Filter:</label>
+    <label for="filter">Filter titles:</label>
     <input
       id="filter"
       v-model="filter"
+      @input="resetPageNumber"
+      :disabled="inputsDisabled"
+    />
+  </form>
+
+  <form @submit.prevent="">
+    <label for="filterCategories">Filter categories:</label>
+    <input
+      id="filterCategories"
+      v-model="filterCategories"
       @input="resetPageNumber"
       :disabled="inputsDisabled"
     />
@@ -206,13 +216,11 @@
     >
       <ul
         v-for="category in displayResultsArray[hoverButtonIndex].categories"
-        :key="category.title"
+        :key="category"
       >
         <li>
           {{
-            category.title.startsWith('Category:')
-              ? category.title.substring(9)
-              : category.title
+            category.startsWith('Category:') ? category.substring(9) : category
           }}
         </li>
       </ul>
@@ -234,6 +242,7 @@ export default {
     return {
       title: '',
       filter: '',
+      filterCategories: '',
       jsonDataFullQueryPart: {},
       categoriesArray: [],
       categoriesQueryPart: {},
@@ -361,10 +370,17 @@ export default {
     filteredResultsArray() {
       let filteredArray = Object.values(this.resultsObject)
 
-      // apply filter
+      // apply titles filter
       filteredArray = filteredArray.filter((page) =>
         page.title.toLowerCase().includes(this.filter.toLowerCase())
       )
+
+      // if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+      //   // apply categories filter
+      //   filteredArray = filteredArray.filter((page) =>
+      //     page.categories.
+      //   )
+      // }
 
       // sort
       filteredArray = filteredArray.sort((a, b) => {
@@ -556,8 +572,18 @@ export default {
 
             for (const property in this.jsonDataFullQueryPart.query.pages) {
               if (this.jsonDataFullQueryPart.query.pages[property].categories) {
-                this.resultsObject[property].categories =
-                  this.jsonDataFullQueryPart.query.pages[property].categories
+                // this.resultsObject[property].categories =
+                //   this.jsonDataFullQueryPart.query.pages[property].categories
+
+                if (!this.resultsObject[property].categories) {
+                  this.resultsObject[property].categories = []
+                }
+
+                this.jsonDataFullQueryPart.query.pages[
+                  property
+                ].categories.forEach((category) =>
+                  this.resultsObject[property].categories.push(category.title)
+                )
               }
             }
 
