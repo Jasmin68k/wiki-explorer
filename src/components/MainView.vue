@@ -140,7 +140,7 @@
       @mouseover="hoverButtonTitleOn"
       @mouseleave="hoverButtonTitleOff"
     >
-      <button @click.prevent="titleButton">
+      <button @click.prevent="titleButton(), hoverButtonTitleOff()">
         {{ returnedTitle }}
       </button>
       <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
@@ -162,7 +162,7 @@
       <button
         :class="{ missing: page.missing }"
         :disabled="page.missing"
-        @click.prevent="circleButton(index)"
+        @click.prevent="circleButton(index), hoverButtonOff()"
       >
         {{ page.title }}
       </button>
