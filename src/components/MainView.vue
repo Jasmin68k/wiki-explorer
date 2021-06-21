@@ -56,7 +56,9 @@
       id="filterCategories"
       v-model="filterCategories"
       @input="resetPageNumber"
-      :disabled="inputsDisabled"
+      :disabled="
+        inputsDisabled || !resultsCategoriesDone || !resultsCategoriesEnabled
+      "
     />
   </form>
 
@@ -373,12 +375,16 @@ export default {
         page.title.toLowerCase().includes(this.filter.toLowerCase())
       )
 
-      // if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
-      //   // apply categories filter
-      //   filteredArray = filteredArray.filter((page) =>
-      //     page.categories.
-      //   )
-      // }
+      // good - maybe rewrite without ternary
+      if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+        filteredArray = filteredArray.filter((page) =>
+          page.categories
+            ? page.categories.find((item) =>
+                item.toLowerCase().includes(this.filterCategories.toLowerCase())
+              )
+            : null
+        )
+      }
 
       // sort
       filteredArray = filteredArray.sort((a, b) => {
@@ -570,9 +576,6 @@ export default {
 
             for (const property in this.jsonDataFullQueryPart.query.pages) {
               if (this.jsonDataFullQueryPart.query.pages[property].categories) {
-                // this.resultsObject[property].categories =
-                //   this.jsonDataFullQueryPart.query.pages[property].categories
-
                 if (!this.resultsObject[property].categories) {
                   this.resultsObject[property].categories = []
                 }
