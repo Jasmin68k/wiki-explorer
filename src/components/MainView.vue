@@ -219,9 +219,7 @@
         :key="category"
       >
         <li>
-          {{
-            category.startsWith('Category:') ? category.substring(9) : category
-          }}
+          {{ category }}
         </li>
       </ul>
     </div>
@@ -584,6 +582,23 @@ export default {
                 ].categories.forEach((category) =>
                   this.resultsObject[property].categories.push(category.title)
                 )
+
+                // filter "Category:" at beginning
+                for (
+                  let i = 0;
+                  i < this.resultsObject[property].categories.length;
+                  i++
+                ) {
+                  // not sure it always starts with "Category:", check and only remove if it does
+                  if (
+                    this.resultsObject[property].categories[i].startsWith(
+                      'Category:'
+                    )
+                  ) {
+                    this.resultsObject[property].categories[i] =
+                      this.resultsObject[property].categories[i].substring(9)
+                  }
+                }
               }
             }
 
