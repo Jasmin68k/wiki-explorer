@@ -226,18 +226,14 @@
       </ul>
     </div>
   </div>
-  <div v-show="extract">
-    <p class="extract" v-html="extract"></p>
-  </div>
-  <div v-show="returnedImage">
-    <img class="returnedImage" :src="returnedImage" />
-  </div>
+  <main-title-info :extract="extract" :image="returnedImage"></main-title-info>
 </template>
 
 <script>
+import MainTitleInfo from './MainTitleInfo.vue'
 export default {
   name: 'MainView',
-
+  components: { MainTitleInfo },
   data() {
     return {
       title: '',
@@ -872,7 +868,7 @@ ul {
   top: 0px; */
 }
 
-.extract {
+/* .extract {
   text-align: left;
 }
 /* #returnedImageContainer { */
@@ -881,7 +877,7 @@ ul {
   width: 800px;
   height: 600px; */
 /* } */
-.returnedImage {
+/* .returnedImage {
   margin: auto;
   position: relative;
   max-width: 1200px;
@@ -890,5 +886,5 @@ ul {
   height: auto;
   /* max-width: 100%;
   max-height: 100%; */
-}
+/* } */
 </style>
