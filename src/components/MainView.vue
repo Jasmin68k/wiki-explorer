@@ -282,7 +282,12 @@ export default {
       )
 
       // good - maybe rewrite without ternary
-      if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+      // needs to check this.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
+      if (
+        this.resultsCategoriesEnabled &&
+        this.resultsCategoriesDone &&
+        this.filterCategories
+      ) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
             ? page.categories.find((item) =>
