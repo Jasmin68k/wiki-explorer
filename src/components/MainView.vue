@@ -217,27 +217,30 @@ export default {
             // end5 = performance.now()
             // start2 = performance.now()
 
-            for (const property in this.jsonDataFullQueryPart.query.pages) {
-              if (!this.resultsObject[property]) {
-                this.resultsObject[property] = {
-                  ...this.jsonDataFullQueryPart.query.pages[property]
+            // prevent console error when no result
+            if (this.jsonDataFullQueryPart.query) {
+              for (const property in this.jsonDataFullQueryPart.query.pages) {
+                if (!this.resultsObject[property]) {
+                  this.resultsObject[property] = {
+                    ...this.jsonDataFullQueryPart.query.pages[property]
+                  }
                 }
               }
-            }
 
-            // end2 = performance.now()
-            // start3 = performance.now()
+              // end2 = performance.now()
+              // start3 = performance.now()
 
-            if (this.jsonDataFullQueryPart.query.redirects) {
-              const redir = this.jsonDataFullQueryPart.query.redirects
+              if (this.jsonDataFullQueryPart.query.redirects) {
+                const redir = this.jsonDataFullQueryPart.query.redirects
 
-              for (let i = 0; i < redir.length; i++) {
-                let found = false
-                for (let j = 0; j < redirectsArray.length && !found; j++) {
-                  found = redirectsArray[j].from === redir[i].from
-                }
-                if (!found) {
-                  redirectsArray.push(redir[i])
+                for (let i = 0; i < redir.length; i++) {
+                  let found = false
+                  for (let j = 0; j < redirectsArray.length && !found; j++) {
+                    found = redirectsArray[j].from === redir[i].from
+                  }
+                  if (!found) {
+                    redirectsArray.push(redir[i])
+                  }
                 }
               }
             }
@@ -334,77 +337,89 @@ export default {
       // let start2, end2, start3, end3, start4, end4
       // let rounds = 0
 
-      do {
-        // const start = performance.now()
+      // skip fetch when no results
+      if (Object.keys(this.resultsObject).length > 0) {
+        do {
+          // const start = performance.now()
 
-        try {
-          // start3 = performance.now()
+          try {
+            // start3 = performance.now()
 
-          const response = await fetch(this.pageUrlCategories, {
-            headers: this.fetchHeaders
-          })
+            const response = await fetch(this.pageUrlCategories, {
+              headers: this.fetchHeaders
+            })
 
-          // end3 = performance.now()
-          if (!response.ok) {
-            const message = `ERROR: ${response.status} ${response.statusText}`
-            throw new Error(message)
-          } else {
-            // start4 = performance.now()
-            this.jsonDataFullQueryPart = await response.json()
-            // end4 = performance.now()
-            // start2 = performance.now()
+            // end3 = performance.now()
+            if (!response.ok) {
+              const message = `ERROR: ${response.status} ${response.statusText}`
+              throw new Error(message)
+            } else {
+              // start4 = performance.now()
+              this.jsonDataFullQueryPart = await response.json()
+              // end4 = performance.now()
+              // start2 = performance.now()
 
-            for (const property in this.jsonDataFullQueryPart.query.pages) {
-              if (this.jsonDataFullQueryPart.query.pages[property].categories) {
-                if (!this.resultsObject[property].categories) {
-                  this.resultsObject[property].categories = []
-                }
-
-                this.jsonDataFullQueryPart.query.pages[
-                  property
-                ].categories.forEach((category) =>
-                  this.resultsObject[property].categories.push(category.title)
-                )
-
-                // filter "Category:" at beginning
-                for (
-                  let i = 0;
-                  i < this.resultsObject[property].categories.length;
-                  i++
-                ) {
-                  // not sure it always starts with "Category:", check and only remove if it does
+              // no console error on no result
+              if (this.jsonDataFullQueryPart.query) {
+                for (const property in this.jsonDataFullQueryPart.query.pages) {
                   if (
-                    this.resultsObject[property].categories[i].startsWith(
-                      'Category:'
-                    )
+                    this.jsonDataFullQueryPart.query.pages[property].categories
                   ) {
-                    this.resultsObject[property].categories[i] =
-                      this.resultsObject[property].categories[i].substring(9)
+                    if (!this.resultsObject[property].categories) {
+                      this.resultsObject[property].categories = []
+                    }
+
+                    this.jsonDataFullQueryPart.query.pages[
+                      property
+                    ].categories.forEach((category) =>
+                      this.resultsObject[property].categories.push(
+                        category.title
+                      )
+                    )
+
+                    // filter "Category:" at beginning
+                    for (
+                      let i = 0;
+                      i < this.resultsObject[property].categories.length;
+                      i++
+                    ) {
+                      // not sure it always starts with "Category:", check and only remove if it does
+                      if (
+                        this.resultsObject[property].categories[i].startsWith(
+                          'Category:'
+                        )
+                      ) {
+                        this.resultsObject[property].categories[i] =
+                          this.resultsObject[property].categories[i].substring(
+                            9
+                          )
+                      }
+                    }
                   }
                 }
               }
+
+              // end2 = performance.now()
             }
-
-            // end2 = performance.now()
+          } catch (error) {
+            throw new Error(error)
           }
-        } catch (error) {
-          throw new Error(error)
-        }
 
-        // rounds++
-        // const end = performance.now()
+          // rounds++
+          // const end = performance.now()
+          // console.log(
+          //   `Time categories full (round ${rounds}): ${
+          //     end - start
+          //   } ms / API fetch: ${end3 - start3} ms - JSONify: ${
+          //     end4 - start4
+          //   } ms - Categories insert alone: ${end2 - start2} ms`
+          // )
+          // timecountercategories += end - start
+        } while (this.jsonDataFullQueryPart.continue)
         // console.log(
-        //   `Time categories full (round ${rounds}): ${
-        //     end - start
-        //   } ms / API fetch: ${end3 - start3} ms - JSONify: ${
-        //     end4 - start4
-        //   } ms - Categories insert alone: ${end2 - start2} ms`
+        //   `Time categories all (${rounds} rounds): ${timecountercategories} ms`
         // )
-        // timecountercategories += end - start
-      } while (this.jsonDataFullQueryPart.continue)
-      // console.log(
-      //   `Time categories all (${rounds} rounds): ${timecountercategories} ms`
-      // )
+      }
       this.resultsCategoriesDone = true
     },
 
