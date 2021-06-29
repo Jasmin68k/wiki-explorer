@@ -1,131 +1,17 @@
 <template>
-  <form @submit.prevent="getJson(), getMainInfo(), getCategories()">
-    <input id="title" v-model="title" :disabled="inputsDisabled" />
-    <button type="submit" :disabled="inputsDisabled">Fetch data</button>
-  </form>
-  <form>
-    <input
-      id="resultsCategories"
-      type="checkbox"
-      :disabled="inputsDisabled"
-      v-model="resultsCategoriesEnabled"
-    />
-    <label for="resultsCategories"
-      >Show categories on hover (slow init, esp. on big pages)</label
-    >
-  </form>
-  <div
-    :style="{
-      visibility:
-        resultsCategoriesEnabled && !resultsCategoriesDone
-          ? 'visible'
-          : 'hidden',
-      color: 'red'
-    }"
-  >
-    Fetching categories...
-  </div>
-
-  <form>
-    <input
-      id="resultsRedirects"
-      type="checkbox"
-      :disabled="inputsDisabled"
-      v-model="resultsRedirectsEnabled"
-    />
-    <label for="resultsRedirects"
-      >Show used redirects (not all possible ones)</label
-    >
-  </form>
-
-  <form @submit.prevent="">
-    <label for="filter">Filter titles:</label>
-    <input
-      id="filter"
-      v-model="filter"
-      @input="resetPageNumber"
-      :disabled="inputsDisabled"
-    />
-  </form>
-
-  <form @submit.prevent="">
-    <label for="filterCategories">Filter categories:</label>
-    <input
-      id="filterCategories"
-      v-model="filterCategories"
-      @input="resetPageNumber"
-      :disabled="
-        inputsDisabled || !resultsCategoriesDone || !resultsCategoriesEnabled
-      "
-    />
-  </form>
-
-  <input
-    type="range"
-    min="1"
-    :max="
-      filteredResultsArray.length === 0
-        ? sizePerPage
-        : filteredResultsArray.length <= 24
-        ? filteredResultsArray.length
-        : 24
-    "
-    v-model="sizePerPage"
-    :disabled="inputsDisabled || filteredResultsArray.length === 0"
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-    @input="resetPageNumber()"
-  />
-  <div
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    Results per page: {{ sizePerPage }}
-  </div>
-  <br />
-
-  <div
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    Page: {{ pageNumber + 1 }} of
-    {{ numberOfPages }}
-  </div>
-  <p>Results: {{ filteredResultsArray.length }}</p>
-  <p
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    Showing from {{ indexStart + 1 }} to {{ indexEnd + 1 }}
-  </p>
-  <form
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    <button
-      @click.prevent="prevPage"
-      :disabled="
-        inputsDisabled || filteredResultsArray.length === 0 || pageNumber === 0
-      "
-    >
-      Prev. page
-    </button>
-    <button
-      @click.prevent="nextPage"
-      :disabled="
-        inputsDisabled ||
-        filteredResultsArray.length === 0 ||
-        pageNumber + 1 === numberOfPages
-      "
-    >
-      Next page
-    </button>
-  </form>
+  <input-form
+    :inputs-disabled="inputsDisabled"
+    :results-categories-done="resultsCategoriesDone"
+    :filtered-results-array="filteredResultsArray"
+    @fetchDataClicked="fetchDataClicked"
+    @resultsCategoriesChanged="resultsCategoriesChanged"
+    @resultsRedirectsChanged="resultsRedirectsChanged"
+    @filterChanged="filterChanged"
+    @filterCategoriesChanged="filterCategoriesChanged"
+    @indexStartChanged="indexStartChanged"
+    @indexEndChanged="indexEndChanged"
+    ref="inputForm"
+  ></input-form>
 
   <br />
   <outgraph
@@ -145,14 +31,17 @@
 </template>
 
 <script>
+import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 
 export default {
   name: 'MainView',
-  components: { MainTitleInfo, Outgraph },
+  components: { InputForm, MainTitleInfo, Outgraph },
   data() {
     return {
+      indexStart: 0,
+      indexEnd: 0,
       title: '',
       filter: '',
       filterCategories: '',
@@ -160,8 +49,8 @@ export default {
       categoriesArray: [],
       categoriesQueryPart: {},
       extract: '',
-      pageNumber: 0,
-      sizePerPage: 12,
+      // pageNumber: 0,
+      // sizePerPage: 12,
       returnedTitle: '',
       returnedUrl: '',
       returnedImage: '',
@@ -192,30 +81,9 @@ export default {
   },
 
   computed: {
-    numberOfPages() {
-      return Math.ceil(this.filteredResultsArray.length / this.sizePerPage)
-    },
-    indexStart() {
-      let indexStart = this.pageNumber * this.sizePerPage
-      if (indexStart > this.filteredResultsArray.length - 1) {
-        indexStart = this.filteredResultsArray.length - 1
-      }
-
-      return indexStart
-    },
-    indexEnd() {
-      let indexEnd = (this.pageNumber + 1) * this.sizePerPage - 1
-
-      if (indexEnd > this.filteredResultsArray.length - 1) {
-        indexEnd = this.filteredResultsArray.length - 1
-      }
-
-      if (indexEnd < 0) {
-        indexEnd = 0
-      }
-
-      return indexEnd
-    },
+    // numberOfPages() {
+    //   return Math.ceil(this.filteredResultsArray.length / this.sizePerPage)
+    // },
     mainInfoUrl() {
       let url =
         'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
@@ -451,7 +319,8 @@ export default {
       }
 
       // start = performance.now()
-      this.resetPageNumber()
+      // this.resetPageNumber()
+      this.$refs.inputForm.resetPageNumber()
       // end = performance.now()
       // console.log(`Time reset pagenumber: ${end - start} ms`)
 
@@ -623,26 +492,36 @@ export default {
     circleButtonClicked(index) {
       this.title = this.displayResultsArray[index].title
 
+      this.$refs.inputForm.titleChanged(this.title)
+
       this.getJson()
       this.getMainInfo()
       this.getCategories()
     },
+    fetchDataClicked(value) {
+      this.title = value
 
-    nextPage() {
-      if (
-        this.pageNumber + 1 <
-        this.filteredResultsArray.length / this.sizePerPage
-      ) {
-        this.pageNumber++
-      }
+      this.getJson()
+      this.getMainInfo()
+      this.getCategories()
     },
-    prevPage() {
-      if (this.pageNumber > 0) {
-        this.pageNumber--
-      }
+    resultsCategoriesChanged(value) {
+      this.resultsCategoriesEnabled = value
     },
-    resetPageNumber() {
-      this.pageNumber = 0
+    resultsRedirectsChanged(value) {
+      this.resultsRedirectsEnabled = value
+    },
+    filterChanged(value) {
+      this.filter = value
+    },
+    filterCategoriesChanged(value) {
+      this.filterCategories = value
+    },
+    indexStartChanged(value) {
+      this.indexStart = value
+    },
+    indexEndChanged(value) {
+      this.indexEnd = value
     }
   }
 }

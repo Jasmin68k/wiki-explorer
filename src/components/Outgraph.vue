@@ -99,6 +99,12 @@
 <script>
 export default {
   name: 'Outgraph',
+
+  // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
+  // should not be needed, when fixed
+  // interestingly, this component doesn't show bug, even when this is omitted
+  emits: ['circleButtonClicked'],
+
   data() {
     return {
       hoverRightTitle: 0,
