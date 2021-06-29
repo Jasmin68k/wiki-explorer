@@ -24,6 +24,7 @@
     :categories-array="categoriesArray"
     :results-categories-enabled="resultsCategoriesEnabled"
     :results-categories-done="resultsCategoriesDone"
+    :title-missing="titleMissing"
     @circleButtonClicked="circleButtonClicked"
   ></outgraph>
 
@@ -60,6 +61,7 @@ export default {
       resultsRedirectsEnabled: true,
       inputsDisabled: false,
       resultsObject: {},
+      titleMissing: true,
       // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
       // User-Agent might not be possible to set in every browser
       fetchHeaders: new Headers({
@@ -427,6 +429,7 @@ export default {
       this.extract = ''
       this.returnedImage = ''
       this.returnedRedirect = ''
+      this.titleMissing = true
 
       try {
         const response = await fetch(this.mainInfoUrl, {
@@ -442,9 +445,15 @@ export default {
           // add error handling
           const responseFull = await response.json()
           const pageId = responseFull.query.pageids[0]
-          this.extract = responseFull.query.pages[pageId].extract
+          if (responseFull.query.pages[pageId].extract) {
+            this.extract = responseFull.query.pages[pageId].extract
+          }
           this.returnedTitle = responseFull.query.pages[pageId].title
           this.returnedUrl = responseFull.query.pages[pageId].fullurl
+
+          if (responseFull.query.pages[pageId].missing !== '') {
+            this.titleMissing = false
+          }
 
           if (responseFull.query.redirects) {
             if (responseFull.query.redirects[0].from) {
@@ -462,9 +471,13 @@ export default {
       } catch (error) {
         throw new Error(error)
       }
+      if (this.titleMissing === false) {
+        this.getCategories()
+      }
     },
     async getCategories() {
       this.categoriesArray = []
+
       do {
         try {
           const response = await fetch(this.categoriesUrl, {
@@ -482,13 +495,17 @@ export default {
             let resultsArray = Object.values(
               this.categoriesQueryPart.query.pages
             )
-            // ...query.pages has only one prop at this level equal to page id. -> array index [0]
-            for (let i = 0; i < resultsArray[0].categories.length; i++) {
-              this.categoriesArray.push(resultsArray[0].categories[i].title)
+
+            if (resultsArray[0].categories) {
+              // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+              for (let i = 0; i < resultsArray[0].categories.length; i++) {
+                this.categoriesArray.push(resultsArray[0].categories[i].title)
+              }
             }
           }
         } catch (error) {
-          this.categoriesQueryPart = error
+          //this.categoriesQueryPart = error
+          throw new Error(error)
         }
       } while (this.categoriesQueryPart.continue)
 
@@ -511,14 +528,12 @@ export default {
 
       this.getJson()
       this.getMainInfo()
-      this.getCategories()
     },
     fetchDataClicked(value) {
       this.title = value
 
       this.getJson()
       this.getMainInfo()
-      this.getCategories()
     },
     resultsCategoriesChanged(value) {
       this.resultsCategoriesEnabled = value

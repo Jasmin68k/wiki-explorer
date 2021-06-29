@@ -4,7 +4,7 @@
 
     <div
       class="titlebutton"
-      v-show="!inputsDisabled && returnedTitle"
+      v-show="!inputsDisabled && returnedTitle && !titleMissing"
       ref="titlebutton"
       @mouseover="hoverButtonTitleOn"
       @mouseleave="hoverButtonTitleOff"
@@ -127,7 +127,8 @@ export default {
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
-    resultsCategoriesDone: { required: true, default: true, type: Boolean }
+    resultsCategoriesDone: { required: true, default: true, type: Boolean },
+    titleMissing: { required: true, default: true, type: Boolean }
   },
 
   watch: {
