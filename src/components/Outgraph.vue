@@ -53,12 +53,7 @@
     </div>
 
     <div
-      v-if="
-        !inputsDisabled &&
-        hoverButtonTitle &&
-        categoriesArray.length > 0 &&
-        resultsCategoriesEnabled
-      "
+      v-if="!inputsDisabled && hoverButtonTitle && categoriesArray.length > 0"
       class="titlebuttonhover"
       :style="{
         '--poslefttitle': hoverRightTitle + 'px',

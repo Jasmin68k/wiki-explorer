@@ -12,7 +12,7 @@
       @change="resultsCategoriesChanged(), resetPageNumber()"
     />
     <label for="resultsCategories"
-      >Show categories on hover (slow init, esp. on big pages)</label
+      >Show results categories on hover (slow init, esp. on big pages)</label
     >
   </form>
   <div
@@ -24,7 +24,7 @@
       color: 'red'
     }"
   >
-    Fetching categories...
+    Fetching results categories...
   </div>
 
   <form>

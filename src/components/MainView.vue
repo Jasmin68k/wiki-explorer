@@ -188,7 +188,7 @@ export default {
   methods: {
     async getJson() {
       this.inputsDisabled = true
-      this.resultsCategoriesDone = false
+      // this.resultsCategoriesDone = false
 
       let redirectsArray = []
       this.resultsObject = {}
@@ -280,6 +280,8 @@ export default {
       }
       // let end = performance.now()
       // console.log(`Time remove unused keys: ${end - start} ms`)
+
+      this.resultsCategoriesDone = false
 
       if (this.resultsCategoriesEnabled) {
         this.getResultsCategories()
