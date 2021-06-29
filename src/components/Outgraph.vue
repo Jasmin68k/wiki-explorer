@@ -30,7 +30,9 @@
     >
       <button
         :class="{ missing: page.missing }"
-        :disabled="page.missing"
+        :disabled="
+          page.missing || (resultsCategoriesEnabled && !resultsCategoriesDone)
+        "
         @click.prevent="circleButton(index), hoverButtonOff()"
       >
         {{ page.title }}
