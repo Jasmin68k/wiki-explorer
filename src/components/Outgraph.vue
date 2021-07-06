@@ -2,20 +2,16 @@
   <div class="outgraph">
     <canvas class="outgraphcanvas" ref="outgraphcanvas"></canvas>
 
-    <div
-      class="titlebutton"
-      v-show="!inputsDisabled && title && !titleMissing"
-      ref="titlebutton"
-      @mouseover="hoverButtonTitleOn"
-      @mouseleave="hoverButtonTitleOff"
-    >
-      <button @click.prevent="titleButton(), hoverButtonTitleOff()">
-        {{ title }}
-      </button>
-      <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
-        {{ redirect }}
-      </div>
-    </div>
+    <title-button
+      :inputs-disabled="inputsDisabled"
+      :title="title"
+      :title-missing="titleMissing"
+      :results-redirects-enabled="resultsRedirectsEnabled"
+      :redirect="redirect"
+      :categories-array="categoriesArray"
+      :url="url"
+    ></title-button>
+
     <div
       v-show="!inputsDisabled"
       class="circlebutton"
@@ -53,21 +49,6 @@
     </div>
 
     <div
-      v-if="!inputsDisabled && hoverButtonTitle && categoriesArray.length > 0"
-      class="titlebuttonhover"
-      :style="{
-        '--poslefttitle': hoverRightTitle + 'px',
-        '--postoptitle': hoverBottomTitle + 'px'
-      }"
-    >
-      <ul v-for="category in categoriesArray" :key="category">
-        <li>
-          {{ category }}
-        </li>
-      </ul>
-    </div>
-
-    <div
       v-if="
         !inputsDisabled &&
         hoverButton &&
@@ -94,9 +75,11 @@
   </div>
 </template>
 <script>
+import TitleButton from './TitleButton.vue'
+
 export default {
   name: 'Outgraph',
-
+  components: { TitleButton },
   // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
   // should not be needed, when fixed
   // interestingly, this component doesn't show bug, even when this is omitted
@@ -104,12 +87,9 @@ export default {
 
   data() {
     return {
-      hoverRightTitle: 0,
-      hoverBottomTitle: 0,
       hoverRight: 0,
       hoverBottom: 0,
       hoverButton: false,
-      hoverButtonTitle: false,
       hoverButtonIndex: -1
     }
   },
@@ -166,24 +146,6 @@ export default {
         ctx.stroke()
       }
     },
-    hoverButtonTitleOn() {
-      this.hoverRightTitle =
-        this.$refs['titlebutton'].getBoundingClientRect().right -
-        this.$refs['outgraphcanvas'].getBoundingClientRect().left
-      this.hoverBottomTitle =
-        this.$refs['titlebutton'].getBoundingClientRect().bottom -
-        this.$refs['outgraphcanvas'].getBoundingClientRect().top
-
-      // setTimeout(() => (this.hoverButtonTitle = true), 1000)
-      this.hoverButtonTitle = true
-    },
-    hoverButtonTitleOff() {
-      this.hoverButtonTitle = false
-    },
-    titleButton() {
-      // window.location = this.url
-      window.open(this.url, '_blank')
-    },
     hoverButtonOn(index) {
       this.hoverButtonIndex = index
       this.hoverRight =
@@ -227,15 +189,6 @@ ul {
   width: 100%;
   height: 100%;
 }
-.titlebutton {
-  background-color: lightgrey;
-  border: 1px solid black;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  /* move pixel position to center of button */
-  transform: translate(-50%, -50%);
-}
 .circlebutton {
   background-color: lightgrey;
   border: 1px solid black;
@@ -253,16 +206,6 @@ ul {
   position: absolute;
   left: var(--posleft);
   top: var(--postop);
-  /* left: 0px;
-  top: 0px; */
-}
-.titlebuttonhover {
-  font-size: 0.7rem;
-  background-color: lightgrey;
-  border: 1px solid black;
-  position: absolute;
-  left: var(--poslefttitle);
-  top: var(--postoptitle);
   /* left: 0px;
   top: 0px; */
 }
