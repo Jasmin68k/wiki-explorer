@@ -4,16 +4,16 @@
 
     <div
       class="titlebutton"
-      v-show="!inputsDisabled && returnedTitle && !titleMissing"
+      v-show="!inputsDisabled && title && !titleMissing"
       ref="titlebutton"
       @mouseover="hoverButtonTitleOn"
       @mouseleave="hoverButtonTitleOff"
     >
       <button @click.prevent="titleButton(), hoverButtonTitleOff()">
-        {{ returnedTitle }}
+        {{ title }}
       </button>
       <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
-        {{ returnedRedirect }}
+        {{ redirect }}
       </div>
     </div>
     <div
@@ -115,10 +115,10 @@ export default {
   },
   props: {
     inputsDisabled: { required: true, default: false, type: Boolean },
-    returnedTitle: { required: true, default: '', type: String },
-    returnedUrl: { required: true, default: '', type: String },
+    title: { required: true, default: '', type: String },
+    url: { required: true, default: '', type: String },
     resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
-    returnedRedirect: { required: true, default: '', type: String },
+    redirect: { required: true, default: '', type: String },
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
@@ -181,8 +181,8 @@ export default {
       this.hoverButtonTitle = false
     },
     titleButton() {
-      // window.location = this.returnedUrl
-      window.open(this.returnedUrl, '_blank')
+      // window.location = this.url
+      window.open(this.url, '_blank')
     },
     hoverButtonOn(index) {
       this.hoverButtonIndex = index

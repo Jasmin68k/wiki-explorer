@@ -16,10 +16,10 @@
   <br />
   <outgraph
     :inputs-disabled="inputsDisabled"
-    :returned-title="returnedTitle"
-    :returned-url="returnedUrl"
+    :title="returnedTitle"
+    :url="returnedUrl"
     :results-redirects-enabled="resultsRedirectsEnabled"
-    :returned-redirect="returnedRedirect"
+    :redirect="returnedRedirect"
     :display-results-array="displayResultsArray"
     :categories-array="categoriesArray"
     :results-categories-enabled="resultsCategoriesEnabled"
