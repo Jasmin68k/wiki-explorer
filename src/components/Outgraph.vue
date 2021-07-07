@@ -12,87 +12,31 @@
       :url="url"
     ></title-button>
 
-    <div
-      v-show="!inputsDisabled"
-      class="circlebutton"
-      v-for="(page, index) in displayResultsArray"
-      :key="index"
-      :style="{
-        '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg'
-      }"
-      :ref="`circlebutton${index}`"
-      @mouseover="hoverButtonOn(index)"
-      @mouseleave="hoverButtonOff"
-    >
-      <button
-        :class="{ missing: page.missing }"
-        :disabled="
-          page.missing || (resultsCategoriesEnabled && !resultsCategoriesDone)
-        "
-        @click.prevent="circleButton(index), hoverButtonOff()"
+    <div v-for="(page, index) in displayResultsArray" :key="index">
+      <circle-button
+        :index="index"
+        :inputs-disabled="inputsDisabled"
+        :display-results-array="displayResultsArray"
+        :results-categories-enabled="resultsCategoriesEnabled"
+        :results-categories-done="resultsCategoriesDone"
+        :results-redirects-enabled="resultsRedirectsEnabled"
       >
-        {{ page.title }}
-      </button>
-      <div v-if="!page.missing">
-        <a
-          :style="{ 'font-size': '0.7rem' }"
-          :href="displayResultsArray[index].fullurl"
-          target="_blank"
-          >Show on Wikipedia</a
-        >
-      </div>
-      <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
-        <ul v-for="(redirect, index) in page.redirectFrom" :key="index">
-          <li>{{ redirect }}</li>
-        </ul>
-      </div>
-    </div>
-
-    <div
-      v-if="
-        !inputsDisabled &&
-        hoverButton &&
-        displayResultsArray.length > 0 &&
-        resultsCategoriesEnabled &&
-        resultsCategoriesDone &&
-        displayResultsArray[hoverButtonIndex].categories
-      "
-      class="circlebuttonhover"
-      :style="{
-        '--posleft': hoverRight + 'px',
-        '--postop': hoverBottom + 'px'
-      }"
-    >
-      <ul
-        v-for="category in displayResultsArray[hoverButtonIndex].categories"
-        :key="category"
-      >
-        <li>
-          {{ category }}
-        </li>
-      </ul>
+      </circle-button>
     </div>
   </div>
 </template>
 <script>
 import TitleButton from './TitleButton.vue'
+import CircleButton from './CircleButton.vue'
 
 export default {
   name: 'Outgraph',
-  components: { TitleButton },
+  components: { TitleButton, CircleButton },
   // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
   // should not be needed, when fixed
   // interestingly, this component doesn't show bug, even when this is omitted
   emits: ['circleButtonClicked'],
 
-  data() {
-    return {
-      hoverRight: 0,
-      hoverBottom: 0,
-      hoverButton: false,
-      hoverButtonIndex: -1
-    }
-  },
   props: {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
@@ -145,39 +89,11 @@ export default {
         )
         ctx.stroke()
       }
-    },
-    hoverButtonOn(index) {
-      this.hoverButtonIndex = index
-      this.hoverRight =
-        this.$refs[`circlebutton${index}`].getBoundingClientRect().right -
-        this.$refs['outgraphcanvas'].getBoundingClientRect().left
-      this.hoverBottom =
-        this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
-        this.$refs['outgraphcanvas'].getBoundingClientRect().top
-
-      // setTimeout(() => (this.hoverButton = true), 1000)
-      this.hoverButton = true
-    },
-    hoverButtonOff() {
-      this.hoverButton = false
-      this.hoverButtonIndex = -1
-    },
-
-    circleButton(index) {
-      this.$emit('circleButtonClicked', index)
     }
   }
 }
 </script>
 <style scoped>
-ul {
-  list-style-type: none; /* Remove bullets */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margins */
-}
-.missing {
-  color: red;
-}
 .outgraph {
   margin: auto;
   position: relative;
@@ -188,25 +104,5 @@ ul {
 .outgraphcanvas {
   width: 100%;
   height: 100%;
-}
-.circlebutton {
-  background-color: lightgrey;
-  border: 1px solid black;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
-  transform: translate(-50%, -50%) rotate(var(--angle)) translate(250px)
-    rotate(calc(-1 * var(--angle)));
-}
-.circlebuttonhover {
-  font-size: 0.7rem;
-  background-color: lightgrey;
-  border: 1px solid black;
-  position: absolute;
-  left: var(--posleft);
-  top: var(--postop);
-  /* left: 0px;
-  top: 0px; */
 }
 </style>

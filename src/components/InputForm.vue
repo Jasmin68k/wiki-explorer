@@ -9,7 +9,7 @@
       type="checkbox"
       :disabled="inputsDisabled"
       v-model="resultsCategoriesEnabled"
-      @change="resultsCategoriesChanged(), resetPageNumber()"
+      @change="resultsCategoriesChanged"
     />
     <label for="resultsCategories"
       >Show results categories on hover (slow init, esp. on big pages)</label
