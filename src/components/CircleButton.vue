@@ -97,7 +97,7 @@ export default {
       this.hoverButton = true
     },
     hoverButtonOff(index) {
-      this.$refs[`circlebutton${index}`].style.zIndex = 0
+      this.$refs[`circlebutton${index}`].style.zIndex = 1
       this.hoverButton = false
       this.hoverButtonIndex = -1
     },
@@ -123,7 +123,7 @@ ul {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 0;
+  z-index: 1;
   /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(250px)
     rotate(calc(-1 * var(--angle)));

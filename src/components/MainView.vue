@@ -3,6 +3,10 @@
     :inputs-disabled="inputsDisabled"
     :results-categories-done="resultsCategoriesDone"
     :filtered-results-array="filteredResultsArray"
+    :results-categories-all-array="resultsCategoriesAllArray"
+    :results-categories-all-array-unfiltered="
+      resultsCategoriesAllArrayUnfiltered
+    "
     @fetchDataClicked="fetchDataClicked"
     @resultsCategoriesChanged="resultsCategoriesChanged"
     @resultsRedirectsChanged="resultsRedirectsChanged"
@@ -10,6 +14,7 @@
     @filterCategoriesChanged="filterCategoriesChanged"
     @indexStartChanged="indexStartChanged"
     @indexEndChanged="indexEndChanged"
+    @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
     ref="inputForm"
   ></input-form>
 
@@ -48,6 +53,7 @@ export default {
       filterCategories: '',
       jsonDataFullQueryPart: {},
       categoriesArray: [],
+      checkedCategories: [],
       categoriesQueryPart: {},
       extract: '',
       // pageNumber: 0,
@@ -167,6 +173,16 @@ export default {
         )
       }
 
+      if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+        filteredArray = filteredArray.filter((page) =>
+          page.categories
+            ? page.categories.find((item) =>
+                this.checkedCategories.includes(item)
+              )
+            : null
+        )
+      }
+
       // sort
       filteredArray = filteredArray.sort((a, b) => {
         return a.title.localeCompare(b.title)
@@ -182,6 +198,52 @@ export default {
       )
 
       return displayArray
+    },
+    resultsCategoriesAllArray() {
+      let allCategories = []
+
+      for (const property in this.resultsObject) {
+        if (
+          this.resultsObject[property].categories &&
+          this.resultsObject[property].title
+            .toLowerCase()
+            .includes(this.filter.toLowerCase())
+          //   &&
+          // this.resultsObject[property].categories.find((a) =>
+          //   a.toLowerCase().includes(this.filterCategories.toLowerCase())
+          // )
+        ) {
+          this.resultsObject[property].categories.forEach((category) =>
+            !allCategories.includes(category) &&
+            category.toLowerCase().includes(this.filterCategories.toLowerCase())
+              ? allCategories.push(category)
+              : null
+          )
+        }
+      }
+      allCategories = allCategories.sort((a, b) => {
+        return a.localeCompare(b)
+      })
+
+      return allCategories
+    },
+    resultsCategoriesAllArrayUnfiltered() {
+      let allCategories = []
+
+      for (const property in this.resultsObject) {
+        if (this.resultsObject[property].categories) {
+          this.resultsObject[property].categories.forEach((category) =>
+            !allCategories.includes(category)
+              ? allCategories.push(category)
+              : null
+          )
+        }
+      }
+      allCategories = allCategories.sort((a, b) => {
+        return a.localeCompare(b)
+      })
+
+      return allCategories
     }
   },
 
@@ -423,7 +485,14 @@ export default {
         // console.log(
         //   `Time categories all (${rounds} rounds): ${timecountercategories} ms`
         // )
+        // add emptycategory to objects without category for filter
+        for (const property in this.resultsObject) {
+          if (!this.resultsObject[property].categories) {
+            this.resultsObject[property].categories = ['[ NO CATEGORY ]']
+          }
+        }
       }
+
       this.resultsCategoriesDone = true
     },
 
@@ -554,6 +623,10 @@ export default {
     },
     indexEndChanged(value) {
       this.indexEnd = value
+    },
+    resultsCategoriesCheckboxChanged(value) {
+      this.checkedCategories = value
+      // console.log(this.checkedCategories)
     }
   }
 }

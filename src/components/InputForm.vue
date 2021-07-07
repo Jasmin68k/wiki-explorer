@@ -1,133 +1,195 @@
 <template>
-  <form @submit.prevent="FetchData()">
-    <input id="title" v-model="title" :disabled="inputsDisabled" />
-    <button type="submit" :disabled="inputsDisabled">Fetch data</button>
-  </form>
-  <form>
-    <input
-      id="resultsCategories"
-      type="checkbox"
-      :disabled="inputsDisabled"
-      v-model="resultsCategoriesEnabled"
-      @change="resultsCategoriesChanged"
-    />
-    <label for="resultsCategories"
-      >Show results categories on hover (slow init, esp. on big pages)</label
-    >
-  </form>
-  <div
-    :style="{
-      visibility:
-        resultsCategoriesEnabled && !resultsCategoriesDone
-          ? 'visible'
-          : 'hidden',
-      color: 'red'
-    }"
-  >
-    Fetching results categories...
+  <div class="container">
+    <div class="inputform">
+      <form @submit.prevent="FetchData()">
+        <input id="title" v-model="title" :disabled="inputsDisabled" />
+        <button type="submit" :disabled="inputsDisabled">Fetch data</button>
+      </form>
+      <form>
+        <input
+          id="resultsCategories"
+          type="checkbox"
+          :disabled="inputsDisabled"
+          v-model="resultsCategoriesEnabled"
+          @change="resultsCategoriesChanged"
+        />
+        <label for="resultsCategories"
+          >Show results categories (slow init, esp. on big pages)</label
+        >
+      </form>
+      <form>
+        <input
+          id="checkboxFilter"
+          type="checkbox"
+          :disabled="inputsDisabled || !resultsCategoriesEnabled"
+          v-model="checkboxFilterEnabled"
+          @change="checkboxFilterEnabledChange"
+        />
+        <label for="checkboxFilter"
+          >Enable categories checkbox filter (slow, esp. on big pages)</label
+        >
+      </form>
+
+      <div
+        :style="{
+          visibility:
+            resultsCategoriesEnabled && !resultsCategoriesDone
+              ? 'visible'
+              : 'hidden',
+          color: 'red'
+        }"
+      >
+        Fetching results categories...
+      </div>
+
+      <form>
+        <input
+          id="resultsRedirects"
+          type="checkbox"
+          :disabled="inputsDisabled"
+          v-model="resultsRedirectsEnabled"
+          @change="resultsRedirectsChanged"
+        />
+        <label for="resultsRedirects"
+          >Show used redirects (not all possible ones)</label
+        >
+      </form>
+
+      <form @submit.prevent="">
+        <label for="filter">Filter results titles:</label>
+        <input
+          id="filter"
+          v-model="filter"
+          @input="resetPageNumber(), filterChanged()"
+          :disabled="inputsDisabled"
+        />
+      </form>
+
+      <form @submit.prevent="">
+        <label for="filterCategories">Filter results categories:</label>
+        <input
+          id="filterCategories"
+          v-model="filterCategories"
+          @input="resetPageNumber(), filterCategoriesChanged()"
+          :disabled="
+            inputsDisabled ||
+            !resultsCategoriesDone ||
+            !resultsCategoriesEnabled
+          "
+        />
+      </form>
+
+      <input
+        type="range"
+        min="1"
+        :max="
+          filteredResultsArray.length === 0
+            ? sizePerPage
+            : filteredResultsArray.length <= 24
+            ? filteredResultsArray.length
+            : 24
+        "
+        v-model="sizePerPage"
+        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+        @input="resetPageNumber()"
+      />
+      <div
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        Results per page: {{ sizePerPage }}
+      </div>
+      <br />
+
+      <div
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        Page: {{ pageNumber + 1 }} of
+        {{ numberOfPages }}
+      </div>
+      <p>Results: {{ filteredResultsArray.length }}</p>
+      <p
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        Showing from {{ indexStart + 1 }} to {{ indexEnd + 1 }}
+      </p>
+      <form
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        <button
+          @click.prevent="prevPage"
+          :disabled="
+            inputsDisabled ||
+            filteredResultsArray.length === 0 ||
+            pageNumber === 0
+          "
+        >
+          Prev. page
+        </button>
+        <button
+          @click.prevent="nextPage"
+          :disabled="
+            inputsDisabled ||
+            filteredResultsArray.length === 0 ||
+            pageNumber + 1 === numberOfPages
+          "
+        >
+          Next page
+        </button>
+      </form>
+    </div>
+    <!-- <div
+      class="inputcategoriescontainer"
+      :style="{
+        visibility:
+          resultsCategoriesDone &&
+          resultsCategoriesEnabled &&
+          resultsCategoriesAllArray.length > 0 &&
+          checkboxFilterEnabled
+            ? 'visible'
+            : 'hidden'
+      }"
+    > -->
+    <div class="inputcategoriescontainer">
+      <div
+        class="inputcategories"
+        v-if="
+          resultsCategoriesDone &&
+          resultsCategoriesEnabled &&
+          resultsCategoriesAllArray.length > 0 &&
+          checkboxFilterEnabled
+        "
+      >
+        <div class="checkboxbuttons">
+          <button @click.prevent="categoriesAll">All</button>
+          <button @click.prevent="categoriesNone">None</button>
+        </div>
+
+        <ul v-for="category in resultsCategoriesAllArray" :key="category">
+          <li>
+            <input
+              type="checkbox"
+              :id="category"
+              :value="category"
+              v-model="checkedCategories"
+              @change="resultsCategoriesCheckboxChanged"
+            />
+            <label :for="category">{{ category }}</label>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-
-  <form>
-    <input
-      id="resultsRedirects"
-      type="checkbox"
-      :disabled="inputsDisabled"
-      v-model="resultsRedirectsEnabled"
-      @change="resultsRedirectsChanged"
-    />
-    <label for="resultsRedirects"
-      >Show used redirects (not all possible ones)</label
-    >
-  </form>
-
-  <form @submit.prevent="">
-    <label for="filter">Filter titles:</label>
-    <input
-      id="filter"
-      v-model="filter"
-      @input="resetPageNumber(), filterChanged()"
-      :disabled="inputsDisabled"
-    />
-  </form>
-
-  <form @submit.prevent="">
-    <label for="filterCategories">Filter categories:</label>
-    <input
-      id="filterCategories"
-      v-model="filterCategories"
-      @input="resetPageNumber(), filterCategoriesChanged()"
-      :disabled="
-        inputsDisabled || !resultsCategoriesDone || !resultsCategoriesEnabled
-      "
-    />
-  </form>
-
-  <input
-    type="range"
-    min="1"
-    :max="
-      filteredResultsArray.length === 0
-        ? sizePerPage
-        : filteredResultsArray.length <= 24
-        ? filteredResultsArray.length
-        : 24
-    "
-    v-model="sizePerPage"
-    :disabled="inputsDisabled || filteredResultsArray.length === 0"
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-    @input="resetPageNumber()"
-  />
-  <div
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    Results per page: {{ sizePerPage }}
-  </div>
-  <br />
-
-  <div
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    Page: {{ pageNumber + 1 }} of
-    {{ numberOfPages }}
-  </div>
-  <p>Results: {{ filteredResultsArray.length }}</p>
-  <p
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    Showing from {{ indexStart + 1 }} to {{ indexEnd + 1 }}
-  </p>
-  <form
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    <button
-      @click.prevent="prevPage"
-      :disabled="
-        inputsDisabled || filteredResultsArray.length === 0 || pageNumber === 0
-      "
-    >
-      Prev. page
-    </button>
-    <button
-      @click.prevent="nextPage"
-      :disabled="
-        inputsDisabled ||
-        filteredResultsArray.length === 0 ||
-        pageNumber + 1 === numberOfPages
-      "
-    >
-      Next page
-    </button>
-  </form>
 </template>
 <script>
 export default {
@@ -141,13 +203,24 @@ export default {
     'filterChanged',
     'filterCategoriesChanged',
     'indexStartChanged',
-    'indexEndChanged'
+    'indexEndChanged',
+    'resultsCategoriesCheckboxChanged'
   ],
 
   props: {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
-    filteredResultsArray: { required: true, default: () => [], type: Array }
+    filteredResultsArray: { required: true, default: () => [], type: Array },
+    resultsCategoriesAllArray: {
+      required: true,
+      default: () => [],
+      type: Array
+    },
+    resultsCategoriesAllArrayUnfiltered: {
+      required: true,
+      default: () => [],
+      type: Array
+    }
   },
   watch: {
     indexStart() {
@@ -155,7 +228,24 @@ export default {
     },
     indexEnd() {
       this.$emit('indexEndChanged', this.indexEnd)
+    },
+    resultsCategoriesDone(newVal) {
+      if (newVal) {
+        this.checkedCategories = [...this.resultsCategoriesAllArrayUnfiltered]
+      } else {
+        this.checkedCategories = []
+      }
+      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     }
+    // checkedCategories(val) {
+    //   console.log('checkedCategories: ' + val)
+    // },
+    // resultsCategoriesAllArray(val) {
+    //   console.log('resultsCategoriesAllArray: ' + val)
+    // },
+    // filteredResultsArray(val) {
+    //   console.log('filteredResultsArray: ' + val)
+    // }
   },
 
   computed: {
@@ -188,11 +278,13 @@ export default {
     return {
       title: '',
       filter: '',
-      resultsCategoriesEnabled: true,
+      resultsCategoriesEnabled: false,
       resultsRedirectsEnabled: true,
+      checkboxFilterEnabled: false,
       filterCategories: '',
       pageNumber: 0,
-      sizePerPage: 12
+      sizePerPage: 12,
+      checkedCategories: []
     }
   },
 
@@ -201,6 +293,7 @@ export default {
       this.$emit('fetchDataClicked', this.title)
     },
     resultsCategoriesChanged() {
+      this.resetPageNumber()
       this.$emit('resultsCategoriesChanged', this.resultsCategoriesEnabled)
     },
     resultsRedirectsChanged() {
@@ -235,8 +328,63 @@ export default {
     // called from parent
     titleChanged(value) {
       this.title = value
+    },
+    resultsCategoriesCheckboxChanged() {
+      this.resetPageNumber()
+      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+    },
+    categoriesAll() {
+      this.resetPageNumber()
+      this.checkedCategories = [...this.resultsCategoriesAllArray]
+      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+    },
+    categoriesNone() {
+      this.resetPageNumber()
+      this.resultsCategoriesAllArray.forEach(
+        (category) =>
+          (this.checkedCategories = this.checkedCategories.filter(
+            (cat) => cat !== category
+          ))
+      )
+      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+    },
+    checkboxFilterEnabledChange() {
+      this.resetPageNumber()
+      this.checkedCategories = [...this.resultsCategoriesAllArrayUnfiltered]
+      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     }
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+ul {
+  list-style-type: none; /* Remove bullets */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margins */
+}
+
+.container {
+  display: flex;
+}
+.inputform {
+  flex: 1;
+}
+.inputcategoriescontainer {
+  flex: 1;
+  position: relative;
+}
+.inputcategories {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  overflow: auto;
+  text-align: left;
+}
+.checkboxbuttons {
+  position: fixed;
+  right: 30px;
+  z-index: 1;
+}
+</style>
