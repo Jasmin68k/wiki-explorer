@@ -601,10 +601,12 @@ export default {
       this.getMainInfo()
     },
     fetchDataClicked(value) {
-      this.title = value
+      if (value) {
+        this.title = value
 
-      this.getJson()
-      this.getMainInfo()
+        this.getJson()
+        this.getMainInfo()
+      }
     },
     resultsCategoriesChanged(value) {
       this.resultsCategoriesEnabled = value

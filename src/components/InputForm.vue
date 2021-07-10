@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="inputform">
-      <form @submit.prevent="FetchData()">
+      <form @submit.prevent="fetchData()">
         <input id="title" v-model="title" :disabled="inputsDisabled" />
         <button type="submit" :disabled="inputsDisabled">Fetch data</button>
       </form>
@@ -148,52 +148,29 @@
         </button>
       </form>
     </div>
-    <!-- <div
-      class="inputcategoriescontainer"
-      :style="{
-        visibility:
-          resultsCategoriesDone &&
-          resultsCategoriesEnabled &&
-          resultsCategoriesAllArray.length > 0 &&
-          checkboxFilterEnabled
-            ? 'visible'
-            : 'hidden'
-      }"
-    > -->
-    <div class="inputcategoriescontainer">
-      <div
-        class="inputcategories"
+    <div class="inputcategoriescontainer" ref="inputcategoriescontainer">
+      <virtual-scrollbox
         v-if="
-          resultsCategoriesDone &&
           resultsCategoriesEnabled &&
           resultsCategoriesAllArray.length > 0 &&
+          resultsCategoriesDone &&
           checkboxFilterEnabled
         "
-      >
-        <div class="checkboxbuttons">
-          <button @click.prevent="categoriesAll">All</button>
-          <button @click.prevent="categoriesNone">None</button>
-        </div>
-
-        <ul v-for="category in resultsCategoriesAllArray" :key="category">
-          <li>
-            <input
-              type="checkbox"
-              :id="category"
-              :value="category"
-              v-model="checkedCategories"
-              @change="resultsCategoriesCheckboxChanged"
-            />
-            <label :for="category">{{ category }}</label>
-          </li>
-        </ul>
-      </div>
+        :items="resultsCategoriesAllArray"
+        :items-full="resultsCategoriesAllArrayUnfiltered"
+        :root-height="scrollboxContainerHeight"
+        @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
+      ></virtual-scrollbox>
     </div>
   </div>
 </template>
 <script>
+import VirtualScrollbox from './VirtualScrollbox.vue'
+
 export default {
   name: 'InputForm',
+  components: { VirtualScrollbox },
+
   // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
   // should not be needed, when fixed
   emits: [
@@ -228,27 +205,14 @@ export default {
     },
     indexEnd() {
       this.$emit('indexEndChanged', this.indexEnd)
-    },
-    resultsCategoriesDone(newVal) {
-      if (newVal) {
-        this.checkedCategories = [...this.resultsCategoriesAllArrayUnfiltered]
-      } else {
-        this.checkedCategories = []
-      }
-      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     }
-    // checkedCategories(val) {
-    //   console.log('checkedCategories: ' + val)
-    // },
-    // resultsCategoriesAllArray(val) {
-    //   console.log('resultsCategoriesAllArray: ' + val)
-    // },
-    // filteredResultsArray(val) {
-    //   console.log('filteredResultsArray: ' + val)
-    // }
   },
 
   computed: {
+    scrollboxContainerHeight() {
+      return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
+    },
+
     numberOfPages() {
       return Math.ceil(this.filteredResultsArray.length / this.sizePerPage)
     },
@@ -289,7 +253,7 @@ export default {
   },
 
   methods: {
-    FetchData() {
+    fetchData() {
       this.$emit('fetchDataClicked', this.title)
     },
     resultsCategoriesChanged() {
@@ -329,24 +293,19 @@ export default {
     titleChanged(value) {
       this.title = value
     },
-    resultsCategoriesCheckboxChanged() {
+    resultsCategoriesCheckboxChanged(value) {
       this.resetPageNumber()
-      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+      this.$emit('resultsCategoriesCheckboxChanged', value)
     },
-    categoriesAll() {
+
+    categoriesAll(value) {
       this.resetPageNumber()
-      this.checkedCategories = [...this.resultsCategoriesAllArray]
-      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+
+      this.$emit('resultsCategoriesCheckboxChanged', value)
     },
-    categoriesNone() {
+    categoriesNone(value) {
       this.resetPageNumber()
-      this.resultsCategoriesAllArray.forEach(
-        (category) =>
-          (this.checkedCategories = this.checkedCategories.filter(
-            (cat) => cat !== category
-          ))
-      )
-      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+      this.$emit('resultsCategoriesCheckboxChanged', value)
     },
     checkboxFilterEnabledChange() {
       this.resetPageNumber()
@@ -357,12 +316,6 @@ export default {
 }
 </script>
 <style scoped>
-ul {
-  list-style-type: none; /* Remove bullets */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margins */
-}
-
 .container {
   display: flex;
 }
@@ -372,19 +325,5 @@ ul {
 .inputcategoriescontainer {
   flex: 1;
   position: relative;
-}
-.inputcategories {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  overflow: auto;
-  text-align: left;
-}
-.checkboxbuttons {
-  position: fixed;
-  right: 30px;
-  z-index: 1;
 }
 </style>
