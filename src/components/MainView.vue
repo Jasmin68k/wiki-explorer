@@ -62,7 +62,7 @@ export default {
       returnedUrl: '',
       returnedImage: '',
       returnedRedirect: '',
-      resultsCategoriesEnabled: false,
+      resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
       resultsRedirectsEnabled: true,
       inputsDisabled: false,

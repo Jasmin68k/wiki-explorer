@@ -242,9 +242,9 @@ export default {
     return {
       title: '',
       filter: '',
-      resultsCategoriesEnabled: false,
+      resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: true,
-      checkboxFilterEnabled: false,
+      checkboxFilterEnabled: true,
       filterCategories: '',
       pageNumber: 0,
       sizePerPage: 12,
