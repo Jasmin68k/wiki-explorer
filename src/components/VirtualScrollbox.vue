@@ -119,14 +119,6 @@ export default {
     }
   },
   methods: {
-    // called from parent
-    itemsAll() {
-      this.checkedCategories = [...this.itemsFull]
-    },
-    itemsNone() {
-      this.checkedCategories = []
-    },
-
     categoriesAll() {
       this.checkedCategories = [...this.items]
       this.$parent.categoriesAll(this.checkedCategories)
