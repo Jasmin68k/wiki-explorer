@@ -8,8 +8,8 @@
               type="checkbox"
               :id="item"
               :value="item"
-              v-model="checkedCategories"
-              @change="resultsCategoriesCheckboxChanged"
+              :checked="checkedCategories.includes(item) ? true : false"
+              @change="resultsCategoriesCheckboxChanged($event)"
             />
             <label :for="item">{{ item }}</label>
           </li>
@@ -151,7 +151,20 @@ export default {
       }
       return largestHeight
     },
-    resultsCategoriesCheckboxChanged() {
+    resultsCategoriesCheckboxChanged(event) {
+      // console.log(event.target.checked)
+      // console.log(event.target.value)
+      if (event.target.checked) {
+        this.checkedCategories.push(event.target.value)
+      } else {
+        this.checkedCategories = this.checkedCategories.filter(
+          (item) => item !== event.target.value
+        )
+      }
+
+      //temp
+      this.checkedCategories.sort()
+
       this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     }
   },
