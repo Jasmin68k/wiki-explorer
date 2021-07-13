@@ -64,6 +64,8 @@ export default {
       returnedRedirect: '',
       resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
+      resultsCategoriesAllArray: [],
+      resultsCategoriesAllArrayUnfiltered: [],
       resultsRedirectsEnabled: true,
       inputsDisabled: false,
       resultsObject: {},
@@ -198,52 +200,6 @@ export default {
       )
 
       return displayArray
-    },
-    resultsCategoriesAllArray() {
-      let allCategories = []
-
-      for (const property in this.resultsObject) {
-        if (
-          this.resultsObject[property].categories &&
-          this.resultsObject[property].title
-            .toLowerCase()
-            .includes(this.filter.toLowerCase())
-          //   &&
-          // this.resultsObject[property].categories.find((a) =>
-          //   a.toLowerCase().includes(this.filterCategories.toLowerCase())
-          // )
-        ) {
-          this.resultsObject[property].categories.forEach((category) =>
-            !allCategories.includes(category) &&
-            category.toLowerCase().includes(this.filterCategories.toLowerCase())
-              ? allCategories.push(category)
-              : null
-          )
-        }
-      }
-      allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
-      })
-
-      return allCategories
-    },
-    resultsCategoriesAllArrayUnfiltered() {
-      let allCategories = []
-
-      for (const property in this.resultsObject) {
-        if (this.resultsObject[property].categories) {
-          this.resultsObject[property].categories.forEach((category) =>
-            !allCategories.includes(category)
-              ? allCategories.push(category)
-              : null
-          )
-        }
-      }
-      allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
-      })
-
-      return allCategories
     }
   },
 
@@ -493,6 +449,9 @@ export default {
         }
       }
 
+      this.calcResultsCategoriesAllArray()
+      this.calcResultsCategoriesAllArrayUnfiltered()
+
       this.resultsCategoriesDone = true
     },
 
@@ -629,6 +588,52 @@ export default {
     resultsCategoriesCheckboxChanged(value) {
       this.checkedCategories = value
       // console.log(this.checkedCategories)
+    },
+    calcResultsCategoriesAllArray() {
+      let allCategories = []
+
+      for (const property in this.resultsObject) {
+        if (
+          this.resultsObject[property].categories &&
+          this.resultsObject[property].title
+            .toLowerCase()
+            .includes(this.filter.toLowerCase())
+          //   &&
+          // this.resultsObject[property].categories.find((a) =>
+          //   a.toLowerCase().includes(this.filterCategories.toLowerCase())
+          // )
+        ) {
+          this.resultsObject[property].categories.forEach((category) =>
+            !allCategories.includes(category) &&
+            category.toLowerCase().includes(this.filterCategories.toLowerCase())
+              ? allCategories.push(category)
+              : null
+          )
+        }
+      }
+      allCategories = allCategories.sort((a, b) => {
+        return a.localeCompare(b)
+      })
+
+      this.resultsCategoriesAllArray = allCategories
+    },
+    calcResultsCategoriesAllArrayUnfiltered() {
+      let allCategories = []
+
+      for (const property in this.resultsObject) {
+        if (this.resultsObject[property].categories) {
+          this.resultsObject[property].categories.forEach((category) =>
+            !allCategories.includes(category)
+              ? allCategories.push(category)
+              : null
+          )
+        }
+      }
+      allCategories = allCategories.sort((a, b) => {
+        return a.localeCompare(b)
+      })
+
+      this.resultsCategoriesAllArrayUnfiltered = allCategories
     }
   }
 }
