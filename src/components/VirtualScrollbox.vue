@@ -124,12 +124,14 @@ export default {
       this.$parent.categoriesAll(this.checkedCategories)
     },
     categoriesNone() {
-      this.items.forEach(
-        (category) =>
-          (this.checkedCategories = this.checkedCategories.filter(
-            (cat) => cat !== category
-          ))
+      // https://stackoverflow.com/a/44204227
+      // ECMAScript 6 sets can permit faster computing of the elements of one array that aren't in the other
+      // Since the lookup complexity for the V8 engine browsers use these days is O(1), the time complexity of the whole algorithm is O(n)
+      const toRemove = new Set(this.items)
+      this.checkedCategories = this.checkedCategories.filter(
+        (x) => !toRemove.has(x)
       )
+
       this.$parent.categoriesNone(this.checkedCategories)
     },
 
