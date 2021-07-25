@@ -248,7 +248,7 @@ export default {
       filterCategories: '',
       pageNumber: 0,
       sizePerPage: 12,
-      checkedCategories: []
+      checkedCategories: new Set()
     }
   },
 
@@ -309,7 +309,8 @@ export default {
     },
     checkboxFilterEnabledChange() {
       this.resetPageNumber()
-      this.checkedCategories = [...this.resultsCategoriesAllArrayUnfiltered]
+      // this.checkedCategories = [...this.resultsCategoriesAllArrayUnfiltered]
+      this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
       this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     }
   }

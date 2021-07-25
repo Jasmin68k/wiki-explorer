@@ -46,7 +46,7 @@ export default {
       // Extra padding at the top and bottom so that the items transition smoothly
       // Think of it as extra items just before the viewport starts and just after the viewport ends
       nodePadding: 20,
-      checkedCategories: []
+      checkedCategories: new Set()
     }
   },
 
@@ -120,7 +120,8 @@ export default {
   },
   methods: {
     categoriesAll() {
-      this.checkedCategories = [...this.items]
+      // this.checkedCategories = [...this.items]
+      this.checkedCategories = new Set(this.items)
       this.$parent.categoriesAll(this.checkedCategories)
     },
     categoriesNone() {
@@ -128,9 +129,15 @@ export default {
       // ECMAScript 6 sets can permit faster computing of the elements of one array that aren't in the other
       // Since the lookup complexity for the V8 engine browsers use these days is O(1), the time complexity of the whole algorithm is O(n)
       const toRemove = new Set(this.items)
-      this.checkedCategories = this.checkedCategories.filter(
-        (x) => !toRemove.has(x)
-      )
+
+      let tempArray = Array.from(this.checkedCategories)
+      tempArray = tempArray.filter((x) => !toRemove.has(x))
+
+      this.checkedCategories = new Set(tempArray)
+
+      // this.checkedCategories = this.checkedCategories.filter(
+      //   (x) => !toRemove.has(x)
+      // )
 
       this.$parent.categoriesNone(this.checkedCategories)
     },
@@ -158,7 +165,7 @@ export default {
     }
   },
   mounted() {
-    this.checkedCategories = [...this.itemsFull]
+    this.checkedCategories = new Set(this.itemsFull)
     this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
 
     this.$refs.root.addEventListener('scroll', this.handleScroll, {

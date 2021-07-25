@@ -53,7 +53,7 @@ export default {
       filterCategories: '',
       jsonDataFullQueryPart: {},
       categoriesArray: [],
-      checkedCategories: [],
+      checkedCategories: new Set(),
       categoriesQueryPart: {},
       extract: '',
       // pageNumber: 0,
@@ -176,9 +176,7 @@ export default {
       if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
-            ? page.categories.find((item) =>
-                this.checkedCategories.includes(item)
-              )
+            ? page.categories.find((item) => this.checkedCategories.has(item))
             : null
         )
       }
