@@ -6,12 +6,12 @@
           <li>
             <input
               type="checkbox"
-              :id="item"
-              :value="item"
-              :checked="checkedCategories.includes(item) ? true : false"
+              :id="item.name"
+              :value="item.name"
+              :checked="item.checked"
               @change="resultsCategoriesCheckboxChanged($event)"
             />
-            <label :for="item">{{ item }}</label>
+            <label :for="item.name">{{ item.name }}</label>
           </li>
         </ul>
       </div>
@@ -35,7 +35,8 @@ export default {
   props: {
     items: { required: true, default: () => [], type: Array },
     itemsFull: { required: true, default: () => [], type: Array },
-    rootHeight: { required: true, default: 300, type: Number }
+    rootHeight: { required: true, default: 300, type: Number },
+    filter: { required: true, default: '', type: String }
   },
   data() {
     return {
@@ -46,7 +47,9 @@ export default {
       // Extra padding at the top and bottom so that the items transition smoothly
       // Think of it as extra items just before the viewport starts and just after the viewport ends
       nodePadding: 20,
-      checkedCategories: []
+      // checkedCategories: [],
+      // itemsLocal: [...this.itemsFull] // wrong, objects are still references
+      itemsLocal: this.itemsFull.map((a) => ({ ...a }))
     }
   },
 
@@ -82,13 +85,15 @@ export default {
     Subset of items shown from the full array
     */
     visibleItems() {
-      return this.items.slice(
+      let filtered = this.itemsLocal.filter((a) => a.filtered === false)
+
+      return filtered.slice(
         this.startIndex,
         this.startIndex + this.visibleNodeCount
       )
     },
     itemCount() {
-      return this.items.length
+      return this.itemsLocal.length
     },
     /**
     The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
@@ -117,20 +122,57 @@ export default {
         overflow: 'auto'
       }
     }
+    // itemsFiltered() {
+    //   return this.itemsLocal.filter((item) =>
+    //     item.name.toLowerCase().includes(this.filter.toLowerCase())
+    //   )
+    // }
   },
+
+  watch: {
+    filter() {
+      this.itemsLocal.forEach(
+        (item) =>
+          (item.filtered = !item.name
+            .toLowerCase()
+            .includes(this.filter.toLowerCase()))
+      )
+
+      this.itemsLocal.forEach((item) =>
+        item.filtered === false
+          ? (item.filtered = !this.items.some((i) => i.name === item.name))
+          : null
+      )
+    },
+    items() {
+      this.itemsLocal.forEach(
+        (item) =>
+          (item.filtered = !item.name
+            .toLowerCase()
+            .includes(this.filter.toLowerCase()))
+      )
+
+      this.itemsLocal.forEach((item) =>
+        item.filtered === false
+          ? (item.filtered = !this.items.some((i) => i.name === item.name))
+          : null
+      )
+    }
+  },
+
   methods: {
     categoriesAll() {
-      this.checkedCategories = [...this.items]
-      this.$parent.categoriesAll(this.checkedCategories)
+      // this.itemsLocal = this.items.map((a) => ({ ...a })) // this is slow
+      this.itemsLocal.forEach((category) =>
+        category.filtered === false ? (category.checked = true) : null
+      ) // this is also slow
+      this.$parent.categoriesAll(this.itemsLocal)
     },
     categoriesNone() {
-      this.items.forEach(
-        (category) =>
-          (this.checkedCategories = this.checkedCategories.filter(
-            (cat) => cat !== category
-          ))
-      )
-      this.$parent.categoriesNone(this.checkedCategories)
+      this.itemsLocal.forEach((category) =>
+        category.filtered === false ? (category.checked = false) : null
+      ) // this is kinda ok
+      this.$parent.categoriesNone(this.itemsLocal)
     },
 
     handleScroll() {
@@ -152,25 +194,22 @@ export default {
       return largestHeight
     },
     resultsCategoriesCheckboxChanged(event) {
-      // console.log(event.target.checked)
-      // console.log(event.target.value)
-      if (event.target.checked) {
-        this.checkedCategories.push(event.target.value)
-      } else {
-        this.checkedCategories = this.checkedCategories.filter(
-          (item) => item !== event.target.value
-        )
-      }
+      let indexLocal = this.itemsLocal.findIndex(
+        (a) => a.name === event.target.value
+      )
+      this.itemsLocal[indexLocal].checked = event.target.checked
 
-      //temp
-      this.checkedCategories.sort()
+      // this.itemsLocal[index + this.startIndex].checked = event.target.checked
 
-      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+      this.$parent.resultsCategoriesCheckboxChanged(this.itemsLocal)
     }
   },
   mounted() {
-    this.checkedCategories = [...this.itemsFull]
-    this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+    this.itemsLocal.forEach(
+      (item) => (item.filtered = !item.name.includes(this.filter))
+    )
+
+    this.$emit('resultsCategoriesCheckboxChanged', this.itemsLocal)
 
     this.$refs.root.addEventListener('scroll', this.handleScroll, {
       passive: true

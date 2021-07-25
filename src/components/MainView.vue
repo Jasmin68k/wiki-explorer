@@ -173,6 +173,7 @@ export default {
         )
       }
 
+      // bug: checkedcategories not relevant
       if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
@@ -214,15 +215,20 @@ export default {
           // )
         ) {
           this.resultsObject[property].categories.forEach((category) =>
-            !allCategories.includes(category) &&
+            !allCategories.some((e) => e.name === category) &&
             category.toLowerCase().includes(this.filterCategories.toLowerCase())
-              ? allCategories.push(category)
+              ? allCategories.push({
+                  name: category,
+                  filtered: false,
+                  checked: true
+                })
               : null
           )
         }
       }
+
       allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
+        return a.name.localeCompare(b.name)
       })
 
       return allCategories
@@ -233,14 +239,19 @@ export default {
       for (const property in this.resultsObject) {
         if (this.resultsObject[property].categories) {
           this.resultsObject[property].categories.forEach((category) =>
-            !allCategories.includes(category)
-              ? allCategories.push(category)
+            !allCategories.some((e) => e.name === category)
+              ? allCategories.push({
+                  name: category,
+                  filtered: false,
+                  checked: true
+                })
               : null
           )
         }
       }
+
       allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
+        return a.name.localeCompare(b.name)
       })
 
       return allCategories
@@ -628,6 +639,7 @@ export default {
     },
     resultsCategoriesCheckboxChanged(value) {
       this.checkedCategories = value
+
       // console.log(this.checkedCategories)
     }
   }

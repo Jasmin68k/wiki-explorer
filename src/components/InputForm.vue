@@ -159,6 +159,7 @@
         :items="resultsCategoriesAllArray"
         :items-full="resultsCategoriesAllArrayUnfiltered"
         :root-height="scrollboxContainerHeight"
+        :filter="filterCategories"
         @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
       ></virtual-scrollbox>
     </div>
@@ -295,17 +296,21 @@ export default {
     },
     resultsCategoriesCheckboxChanged(value) {
       this.resetPageNumber()
-      this.$emit('resultsCategoriesCheckboxChanged', value)
+      let checked = value.filter((a) => a.checked === true)
+      checked = checked.map((a) => a.name)
+      this.$emit('resultsCategoriesCheckboxChanged', checked)
     },
-
     categoriesAll(value) {
       this.resetPageNumber()
-
-      this.$emit('resultsCategoriesCheckboxChanged', value)
+      let checked = value.filter((a) => a.checked === true)
+      checked = checked.map((a) => a.name)
+      this.$emit('resultsCategoriesCheckboxChanged', checked)
     },
     categoriesNone(value) {
       this.resetPageNumber()
-      this.$emit('resultsCategoriesCheckboxChanged', value)
+      let checked = value.filter((a) => a.checked === true)
+      checked = checked.map((a) => a.name)
+      this.$emit('resultsCategoriesCheckboxChanged', checked)
     },
     checkboxFilterEnabledChange() {
       this.resetPageNumber()
