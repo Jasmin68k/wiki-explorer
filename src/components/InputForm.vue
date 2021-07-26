@@ -25,9 +25,7 @@
           v-model="checkboxFilterEnabled"
           @change="checkboxFilterEnabledChange"
         />
-        <label for="checkboxFilter"
-          >Enable categories checkbox filter (slow, esp. on big pages)</label
-        >
+        <label for="checkboxFilter">Enable categories checkbox filter</label>
       </form>
 
       <div
