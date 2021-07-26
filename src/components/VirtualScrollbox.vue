@@ -121,7 +121,13 @@ export default {
   methods: {
     categoriesAll() {
       // this.checkedCategories = [...this.items]
-      this.checkedCategories = new Set(this.items)
+
+      this.items.forEach((item) =>
+        !this.checkedCategories.has(item)
+          ? this.checkedCategories.add(item)
+          : null
+      )
+
       this.$parent.categoriesAll(this.checkedCategories)
     },
     categoriesNone() {
@@ -215,5 +221,6 @@ ul {
   position: absolute;
   overflow: auto;
   text-align: left;
+  overscroll-behavior: none;
 }
 </style>
