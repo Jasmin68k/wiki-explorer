@@ -122,11 +122,18 @@ export default {
     categoriesAll() {
       // this.checkedCategories = [...this.items]
 
+      // Temp construct fixes checkboxes not updated from unchecked to check in certain situations,
+      // e. g. none, scroll max down, filter categories, all
+      // also triggers v-model update only at end, might even be faster
+      let checkedCategoriesTemp = new Set(this.checkedCategories)
+
       this.items.forEach((item) =>
-        !this.checkedCategories.has(item)
-          ? this.checkedCategories.add(item)
+        !checkedCategoriesTemp.has(item)
+          ? checkedCategoriesTemp.add(item)
           : null
       )
+
+      this.checkedCategories = checkedCategoriesTemp
 
       this.$parent.categoriesAll(this.checkedCategories)
     },
