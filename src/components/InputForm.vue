@@ -179,7 +179,8 @@ export default {
     'filterCategoriesChanged',
     'indexStartChanged',
     'indexEndChanged',
-    'resultsCategoriesCheckboxChanged'
+    'resultsCategoriesCheckboxChanged',
+    'checkboxFilterEnabledChanged'
   ],
 
   props: {
@@ -308,6 +309,9 @@ export default {
     checkboxFilterEnabledChange() {
       this.resetPageNumber()
       // this.checkedCategories = [...this.resultsCategoriesAllArrayUnfiltered]
+
+      this.$emit('checkboxFilterEnabledChanged', this.checkboxFilterEnabled)
+
       this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
       this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     }

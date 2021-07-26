@@ -15,6 +15,7 @@
     @indexStartChanged="indexStartChanged"
     @indexEndChanged="indexEndChanged"
     @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
+    @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
     ref="inputForm"
   ></input-form>
 
@@ -56,6 +57,7 @@ export default {
       checkedCategories: new Set(),
       categoriesQueryPart: {},
       extract: '',
+      checkboxFilterEnabled: true,
       // pageNumber: 0,
       // sizePerPage: 12,
       returnedTitle: '',
@@ -206,7 +208,11 @@ export default {
       }
     },
     resultsCategoriesAllArray() {
-      if (this.resultsCategoriesDone && this.resultsCategoriesEnabled) {
+      if (
+        this.resultsCategoriesDone &&
+        this.resultsCategoriesEnabled &&
+        this.checkboxFilterEnabled
+      ) {
         let allCategoriesSet = new Set()
 
         for (const property in this.resultsObject) {
@@ -239,7 +245,11 @@ export default {
       }
     },
     resultsCategoriesAllArrayUnfiltered() {
-      if (this.resultsCategoriesDone && this.resultsCategoriesEnabled) {
+      if (
+        this.resultsCategoriesDone &&
+        this.resultsCategoriesEnabled &&
+        this.checkboxFilterEnabled
+      ) {
         let allCategoriesSet = new Set()
 
         for (const property in this.resultsObject) {
@@ -646,7 +656,9 @@ export default {
     },
     resultsCategoriesCheckboxChanged(value) {
       this.checkedCategories = value
-      // console.log(this.checkedCategories)
+    },
+    checkboxFilterEnabledChanged(value) {
+      this.checkboxFilterEnabled = value
     }
   }
 }
