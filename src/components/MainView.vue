@@ -150,98 +150,118 @@ export default {
     },
 
     filteredResultsArray() {
-      let filteredArray = Object.values(this.resultsObject)
+      if (!this.inputsDisabled) {
+        let filteredArray = Object.values(this.resultsObject)
 
-      // apply titles filter
-      filteredArray = filteredArray.filter((page) =>
-        page.title.toLowerCase().includes(this.filter.toLowerCase())
-      )
-
-      // good - maybe rewrite without ternary
-      // needs to check this.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
-      if (
-        this.resultsCategoriesEnabled &&
-        this.resultsCategoriesDone &&
-        this.filterCategories
-      ) {
+        // apply titles filter
         filteredArray = filteredArray.filter((page) =>
-          page.categories
-            ? page.categories.find((item) =>
-                item.toLowerCase().includes(this.filterCategories.toLowerCase())
-              )
-            : null
+          page.title.toLowerCase().includes(this.filter.toLowerCase())
         )
+
+        // good - maybe rewrite without ternary
+        // needs to check this.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
+        if (
+          this.resultsCategoriesEnabled &&
+          this.resultsCategoriesDone &&
+          this.filterCategories
+        ) {
+          filteredArray = filteredArray.filter((page) =>
+            page.categories
+              ? page.categories.find((item) =>
+                  item
+                    .toLowerCase()
+                    .includes(this.filterCategories.toLowerCase())
+                )
+              : null
+          )
+        }
+
+        if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+          filteredArray = filteredArray.filter((page) =>
+            page.categories
+              ? page.categories.find((item) => this.checkedCategories.has(item))
+              : null
+          )
+        }
+
+        // sort
+        filteredArray = filteredArray.sort((a, b) => {
+          return a.title.localeCompare(b.title)
+        })
+
+        return filteredArray
+      } else {
+        return []
       }
-
-      if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
-        filteredArray = filteredArray.filter((page) =>
-          page.categories
-            ? page.categories.find((item) => this.checkedCategories.has(item))
-            : null
-        )
-      }
-
-      // sort
-      filteredArray = filteredArray.sort((a, b) => {
-        return a.title.localeCompare(b.title)
-      })
-
-      return filteredArray
     },
 
     displayResultsArray() {
-      let displayArray = this.filteredResultsArray
-      displayArray = displayArray.filter(
-        (page, index) => index >= this.indexStart && index <= this.indexEnd
-      )
-
-      return displayArray
+      if (!this.inputsDisabled) {
+        return this.filteredResultsArray.slice(
+          this.indexStart,
+          this.indexEnd + 1
+        )
+      } else {
+        return []
+      }
     },
     resultsCategoriesAllArray() {
-      let allCategories = []
+      if (this.resultsCategoriesDone && this.resultsCategoriesEnabled) {
+        let allCategoriesSet = new Set()
 
-      for (const property in this.resultsObject) {
-        if (
-          this.resultsObject[property].categories &&
-          this.resultsObject[property].title
-            .toLowerCase()
-            .includes(this.filter.toLowerCase())
-          //   &&
-          // this.resultsObject[property].categories.find((a) =>
-          //   a.toLowerCase().includes(this.filterCategories.toLowerCase())
-          // )
-        ) {
-          this.resultsObject[property].categories.forEach((category) =>
-            !allCategories.includes(category) &&
-            category.toLowerCase().includes(this.filterCategories.toLowerCase())
-              ? allCategories.push(category)
-              : null
-          )
+        for (const property in this.resultsObject) {
+          if (
+            this.resultsObject[property].categories &&
+            this.resultsObject[property].title
+              .toLowerCase()
+              .includes(this.filter.toLowerCase())
+          ) {
+            this.resultsObject[property].categories.forEach((category) =>
+              !allCategoriesSet.has(category) &&
+              category
+                .toLowerCase()
+                .includes(this.filterCategories.toLowerCase())
+                ? allCategoriesSet.add(category)
+                : null
+            )
+          }
         }
-      }
-      allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
-      })
 
-      return allCategories
+        let allCategories = Array.from(allCategoriesSet)
+
+        allCategories = allCategories.sort((a, b) => {
+          return a.localeCompare(b)
+        })
+
+        return allCategories
+      } else {
+        return []
+      }
     },
     resultsCategoriesAllArrayUnfiltered() {
-      let allCategories = []
+      if (this.resultsCategoriesDone && this.resultsCategoriesEnabled) {
+        let allCategoriesSet = new Set()
 
-      for (const property in this.resultsObject) {
-        if (this.resultsObject[property].categories) {
-          this.resultsObject[property].categories.forEach((category) =>
-            !allCategories.includes(category)
-              ? allCategories.push(category)
-              : null
-          )
+        for (const property in this.resultsObject) {
+          if (this.resultsObject[property].categories) {
+            this.resultsObject[property].categories.forEach((category) =>
+              !allCategoriesSet.has(category)
+                ? allCategoriesSet.add(category)
+                : null
+            )
+          }
         }
-      }
-      allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
-      })
 
-      return allCategories
+        let allCategories = Array.from(allCategoriesSet)
+
+        allCategories = allCategories.sort((a, b) => {
+          return a.localeCompare(b)
+        })
+
+        return allCategories
+      } else {
+        return []
+      }
     }
   },
 
