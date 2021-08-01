@@ -80,13 +80,7 @@
       <input
         type="range"
         min="1"
-        :max="
-          filteredResultsArray.length === 0
-            ? sizePerPage
-            : filteredResultsArray.length <= 24
-            ? filteredResultsArray.length
-            : 24
-        "
+        :max="24"
         v-model="sizePerPage"
         :disabled="inputsDisabled || filteredResultsArray.length === 0"
         :style="{
@@ -99,7 +93,7 @@
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        Results per page: {{ sizePerPage }}
+        Max. results per page: {{ sizePerPage }}
       </div>
       <br />
 
