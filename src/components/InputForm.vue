@@ -3,7 +3,15 @@
     <div class="inputform">
       <form @submit.prevent="fetchData()">
         <input id="title" v-model="title" :disabled="inputsDisabled" />
-        <button type="submit" :disabled="inputsDisabled">Fetch data</button>
+        <button
+          type="submit"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+        >
+          Fetch data
+        </button>
       </form>
       <form>
         <input
