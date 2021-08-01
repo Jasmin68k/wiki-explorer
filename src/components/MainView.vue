@@ -178,7 +178,11 @@ export default {
           )
         }
 
-        if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+        if (
+          this.resultsCategoriesEnabled &&
+          this.resultsCategoriesDone &&
+          this.checkboxFilterEnabled
+        ) {
           filteredArray = filteredArray.filter((page) =>
             page.categories
               ? page.categories.find((item) => this.checkedCategories.has(item))
