@@ -18,8 +18,8 @@
     </div>
   </div>
   <div class="checkboxbuttons">
-    <button @click.prevent="categoriesAll">All</button>
-    <button @click.prevent="categoriesNone">None</button>
+    <button @click.prevent="categoriesAll">{{ $t('all') }}</button>
+    <button @click.prevent="categoriesNone">{{ $t('none') }}</button>
   </div>
 </template>
 <script>

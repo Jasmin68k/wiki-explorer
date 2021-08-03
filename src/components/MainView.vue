@@ -706,6 +706,7 @@ export default {
       this.checkboxFilterEnabled = value
     },
     languageSwitched(value) {
+      this.$i18n.locale = value
       this.language = value
     }
   }

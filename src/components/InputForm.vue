@@ -17,25 +17,34 @@
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
         >
-          Fetch data
+          {{ $t('fetch-data') }}
         </button>
 
         <input
           type="radio"
           id="en"
           value="en"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
           v-model="language"
           @change="languageSwitched"
         />
-        <label for="en">English</label>
+
+        <label for="en">{{ $t('language-en') }}</label>
         <input
           type="radio"
           id="de"
           value="de"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
           v-model="language"
           @change="languageSwitched"
         />
-        <label for="de">German</label>
+        <label for="de">{{ $t('language-de') }}</label>
       </form>
       <form>
         <input
@@ -45,9 +54,9 @@
           v-model="resultsCategoriesEnabled"
           @change="resultsCategoriesChanged"
         />
-        <label for="resultsCategories"
-          >Show results categories (slow init, esp. on big pages)</label
-        >
+        <label for="resultsCategories">{{
+          $t('show-results-categories')
+        }}</label>
       </form>
       <form>
         <input
@@ -57,7 +66,9 @@
           v-model="checkboxFilterEnabled"
           @change="checkboxFilterEnabledChange"
         />
-        <label for="checkboxFilter">Enable categories checkbox filter</label>
+        <label for="checkboxFilter">{{
+          $t('enable-categories-checkbox-filter')
+        }}</label>
       </form>
 
       <div
@@ -69,7 +80,7 @@
           color: 'red'
         }"
       >
-        Fetching results categories...
+        {{ $t('fetching-results-categories') }}
       </div>
 
       <form>
@@ -80,13 +91,11 @@
           v-model="resultsRedirectsEnabled"
           @change="resultsRedirectsChanged"
         />
-        <label for="resultsRedirects"
-          >Show used redirects (not all possible ones)</label
-        >
+        <label for="resultsRedirects">{{ $t('show-used-redirects') }}</label>
       </form>
 
       <form @submit.prevent="">
-        <label for="filter">Filter results titles:</label>
+        <label for="filter">{{ $t('filter-results-titles') }}</label>
         <input
           id="filter"
           v-model="filter"
@@ -96,7 +105,9 @@
       </form>
 
       <form @submit.prevent="">
-        <label for="filterCategories">Filter results categories:</label>
+        <label for="filterCategories">{{
+          $t('filter-results-categories')
+        }}</label>
         <input
           id="filterCategories"
           v-model="filterCategories"
@@ -125,7 +136,7 @@
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        Max. results per page: {{ sizePerPage }}
+        {{ $t('max-results-per-page') }}{{ sizePerPage }}
       </div>
       <br />
 
@@ -134,16 +145,16 @@
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        Page: {{ pageNumber + 1 }} of
-        {{ numberOfPages }}
+        {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
       </div>
-      <p>Results: {{ filteredResultsArray.length }}</p>
+      <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
       <p
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        Showing from {{ indexStart + 1 }} to {{ indexEnd + 1 }}
+        {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
+        }}{{ indexEnd + 1 }}
       </p>
       <form
         :style="{
@@ -158,7 +169,7 @@
             pageNumber === 0
           "
         >
-          Prev. page
+          {{ $t('prev-page') }}
         </button>
         <button
           @click.prevent="nextPage"
@@ -168,7 +179,7 @@
             pageNumber + 1 === numberOfPages
           "
         >
-          Next page
+          {{ $t('next-page') }}
         </button>
       </form>
     </div>

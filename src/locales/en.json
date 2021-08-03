@@ -1,0 +1,23 @@
+{
+  "message": "hello i18n !!",
+  "language-en": "English",
+  "language-de": "German",
+  "all": "All",
+  "none": "None",
+  "fetch-data": "Fetch data",
+  "show-results-categories": "Show results categories (slow init, esp. on big pages)",
+  "enable-categories-checkbox-filter": "Enable categories checkbox filter",
+  "fetching-results-categories": "Fetching results categories...",
+  "show-used-redirects": "Show used redirects (not all possible ones)",
+  "filter-results-titles": "Filter results titles: ",
+  "filter-results-categories": "Filter results categories: ",
+  "max-results-per-page": "Max. results per page: ",
+  "page": "Page: ",
+  "of": " of ",
+  "results": "Results: ",
+  "showing": "Showing ",
+  "from": "from ",
+  "to": " to ",
+  "prev-page": "Prev. page",
+  "next-page": "Next page"
+}

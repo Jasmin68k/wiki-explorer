@@ -1,0 +1,22 @@
+{
+  "language-en": "Englisch",
+  "language-de": "Deutsch",
+  "all": "Alle",
+  "none": "Keine",
+  "fetch-data": "Hole Daten",
+  "show-results-categories": "Zeige Ergebniskategorien (langsame Initalisierung, bes. bei gr. Seiten)",
+  "enable-categories-checkbox-filter": "Aktiviere Checkbox-Filter für Kategorien",
+  "fetching-results-categories": "Hole Ergebniskategorien...",
+  "show-used-redirects": "Zeige verwendete Weiterleitungen (nicht alle möglichen)",
+  "filter-results-titles": "Filtere Ergebnistitel: ",
+  "filter-results-categories": "Filtere Ergebniskategorien: ",
+  "max-results-per-page": "Max. Ergebnisse pro Seite: ",
+  "page": "Seite: ",
+  "of": " von ",
+  "results": "Ergebnisse: ",
+  "showing": "Angezeigt ",
+  "from": "von ",
+  "to": " bis ",
+  "prev-page": "Vorh. Seite",
+  "next-page": "Nächste Seite"
+}
