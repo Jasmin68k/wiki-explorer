@@ -16,6 +16,7 @@
     @indexEndChanged="indexEndChanged"
     @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
     @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
+    @languageSwitched="languageSwitched"
     ref="inputForm"
   ></input-form>
 
@@ -47,6 +48,7 @@ export default {
   components: { InputForm, MainTitleInfo, Outgraph },
   data() {
     return {
+      language: 'en',
       indexStart: 0,
       indexEnd: 0,
       title: '',
@@ -96,7 +98,9 @@ export default {
     // },
     mainInfoUrl() {
       let url =
-        'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
+        'https://' +
+        this.language +
+        '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
         this.title +
         '&origin=*'
 
@@ -106,7 +110,9 @@ export default {
     // separate categories fetch, instead of adding to main info, for simple continue handling
     categoriesUrl() {
       let url =
-        'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
+        'https://' +
+        this.language +
+        '.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
         this.title +
         '&origin=*'
 
@@ -121,7 +127,9 @@ export default {
     },
     pageUrl() {
       let url =
-        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+        'https://' +
+        this.language +
+        '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
         this.title +
         '&prop=info&inprop=url&origin=*'
 
@@ -137,7 +145,9 @@ export default {
     // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
     pageUrlCategories() {
       let url =
-        'https://en.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+        'https://' +
+        this.language +
+        '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
         this.title +
         '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
 
@@ -485,11 +495,24 @@ export default {
                       if (
                         this.resultsObject[property].categories[i].startsWith(
                           'Category:'
-                        )
+                        ) &&
+                        this.language === 'en'
                       ) {
                         this.resultsObject[property].categories[i] =
                           this.resultsObject[property].categories[i].substring(
                             9
+                          )
+                      }
+
+                      if (
+                        this.resultsObject[property].categories[i].startsWith(
+                          'Kategorie:'
+                        ) &&
+                        this.language === 'de'
+                      ) {
+                        this.resultsObject[property].categories[i] =
+                          this.resultsObject[property].categories[i].substring(
+                            10
                           )
                       }
                     }
@@ -519,8 +542,17 @@ export default {
         // )
         // add emptycategory to objects without category for filter
         for (const property in this.resultsObject) {
-          if (!this.resultsObject[property].categories) {
+          if (
+            !this.resultsObject[property].categories &&
+            this.language === 'en'
+          ) {
             this.resultsObject[property].categories = ['[ NO CATEGORY ]']
+          }
+          if (
+            !this.resultsObject[property].categories &&
+            this.language === 'de'
+          ) {
+            this.resultsObject[property].categories = ['[ KEINE KATEGORIE ]']
           }
         }
       }
@@ -615,8 +647,17 @@ export default {
       // filter "Category:" at beginning
       for (let i = 0; i < this.categoriesArray.length; i++) {
         // not sure it always starts with "Category:", check and only remove if it does
-        if (this.categoriesArray[i].startsWith('Category:')) {
+        if (
+          this.categoriesArray[i].startsWith('Category:') &&
+          this.language === 'en'
+        ) {
           this.categoriesArray[i] = this.categoriesArray[i].substring(9)
+        }
+        if (
+          this.categoriesArray[i].startsWith('Kategorie:') &&
+          this.language === 'de'
+        ) {
+          this.categoriesArray[i] = this.categoriesArray[i].substring(10)
         }
       }
 
@@ -663,6 +704,9 @@ export default {
     },
     checkboxFilterEnabledChanged(value) {
       this.checkboxFilterEnabled = value
+    },
+    languageSwitched(value) {
+      this.language = value
     }
   }
 }

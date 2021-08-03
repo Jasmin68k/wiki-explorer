@@ -19,6 +19,23 @@
         >
           Fetch data
         </button>
+
+        <input
+          type="radio"
+          id="en"
+          value="en"
+          v-model="language"
+          @change="languageSwitched"
+        />
+        <label for="en">English</label>
+        <input
+          type="radio"
+          id="de"
+          value="de"
+          v-model="language"
+          @change="languageSwitched"
+        />
+        <label for="de">German</label>
       </form>
       <form>
         <input
@@ -189,7 +206,8 @@ export default {
     'indexStartChanged',
     'indexEndChanged',
     'resultsCategoriesCheckboxChanged',
-    'checkboxFilterEnabledChanged'
+    'checkboxFilterEnabledChanged',
+    'languageSwitched'
   ],
 
   props: {
@@ -248,6 +266,7 @@ export default {
   },
   data() {
     return {
+      language: 'en',
       title: '',
       filter: '',
       resultsCategoriesEnabled: true,
@@ -323,6 +342,9 @@ export default {
 
       this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
       this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+    },
+    languageSwitched() {
+      this.$emit('languageSwitched', this.language)
     }
   }
 }
