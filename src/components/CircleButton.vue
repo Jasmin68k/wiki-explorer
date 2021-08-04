@@ -73,6 +73,8 @@ export default {
       hoverButtonIndex: -1
     }
   },
+
+  emits: ['circleButtonClicked'],
   props: {
     index: { required: true, default: -1, type: Number },
     inputsDisabled: { required: true, default: false, type: Boolean },
@@ -111,7 +113,8 @@ export default {
       this.hoverButtonIndex = -1
     },
     circleButton(index) {
-      this.$parent.$emit('circleButtonClicked', index)
+      // this.$parent.$emit('circleButtonClicked', index)
+      this.$emit('circleButtonClicked', index)
     }
   }
 }

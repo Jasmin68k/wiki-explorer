@@ -22,6 +22,7 @@
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-enabled="resultsRedirectsEnabled"
         :outgraphcanvasref="outgraphcanvasref"
+        @circleButtonClicked="circleButtonClicked"
       >
       </circle-button>
     </div>
@@ -95,6 +96,9 @@ export default {
         )
         ctx.stroke()
       }
+    },
+    circleButtonClicked(index) {
+      this.$emit('circleButtonClicked', index)
     }
   },
   mounted() {
