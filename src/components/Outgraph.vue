@@ -112,7 +112,6 @@ export default {
   position: relative;
   width: 1200px;
   height: 600px;
-  /* border: 1px solid black; */
 }
 .outgraphcanvas {
   width: 100%;

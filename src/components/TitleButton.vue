@@ -50,13 +50,6 @@ export default {
   },
   methods: {
     hoverButtonTitleOn() {
-      // this.hoverRightTitle =
-      //   this.$refs['titlebutton'].getBoundingClientRect().right -
-      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().left
-      // this.hoverBottomTitle =
-      //   this.$refs['titlebutton'].getBoundingClientRect().bottom -
-      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().top
-
       this.hoverRightTitle =
         this.$refs['titlebutton'].getBoundingClientRect().right -
         this.outgraphcanvasref.getBoundingClientRect().left
@@ -64,7 +57,6 @@ export default {
         this.$refs['titlebutton'].getBoundingClientRect().bottom -
         this.outgraphcanvasref.getBoundingClientRect().top
 
-      // setTimeout(() => (this.hoverButtonTitle = true), 1000)
       this.hoverButtonTitle = true
     },
     hoverButtonTitleOff() {
@@ -102,8 +94,6 @@ ul {
   position: absolute;
   left: var(--poslefttitle);
   top: var(--postoptitle);
-  /* left: 0px;
-  top: 0px; */
   z-index: 5;
 }
 </style>

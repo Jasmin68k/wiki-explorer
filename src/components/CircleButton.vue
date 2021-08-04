@@ -90,13 +90,6 @@ export default {
 
       this.hoverButtonIndex = index
 
-      // this.hoverRight =
-      //   this.$refs[`circlebutton${index}`].getBoundingClientRect().right -
-      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().left
-      // this.hoverBottom =
-      //   this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
-      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().top
-
       this.hoverRight =
         this.$refs[`circlebutton${index}`].getBoundingClientRect().right -
         this.outgraphcanvasref.getBoundingClientRect().left
@@ -104,7 +97,6 @@ export default {
         this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
         this.outgraphcanvasref.getBoundingClientRect().top
 
-      // setTimeout(() => (this.hoverButton = true), 1000)
       this.hoverButton = true
     },
     hoverButtonOff(index) {
@@ -113,7 +105,6 @@ export default {
       this.hoverButtonIndex = -1
     },
     circleButton(index) {
-      // this.$parent.$emit('circleButtonClicked', index)
       this.$emit('circleButtonClicked', index)
     }
   }
@@ -148,7 +139,5 @@ ul {
   left: var(--posleft);
   top: var(--postop);
   z-index: 5;
-  /* left: 0px;
-  top: 0px; */
 }
 </style>

@@ -335,10 +335,6 @@ export default {
         this.pageNumber--
       }
     },
-    // // called from parent
-    // titleChanged(value) {
-    //   this.title = value
-    // },
     resultsCategoriesCheckboxChanged(value) {
       this.resetPageNumber()
       this.$emit('resultsCategoriesCheckboxChanged', value)
@@ -355,7 +351,6 @@ export default {
     },
     checkboxFilterEnabledChange() {
       this.resetPageNumber()
-      // this.checkedCategories = [...this.resultsCategoriesAllArrayUnfiltered]
 
       this.$emit('checkboxFilterEnabledChanged', this.checkboxFilterEnabled)
 

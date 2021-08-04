@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-// Concept mainly taken from:
+// Virtual scrollbox concept mainly taken from:
 // https://dev.to/adamklein/build-your-own-virtual-scroll-part-i-11ib
 // https://stackoverflow.com/questions/60924305/how-to-make-virtual-scroll
 // https://codepen.io/zupkode/pen/oNgaqLv
@@ -55,36 +55,28 @@ export default {
   },
 
   computed: {
-    /**
-    Total height of the viewport = number of items in the array x height of each item
-    */
+    // Total height of the viewport = number of items in the array x height of each item
     viewportHeight() {
       return this.itemCount * this.rowHeight
     },
-    /**
-    Out of all the items in the massive array, we only render a subset of them
-    This is the starting index from which we show a few items
-    */
+    // Out of all the items in the massive array, we only render a subset of them
+    // This is the starting index from which we show a few items
     startIndex() {
       let startNode =
         Math.floor(this.scrollTop / this.rowHeight) - this.nodePadding
       startNode = Math.max(0, startNode)
       return startNode
     },
-    /**
-    This is the number of items we show after the starting index
-    If the array has a total 10000 items, we want to show items from say index 1049 till 1069
-    visible node count is that number 20 and starting index is 1049
-    */
+    // This is the number of items we show after the starting index
+    // If the array has a total 10000 items, we want to show items from say index 1049 till 1069
+    // visible node count is that number 20 and starting index is 1049
     visibleNodeCount() {
       let count =
         Math.ceil(this.rootHeight / this.rowHeight) + 2 * this.nodePadding
       count = Math.min(this.itemCount - this.startIndex, count)
       return count
     },
-    /**
-    Subset of items shown from the full array
-    */
+    // Subset of items shown from the full array
     visibleItems() {
       return this.items.slice(
         this.startIndex,
@@ -94,15 +86,11 @@ export default {
     itemCount() {
       return this.items.length
     },
-    /**
-    The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
-    */
+    // The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
     offsetY() {
       return this.startIndex * this.rowHeight
     },
-    /**
-    This is the direct list container, we apply a translateY to this
-    */
+    // This is the direct list container, we apply a translateY to this
     spacerStyle() {
       return {
         transform: 'translateY(' + this.offsetY + 'px)'
@@ -124,8 +112,6 @@ export default {
   },
   methods: {
     categoriesAll() {
-      // this.checkedCategories = [...this.items]
-
       // Temp construct fixes checkboxes not updated from unchecked to check in certain situations,
       // e. g. none, scroll max down, filter categories, all
       // also triggers v-model update only at end, might even be faster
@@ -139,7 +125,6 @@ export default {
 
       this.checkedCategories = checkedCategoriesTemp
 
-      //this.$parent.categoriesAll(this.checkedCategories)
       this.$emit('categoriesAll', this.checkedCategories)
     },
     categoriesNone() {
@@ -153,22 +138,15 @@ export default {
 
       this.checkedCategories = new Set(tempArray)
 
-      // this.checkedCategories = this.checkedCategories.filter(
-      //   (x) => !toRemove.has(x)
-      // )
-
-      //this.$parent.categoriesNone(this.checkedCategories)
       this.$emit('categoriesNone', this.checkedCategories)
     },
 
     handleScroll() {
       this.scrollTop = this.$refs.root.scrollTop
     },
-    /**
-    Find the largest height amongst all the children
-    Remember each row has to be of the same height
-    I am working on the different height version
-    */
+    // Find the largest height amongst all the children
+    // Remember each row has to be of the same height
+    // I am working on the different height version
     calculateInitialRowHeight() {
       const children = this.$refs.spacer.children
       let largestHeight = 0
@@ -197,7 +175,7 @@ export default {
         ? largestHeight
         : 30
   },
-  // unmounted this.$refs.root = null -> error
+  // unmounted() this.$refs.root = null -> error
   beforeUnmount() {
     this.$refs.root.removeEventListener('scroll', this.handleScroll)
   }
