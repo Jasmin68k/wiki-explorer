@@ -21,6 +21,7 @@
         :results-categories-enabled="resultsCategoriesEnabled"
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-enabled="resultsRedirectsEnabled"
+        :outgraphcanvasref="outgraphcanvasref"
       >
       </circle-button>
     </div>

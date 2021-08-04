@@ -79,19 +79,28 @@ export default {
     resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
     displayResultsArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
-    resultsCategoriesDone: { required: true, default: true, type: Boolean }
+    resultsCategoriesDone: { required: true, default: true, type: Boolean },
+    outgraphcanvasref: { required: true, default: {} }
   },
   methods: {
     hoverButtonOn(index) {
       this.$refs[`circlebutton${index}`].style.zIndex = 3
 
       this.hoverButtonIndex = index
+
+      // this.hoverRight =
+      //   this.$refs[`circlebutton${index}`].getBoundingClientRect().right -
+      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().left
+      // this.hoverBottom =
+      //   this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
+      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().top
+
       this.hoverRight =
         this.$refs[`circlebutton${index}`].getBoundingClientRect().right -
-        this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().left
+        this.outgraphcanvasref.getBoundingClientRect().left
       this.hoverBottom =
         this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
-        this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().top
+        this.outgraphcanvasref.getBoundingClientRect().top
 
       // setTimeout(() => (this.hoverButton = true), 1000)
       this.hoverButton = true
