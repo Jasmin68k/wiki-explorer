@@ -30,7 +30,11 @@
 
 export default {
   name: 'CategoriesCheckboxFilter',
-  emits: ['resultsCategoriesCheckboxChanged'],
+  emits: [
+    'resultsCategoriesCheckboxChanged',
+    'categoriesAll',
+    'categoriesNone'
+  ],
 
   props: {
     items: { required: true, default: () => [], type: Array },
@@ -135,7 +139,8 @@ export default {
 
       this.checkedCategories = checkedCategoriesTemp
 
-      this.$parent.categoriesAll(this.checkedCategories)
+      //this.$parent.categoriesAll(this.checkedCategories)
+      this.$emit('categoriesAll', this.checkedCategories)
     },
     categoriesNone() {
       // https://stackoverflow.com/a/44204227
@@ -152,7 +157,8 @@ export default {
       //   (x) => !toRemove.has(x)
       // )
 
-      this.$parent.categoriesNone(this.checkedCategories)
+      //this.$parent.categoriesNone(this.checkedCategories)
+      this.$emit('categoriesNone', this.checkedCategories)
     },
 
     handleScroll() {

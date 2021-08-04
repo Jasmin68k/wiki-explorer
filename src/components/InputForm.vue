@@ -195,6 +195,8 @@
         :items-full="resultsCategoriesAllArrayUnfiltered"
         :root-height="scrollboxContainerHeight"
         @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
+        @categoriesAll="categoriesAll"
+        @categoriesNone="categoriesNone"
       ></categories-checkbox-filter>
     </div>
   </div>
