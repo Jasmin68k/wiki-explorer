@@ -7,6 +7,7 @@
     :results-categories-all-array-unfiltered="
       resultsCategoriesAllArrayUnfiltered
     "
+    :parent-title="title"
     @fetchDataClicked="fetchDataClicked"
     @resultsCategoriesChanged="resultsCategoriesChanged"
     @resultsRedirectsChanged="resultsRedirectsChanged"
@@ -639,7 +640,7 @@ export default {
     circleButtonClicked(index) {
       this.title = this.displayResultsArray[index].title
 
-      this.$refs.inputForm.titleChanged(this.title)
+      // this.$refs.inputForm.titleChanged(this.title)
 
       this.getJson()
       this.getMainInfo()

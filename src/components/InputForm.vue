@@ -224,6 +224,7 @@ export default {
   ],
 
   props: {
+    parentTitle: { required: true, default: '', type: String },
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     filteredResultsArray: { required: true, default: () => [], type: Array },
@@ -244,6 +245,11 @@ export default {
     },
     indexEnd() {
       this.$emit('indexEndChanged', this.indexEnd)
+    },
+    parentTitle() {
+      if (this.parentTitle) {
+        this.title = this.parentTitle
+      }
     }
   },
 
@@ -329,10 +335,10 @@ export default {
         this.pageNumber--
       }
     },
-    // called from parent
-    titleChanged(value) {
-      this.title = value
-    },
+    // // called from parent
+    // titleChanged(value) {
+    //   this.title = value
+    // },
     resultsCategoriesCheckboxChanged(value) {
       this.resetPageNumber()
       this.$emit('resultsCategoriesCheckboxChanged', value)
