@@ -10,6 +10,7 @@
       :redirect="redirect"
       :categories-array="categoriesArray"
       :url="url"
+      :outgraphcanvasref="outgraphcanvasref"
     ></title-button>
 
     <div v-for="(page, index) in displayResultsArray" :key="index">
@@ -49,7 +50,11 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     titleMissing: { required: true, default: true, type: Boolean }
   },
-
+  data() {
+    return {
+      outgraphcanvasref: {}
+    }
+  },
   watch: {
     displayResultsArray() {
       if (this.displayResultsArray.length > 0 && !this.inputsDisabled) {
@@ -90,6 +95,9 @@ export default {
         ctx.stroke()
       }
     }
+  },
+  mounted() {
+    this.outgraphcanvasref = this.$refs['outgraphcanvas']
   }
 }
 </script>

@@ -45,16 +45,24 @@ export default {
     redirect: { required: true, default: '', type: String },
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },
-    url: { required: true, default: '', type: String }
+    url: { required: true, default: '', type: String },
+    outgraphcanvasref: { required: true, default: {} }
   },
   methods: {
     hoverButtonTitleOn() {
+      // this.hoverRightTitle =
+      //   this.$refs['titlebutton'].getBoundingClientRect().right -
+      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().left
+      // this.hoverBottomTitle =
+      //   this.$refs['titlebutton'].getBoundingClientRect().bottom -
+      //   this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().top
+
       this.hoverRightTitle =
         this.$refs['titlebutton'].getBoundingClientRect().right -
-        this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().left
+        this.outgraphcanvasref.getBoundingClientRect().left
       this.hoverBottomTitle =
         this.$refs['titlebutton'].getBoundingClientRect().bottom -
-        this.$parent.$refs['outgraphcanvas'].getBoundingClientRect().top
+        this.outgraphcanvasref.getBoundingClientRect().top
 
       // setTimeout(() => (this.hoverButtonTitle = true), 1000)
       this.hoverButtonTitle = true
