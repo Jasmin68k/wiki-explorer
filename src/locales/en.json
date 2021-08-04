@@ -19,5 +19,7 @@
   "from": "from ",
   "to": " to ",
   "prev-page": "Prev. page",
-  "next-page": "Next page"
+  "next-page": "Next page",
+  "category-prefix": "Category:",
+  "no-category": "[ NO CATEGORY ]"
 }

@@ -494,25 +494,12 @@ export default {
                       // not sure it always starts with "Category:", check and only remove if it does
                       if (
                         this.resultsObject[property].categories[i].startsWith(
-                          'Category:'
-                        ) &&
-                        this.language === 'en'
+                          this.$t('category-prefix')
+                        )
                       ) {
                         this.resultsObject[property].categories[i] =
                           this.resultsObject[property].categories[i].substring(
-                            9
-                          )
-                      }
-
-                      if (
-                        this.resultsObject[property].categories[i].startsWith(
-                          'Kategorie:'
-                        ) &&
-                        this.language === 'de'
-                      ) {
-                        this.resultsObject[property].categories[i] =
-                          this.resultsObject[property].categories[i].substring(
-                            10
+                            this.$t('category-prefix').length
                           )
                       }
                     }
@@ -542,17 +529,8 @@ export default {
         // )
         // add emptycategory to objects without category for filter
         for (const property in this.resultsObject) {
-          if (
-            !this.resultsObject[property].categories &&
-            this.language === 'en'
-          ) {
-            this.resultsObject[property].categories = ['[ NO CATEGORY ]']
-          }
-          if (
-            !this.resultsObject[property].categories &&
-            this.language === 'de'
-          ) {
-            this.resultsObject[property].categories = ['[ KEINE KATEGORIE ]']
+          if (!this.resultsObject[property].categories) {
+            this.resultsObject[property].categories = [this.$t('no-category')]
           }
         }
       }
@@ -647,17 +625,10 @@ export default {
       // filter "Category:" at beginning
       for (let i = 0; i < this.categoriesArray.length; i++) {
         // not sure it always starts with "Category:", check and only remove if it does
-        if (
-          this.categoriesArray[i].startsWith('Category:') &&
-          this.language === 'en'
-        ) {
-          this.categoriesArray[i] = this.categoriesArray[i].substring(9)
-        }
-        if (
-          this.categoriesArray[i].startsWith('Kategorie:') &&
-          this.language === 'de'
-        ) {
-          this.categoriesArray[i] = this.categoriesArray[i].substring(10)
+        if (this.categoriesArray[i].startsWith(this.$t('category-prefix'))) {
+          this.categoriesArray[i] = this.categoriesArray[i].substring(
+            this.$t('category-prefix').length
+          )
         }
       }
 

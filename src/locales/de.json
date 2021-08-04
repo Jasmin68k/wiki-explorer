@@ -18,5 +18,7 @@
   "from": "von ",
   "to": " bis ",
   "prev-page": "Vorh. Seite",
-  "next-page": "Nächste Seite"
+  "next-page": "Nächste Seite",
+  "category-prefix": "Kategorie:",
+  "no-category": "[ KEINE KATEGORIE ]"
 }
