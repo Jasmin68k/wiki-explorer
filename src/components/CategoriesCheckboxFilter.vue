@@ -29,7 +29,7 @@
 // https://codepen.io/zupkode/pen/oNgaqLv
 
 export default {
-  name: 'VirtualScrollbox',
+  name: 'CategoriesCheckboxFilter',
   emits: ['resultsCategoriesCheckboxChanged'],
 
   props: {

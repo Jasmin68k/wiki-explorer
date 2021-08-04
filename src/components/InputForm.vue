@@ -184,7 +184,7 @@
       </form>
     </div>
     <div class="inputcategoriescontainer" ref="inputcategoriescontainer">
-      <virtual-scrollbox
+      <categories-checkbox-filter
         v-if="
           resultsCategoriesEnabled &&
           resultsCategoriesAllArray.length > 0 &&
@@ -195,16 +195,16 @@
         :items-full="resultsCategoriesAllArrayUnfiltered"
         :root-height="scrollboxContainerHeight"
         @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-      ></virtual-scrollbox>
+      ></categories-checkbox-filter>
     </div>
   </div>
 </template>
 <script>
-import VirtualScrollbox from './VirtualScrollbox.vue'
+import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 
 export default {
   name: 'InputForm',
-  components: { VirtualScrollbox },
+  components: { CategoriesCheckboxFilter },
 
   // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
   // should not be needed, when fixed
