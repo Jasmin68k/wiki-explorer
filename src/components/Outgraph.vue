@@ -22,6 +22,7 @@
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-enabled="resultsRedirectsEnabled"
         :outgraphcanvasref="outgraphcanvasref"
+        :circle-button-radius="circleButtonRadius"
         @circleButtonClicked="circleButtonClicked"
       >
       </circle-button>
@@ -54,7 +55,8 @@ export default {
   },
   data() {
     return {
-      outgraphcanvasref: {}
+      outgraphcanvasref: {},
+      circleButtonRadius: 250
     }
   },
   watch: {
@@ -89,7 +91,7 @@ export default {
         ctx.moveTo(middleX, middleY)
         const angle =
           ((270 + (360 / this.displayResultsArray.length) * i) * Math.PI) / 180
-        const length = 250
+        const length = this.circleButtonRadius
         ctx.lineTo(
           length * Math.cos(angle) + middleX,
           length * Math.sin(angle) + middleY
@@ -110,7 +112,7 @@ export default {
 .outgraph {
   margin: auto;
   position: relative;
-  width: 1200px;
+  width: 800px;
   height: 600px;
 }
 .outgraphcanvas {

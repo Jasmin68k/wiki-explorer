@@ -3,7 +3,8 @@
     v-show="!inputsDisabled"
     class="circlebutton"
     :style="{
-      '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg'
+      '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg',
+      '--radius': circleButtonRadius + 'px'
     }"
     :ref="`circlebutton${index}`"
     @mouseover="hoverButtonOn(index)"
@@ -82,7 +83,8 @@ export default {
     displayResultsArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
-    outgraphcanvasref: { required: true, default: {} }
+    outgraphcanvasref: { required: true, default: {} },
+    circleButtonRadius: { required: true, default: 250, type: Number }
   },
   methods: {
     hoverButtonOn(index) {
@@ -115,6 +117,7 @@ ul {
   list-style-type: none; /* Remove bullets */
   padding: 0; /* Remove padding */
   margin: 0; /* Remove margins */
+  white-space: nowrap;
 }
 .missing {
   color: red;
@@ -128,7 +131,7 @@ ul {
   top: 50%;
   z-index: 1;
   /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
-  transform: translate(-50%, -50%) rotate(var(--angle)) translate(250px)
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
     rotate(calc(-1 * var(--angle)));
 }
 .circlebuttonhover {
