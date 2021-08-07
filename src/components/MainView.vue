@@ -1,54 +1,93 @@
 <template>
-  <input-form
-    :inputs-disabled="inputsDisabled"
-    :results-categories-done="resultsCategoriesDone"
-    :filtered-results-array="filteredResultsArray"
-    :results-categories-all-array="resultsCategoriesAllArray"
-    :results-categories-all-array-unfiltered="
-      resultsCategoriesAllArrayUnfiltered
-    "
-    :parent-title="title"
-    @fetchDataClicked="fetchDataClicked"
-    @resultsCategoriesChanged="resultsCategoriesChanged"
-    @resultsRedirectsChanged="resultsRedirectsChanged"
-    @filterChanged="filterChanged"
-    @filterCategoriesChanged="filterCategoriesChanged"
-    @indexStartChanged="indexStartChanged"
-    @indexEndChanged="indexEndChanged"
-    @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-    @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
-    @languageSwitched="languageSwitched"
-    ref="inputForm"
-  ></input-form>
+  <div class="flex">
+    <div class="grid">
+      <input-form
+        :style="{
+          '--inputformheight': inputFormHeight + 'px'
+        }"
+        class="inputform"
+        :inputs-disabled="inputsDisabled"
+        :results-categories-done="resultsCategoriesDone"
+        :filtered-results-array="filteredResultsArray"
+        :results-categories-all-array="resultsCategoriesAllArray"
+        :results-categories-all-array-unfiltered="
+          resultsCategoriesAllArrayUnfiltered
+        "
+        :parent-title="title"
+        @fetchDataClicked="fetchDataClicked"
+        @resultsCategoriesChanged="resultsCategoriesChanged"
+        @resultsRedirectsChanged="resultsRedirectsChanged"
+        @filterChanged="filterChanged"
+        @filterCategoriesChanged="filterCategoriesChanged"
+        @indexStartChanged="indexStartChanged"
+        @indexEndChanged="indexEndChanged"
+        @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
+        @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
+        @languageSwitched="languageSwitched"
+        ref="inputForm"
+      ></input-form>
 
-  <br />
-  <outgraph
-    :inputs-disabled="inputsDisabled"
-    :title="returnedTitle"
-    :url="returnedUrl"
-    :results-redirects-enabled="resultsRedirectsEnabled"
-    :redirect="returnedRedirect"
-    :display-results-array="displayResultsArray"
-    :categories-array="categoriesArray"
-    :results-categories-enabled="resultsCategoriesEnabled"
-    :results-categories-done="resultsCategoriesDone"
-    :title-missing="titleMissing"
-    @circleButtonClicked="circleButtonClicked"
-  ></outgraph>
+      <div
+        class="checkboxfilter"
+        ref="checkboxfilter"
+        v-if="resultsCategoriesEnabled && checkboxFilterEnabled"
+      >
+        <categories-checkbox-filter
+          v-if="resultsCategoriesAllArray.length > 0 && resultsCategoriesDone"
+          :items="resultsCategoriesAllArray"
+          :items-full="resultsCategoriesAllArrayUnfiltered"
+          :root-height="scrollboxContainerHeight"
+          @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
+          @checkboxFilterMounted="windowResized"
+        ></categories-checkbox-filter>
+      </div>
 
-  <main-title-info :extract="extract" :image="returnedImage"></main-title-info>
+      <div class="outgraph" ref="outgraphref">
+        <outgraph
+          :inputs-disabled="inputsDisabled"
+          :title="returnedTitle"
+          :url="returnedUrl"
+          :results-redirects-enabled="resultsRedirectsEnabled"
+          :redirect="returnedRedirect"
+          :display-results-array="displayResultsArray"
+          :categories-array="categoriesArray"
+          :results-categories-enabled="resultsCategoriesEnabled"
+          :results-categories-done="resultsCategoriesDone"
+          :title-missing="titleMissing"
+          @circleButtonClicked="circleButtonClicked"
+        ></outgraph>
+      </div>
+    </div>
+
+    <div
+      class="maininfowrap"
+      ref="maininforef"
+      :style="{
+        '--maininfoheight': mainInfoHeight + 'px'
+      }"
+    >
+      <main-title-info
+        class="maininfo"
+        :extract="extract"
+        :image="returnedImage"
+      ></main-title-info>
+    </div>
+  </div>
 </template>
 
 <script>
 import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
+import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 
 export default {
   name: 'MainView',
-  components: { InputForm, MainTitleInfo, Outgraph },
+  components: { InputForm, MainTitleInfo, Outgraph, CategoriesCheckboxFilter },
   data() {
     return {
+      inputFormHeight: 335,
+      mainInfoHeight: 300,
       language: 'en',
       indexStart: 0,
       indexEnd: 0,
@@ -88,10 +127,21 @@ export default {
       ) {
         this.getResultsCategories()
       }
+    },
+    resultsCategoriesDone() {
+      this.windowResized()
     }
   },
 
   computed: {
+    // scrollboxContainerHeight() {
+    //   if (this.$refs.checkboxfilter) {
+    //     return this.$refs.checkboxfilter.getBoundingClientRect().height
+    //   } else {
+    //     return 0
+    //   }
+    // },
+
     mainInfoUrl() {
       let url =
         'https://' +
@@ -583,6 +633,7 @@ export default {
       this.indexEnd = value
     },
     resultsCategoriesCheckboxChanged(value) {
+      this.$refs.inputForm.resetPageNumber()
       this.checkedCategories = value
     },
     checkboxFilterEnabledChanged(value) {
@@ -591,9 +642,110 @@ export default {
     languageSwitched(value) {
       this.$i18n.locale = value
       this.language = value
+
+      // // TEMP FOR TESTING
+      // this.windowResized()
+    },
+    windowResized() {
+      const maininfotop = this.$refs.maininforef.getBoundingClientRect().top
+      const outgraphtop = this.$refs.outgraphref.getBoundingClientRect().top
+
+      const clientHeight = document.documentElement.clientHeight
+
+      let inputformheight
+      // not wrapped
+      if (maininfotop <= outgraphtop) {
+        inputformheight = clientHeight - 600 - 25
+        inputformheight = Math.max(335, inputformheight)
+      } else {
+        inputformheight = 335
+      }
+      this.inputFormHeight = inputformheight
+
+      if (this.$refs.checkboxfilter) {
+        this.scrollboxContainerHeight =
+          this.$refs.checkboxfilter.getBoundingClientRect().height
+      } else {
+        this.scrollboxContainerHeight = 0
+      }
+
+      this.mainInfoHeight = clientHeight - this.scrollboxContainerHeight - 25
     }
+    // windowResized() {
+    //   this.windowResizedDo()
+    //   // this.debounce(() => this.windowResizedDo(), 500)
+    // },
+    // debounce(func, timeout) {
+    //   let timer
+    //   return (...args) => {
+    //     clearTimeout(timer)
+    //     timer = setTimeout(() => {
+    //       func.apply(this, args)
+    //     }, timeout)
+    //   }
+    // }
+  },
+  mounted() {
+    window.addEventListener('resize', this.windowResized)
+    this.windowResized()
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.windowResized)
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: min-content min-content;
+  flex: 1;
+}
+.checkboxfilter {
+  border: 1px solid black;
+  position: relative;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  min-width: 400px;
+}
+.inputform {
+  border: 1px solid black;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  width: 700px;
+  height: var(--inputformheight);
+}
+.outgraph {
+  border: 1px solid black;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+.maininfo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+}
+.maininfowrap {
+  position: relative;
+  border: 1px solid black;
+  min-width: 300px;
+  flex: 1;
+  min-height: var(--maininfoheight);
+  flex-grow: 2;
+}
+</style>

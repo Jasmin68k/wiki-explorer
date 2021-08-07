@@ -110,9 +110,8 @@ export default {
 </script>
 <style scoped>
 .outgraph {
-  margin: auto;
   position: relative;
-  width: 800px;
+  width: 700px;
   height: 600px;
 }
 .outgraphcanvas {

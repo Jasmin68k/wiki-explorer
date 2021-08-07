@@ -30,11 +30,7 @@
 
 export default {
   name: 'CategoriesCheckboxFilter',
-  emits: [
-    'resultsCategoriesCheckboxChanged',
-    'categoriesAll',
-    'categoriesNone'
-  ],
+  emits: ['resultsCategoriesCheckboxChanged', 'checkboxFilterMounted'],
 
   props: {
     items: { required: true, default: () => [], type: Array },
@@ -115,6 +111,7 @@ export default {
       // Temp construct fixes checkboxes not updated from unchecked to check in certain situations,
       // e. g. none, scroll max down, filter categories, all
       // also triggers v-model update only at end, might even be faster
+
       let checkedCategoriesTemp = new Set(this.checkedCategories)
 
       this.items.forEach((item) =>
@@ -125,12 +122,13 @@ export default {
 
       this.checkedCategories = checkedCategoriesTemp
 
-      this.$emit('categoriesAll', this.checkedCategories)
+      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     },
     categoriesNone() {
       // https://stackoverflow.com/a/44204227
       // ECMAScript 6 sets can permit faster computing of the elements of one array that aren't in the other
       // Since the lookup complexity for the V8 engine browsers use these days is O(1), the time complexity of the whole algorithm is O(n)
+
       const toRemove = new Set(this.items)
 
       let tempArray = Array.from(this.checkedCategories)
@@ -138,7 +136,7 @@ export default {
 
       this.checkedCategories = new Set(tempArray)
 
-      this.$emit('categoriesNone', this.checkedCategories)
+      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     },
 
     handleScroll() {
@@ -174,6 +172,8 @@ export default {
       typeof largestHeight !== 'undefined' && largestHeight !== null
         ? largestHeight
         : 30
+
+    this.$emit('checkboxFilterMounted')
   },
   // unmounted() this.$refs.root = null -> error
   beforeUnmount() {
@@ -187,6 +187,7 @@ ul {
   list-style-type: none; /* Remove bullets */
   padding: 0; /* Remove padding */
   margin: 0; /* Remove margins */
+  font-size: 0.85rem;
 }
 
 * {
@@ -200,8 +201,8 @@ ul {
 }
 
 .checkboxbuttons {
-  position: fixed;
-  right: 30px;
+  position: absolute;
+  right: 20px;
   z-index: 1;
 }
 .root {

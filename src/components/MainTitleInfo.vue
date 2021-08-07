@@ -1,9 +1,11 @@
 <template>
-  <div v-show="extract">
-    <p class="extract" v-html="extract"></p>
-  </div>
-  <div v-show="image">
-    <img class="image" :src="image" />
+  <div class="container">
+    <div v-show="image">
+      <img class="image" :src="image" />
+    </div>
+    <div v-show="extract">
+      <p class="extract" v-html="extract"></p>
+    </div>
   </div>
 </template>
 <script>
@@ -16,15 +18,16 @@ export default {
 }
 </script>
 <style scoped>
+.container {
+  width: 100%;
+}
 .extract {
   text-align: left;
 }
 .image {
   margin: auto;
   position: relative;
-  max-width: 1200px;
-  max-height: 600px;
-  width: auto;
+  width: 100%;
   height: auto;
 }
 </style>
