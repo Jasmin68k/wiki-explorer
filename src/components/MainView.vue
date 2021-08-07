@@ -3,7 +3,6 @@
     :inputs-disabled="inputsDisabled"
     :results-categories-done="resultsCategoriesDone"
     :filtered-results-array="filteredResultsArray"
-    :results-categories-all-array="resultsCategoriesAllArray"
     :results-categories-all-array-unfiltered="
       resultsCategoriesAllArrayUnfiltered
     "
@@ -22,7 +21,23 @@
     ref="inputForm"
   ></input-form>
 
-  <br />
+  <div class="inputcategoriescontainer" ref="inputcategoriescontainer">
+    <categories-checkbox-filter
+      v-if="
+        resultsCategoriesEnabled &&
+        resultsCategoriesAllArray.length > 0 &&
+        resultsCategoriesDone &&
+        checkboxFilterEnabled
+      "
+      :items="resultsCategoriesAllArray"
+      :items-full="resultsCategoriesAllArrayUnfiltered"
+      :root-height="scrollboxContainerHeight"
+      @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
+      @categoriesAll="resultsCategoriesCheckboxChanged"
+      @categoriesNone="resultsCategoriesCheckboxChanged"
+    ></categories-checkbox-filter>
+  </div>
+
   <outgraph
     :inputs-disabled="inputsDisabled"
     :title="returnedTitle"
@@ -45,10 +60,11 @@
 import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
+import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 
 export default {
   name: 'MainView',
-  components: { InputForm, MainTitleInfo, Outgraph },
+  components: { InputForm, MainTitleInfo, Outgraph, CategoriesCheckboxFilter },
   data() {
     return {
       language: 'en',
@@ -95,6 +111,10 @@ export default {
   },
 
   computed: {
+    scrollboxContainerHeight() {
+      return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
+    },
+
     mainInfoUrl() {
       let url =
         'https://' +
@@ -586,6 +606,7 @@ export default {
       this.indexEnd = value
     },
     resultsCategoriesCheckboxChanged(value) {
+      this.$refs.inputForm.resetPageNumber()
       this.checkedCategories = value
     },
     checkboxFilterEnabledChanged(value) {
@@ -602,4 +623,9 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.inputcategoriescontainer {
+  height: 300px;
+  position: relative;
+}
+</style>

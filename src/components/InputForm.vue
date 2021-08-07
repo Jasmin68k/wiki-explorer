@@ -202,30 +202,11 @@
         {{ $t('scale-graph') }}
       </div>
     </div>
-    <div class="inputcategoriescontainer" ref="inputcategoriescontainer">
-      <categories-checkbox-filter
-        v-if="
-          resultsCategoriesEnabled &&
-          resultsCategoriesAllArray.length > 0 &&
-          resultsCategoriesDone &&
-          checkboxFilterEnabled
-        "
-        :items="resultsCategoriesAllArray"
-        :items-full="resultsCategoriesAllArrayUnfiltered"
-        :root-height="scrollboxContainerHeight"
-        @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-        @categoriesAll="categoriesAll"
-        @categoriesNone="categoriesNone"
-      ></categories-checkbox-filter>
-    </div>
   </div>
 </template>
 <script>
-import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
-
 export default {
   name: 'InputForm',
-  components: { CategoriesCheckboxFilter },
 
   // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
   // should not be needed, when fixed
@@ -248,11 +229,6 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     filteredResultsArray: { required: true, default: () => [], type: Array },
-    resultsCategoriesAllArray: {
-      required: true,
-      default: () => [],
-      type: Array
-    },
     resultsCategoriesAllArrayUnfiltered: {
       required: true,
       default: () => [],
@@ -274,10 +250,6 @@ export default {
   },
 
   computed: {
-    scrollboxContainerHeight() {
-      return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
-    },
-
     numberOfPages() {
       return Math.ceil(this.filteredResultsArray.length / this.sizePerPage)
     },
@@ -356,20 +328,7 @@ export default {
         this.pageNumber--
       }
     },
-    resultsCategoriesCheckboxChanged(value) {
-      this.resetPageNumber()
-      this.$emit('resultsCategoriesCheckboxChanged', value)
-    },
 
-    categoriesAll(value) {
-      this.resetPageNumber()
-
-      this.$emit('resultsCategoriesCheckboxChanged', value)
-    },
-    categoriesNone(value) {
-      this.resetPageNumber()
-      this.$emit('resultsCategoriesCheckboxChanged', value)
-    },
     checkboxFilterEnabledChange() {
       this.resetPageNumber()
 
@@ -393,9 +352,5 @@ export default {
 }
 .inputform {
   flex: 1;
-}
-.inputcategoriescontainer {
-  flex: 1;
-  position: relative;
 }
 </style>
