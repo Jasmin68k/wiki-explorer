@@ -186,7 +186,7 @@
         type="range"
         min="0.5"
         max="1.0"
-        step="0.1"
+        step="0.01"
         v-model="scalingFactor"
         :disabled="inputsDisabled || filteredResultsArray.length === 0"
         :style="{
