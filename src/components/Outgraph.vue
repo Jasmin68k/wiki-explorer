@@ -1,5 +1,11 @@
 <template>
-  <div class="outgraph">
+  <div
+    class="outgraph"
+    :style="{
+      width: 750 * scalingFactor + 'px',
+      height: 600 * scalingFactor + 'px'
+    }"
+  >
     <canvas class="outgraphcanvas" ref="outgraphcanvas"></canvas>
 
     <title-button
@@ -11,6 +17,7 @@
       :categories-array="categoriesArray"
       :url="url"
       :outgraphcanvasref="outgraphcanvasref"
+      :scalingFactor="scalingFactor"
     ></title-button>
 
     <div v-for="(page, index) in displayResultsArray" :key="index">
@@ -23,6 +30,7 @@
         :results-redirects-enabled="resultsRedirectsEnabled"
         :outgraphcanvasref="outgraphcanvasref"
         :circle-button-radius="circleButtonRadius"
+        :scalingFactor="scalingFactor"
         @circleButtonClicked="circleButtonClicked"
       >
       </circle-button>
@@ -51,7 +59,8 @@ export default {
     categoriesArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
-    titleMissing: { required: true, default: true, type: Boolean }
+    titleMissing: { required: true, default: true, type: Boolean },
+    scalingFactor: { required: true, default: 1.0, type: Number }
   },
   data() {
     return {
@@ -91,7 +100,7 @@ export default {
         ctx.moveTo(middleX, middleY)
         const angle =
           ((270 + (360 / this.displayResultsArray.length) * i) * Math.PI) / 180
-        const length = this.circleButtonRadius
+        const length = this.circleButtonRadius * this.scalingFactor
         ctx.lineTo(
           length * Math.cos(angle) + middleX,
           length * Math.sin(angle) + middleY
@@ -112,8 +121,6 @@ export default {
 .outgraph {
   margin: auto;
   position: relative;
-  width: 800px;
-  height: 600px;
 }
 .outgraphcanvas {
   width: 100%;

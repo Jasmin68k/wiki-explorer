@@ -20,5 +20,6 @@
   "prev-page": "Vorh. Seite",
   "next-page": "Nächste Seite",
   "category-prefix": "Kategorie:",
-  "no-category": "[ KEINE KATEGORIE ]"
+  "no-category": "[ KEINE KATEGORIE ]",
+  "scale-graph": "Graphen skalieren"
 }

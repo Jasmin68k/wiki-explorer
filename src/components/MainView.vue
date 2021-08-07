@@ -18,6 +18,7 @@
     @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
     @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
     @languageSwitched="languageSwitched"
+    @scalingFactorChanged="scalingFactorChanged"
     ref="inputForm"
   ></input-form>
 
@@ -33,6 +34,7 @@
     :results-categories-enabled="resultsCategoriesEnabled"
     :results-categories-done="resultsCategoriesDone"
     :title-missing="titleMissing"
+    :scaling-factor="scalingFactor"
     @circleButtonClicked="circleButtonClicked"
   ></outgraph>
 
@@ -76,7 +78,8 @@ export default {
       fetchHeaders: new Headers({
         'Api-User-Agent': 'WikiExplorer/0.1',
         'User-Agent': 'WikiExplorer/0.1'
-      })
+      }),
+      scalingFactor: 1.0
     }
   },
 
@@ -591,6 +594,9 @@ export default {
     languageSwitched(value) {
       this.$i18n.locale = value
       this.language = value
+    },
+    scalingFactorChanged(value) {
+      this.scalingFactor = parseFloat(value)
     }
   }
 }

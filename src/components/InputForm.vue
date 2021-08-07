@@ -182,6 +182,25 @@
           {{ $t('next-page') }}
         </button>
       </form>
+      <input
+        type="range"
+        min="0.5"
+        max="1.0"
+        step="0.1"
+        v-model="scalingFactor"
+        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+        @input="scalingFactorChanged"
+      />
+      <div
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        {{ $t('scale-graph') }}
+      </div>
     </div>
     <div class="inputcategoriescontainer" ref="inputcategoriescontainer">
       <categories-checkbox-filter
@@ -220,7 +239,8 @@ export default {
     'indexEndChanged',
     'resultsCategoriesCheckboxChanged',
     'checkboxFilterEnabledChanged',
-    'languageSwitched'
+    'languageSwitched',
+    'scalingFactorChanged'
   ],
 
   props: {
@@ -294,7 +314,8 @@ export default {
       filterCategories: '',
       pageNumber: 0,
       sizePerPage: 12,
-      checkedCategories: new Set()
+      checkedCategories: new Set(),
+      scalingFactor: 1.0
     }
   },
 
@@ -359,6 +380,9 @@ export default {
     },
     languageSwitched() {
       this.$emit('languageSwitched', this.language)
+    },
+    scalingFactorChanged() {
+      this.$emit('scalingFactorChanged', this.scalingFactor)
     }
   }
 }

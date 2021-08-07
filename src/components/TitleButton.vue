@@ -1,15 +1,26 @@
 <template>
   <div
     class="titlebutton"
+    :style="{
+      'line-height': 100 * scalingFactor + '%'
+    }"
     v-show="!inputsDisabled && title && !titleMissing"
     ref="titlebutton"
     @mouseover="hoverButtonTitleOn"
     @mouseleave="hoverButtonTitleOff"
   >
-    <button @click.prevent="titleButton(), hoverButtonTitleOff()">
+    <button
+      :style="{
+        'font-size': 83.4 * scalingFactor + '%'
+      }"
+      @click.prevent="titleButton(), hoverButtonTitleOff()"
+    >
       {{ title }}
     </button>
-    <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
+    <div
+      v-if="resultsRedirectsEnabled"
+      :style="{ 'font-size': 70 * scalingFactor + '%' }"
+    >
       {{ redirect }}
     </div>
   </div>
@@ -18,7 +29,8 @@
     class="titlebuttonhover"
     :style="{
       '--poslefttitle': hoverRightTitle + 'px',
-      '--postoptitle': hoverBottomTitle + 'px'
+      '--postoptitle': hoverBottomTitle + 'px',
+      'font-size': 70 * scalingFactor + '%'
     }"
   >
     <ul v-for="category in categoriesArray" :key="category">
@@ -46,7 +58,8 @@ export default {
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },
     url: { required: true, default: '', type: String },
-    outgraphcanvasref: { required: true, default: {} }
+    outgraphcanvasref: { required: true, default: {} },
+    scalingFactor: { required: true, default: 1.0, type: Number }
   },
   methods: {
     hoverButtonTitleOn() {
@@ -88,7 +101,6 @@ ul {
 }
 
 .titlebuttonhover {
-  font-size: 0.7rem;
   background-color: lightgrey;
   border: 1px solid black;
   position: absolute;

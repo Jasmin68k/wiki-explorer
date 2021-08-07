@@ -4,7 +4,8 @@
     class="circlebutton"
     :style="{
       '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg',
-      '--radius': circleButtonRadius + 'px'
+      '--radius': circleButtonRadius * scalingFactor + 'px',
+      'line-height': 100 * scalingFactor + '%'
     }"
     :ref="`circlebutton${index}`"
     @mouseover="hoverButtonOn(index)"
@@ -12,6 +13,9 @@
   >
     <button
       :class="{ missing: displayResultsArray[index].missing }"
+      :style="{
+        'font-size': 83.4 * scalingFactor + '%'
+      }"
       :disabled="
         displayResultsArray[index].missing ||
         (resultsCategoriesEnabled && !resultsCategoriesDone)
@@ -20,15 +24,21 @@
     >
       {{ displayResultsArray[index].title }}
     </button>
-    <div v-if="!displayResultsArray[index].missing">
+    <div
+      v-if="!displayResultsArray[index].missing"
+      :style="{ 'line-height': 100 * scalingFactor + '%' }"
+    >
       <a
-        :style="{ 'font-size': '0.7rem' }"
+        :style="{ 'font-size': 70 * scalingFactor + '%' }"
         :href="displayResultsArray[index].fullurl"
         target="_blank"
         >Show on Wikipedia</a
       >
     </div>
-    <div v-if="resultsRedirectsEnabled" :style="{ 'font-size': '0.7rem' }">
+    <div
+      v-if="resultsRedirectsEnabled"
+      :style="{ 'font-size': 70 * scalingFactor + '%' }"
+    >
       <ul
         v-for="(redirect, index) in displayResultsArray[index].redirectFrom"
         :key="index"
@@ -50,7 +60,8 @@
     class="circlebuttonhover"
     :style="{
       '--posleft': hoverRight + 'px',
-      '--postop': hoverBottom + 'px'
+      '--postop': hoverBottom + 'px',
+      'font-size': 70 * scalingFactor + '%'
     }"
   >
     <ul
@@ -84,7 +95,8 @@ export default {
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} },
-    circleButtonRadius: { required: true, default: 250, type: Number }
+    circleButtonRadius: { required: true, default: 250, type: Number },
+    scalingFactor: { required: true, default: 1.0, type: Number }
   },
   methods: {
     hoverButtonOn(index) {
@@ -135,7 +147,6 @@ ul {
     rotate(calc(-1 * var(--angle)));
 }
 .circlebuttonhover {
-  font-size: 0.7rem;
   background-color: lightgrey;
   border: 1px solid black;
   position: absolute;

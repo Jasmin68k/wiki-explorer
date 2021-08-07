@@ -20,5 +20,6 @@
   "prev-page": "Prev. page",
   "next-page": "Next page",
   "category-prefix": "Category:",
-  "no-category": "[ NO CATEGORY ]"
+  "no-category": "[ NO CATEGORY ]",
+  "scale-graph": "Scale graph"
 }
