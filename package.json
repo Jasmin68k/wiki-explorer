@@ -10,20 +10,20 @@
   },
   "dependencies": {
     "core-js": "^3.16.0",
-    "vue": "^3.0.0",
-    "vue-i18n": "^9.1.0"
+    "vue": "^3.1.5",
+    "vue-i18n": "^9.1.7"
   },
   "devDependencies": {
-    "@intlify/vue-i18n-loader": "^2.1.0",
+    "@intlify/vue-i18n-loader": "^2.1.2",
     "@vue/cli-plugin-babel": "~4.5.13",
-    "@vue/cli-plugin-eslint": "~v5.0.0-alpha.8",
+    "@vue/cli-plugin-eslint": "~v5.0.0-beta.2",
     "@vue/cli-service": "~4.5.13",
     "@vue/compiler-sfc": "^3.1.5",
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-vue": "^7.15.0",
+    "eslint-plugin-vue": "^7.15.1",
     "prettier": "^2.3.2",
     "vue-cli-plugin-i18n": "~2.1.2"
   }
