@@ -1,9 +1,17 @@
 <template>
-  <div v-show="extract">
-    <p class="extract" v-html="extract"></p>
+  <div v-show="extract && image">
+    <div>
+      <img class="image" :src="image" />
+    </div>
+    <div class="extract" v-html="extract"></div>
   </div>
-  <div v-show="image">
-    <img class="image" :src="image" />
+  <div v-show="extract && !image">
+    <div class="extract" v-html="extract"></div>
+  </div>
+  <div v-show="!extract && image">
+    <div>
+      <img class="imageonly" :src="image" />
+    </div>
   </div>
 </template>
 <script>
@@ -17,14 +25,15 @@ export default {
 </script>
 <style scoped>
 .extract {
-  text-align: left;
+  text-align: justify;
+  width: 100%;
 }
 .image {
-  margin: auto;
-  position: relative;
-  max-width: 1200px;
-  max-height: 600px;
-  width: auto;
-  height: auto;
+  float: right;
+  width: 33%;
+  margin: 0 0 10px 10px;
+}
+.imageonly {
+  width: 100%;
 }
 </style>
