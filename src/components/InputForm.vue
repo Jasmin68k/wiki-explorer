@@ -384,6 +384,10 @@ export default {
     scalingFactorChanged() {
       this.$emit('scalingFactorChanged', this.scalingFactor)
     }
+  },
+  mounted() {
+    this.scalingFactor = Math.min(1, window.innerWidth / 1080)
+    this.$emit('scalingFactorChanged', this.scalingFactor)
   }
 }
 </script>
