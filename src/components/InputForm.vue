@@ -386,7 +386,20 @@ export default {
     }
   },
   mounted() {
-    this.scalingFactor = Math.min(1, window.innerWidth / 1080)
+    if (typeof window.visualViewport === 'undefined') {
+      this.scalingFactor = Math.min(
+        1,
+        window.innerWidth / 1080,
+        document.documentElement.clientWidth
+      )
+    } else {
+      this.scalingFactor = Math.min(
+        1,
+        window.innerWidth / 1080,
+        document.documentElement.clientWidth / 1080,
+        window.visualViewport.width / 1080
+      )
+    }
     this.$emit('scalingFactorChanged', this.scalingFactor)
   }
 }
