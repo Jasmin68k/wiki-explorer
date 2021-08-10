@@ -184,7 +184,7 @@
       </form>
       <input
         type="range"
-        min="0.5"
+        min="0.33"
         max="1.0"
         step="0.01"
         v-model="scalingFactor"

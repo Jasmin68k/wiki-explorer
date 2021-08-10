@@ -2,8 +2,8 @@
   <div
     class="outgraph"
     :style="{
-      width: 750 * scalingFactor + 'px',
-      height: 600 * scalingFactor + 'px'
+      width: 1080 * scalingFactor + 'px',
+      height: 864 * scalingFactor + 'px'
     }"
   >
     <canvas class="outgraphcanvas" ref="outgraphcanvas"></canvas>
@@ -65,7 +65,7 @@ export default {
   data() {
     return {
       outgraphcanvasref: {},
-      circleButtonRadius: 250
+      circleButtonRadius: 360
     }
   },
   watch: {
