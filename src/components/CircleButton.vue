@@ -5,6 +5,8 @@
     :style="{
       '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg',
       '--radius': circleButtonRadius * scalingFactor + 'px',
+      '--minusangle':
+        -1 * (270 + (360 / displayResultsArray.length) * index) + 'deg',
       'line-height': 100 * scalingFactor + '%'
     }"
     :ref="`circlebutton${index}`"
@@ -143,8 +145,11 @@ ul {
   top: 50%;
   z-index: 1;
   /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
+  /* transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
+    rotate(calc(-1 * var(--angle))); */
+  /* using minusangle as extra var as workaround, since calc() in css seems not to work with deg unit in older firefox */
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
-    rotate(calc(-1 * var(--angle)));
+    rotate(var(--minusangle));
 }
 .circlebuttonhover {
   background-color: lightgrey;
