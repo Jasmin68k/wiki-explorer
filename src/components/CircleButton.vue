@@ -34,29 +34,34 @@
     @mouseover="hoverButtonOn(index)"
     @mouseleave="hoverButtonOff(index)"
   >
-    <button
-      :class="{ missing: displayResultsArray[index].missing }"
-      :style="{
-        'font-size': 83.4 * scalingFactor + '%'
-      }"
-      :disabled="
-        displayResultsArray[index].missing ||
-        (resultsCategoriesEnabled && !resultsCategoriesDone)
-      "
-      @click.prevent="circleButton(index), hoverButtonOff(index)"
-    >
-      {{ displayResultsArray[index].title }}
-    </button>
-    <div
-      v-if="!displayResultsArray[index].missing"
-      :style="{ 'line-height': 100 * scalingFactor + '%' }"
-    >
-      <a
-        :style="{ 'font-size': 70 * scalingFactor + '%' }"
-        :href="displayResultsArray[index].fullurl"
-        target="_blank"
-        >Show on Wikipedia</a
+    <div>
+      <button
+        :class="{ missing: displayResultsArray[index].missing }"
+        :style="{
+          'font-size': 83.4 * scalingFactor + '%'
+        }"
+        :disabled="
+          displayResultsArray[index].missing ||
+          (resultsCategoriesEnabled && !resultsCategoriesDone)
+        "
+        @click.prevent="circleButton(index), hoverButtonOff(index)"
       >
+        {{ displayResultsArray[index].title }}
+      </button>
+      <div
+        v-if="!displayResultsArray[index].missing"
+        :style="{ 'line-height': 100 * scalingFactor + '%' }"
+      >
+        <a :href="displayResultsArray[index].fullurl" target="_blank"
+          ><img
+            :style="{
+              height: 0.67 * scalingFactor + 0.33 + 'rem',
+              'vertical-align': 'top'
+            }"
+            alt="Wiki"
+            src="../assets/images/wikipedia.png"
+        /></a>
+      </div>
     </div>
     <div
       v-if="resultsRedirectsEnabled"
