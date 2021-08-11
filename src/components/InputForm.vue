@@ -123,7 +123,8 @@
       <input
         type="range"
         min="1"
-        :max="24"
+        step="1"
+        :max="36"
         v-model="sizePerPage"
         :disabled="inputsDisabled || filteredResultsArray.length === 0"
         :style="{
@@ -313,7 +314,7 @@ export default {
       checkboxFilterEnabled: true,
       filterCategories: '',
       pageNumber: 0,
-      sizePerPage: 12,
+      sizePerPage: 18,
       checkedCategories: new Set(),
       scalingFactor: 1.0
     }

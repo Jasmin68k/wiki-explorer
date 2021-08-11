@@ -4,7 +4,28 @@
     class="circlebutton"
     :style="{
       '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg',
-      '--radius': circleButtonRadius * scalingFactor + 'px',
+      '--radius':
+        index % 2 === 0
+          ? circleButtonRadius *
+              scalingFactor *
+              (1 +
+                Math.abs(
+                  Math.sin(
+                    ((360 / displayResultsArray.length) * index * Math.PI) / 180
+                  )
+                ) *
+                  0.25) +
+            'px'
+          : (circleButtonRadius / 1.5) *
+              scalingFactor *
+              (1 +
+                Math.abs(
+                  Math.sin(
+                    ((360 / displayResultsArray.length) * index * Math.PI) / 180
+                  )
+                ) *
+                  0.25) +
+            'px',
       '--minusangle':
         -1 * (270 + (360 / displayResultsArray.length) * index) + 'deg',
       'line-height': 100 * scalingFactor + '%'

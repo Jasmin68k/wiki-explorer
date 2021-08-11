@@ -100,7 +100,17 @@ export default {
         ctx.moveTo(middleX, middleY)
         const angle =
           ((270 + (360 / this.displayResultsArray.length) * i) * Math.PI) / 180
-        const length = this.circleButtonRadius * this.scalingFactor
+        const angle2 =
+          ((360 / this.displayResultsArray.length) * i * Math.PI) / 180
+
+        const length =
+          i % 2 === 0
+            ? this.circleButtonRadius *
+              this.scalingFactor *
+              (1 + Math.abs(Math.sin(angle2)) * 0.25)
+            : (this.circleButtonRadius / 1.5) *
+              this.scalingFactor *
+              (1 + Math.abs(Math.sin(angle2)) * 0.25)
         ctx.lineTo(
           length * Math.cos(angle) + middleX,
           length * Math.sin(angle) + middleY
