@@ -73,6 +73,12 @@ export default {
       if (this.displayResultsArray.length > 0 && !this.inputsDisabled) {
         this.drawLines()
       } else this.clearCanvas()
+    },
+    scalingFactor() {
+      this.$nextTick(() => {
+        this.clearCanvas()
+        this.drawLines()
+      })
     }
   },
   methods: {
