@@ -122,8 +122,8 @@
 
       <input
         type="range"
-        min="1"
-        step="1"
+        min="2"
+        step="2"
         :max="36"
         v-model="sizePerPage"
         :disabled="inputsDisabled || filteredResultsArray.length === 0"
