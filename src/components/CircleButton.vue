@@ -42,7 +42,7 @@
         'deg',
       'line-height': 100 * scalingFactor + '%',
       'max-width':
-        130 *
+        100 *
           scalingFactor *
           (1 +
             Math.abs(
@@ -53,7 +53,7 @@
                   180
               )
             ) *
-              0.25) +
+              1.0) +
         'px'
     }"
     :ref="`circlebutton${index}`"
