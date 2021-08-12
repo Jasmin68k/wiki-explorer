@@ -40,7 +40,8 @@
           (270 +
             (360 / (Math.round(displayResultsArray.length / 2) * 2)) * index) +
         'deg',
-      'line-height': 100 * scalingFactor + '%'
+      'line-height': 100 * scalingFactor + '%',
+      'max-width': 118 * scalingFactor + 'px'
     }"
     :ref="`circlebutton${index}`"
     v-on="{
@@ -54,7 +55,6 @@
         class="circlebuttonactual"
         :style="{
           'font-size': 83.4 * scalingFactor + '%',
-          'max-width': 100 * scalingFactor + 'px',
           'min-width': 50 * scalingFactor + 'px'
         }"
         :disabled="

@@ -2,7 +2,8 @@
   <div
     class="titlebutton"
     :style="{
-      'line-height': 100 * scalingFactor + '%'
+      'line-height': 100 * scalingFactor + '%',
+      'max-width': 118 * scalingFactor + 'px'
     }"
     v-show="!inputsDisabled && title && !titleMissing"
     ref="titlebutton"
@@ -16,7 +17,6 @@
         class="titlebuttonactual"
         :style="{
           'font-size': 83.4 * scalingFactor + '%',
-          'max-width': 100 * scalingFactor + 'px',
           'min-width': 50 * scalingFactor + 'px'
         }"
         @click.prevent="titleButton(), hoverButtonTitleOff()"
