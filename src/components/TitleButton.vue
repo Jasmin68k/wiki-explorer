@@ -115,6 +115,12 @@ export default {
     scalingFactor: { required: true, default: 1.0, type: Number },
     categoriesOnHover: { required: true, default: true, type: Boolean }
   },
+  watch: {
+    categoriesOnHover() {
+      this.hoverButtonTitleOff()
+    }
+  },
+
   methods: {
     hoverButtonTitleOn() {
       this.hoverRightTitle =

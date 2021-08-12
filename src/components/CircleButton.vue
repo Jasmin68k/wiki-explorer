@@ -194,6 +194,14 @@ export default {
     scalingFactor: { required: true, default: 1.0, type: Number },
     categoriesOnHover: { required: true, default: true, type: Boolean }
   },
+  watch: {
+    displayResultsArray() {
+      this.hoverButtonOff()
+    },
+    categoriesOnHover() {
+      this.hoverButtonOff()
+    }
+  },
   methods: {
     hoverButtonOn(index) {
       this.hoverButtonIndex = index
