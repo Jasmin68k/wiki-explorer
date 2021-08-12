@@ -79,7 +79,7 @@
         >
           <a :href="displayResultsArray[index].fullurl" target="_blank"
             ><img
-              class="wikipediaicon"
+              class="icon"
               :style="{
                 height: 0.67 * scalingFactor + 0.33 + 'rem',
                 'vertical-align': 'top'
@@ -99,7 +99,7 @@
         >
           <img
             @click="catsClick(index)"
-            class="wikipediaicon"
+            class="icon"
             :style="{
               height: 0.67 * scalingFactor + 0.33 + 'rem',
               'vertical-align': 'top'
@@ -245,7 +245,7 @@ ul {
   top: var(--postop);
   z-index: 5;
 }
-.wikipediaicon:hover {
+.icon:hover {
   filter: invert(1);
 }
 .icongridcontainer {
