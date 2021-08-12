@@ -64,9 +64,14 @@
   >
     <div
       class="buttonicongridcontainer"
-      :style="{
-        'grid-template-columns': 'auto ' + (0.67 * scalingFactor + 0.33) + 'rem'
-      }"
+      :style="[
+        !displayResultsArray[index].missing
+          ? {
+              'grid-template-columns':
+                'auto ' + (0.67 * scalingFactor + 0.33) + 'rem'
+            }
+          : { 'grid-template-columns': 'auto ' }
+      ]"
     >
       <button
         :class="{ missing: displayResultsArray[index].missing }"
