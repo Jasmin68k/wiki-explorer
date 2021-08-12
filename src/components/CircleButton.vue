@@ -43,12 +43,15 @@
       'line-height': 100 * scalingFactor + '%'
     }"
     :ref="`circlebutton${index}`"
-    @mouseover="hoverButtonOn(index)"
-    @mouseleave="hoverButtonOff(index)"
+    v-on="{
+      mouseover: categoriesOnHover ? () => hoverButtonOn(index) : null,
+      mouseleave: categoriesOnHover ? () => hoverButtonOff(index) : null
+    }"
   >
-    <div>
+    <div class="buttonicongridcontainer">
       <button
         :class="{ missing: displayResultsArray[index].missing }"
+        class="circlebuttonactual"
         :style="{
           'font-size': 83.4 * scalingFactor + '%'
         }"
@@ -60,22 +63,54 @@
       >
         {{ displayResultsArray[index].title }}
       </button>
-      <div
-        v-if="!displayResultsArray[index].missing"
-        :style="{ 'line-height': 100 * scalingFactor + '%' }"
-      >
-        <a :href="displayResultsArray[index].fullurl" target="_blank"
-          ><img
+
+      <div class="icongridcontainer">
+        <span
+          v-if="!displayResultsArray[index].missing"
+          :class="{
+            icongriditem1start: resultsCategoriesEnabled && !categoriesOnHover,
+            icongriditem1center:
+              !resultsCategoriesEnabled ||
+              (resultsCategoriesEnabled && categoriesOnHover)
+          }"
+          :style="{ 'line-height': 100 * scalingFactor + '%' }"
+        >
+          <a :href="displayResultsArray[index].fullurl" target="_blank"
+            ><img
+              class="wikipediaicon"
+              :style="{
+                height: 0.67 * scalingFactor + 0.33 + 'rem',
+                'vertical-align': 'top'
+              }"
+              alt="Wiki"
+              src="../assets/images/wikipedia.svg"
+          /></a>
+        </span>
+        <span
+          v-if="
+            !displayResultsArray[index].missing &&
+            resultsCategoriesEnabled &&
+            !categoriesOnHover
+          "
+          class="icongriditem2"
+          :style="{ 'line-height': 100 * scalingFactor + '%' }"
+        >
+          <img
+            @click="catsClick(index)"
+            class="wikipediaicon"
             :style="{
               height: 0.67 * scalingFactor + 0.33 + 'rem',
               'vertical-align': 'top'
             }"
-            alt="Wiki"
-            src="../assets/images/wikipedia.png"
-        /></a>
+            alt="Cats"
+            src="../assets/images/document.svg"
+          />
+        </span>
       </div>
     </div>
+
     <div
+      class="redirects"
       v-if="resultsRedirectsEnabled"
       :style="{ 'font-size': 70 * scalingFactor + '%' }"
     >
@@ -136,7 +171,8 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} },
     circleButtonRadius: { required: true, default: 250, type: Number },
-    scalingFactor: { required: true, default: 1.0, type: Number }
+    scalingFactor: { required: true, default: 1.0, type: Number },
+    categoriesOnHover: { required: true, default: true, type: Boolean }
   },
   methods: {
     hoverButtonOn(index) {
@@ -160,6 +196,9 @@ export default {
     },
     circleButton(index) {
       this.$emit('circleButtonClicked', index)
+    },
+    catsClick(index) {
+      this.hoverButton ? this.hoverButtonOff(index) : this.hoverButtonOn(index)
     }
   }
 }
@@ -169,12 +208,20 @@ ul {
   list-style-type: none; /* Remove bullets */
   padding: 0; /* Remove padding */
   margin: 0; /* Remove margins */
-  white-space: nowrap;
 }
 .missing {
   color: red;
 }
-
+.circlebuttonactual {
+  border: none;
+  padding: 0px;
+  max-width: 100px;
+  min-width: 50px;
+  background-color: lightgoldenrodyellow;
+}
+.circlebuttonactual:hover {
+  background-color: palegoldenrod;
+}
 .circlebutton {
   background-color: lightgrey;
   border: 1px solid black;
@@ -182,6 +229,7 @@ ul {
   left: 50%;
   top: 50%;
   z-index: 1;
+
   /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
   /* transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
     rotate(calc(-1 * var(--angle))); */
@@ -190,11 +238,35 @@ ul {
     rotate(var(--minusangle));
 }
 .circlebuttonhover {
-  background-color: lightgrey;
+  background-color: honeydew;
   border: 1px solid black;
   position: absolute;
   left: var(--posleft);
   top: var(--postop);
   z-index: 5;
+}
+.wikipediaicon:hover {
+  filter: invert(1);
+}
+.icongridcontainer {
+  display: inline-grid;
+  background-color: mistyrose;
+}
+.icongriditem1start {
+  align-self: start;
+}
+.icongriditem1center {
+  align-self: center;
+}
+
+.icongriditem2 {
+  align-self: end;
+}
+.buttonicongridcontainer {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.redirects {
+  background-color: lavender;
 }
 </style>

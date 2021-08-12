@@ -19,6 +19,7 @@
     @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
     @languageSwitched="languageSwitched"
     @scalingFactorChanged="scalingFactorChanged"
+    @categoriesHoverClickChanged="categoriesHoverClickChanged"
     ref="inputForm"
   ></input-form>
 
@@ -35,6 +36,7 @@
     :results-categories-done="resultsCategoriesDone"
     :title-missing="titleMissing"
     :scaling-factor="scalingFactor"
+    :categories-on-hover="categoriesOnHover"
     @circleButtonClicked="circleButtonClicked"
   ></outgraph>
 
@@ -79,7 +81,8 @@ export default {
         'Api-User-Agent': 'WikiExplorer/0.1',
         'User-Agent': 'WikiExplorer/0.1'
       }),
-      scalingFactor: 1.0
+      scalingFactor: 1.0,
+      categoriesOnHover: true
     }
   },
 
@@ -597,6 +600,13 @@ export default {
     },
     scalingFactorChanged(value) {
       this.scalingFactor = parseFloat(value)
+    },
+    categoriesHoverClickChanged(value) {
+      if (value === 'catshover') {
+        this.categoriesOnHover = true
+      } else {
+        this.categoriesOnHover = false
+      }
     }
   }
 }

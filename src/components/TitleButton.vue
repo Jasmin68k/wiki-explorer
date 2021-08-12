@@ -6,24 +6,69 @@
     }"
     v-show="!inputsDisabled && title && !titleMissing"
     ref="titlebutton"
-    @mouseover="hoverButtonTitleOn"
-    @mouseleave="hoverButtonTitleOff"
+    v-on="{
+      mouseover: categoriesOnHover ? hoverButtonTitleOn : null,
+      mouseleave: categoriesOnHover ? hoverButtonTitleOff : null
+    }"
   >
-    <button
-      :style="{
-        'font-size': 83.4 * scalingFactor + '%'
-      }"
-      @click.prevent="titleButton(), hoverButtonTitleOff()"
-    >
-      {{ title }}
-    </button>
+    <div class="buttonicongridcontainer">
+      <button
+        class="titlebuttonactual"
+        :style="{
+          'font-size': 83.4 * scalingFactor + '%'
+        }"
+        @click.prevent="titleButton(), hoverButtonTitleOff()"
+      >
+        {{ title }}
+      </button>
+
+      <div class="icongridcontainer">
+        <span
+          :class="{
+            icongriditem1start: !categoriesOnHover,
+            icongriditem1center: categoriesOnHover
+          }"
+          :style="{ 'line-height': 100 * scalingFactor + '%' }"
+        >
+          <a :href="url" target="_blank"
+            ><img
+              class="wikipediaicon"
+              :style="{
+                height: 0.67 * scalingFactor + 0.33 + 'rem',
+                'vertical-align': 'top'
+              }"
+              alt="Wiki"
+              src="../assets/images/wikipedia.svg"
+          /></a>
+        </span>
+        <span
+          v-if="!categoriesOnHover"
+          class="icongriditem2"
+          :style="{ 'line-height': 100 * scalingFactor + '%' }"
+        >
+          <img
+            @click="catsClick()"
+            class="wikipediaicon"
+            :style="{
+              height: 0.67 * scalingFactor + 0.33 + 'rem',
+              'vertical-align': 'top'
+            }"
+            alt="Cats"
+            src="../assets/images/document.svg"
+          />
+        </span>
+      </div>
+    </div>
+
     <div
+      class="redirect"
       v-if="resultsRedirectsEnabled"
       :style="{ 'font-size': 70 * scalingFactor + '%' }"
     >
       {{ redirect }}
     </div>
   </div>
+
   <div
     v-if="!inputsDisabled && hoverButtonTitle && categoriesArray.length > 0"
     class="titlebuttonhover"
@@ -59,7 +104,8 @@ export default {
     titleMissing: { required: true, default: true, type: Boolean },
     url: { required: true, default: '', type: String },
     outgraphcanvasref: { required: true, default: {} },
-    scalingFactor: { required: true, default: 1.0, type: Number }
+    scalingFactor: { required: true, default: 1.0, type: Number },
+    categoriesOnHover: { required: true, default: true, type: Boolean }
   },
   methods: {
     hoverButtonTitleOn() {
@@ -78,6 +124,11 @@ export default {
     titleButton() {
       // window.location = this.url
       window.open(this.url, '_blank')
+    },
+    catsClick() {
+      this.hoverButtonTitle
+        ? this.hoverButtonTitleOff()
+        : this.hoverButtonTitleOn()
     }
   }
 }
@@ -99,13 +150,48 @@ ul {
   transform: translate(-50%, -50%);
   z-index: 1;
 }
+.titlebuttonactual {
+  border: none;
+  padding: 0px;
+  max-width: 100px;
+  min-width: 50px;
+  background-color: lightgoldenrodyellow;
+}
+.titlebuttonactual:hover {
+  background-color: palegoldenrod;
+}
 
 .titlebuttonhover {
-  background-color: lightgrey;
+  background-color: honeydew;
   border: 1px solid black;
   position: absolute;
   left: var(--poslefttitle);
   top: var(--postoptitle);
   z-index: 5;
+}
+.redirect {
+  background-color: lavender;
+}
+.buttonicongridcontainer {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.wikipediaicon:hover {
+  filter: invert(1);
+}
+.icongridcontainer {
+  display: inline-grid;
+  background-color: mistyrose;
+}
+.icongriditem1start {
+  align-self: start;
+}
+.icongriditem1center {
+  align-self: center;
+}
+
+.icongriditem2 {
+  align-self: end;
 }
 </style>

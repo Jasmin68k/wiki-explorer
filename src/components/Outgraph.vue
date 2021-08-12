@@ -18,6 +18,7 @@
       :url="url"
       :outgraphcanvasref="outgraphcanvasref"
       :scalingFactor="scalingFactor"
+      :categoriesOnHover="categoriesOnHover"
     ></title-button>
 
     <div v-for="(page, index) in displayResultsArray" :key="index">
@@ -31,6 +32,7 @@
         :outgraphcanvasref="outgraphcanvasref"
         :circle-button-radius="circleButtonRadius"
         :scalingFactor="scalingFactor"
+        :categoriesOnHover="categoriesOnHover"
         @circleButtonClicked="circleButtonClicked"
       >
       </circle-button>
@@ -60,7 +62,8 @@ export default {
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     titleMissing: { required: true, default: true, type: Boolean },
-    scalingFactor: { required: true, default: 1.0, type: Number }
+    scalingFactor: { required: true, default: 1.0, type: Number },
+    categoriesOnHover: { required: true, default: true, type: Boolean }
   },
   data() {
     return {

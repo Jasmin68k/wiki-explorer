@@ -21,5 +21,8 @@
   "next-page": "Nächste Seite",
   "category-prefix": "Kategorie:",
   "no-category": "[ KEINE KATEGORIE ]",
-  "scale-graph": "Graphen skalieren"
+  "scale-graph": "Graphen skalieren",
+  "show-cats-on": "Zeige Kategorien bei: ",
+  "cats-hover": "Mausschweben",
+  "cats-click": "Klick"
 }

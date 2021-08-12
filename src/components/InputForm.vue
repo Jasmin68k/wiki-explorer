@@ -120,6 +120,35 @@
         />
       </form>
 
+      <form>
+        <span>{{ $t('show-cats-on') }}</span>
+        <input
+          type="radio"
+          id="catshover"
+          value="catshover"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="categoriesOnHoverOrClick"
+          @change="categoriesOnHoverOrClickChanged"
+        />
+
+        <label for="catshover">{{ $t('cats-hover') }}</label>
+        <input
+          type="radio"
+          id="catsclick"
+          value="catsclick"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="categoriesOnHoverOrClick"
+          @change="categoriesOnHoverOrClickChanged"
+        />
+        <label for="catsclick">{{ $t('cats-click') }}</label>
+      </form>
+
       <input
         type="range"
         min="2"
@@ -241,7 +270,8 @@ export default {
     'resultsCategoriesCheckboxChanged',
     'checkboxFilterEnabledChanged',
     'languageSwitched',
-    'scalingFactorChanged'
+    'scalingFactorChanged',
+    'categories-hover-click-changed'
   ],
 
   props: {
@@ -314,9 +344,10 @@ export default {
       checkboxFilterEnabled: true,
       filterCategories: '',
       pageNumber: 0,
-      sizePerPage: 18,
+      sizePerPage: 24,
       checkedCategories: new Set(),
-      scalingFactor: 1.0
+      scalingFactor: 1.0,
+      categoriesOnHoverOrClick: 'catshover'
     }
   },
 
@@ -381,6 +412,13 @@ export default {
     },
     languageSwitched() {
       this.$emit('languageSwitched', this.language)
+    },
+
+    categoriesOnHoverOrClickChanged() {
+      this.$emit(
+        'categories-hover-click-changed',
+        this.categoriesOnHoverOrClick
+      )
     },
     scalingFactorChanged() {
       this.$emit('scalingFactorChanged', this.scalingFactor)
