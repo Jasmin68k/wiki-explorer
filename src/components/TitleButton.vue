@@ -12,7 +12,12 @@
       mouseleave: categoriesOnHover ? hoverButtonTitleOff : null
     }"
   >
-    <div class="buttonicongridcontainer">
+    <div
+      class="buttonicongridcontainer"
+      :style="{
+        'grid-template-columns': 'auto ' + (0.67 * scalingFactor + 0.33) + 'rem'
+      }"
+    >
       <button
         class="titlebuttonactual"
         :style="{
@@ -181,7 +186,6 @@ ul li {
 }
 .buttonicongridcontainer {
   display: grid;
-  grid-template-columns: auto auto;
 }
 
 .wikipediaicon:hover {
