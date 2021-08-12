@@ -207,6 +207,12 @@ ul {
   list-style-type: none; /* Remove bullets */
   padding: 0; /* Remove padding */
   margin: 0; /* Remove margins */
+  /* indent second and following lines */
+  text-indent: -0.5rem;
+  margin-left: 0.5rem;
+}
+ul li {
+  text-align: left;
 }
 .missing {
   color: red;
@@ -215,6 +221,7 @@ ul {
   border: none;
   padding: 0px;
   background-color: lightgoldenrodyellow;
+  overflow-wrap: anywhere;
 }
 .circlebuttonactual:hover {
   background-color: palegoldenrod;

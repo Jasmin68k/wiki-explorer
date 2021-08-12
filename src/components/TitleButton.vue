@@ -67,10 +67,11 @@
       v-if="resultsRedirectsEnabled"
       :style="{ 'font-size': 70 * scalingFactor + '%' }"
     >
-      {{ redirect }}
+      <ul>
+        <li>{{ redirect }}</li>
+      </ul>
     </div>
   </div>
-
   <div
     v-if="!inputsDisabled && hoverButtonTitle && categoriesArray.length > 0"
     class="titlebuttonhover"
@@ -140,8 +141,13 @@ ul {
   list-style-type: none; /* Remove bullets */
   padding: 0; /* Remove padding */
   margin: 0; /* Remove margins */
+  /* indent second and following lines */
+  text-indent: -0.5rem;
+  margin-left: 0.5rem;
 }
-
+ul li {
+  text-align: left;
+}
 .titlebutton {
   background-color: lightgrey;
   border: 1px solid black;
@@ -156,6 +162,7 @@ ul {
   border: none;
   padding: 0px;
   background-color: lightgoldenrodyellow;
+  overflow-wrap: anywhere;
 }
 .titlebuttonactual:hover {
   background-color: palegoldenrod;
