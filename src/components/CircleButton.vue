@@ -53,7 +53,9 @@
         :class="{ missing: displayResultsArray[index].missing }"
         class="circlebuttonactual"
         :style="{
-          'font-size': 83.4 * scalingFactor + '%'
+          'font-size': 83.4 * scalingFactor + '%',
+          'max-width': 100 * scalingFactor + 'px',
+          'min-width': 50 * scalingFactor + 'px'
         }"
         :disabled="
           displayResultsArray[index].missing ||
@@ -215,8 +217,6 @@ ul {
 .circlebuttonactual {
   border: none;
   padding: 0px;
-  max-width: 100px;
-  min-width: 50px;
   background-color: lightgoldenrodyellow;
 }
 .circlebuttonactual:hover {

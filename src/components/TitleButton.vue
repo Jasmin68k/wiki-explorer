@@ -15,7 +15,9 @@
       <button
         class="titlebuttonactual"
         :style="{
-          'font-size': 83.4 * scalingFactor + '%'
+          'font-size': 83.4 * scalingFactor + '%',
+          'max-width': 100 * scalingFactor + 'px',
+          'min-width': 50 * scalingFactor + 'px'
         }"
         @click.prevent="titleButton(), hoverButtonTitleOff()"
       >
@@ -153,8 +155,6 @@ ul {
 .titlebuttonactual {
   border: none;
   padding: 0px;
-  max-width: 100px;
-  min-width: 50px;
   background-color: lightgoldenrodyellow;
 }
 .titlebuttonactual:hover {
