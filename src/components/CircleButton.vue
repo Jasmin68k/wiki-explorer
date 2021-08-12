@@ -45,7 +45,7 @@
     :ref="`circlebutton${index}`"
     v-on="{
       mouseover: categoriesOnHover ? () => hoverButtonOn(index) : null,
-      mouseleave: categoriesOnHover ? () => hoverButtonOff(index) : null
+      mouseleave: categoriesOnHover ? hoverButtonOff : null
     }"
   >
     <div class="buttonicongridcontainer">
@@ -178,8 +178,6 @@ export default {
   },
   methods: {
     hoverButtonOn(index) {
-      this.$refs[`circlebutton${index}`].style.zIndex = 3
-
       this.hoverButtonIndex = index
 
       this.hoverRight =
@@ -191,8 +189,7 @@ export default {
 
       this.hoverButton = true
     },
-    hoverButtonOff(index) {
-      this.$refs[`circlebutton${index}`].style.zIndex = 1
+    hoverButtonOff() {
       this.hoverButton = false
       this.hoverButtonIndex = -1
     },
@@ -236,6 +233,9 @@ ul {
   /* using minusangle as extra var as workaround, since calc() in css seems not to work with deg unit in older firefox */
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
     rotate(var(--minusangle));
+}
+.circlebutton:hover {
+  z-index: 3;
 }
 .circlebuttonhover {
   background-color: honeydew;
