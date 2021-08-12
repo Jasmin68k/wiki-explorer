@@ -121,6 +121,9 @@ export default {
   watch: {
     categoriesOnHover() {
       this.hoverButtonTitleOff()
+    },
+    inputsDisabled() {
+      this.hoverButtonTitleOff()
     }
   },
 
