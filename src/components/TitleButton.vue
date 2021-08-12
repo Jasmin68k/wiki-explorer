@@ -39,10 +39,13 @@
         >
           <a :href="url" target="_blank"
             ><img
-              class="wikipediaicon"
+              class="icon"
+              :class="{
+                iconverticalalignmiddle: categoriesOnHover,
+                iconverticalaligntop: !categoriesOnHover
+              }"
               :style="{
-                height: 0.67 * scalingFactor + 0.33 + 'rem',
-                'vertical-align': 'top'
+                height: 0.67 * scalingFactor + 0.33 + 'rem'
               }"
               alt="Wiki"
               src="../assets/images/wikipedia.svg"
@@ -55,7 +58,7 @@
         >
           <img
             @click="catsClick()"
-            class="wikipediaicon"
+            class="icon"
             :style="{
               height: 0.67 * scalingFactor + 0.33 + 'rem',
               'vertical-align': 'top'
@@ -193,8 +196,7 @@ ul li {
 .buttonicongridcontainer {
   display: grid;
 }
-
-.wikipediaicon:hover {
+.icon:hover {
   filter: invert(1);
 }
 .icongridcontainer {
@@ -207,8 +209,13 @@ ul li {
 .icongriditem1center {
   align-self: center;
 }
-
 .icongriditem2 {
   align-self: end;
+}
+.iconverticalaligntop {
+  vertical-align: top;
+}
+.iconverticalalignmiddle {
+  vertical-align: middle;
 }
 </style>

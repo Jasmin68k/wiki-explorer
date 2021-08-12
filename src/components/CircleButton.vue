@@ -98,10 +98,11 @@
           <a :href="displayResultsArray[index].fullurl" target="_blank"
             ><img
               class="icon"
-              :style="{
-                height: 0.67 * scalingFactor + 0.33 + 'rem',
-                'vertical-align': 'top'
+              :class="{
+                iconverticalalignmiddle: categoriesOnHover,
+                iconverticalaligntop: !categoriesOnHover
               }"
+              :style="{ height: 0.67 * scalingFactor + 0.33 + 'rem' }"
               alt="Wiki"
               src="../assets/images/wikipedia.svg"
           /></a>
@@ -291,7 +292,6 @@ ul li {
 .icongriditem1center {
   align-self: center;
 }
-
 .icongriditem2 {
   align-self: end;
 }
@@ -300,5 +300,11 @@ ul li {
 }
 .redirects {
   background-color: lavender;
+}
+.iconverticalaligntop {
+  vertical-align: top;
+}
+.iconverticalalignmiddle {
+  vertical-align: middle;
 }
 </style>
