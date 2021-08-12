@@ -3,7 +3,7 @@
     class="titlebutton"
     :style="{
       'line-height': 100 * scalingFactor + '%',
-      'max-width': 118 * scalingFactor + 'px'
+      'max-width': 200 * scalingFactor + 'px'
     }"
     v-show="!inputsDisabled && title && !titleMissing"
     ref="titlebutton"

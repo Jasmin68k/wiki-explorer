@@ -41,7 +41,20 @@
             (360 / (Math.round(displayResultsArray.length / 2) * 2)) * index) +
         'deg',
       'line-height': 100 * scalingFactor + '%',
-      'max-width': 118 * scalingFactor + 'px'
+      'max-width':
+        130 *
+          scalingFactor *
+          (1 +
+            Math.abs(
+              Math.sin(
+                ((360 / (Math.round(displayResultsArray.length / 2) * 2)) *
+                  index *
+                  Math.PI) /
+                  180
+              )
+            ) *
+              0.25) +
+        'px'
     }"
     :ref="`circlebutton${index}`"
     v-on="{
