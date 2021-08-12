@@ -82,7 +82,7 @@ export default {
         'User-Agent': 'WikiExplorer/0.1'
       }),
       scalingFactor: 1.0,
-      categoriesOnHover: true
+      categoriesOnHover: false
     }
   },
 

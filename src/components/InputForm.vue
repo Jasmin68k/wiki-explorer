@@ -124,19 +124,6 @@
         <span>{{ $t('show-cats-on') }}</span>
         <input
           type="radio"
-          id="catshover"
-          value="catshover"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-          v-model="categoriesOnHoverOrClick"
-          @change="categoriesOnHoverOrClickChanged"
-        />
-
-        <label for="catshover">{{ $t('cats-hover') }}</label>
-        <input
-          type="radio"
           id="catsclick"
           value="catsclick"
           :disabled="
@@ -147,6 +134,18 @@
           @change="categoriesOnHoverOrClickChanged"
         />
         <label for="catsclick">{{ $t('cats-click') }}</label>
+        <input
+          type="radio"
+          id="catshover"
+          value="catshover"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="categoriesOnHoverOrClick"
+          @change="categoriesOnHoverOrClickChanged"
+        />
+        <label for="catshover">{{ $t('cats-hover') }}</label>
       </form>
 
       <input
@@ -347,7 +346,7 @@ export default {
       sizePerPage: 24,
       checkedCategories: new Set(),
       scalingFactor: 1.0,
-      categoriesOnHoverOrClick: 'catshover'
+      categoriesOnHoverOrClick: 'catsclick'
     }
   },
 
