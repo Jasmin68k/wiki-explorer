@@ -3,7 +3,10 @@
     v-show="!inputsDisabled"
     class="circlebutton"
     :style="{
-      '--angle': 270 + (360 / displayResultsArray.length) * index + 'deg',
+      '--angle':
+        270 +
+        (360 / (Math.round(displayResultsArray.length / 2) * 2)) * index +
+        'deg',
       '--radius':
         index % 2 === 0
           ? circleButtonRadius *
@@ -11,7 +14,10 @@
               (1 +
                 Math.abs(
                   Math.sin(
-                    ((360 / displayResultsArray.length) * index * Math.PI) / 180
+                    ((360 / (Math.round(displayResultsArray.length / 2) * 2)) *
+                      index *
+                      Math.PI) /
+                      180
                   )
                 ) *
                   0.25) +
@@ -21,13 +27,19 @@
               (1 +
                 Math.abs(
                   Math.sin(
-                    ((360 / displayResultsArray.length) * index * Math.PI) / 180
+                    ((360 / (Math.round(displayResultsArray.length / 2) * 2)) *
+                      index *
+                      Math.PI) /
+                      180
                   )
                 ) *
                   0.25) +
             'px',
       '--minusangle':
-        -1 * (270 + (360 / displayResultsArray.length) * index) + 'deg',
+        -1 *
+          (270 +
+            (360 / (Math.round(displayResultsArray.length / 2) * 2)) * index) +
+        'deg',
       'line-height': 100 * scalingFactor + '%'
     }"
     :ref="`circlebutton${index}`"

@@ -105,9 +105,15 @@ export default {
         ctx.beginPath()
         ctx.moveTo(middleX, middleY)
         const angle =
-          ((270 + (360 / this.displayResultsArray.length) * i) * Math.PI) / 180
+          ((270 +
+            (360 / (Math.round(this.displayResultsArray.length / 2) * 2)) * i) *
+            Math.PI) /
+          180
         const angle2 =
-          ((360 / this.displayResultsArray.length) * i * Math.PI) / 180
+          ((360 / (Math.round(this.displayResultsArray.length / 2) * 2)) *
+            i *
+            Math.PI) /
+          180
 
         const length =
           i % 2 === 0
