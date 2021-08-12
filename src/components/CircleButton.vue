@@ -150,7 +150,7 @@
     class="circlebuttonhover"
     :style="{
       '--posleft': hoverRight + 'px',
-      '--postop': hoverBottom + 'px',
+      '--postop': hoverBottom - 1 + 'px',
       'font-size': 70 * scalingFactor + '%'
     }"
   >
@@ -194,7 +194,7 @@ export default {
       this.hoverButtonIndex = index
 
       this.hoverRight =
-        this.$refs[`circlebutton${index}`].getBoundingClientRect().right -
+        this.$refs[`circlebutton${index}`].getBoundingClientRect().left -
         this.outgraphcanvasref.getBoundingClientRect().left
       this.hoverBottom =
         this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -

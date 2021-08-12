@@ -77,7 +77,7 @@
     class="titlebuttonhover"
     :style="{
       '--poslefttitle': hoverRightTitle + 'px',
-      '--postoptitle': hoverBottomTitle + 'px',
+      '--postoptitle': hoverBottomTitle - 1 + 'px',
       'font-size': 70 * scalingFactor + '%'
     }"
   >
@@ -113,7 +113,7 @@ export default {
   methods: {
     hoverButtonTitleOn() {
       this.hoverRightTitle =
-        this.$refs['titlebutton'].getBoundingClientRect().right -
+        this.$refs['titlebutton'].getBoundingClientRect().left -
         this.outgraphcanvasref.getBoundingClientRect().left
       this.hoverBottomTitle =
         this.$refs['titlebutton'].getBoundingClientRect().bottom -
