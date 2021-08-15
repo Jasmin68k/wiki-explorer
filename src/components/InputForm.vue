@@ -438,6 +438,10 @@ export default {
         window.visualViewport.width / 1080
       )
     }
+    // documentElement.clientWidth can be unreliable, 0 or wrong values...simple safety measure here
+    // also generally restricting to min 0.33
+    this.scalingFactor = Math.max(0.33, this.scalingFactor)
+
     this.$emit('scalingFactorChanged', this.scalingFactor)
   }
 }
