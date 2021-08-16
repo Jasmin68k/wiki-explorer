@@ -104,7 +104,8 @@
             ><img
               class="icon"
               :class="{
-                iconverticalalignmiddle: categoriesOnHover,
+                iconverticalalignmiddle:
+                  categoriesOnHover || !resultsCategoriesEnabled,
                 iconverticalaligntop: !categoriesOnHover
               }"
               :style="{ height: 0.67 * scalingFactor + 0.33 + 'rem' }"
