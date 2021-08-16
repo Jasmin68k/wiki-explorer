@@ -124,7 +124,7 @@
         >
           <img
             @click="catsClick(index)"
-            class="icon"
+            :class="{ icon: resultsCategoriesDone }"
             :style="{
               height: 0.67 * scalingFactor + 0.33 + 'rem',
               'vertical-align': 'top'
@@ -230,7 +230,11 @@ export default {
       this.$emit('circleButtonClicked', index)
     },
     catsClick(index) {
-      this.hoverButton ? this.hoverButtonOff(index) : this.hoverButtonOn(index)
+      if (this.resultsCategoriesDone) {
+        this.hoverButton
+          ? this.hoverButtonOff(index)
+          : this.hoverButtonOn(index)
+      }
     }
   }
 }
