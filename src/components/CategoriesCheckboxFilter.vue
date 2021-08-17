@@ -200,7 +200,8 @@ ul {
 }
 
 .checkboxbuttons {
-  position: fixed;
+  /* position: fixed; */
+  position: absolute;
   right: 30px;
   z-index: 1;
 }
