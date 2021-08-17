@@ -74,7 +74,14 @@
       ]"
     >
       <button
-        :class="{ missing: displayResultsArray[index].missing }"
+        :class="{
+          missing: displayResultsArray[index].missing,
+          circlebuttonactualhover:
+            (!inputsDisabled &&
+              resultsCategoriesEnabled &&
+              resultsCategoriesDone) ||
+            (!inputsDisabled && !resultsCategoriesEnabled)
+        }"
         class="circlebuttonactual"
         :style="{
           'font-size': 83.4 * scalingFactor + '%',
@@ -260,7 +267,7 @@ ul li {
   background-color: lightgoldenrodyellow;
   overflow-wrap: anywhere;
 }
-.circlebuttonactual:hover {
+.circlebuttonactualhover:hover {
   background-color: palegoldenrod;
 }
 .circlebutton {
