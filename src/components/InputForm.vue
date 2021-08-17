@@ -1,236 +1,218 @@
 <template>
-  <div class="container">
-    <div class="inputform">
-      <form @submit.prevent="fetchData()">
-        <input
-          id="title"
-          v-model="title"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-        />
-        <button
-          type="submit"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-        >
-          {{ $t('fetch-data') }}
-        </button>
+  <form @submit.prevent="fetchData()">
+    <input
+      id="title"
+      v-model="title"
+      :disabled="
+        inputsDisabled || (resultsCategoriesEnabled && !resultsCategoriesDone)
+      "
+    />
+    <button
+      type="submit"
+      :disabled="
+        inputsDisabled || (resultsCategoriesEnabled && !resultsCategoriesDone)
+      "
+    >
+      {{ $t('fetch-data') }}
+    </button>
 
-        <input
-          type="radio"
-          id="en"
-          value="en"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-          v-model="language"
-          @change="languageSwitched"
-        />
+    <input
+      type="radio"
+      id="en"
+      value="en"
+      :disabled="
+        inputsDisabled || (resultsCategoriesEnabled && !resultsCategoriesDone)
+      "
+      v-model="language"
+      @change="languageSwitched"
+    />
 
-        <label for="en">{{ $t('language-en') }}</label>
-        <input
-          type="radio"
-          id="de"
-          value="de"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-          v-model="language"
-          @change="languageSwitched"
-        />
-        <label for="de">{{ $t('language-de') }}</label>
-      </form>
-      <form>
-        <input
-          id="resultsCategories"
-          type="checkbox"
-          :disabled="inputsDisabled"
-          v-model="resultsCategoriesEnabled"
-          @change="resultsCategoriesChanged"
-        />
-        <label for="resultsCategories">{{
-          $t('show-results-categories')
-        }}</label>
-      </form>
-      <form>
-        <input
-          id="checkboxFilter"
-          type="checkbox"
-          :disabled="inputsDisabled || !resultsCategoriesEnabled"
-          v-model="checkboxFilterEnabled"
-          @change="checkboxFilterEnabledChange"
-        />
-        <label for="checkboxFilter">{{
-          $t('enable-categories-checkbox-filter')
-        }}</label>
-      </form>
+    <label for="en">{{ $t('language-en') }}</label>
+    <input
+      type="radio"
+      id="de"
+      value="de"
+      :disabled="
+        inputsDisabled || (resultsCategoriesEnabled && !resultsCategoriesDone)
+      "
+      v-model="language"
+      @change="languageSwitched"
+    />
+    <label for="de">{{ $t('language-de') }}</label>
+  </form>
+  <form>
+    <input
+      id="resultsCategories"
+      type="checkbox"
+      :disabled="inputsDisabled"
+      v-model="resultsCategoriesEnabled"
+      @change="resultsCategoriesChanged"
+    />
+    <label for="resultsCategories">{{ $t('show-results-categories') }}</label>
+  </form>
+  <form>
+    <input
+      id="checkboxFilter"
+      type="checkbox"
+      :disabled="inputsDisabled || !resultsCategoriesEnabled"
+      v-model="checkboxFilterEnabled"
+      @change="checkboxFilterEnabledChange"
+    />
+    <label for="checkboxFilter">{{
+      $t('enable-categories-checkbox-filter')
+    }}</label>
+  </form>
 
-      <div
-        :style="{
-          visibility:
-            resultsCategoriesEnabled && !resultsCategoriesDone
-              ? 'visible'
-              : 'hidden',
-          color: 'red'
-        }"
-      >
-        {{ $t('fetching-results-categories') }}
-      </div>
+  <div
+    :style="{
+      visibility:
+        resultsCategoriesEnabled && !resultsCategoriesDone
+          ? 'visible'
+          : 'hidden',
+      color: 'red'
+    }"
+  >
+    {{ $t('fetching-results-categories') }}
+  </div>
 
-      <form>
-        <input
-          id="resultsRedirects"
-          type="checkbox"
-          :disabled="inputsDisabled"
-          v-model="resultsRedirectsEnabled"
-          @change="resultsRedirectsChanged"
-        />
-        <label for="resultsRedirects">{{ $t('show-used-redirects') }}</label>
-      </form>
+  <form>
+    <input
+      id="resultsRedirects"
+      type="checkbox"
+      :disabled="inputsDisabled"
+      v-model="resultsRedirectsEnabled"
+      @change="resultsRedirectsChanged"
+    />
+    <label for="resultsRedirects">{{ $t('show-used-redirects') }}</label>
+  </form>
 
-      <form @submit.prevent="">
-        <label for="filter">{{ $t('filter-results-titles') }}</label>
-        <input
-          id="filter"
-          v-model="filter"
-          @input="resetPageNumber(), filterChanged()"
-          :disabled="inputsDisabled"
-        />
-      </form>
+  <form @submit.prevent="">
+    <label for="filter">{{ $t('filter-results-titles') }}</label>
+    <input
+      id="filter"
+      v-model="filter"
+      @input="resetPageNumber(), filterChanged()"
+      :disabled="inputsDisabled"
+    />
+  </form>
 
-      <form @submit.prevent="">
-        <label for="filterCategories">{{
-          $t('filter-results-categories')
-        }}</label>
-        <input
-          id="filterCategories"
-          v-model="filterCategories"
-          @input="resetPageNumber(), filterCategoriesChanged()"
-          :disabled="
-            inputsDisabled ||
-            !resultsCategoriesDone ||
-            !resultsCategoriesEnabled
-          "
-        />
-      </form>
+  <form @submit.prevent="">
+    <label for="filterCategories">{{ $t('filter-results-categories') }}</label>
+    <input
+      id="filterCategories"
+      v-model="filterCategories"
+      @input="resetPageNumber(), filterCategoriesChanged()"
+      :disabled="
+        inputsDisabled || !resultsCategoriesDone || !resultsCategoriesEnabled
+      "
+    />
+  </form>
 
-      <form>
-        <span>{{ $t('show-cats-on') }}</span>
-        <input
-          type="radio"
-          id="catsclick"
-          value="catsclick"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-          v-model="categoriesOnHoverOrClick"
-          @change="categoriesOnHoverOrClickChanged"
-        />
-        <label for="catsclick">{{ $t('cats-click') }}</label>
-        <input
-          type="radio"
-          id="catshover"
-          value="catshover"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-          v-model="categoriesOnHoverOrClick"
-          @change="categoriesOnHoverOrClickChanged"
-        />
-        <label for="catshover">{{ $t('cats-hover') }}</label>
-      </form>
+  <form>
+    <span>{{ $t('show-cats-on') }}</span>
+    <input
+      type="radio"
+      id="catsclick"
+      value="catsclick"
+      :disabled="
+        inputsDisabled || (resultsCategoriesEnabled && !resultsCategoriesDone)
+      "
+      v-model="categoriesOnHoverOrClick"
+      @change="categoriesOnHoverOrClickChanged"
+    />
+    <label for="catsclick">{{ $t('cats-click') }}</label>
+    <input
+      type="radio"
+      id="catshover"
+      value="catshover"
+      :disabled="
+        inputsDisabled || (resultsCategoriesEnabled && !resultsCategoriesDone)
+      "
+      v-model="categoriesOnHoverOrClick"
+      @change="categoriesOnHoverOrClickChanged"
+    />
+    <label for="catshover">{{ $t('cats-hover') }}</label>
+  </form>
 
-      <input
-        type="range"
-        min="2"
-        step="2"
-        :max="36"
-        v-model="sizePerPage"
-        :disabled="inputsDisabled || filteredResultsArray.length === 0"
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        @input="resetPageNumber()"
-      />
-      <div
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('max-results-per-page') }}{{ sizePerPage }}
-      </div>
-      <br />
+  <input
+    type="range"
+    min="2"
+    step="2"
+    :max="36"
+    v-model="sizePerPage"
+    :disabled="inputsDisabled || filteredResultsArray.length === 0"
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+    @input="resetPageNumber()"
+  />
+  <div
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    {{ $t('max-results-per-page') }}{{ sizePerPage }}
+  </div>
+  <br />
 
-      <div
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
-      </div>
-      <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
-      <p
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
-        }}{{ indexEnd + 1 }}
-      </p>
-      <form
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        <button
-          @click.prevent="prevPage"
-          :disabled="
-            inputsDisabled ||
-            filteredResultsArray.length === 0 ||
-            pageNumber === 0
-          "
-        >
-          {{ $t('prev-page') }}
-        </button>
-        <button
-          @click.prevent="nextPage"
-          :disabled="
-            inputsDisabled ||
-            filteredResultsArray.length === 0 ||
-            pageNumber + 1 === numberOfPages
-          "
-        >
-          {{ $t('next-page') }}
-        </button>
-      </form>
-      <input
-        type="range"
-        min="0.33"
-        max="1.0"
-        step="0.01"
-        v-model="scalingFactor"
-        :disabled="inputsDisabled || filteredResultsArray.length === 0"
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        @input="scalingFactorChanged"
-      />
-      <div
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('scale-graph') }}
-      </div>
-    </div>
+  <div
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
+  </div>
+  <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
+  <p
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
+    }}{{ indexEnd + 1 }}
+  </p>
+  <form
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    <button
+      @click.prevent="prevPage"
+      :disabled="
+        inputsDisabled || filteredResultsArray.length === 0 || pageNumber === 0
+      "
+    >
+      {{ $t('prev-page') }}
+    </button>
+    <button
+      @click.prevent="nextPage"
+      :disabled="
+        inputsDisabled ||
+        filteredResultsArray.length === 0 ||
+        pageNumber + 1 === numberOfPages
+      "
+    >
+      {{ $t('next-page') }}
+    </button>
+  </form>
+  <input
+    type="range"
+    min="0.33"
+    max="1.0"
+    step="0.01"
+    v-model="scalingFactor"
+    :disabled="inputsDisabled || filteredResultsArray.length === 0"
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+    @input="scalingFactorChanged"
+  />
+  <div
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    {{ $t('scale-graph') }}
   </div>
 </template>
 <script>
@@ -404,11 +386,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-.container {
-  display: flex;
-}
-.inputform {
-  flex: 1;
-}
-</style>
+<style scoped></style>
