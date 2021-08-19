@@ -15,7 +15,8 @@
     >
       {{ $t('fetch-data') }}
     </button>
-
+  </form>
+  <form>
     <input
       type="radio"
       id="en"
@@ -40,6 +41,29 @@
     />
     <label for="de">{{ $t('language-de') }}</label>
   </form>
+
+  <form @submit.prevent="">
+    <label for="filter">{{ $t('filter-results-titles') }}</label>
+    <input
+      id="filter"
+      v-model="filter"
+      @input="resetPageNumber(), filterChanged()"
+      :disabled="inputsDisabled"
+    />
+  </form>
+
+  <form @submit.prevent="">
+    <label for="filterCategories">{{ $t('filter-results-categories') }}</label>
+    <input
+      id="filterCategories"
+      v-model="filterCategories"
+      @input="resetPageNumber(), filterCategoriesChanged()"
+      :disabled="
+        inputsDisabled || !resultsCategoriesDone || !resultsCategoriesEnabled
+      "
+    />
+  </form>
+
   <form>
     <input
       id="resultsCategories"
@@ -63,18 +87,6 @@
     }}</label>
   </form>
 
-  <div
-    :style="{
-      visibility:
-        resultsCategoriesEnabled && !resultsCategoriesDone
-          ? 'visible'
-          : 'hidden',
-      color: 'red'
-    }"
-  >
-    {{ $t('fetching-results-categories') }}
-  </div>
-
   <form>
     <input
       id="resultsRedirects"
@@ -84,28 +96,6 @@
       @change="resultsRedirectsChanged"
     />
     <label for="resultsRedirects">{{ $t('show-used-redirects') }}</label>
-  </form>
-
-  <form @submit.prevent="">
-    <label for="filter">{{ $t('filter-results-titles') }}</label>
-    <input
-      id="filter"
-      v-model="filter"
-      @input="resetPageNumber(), filterChanged()"
-      :disabled="inputsDisabled"
-    />
-  </form>
-
-  <form @submit.prevent="">
-    <label for="filterCategories">{{ $t('filter-results-categories') }}</label>
-    <input
-      id="filterCategories"
-      v-model="filterCategories"
-      @input="resetPageNumber(), filterCategoriesChanged()"
-      :disabled="
-        inputsDisabled || !resultsCategoriesDone || !resultsCategoriesEnabled
-      "
-    />
   </form>
 
   <form>
@@ -153,48 +143,7 @@
   >
     {{ $t('max-results-per-page') }}{{ sizePerPage }}
   </div>
-  <br />
 
-  <div
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
-  </div>
-  <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
-  <p
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
-    }}{{ indexEnd + 1 }}
-  </p>
-  <form
-    :style="{
-      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-    }"
-  >
-    <button
-      @click.prevent="prevPage"
-      :disabled="
-        inputsDisabled || filteredResultsArray.length === 0 || pageNumber === 0
-      "
-    >
-      {{ $t('prev-page') }}
-    </button>
-    <button
-      @click.prevent="nextPage"
-      :disabled="
-        inputsDisabled ||
-        filteredResultsArray.length === 0 ||
-        pageNumber + 1 === numberOfPages
-      "
-    >
-      {{ $t('next-page') }}
-    </button>
-  </form>
   <input
     type="range"
     min="0.33"
@@ -233,6 +182,59 @@
   >
     {{ $t('graph-radius') }}
   </div>
+
+  <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
+  <p
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
+    }}{{ indexEnd + 1 }}
+  </p>
+  <p
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
+  </p>
+
+  <form
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    <button
+      @click.prevent="prevPage"
+      :disabled="
+        inputsDisabled || filteredResultsArray.length === 0 || pageNumber === 0
+      "
+    >
+      {{ $t('prev-page') }}
+    </button>
+    <button
+      @click.prevent="nextPage"
+      :disabled="
+        inputsDisabled ||
+        filteredResultsArray.length === 0 ||
+        pageNumber + 1 === numberOfPages
+      "
+    >
+      {{ $t('next-page') }}
+    </button>
+  </form>
+  <p
+    :style="{
+      visibility:
+        resultsCategoriesEnabled && !resultsCategoriesDone
+          ? 'visible'
+          : 'hidden',
+      color: 'red'
+    }"
+  >
+    {{ $t('fetching-results-categories') }}
+  </p>
 </template>
 <script>
 export default {
