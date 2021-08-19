@@ -18,7 +18,9 @@
       </div>
     </div>
     <div class="grid-container">
-      <div>Grid Container</div>
+      <div class="grid-item-graph">Graph</div>
+      <div class="grid-item-maininfo">Main info</div>
+      <div class="grid-item-categories">Categories</div>
     </div>
   </div>
 </template>
@@ -36,8 +38,6 @@ export default {
   /* justify-content: flex-start; */
   /* align-items: center; */
   /* align-content: space-around; */
-  background-color: red;
-  padding: 5px;
   height: 100vh;
 }
 
@@ -48,7 +48,6 @@ export default {
   /* align-items: center; */
   /* align-content: space-around; */
   background-color: green;
-  padding: 5px;
   flex: 0 1 auto;
 }
 
@@ -66,8 +65,31 @@ export default {
   background-color: lightpink;
   border: 1px solid black;
   flex: 1 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
+.grid-item-graph,
+.grid-item-maininfo,
+.grid-item-categories {
+  background-color: cadetblue;
+  border: 1px solid black;
+}
+
+.grid-item-graph {
+  grid-column: 1 / 2;
+  grid-row: 1;
+}
+
+.grid-item-categories {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+}
+
+.grid-item-maininfo {
+  grid-column: 1 / 2;
+  grid-row: 2;
+}
 @media (orientation: landscape) {
   .page-flex-container {
     flex-direction: row;
