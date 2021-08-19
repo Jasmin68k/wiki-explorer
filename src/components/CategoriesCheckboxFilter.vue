@@ -162,6 +162,9 @@ export default {
     }
   },
   mounted() {
+    // emit did not work for whatever reason
+    this.$parent.windowResized()
+
     this.checkedCategories = new Set(this.itemsFull)
     this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
 

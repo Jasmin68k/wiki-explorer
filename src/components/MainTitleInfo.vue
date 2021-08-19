@@ -1,16 +1,18 @@
 <template>
-  <div v-show="extract && image">
-    <div>
-      <img class="image" :src="image" />
+  <div>
+    <div v-show="extract && image">
+      <div>
+        <img class="image" :src="image" />
+      </div>
+      <div class="extract" v-html="extract"></div>
     </div>
-    <div class="extract" v-html="extract"></div>
-  </div>
-  <div v-show="extract && !image">
-    <div class="extract" v-html="extract"></div>
-  </div>
-  <div v-show="!extract && image">
-    <div>
-      <img class="imageonly" :src="image" />
+    <div v-show="extract && !image">
+      <div class="extract" v-html="extract"></div>
+    </div>
+    <div v-show="!extract && image">
+      <div>
+        <img class="imageonly" :src="image" />
+      </div>
     </div>
   </div>
 </template>

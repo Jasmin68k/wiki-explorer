@@ -1,63 +1,87 @@
 <template>
-  <input-form
-    :inputs-disabled="inputsDisabled"
-    :results-categories-done="resultsCategoriesDone"
-    :filtered-results-array="filteredResultsArray"
-    :results-categories-all-array-unfiltered="
-      resultsCategoriesAllArrayUnfiltered
-    "
-    :parent-title="title"
-    @fetchDataClicked="fetchDataClicked"
-    @resultsCategoriesChanged="resultsCategoriesChanged"
-    @resultsRedirectsChanged="resultsRedirectsChanged"
-    @filterChanged="filterChanged"
-    @filterCategoriesChanged="filterCategoriesChanged"
-    @indexStartChanged="indexStartChanged"
-    @indexEndChanged="indexEndChanged"
-    @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-    @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
-    @languageSwitched="languageSwitched"
-    @scalingFactorChanged="scalingFactorChanged"
-    @circleButtonRadiusChanged="circleButtonRadiusChanged"
-    @categoriesHoverClickChanged="categoriesHoverClickChanged"
-    ref="inputForm"
-  ></input-form>
-
-  <div class="inputcategoriescontainer" ref="inputcategoriescontainer">
-    <categories-checkbox-filter
-      v-if="
-        resultsCategoriesEnabled &&
-        resultsCategoriesAllArray.length > 0 &&
-        resultsCategoriesDone &&
-        checkboxFilterEnabled
+  <div class="page-flex-container">
+    <input-form
+      :inputs-disabled="inputsDisabled"
+      :results-categories-done="resultsCategoriesDone"
+      :filtered-results-array="filteredResultsArray"
+      :results-categories-all-array-unfiltered="
+        resultsCategoriesAllArrayUnfiltered
       "
-      :items="resultsCategoriesAllArray"
-      :items-full="resultsCategoriesAllArrayUnfiltered"
-      :root-height="scrollboxContainerHeight"
+      :parent-title="title"
+      @fetchDataClicked="fetchDataClicked"
+      @resultsCategoriesChanged="resultsCategoriesChanged"
+      @resultsRedirectsChanged="resultsRedirectsChanged"
+      @filterChanged="filterChanged"
+      @filterCategoriesChanged="filterCategoriesChanged"
+      @indexStartChanged="indexStartChanged"
+      @indexEndChanged="indexEndChanged"
       @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-      @categoriesAll="resultsCategoriesCheckboxChanged"
-      @categoriesNone="resultsCategoriesCheckboxChanged"
-    ></categories-checkbox-filter>
+      @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
+      @languageSwitched="languageSwitched"
+      @scalingFactorChanged="scalingFactorChanged"
+      @circleButtonRadiusChanged="circleButtonRadiusChanged"
+      @categoriesHoverClickChanged="categoriesHoverClickChanged"
+      @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
+      @gridHeightChanged="gridHeightChanged"
+      ref="inputForm"
+    ></input-form>
+
+    <div
+      :class="{
+        'grid-container': checkboxFilterEnabled && resultsCategoriesEnabled,
+        'grid-container-nocategories':
+          !checkboxFilterEnabled || !resultsCategoriesEnabled
+      }"
+      :style="{
+        '--gridwidthnocategories': gridWidthNocategories + 'px',
+        '--gridheightsubtract': gridHeightSubtract + 'px'
+      }"
+    >
+      <div
+        v-if="checkboxFilterEnabled"
+        class="inputcategoriescontainer grid-item-categories"
+        ref="inputcategoriescontainer"
+      >
+        <categories-checkbox-filter
+          v-if="
+            resultsCategoriesEnabled &&
+            resultsCategoriesAllArray.length > 0 &&
+            resultsCategoriesDone
+          "
+          :items="resultsCategoriesAllArray"
+          :items-full="resultsCategoriesAllArrayUnfiltered"
+          :root-height="scrollboxContainerHeight"
+          @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
+          @categoriesAll="resultsCategoriesCheckboxChanged"
+          @categoriesNone="resultsCategoriesCheckboxChanged"
+        ></categories-checkbox-filter>
+      </div>
+
+      <outgraph
+        class="grid-item-graph"
+        :inputs-disabled="inputsDisabled"
+        :title="returnedTitle"
+        :url="returnedUrl"
+        :results-redirects-enabled="resultsRedirectsEnabled"
+        :redirect="returnedRedirect"
+        :display-results-array="displayResultsArray"
+        :categories-array="categoriesArray"
+        :results-categories-enabled="resultsCategoriesEnabled"
+        :results-categories-done="resultsCategoriesDone"
+        :title-missing="titleMissing"
+        :scaling-factor="scalingFactor"
+        :circle-button-radius="circleButtonRadius"
+        :categories-on-hover="categoriesOnHover"
+        @circleButtonClicked="circleButtonClicked"
+      ></outgraph>
+
+      <main-title-info
+        class="grid-item-maininfo"
+        :extract="extract"
+        :image="returnedImage"
+      ></main-title-info>
+    </div>
   </div>
-
-  <outgraph
-    :inputs-disabled="inputsDisabled"
-    :title="returnedTitle"
-    :url="returnedUrl"
-    :results-redirects-enabled="resultsRedirectsEnabled"
-    :redirect="returnedRedirect"
-    :display-results-array="displayResultsArray"
-    :categories-array="categoriesArray"
-    :results-categories-enabled="resultsCategoriesEnabled"
-    :results-categories-done="resultsCategoriesDone"
-    :title-missing="titleMissing"
-    :scaling-factor="scalingFactor"
-    :circle-button-radius="circleButtonRadius"
-    :categories-on-hover="categoriesOnHover"
-    @circleButtonClicked="circleButtonClicked"
-  ></outgraph>
-
-  <main-title-info :extract="extract" :image="returnedImage"></main-title-info>
 </template>
 
 <script>
@@ -101,7 +125,10 @@ export default {
       }),
       scalingFactor: 1.0,
       circleButtonRadius: 260,
-      categoriesOnHover: false
+      categoriesOnHover: false,
+      gridWidthNocategories: 1520,
+      gridHeightSubtract: 0,
+      scrollboxContainerHeight: 300
     }
   },
 
@@ -117,9 +144,9 @@ export default {
   },
 
   computed: {
-    scrollboxContainerHeight() {
-      return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
-    },
+    // scrollboxContainerHeight() {
+    //   return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
+    // },
 
     mainInfoUrl() {
       let url =
@@ -626,7 +653,7 @@ export default {
       this.scalingFactor = parseFloat(value)
     },
     circleButtonRadiusChanged(value) {
-      this.circleButtonRadius = value
+      this.circleButtonRadius = parseInt(value)
     },
     categoriesHoverClickChanged(value) {
       if (value === 'catshover') {
@@ -634,7 +661,28 @@ export default {
       } else {
         this.categoriesOnHover = false
       }
+    },
+    gridWidthNocategoriesChanged(value) {
+      this.gridWidthNocategories = value
+    },
+    gridHeightChanged(value) {
+      this.gridHeightSubtract = value
+    },
+    windowResized() {
+      this.$nextTick(() => {
+        if (this.$refs.inputcategoriescontainer) {
+          this.scrollboxContainerHeight =
+            this.$refs.inputcategoriescontainer.getBoundingClientRect().height
+        }
+      })
     }
+  },
+  mounted() {
+    window.addEventListener('resize', this.windowResized)
+    this.windowResized()
+  },
+  beforeUnMount() {
+    window.removeEventListener('resize', this.windowResized)
   }
 }
 </script>
@@ -642,7 +690,76 @@ export default {
 <style scoped>
 .inputcategoriescontainer {
   /* height temp till layout */
-  height: 300px;
+  /* height: 300px; */
   position: relative;
+}
+.page-flex-container {
+  display: flex;
+  /* flex-wrap: wrap; */
+  /* justify-content: flex-start; */
+  /* align-items: center; */
+  /* align-content: space-around; */
+  height: 100vh;
+}
+
+@media (orientation: landscape) {
+  .page-flex-container {
+    flex-direction: row;
+  }
+}
+
+@media (orientation: portrait) {
+  .page-flex-container {
+    flex-direction: column;
+  }
+}
+
+.grid-container {
+  /* background-color: lightpink; */
+  /* border: 1px solid black; */
+  flex: 1 0 auto;
+  display: grid;
+  grid-template-columns: min-content minmax(320px, 1fr);
+  grid-template-rows: min-content minmax(0, 1fr);
+  /* height: 100%; */
+  height: calc(100% - var(--gridheightsubtract));
+
+  /* overflow-y: hidden; */
+}
+
+.grid-container-nocategories {
+  /* background-color: lightpink; */
+  /* border: 1px solid black; */
+  flex: 1 0 auto;
+  display: grid;
+  grid-template-columns: var(--gridwidthnocategories);
+  grid-template-rows: min-content minmax(0, 1fr);
+  /* height: 100%; */
+  height: calc(100% - var(--gridheightsubtract));
+
+  /* overflow-y: hidden; */
+}
+
+/* .grid-item-graph, */
+/* .grid-item-maininfo, */
+/* .grid-item-categories { */
+/* background-color: cadetblue; */
+/* border: 1px solid black; */
+/* } */
+
+.grid-item-graph {
+  grid-column: 1 / 2;
+  grid-row: 1;
+}
+
+.grid-item-categories {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+}
+
+.grid-item-maininfo {
+  grid-column: 1 / 2;
+  grid-row: 2;
+  overflow-y: auto;
 }
 </style>
