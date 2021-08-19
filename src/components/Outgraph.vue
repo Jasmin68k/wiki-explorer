@@ -2,8 +2,8 @@
   <div
     class="outgraph"
     :style="{
-      width: 1080 * scalingFactor + 'px',
-      height: 864 * scalingFactor + 'px'
+      width: (circleButtonRadius * 1.25 * 2 + 220) * scalingFactor + 'px',
+      height: (circleButtonRadius * 2 + 100) * scalingFactor + 'px'
     }"
   >
     <canvas class="outgraphcanvas" ref="outgraphcanvas"></canvas>
@@ -63,12 +63,12 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     titleMissing: { required: true, default: true, type: Boolean },
     scalingFactor: { required: true, default: 1.0, type: Number },
+    circleButtonRadius: { required: true, default: 260, type: Number },
     categoriesOnHover: { required: true, default: true, type: Boolean }
   },
   data() {
     return {
-      outgraphcanvasref: {},
-      circleButtonRadius: 360
+      outgraphcanvasref: {}
     }
   },
   watch: {
@@ -78,6 +78,12 @@ export default {
       } else this.clearCanvas()
     },
     scalingFactor() {
+      this.$nextTick(() => {
+        this.clearCanvas()
+        this.drawLines()
+      })
+    },
+    circleButtonRadius() {
       this.$nextTick(() => {
         this.clearCanvas()
         this.drawLines()

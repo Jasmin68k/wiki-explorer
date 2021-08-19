@@ -138,7 +138,7 @@
     type="range"
     min="2"
     step="2"
-    :max="36"
+    :max="40"
     v-model="sizePerPage"
     :disabled="inputsDisabled || filteredResultsArray.length === 0"
     :style="{
@@ -214,6 +214,25 @@
   >
     {{ $t('scale-graph') }}
   </div>
+  <input
+    type="range"
+    min="200"
+    max="650"
+    step="1"
+    v-model="circleButtonRadius"
+    :disabled="inputsDisabled || filteredResultsArray.length === 0"
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+    @input="circleButtonRadiusChanged"
+  />
+  <div
+    :style="{
+      visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+    }"
+  >
+    {{ $t('graph-radius') }}
+  </div>
 </template>
 <script>
 export default {
@@ -233,7 +252,8 @@ export default {
     'checkboxFilterEnabledChanged',
     'languageSwitched',
     'scalingFactorChanged',
-    'categories-hover-click-changed'
+    'categories-hover-click-changed',
+    'circle-button-radius-changed'
   ],
 
   props: {
@@ -297,9 +317,10 @@ export default {
       checkboxFilterEnabled: true,
       filterCategories: '',
       pageNumber: 0,
-      sizePerPage: 24,
+      sizePerPage: 16,
       checkedCategories: new Set(),
       scalingFactor: 1.0,
+      circleButtonRadius: 260,
       categoriesOnHoverOrClick: 'catsclick'
     }
   },
@@ -361,6 +382,9 @@ export default {
     },
     scalingFactorChanged() {
       this.$emit('scalingFactorChanged', this.scalingFactor)
+    },
+    circleButtonRadiusChanged() {
+      this.$emit('circleButtonRadiusChanged', this.circleButtonRadius)
     }
   },
   mounted() {

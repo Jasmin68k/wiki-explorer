@@ -18,6 +18,7 @@
     @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
     @languageSwitched="languageSwitched"
     @scalingFactorChanged="scalingFactorChanged"
+    @circleButtonRadiusChanged="circleButtonRadiusChanged"
     @categoriesHoverClickChanged="categoriesHoverClickChanged"
     ref="inputForm"
   ></input-form>
@@ -51,6 +52,7 @@
     :results-categories-done="resultsCategoriesDone"
     :title-missing="titleMissing"
     :scaling-factor="scalingFactor"
+    :circle-button-radius="circleButtonRadius"
     :categories-on-hover="categoriesOnHover"
     @circleButtonClicked="circleButtonClicked"
   ></outgraph>
@@ -98,6 +100,7 @@ export default {
         'User-Agent': 'WikiExplorer/0.1'
       }),
       scalingFactor: 1.0,
+      circleButtonRadius: 260,
       categoriesOnHover: false
     }
   },
@@ -621,6 +624,9 @@ export default {
     },
     scalingFactorChanged(value) {
       this.scalingFactor = parseFloat(value)
+    },
+    circleButtonRadiusChanged(value) {
+      this.circleButtonRadius = value
     },
     categoriesHoverClickChanged(value) {
       if (value === 'catshover') {

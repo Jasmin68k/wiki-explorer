@@ -24,5 +24,6 @@
   "scale-graph": "Scale graph",
   "show-cats-on": "Show categories on: ",
   "cats-hover": "Hover",
-  "cats-click": "Click"
+  "cats-click": "Click",
+  "graph-radius": "Graph radius"
 }

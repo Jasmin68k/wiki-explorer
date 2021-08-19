@@ -24,5 +24,6 @@
   "scale-graph": "Graphen skalieren",
   "show-cats-on": "Zeige Kategorien bei: ",
   "cats-hover": "Mausschweben",
-  "cats-click": "Klick"
+  "cats-click": "Klick",
+  "graph-radius": "Graphenradius"
 }
