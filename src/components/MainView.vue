@@ -59,6 +59,7 @@ export default {
   background-color: lightgreen;
   border: 1px solid black;
   flex: 0 1 auto;
+  width: 400px;
 }
 
 .grid-container {
@@ -66,7 +67,8 @@ export default {
   border: 1px solid black;
   flex: 1 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
 }
 
 .grid-item-graph,
@@ -79,6 +81,8 @@ export default {
 .grid-item-graph {
   grid-column: 1 / 2;
   grid-row: 1;
+  width: 860px;
+  height: 620px;
 }
 
 .grid-item-categories {
