@@ -162,6 +162,9 @@ export default {
     }
   },
   mounted() {
+    // emit did not work for whatever reason
+    this.$parent.windowResized()
+
     this.checkedCategories = new Set(this.itemsFull)
     this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
 
@@ -200,7 +203,8 @@ ul {
 }
 
 .checkboxbuttons {
-  position: fixed;
+  /* position: fixed; */
+  position: absolute;
   right: 30px;
   z-index: 1;
 }

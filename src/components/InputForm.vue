@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="inputform">
+  <div class="inputform-flex-container" ref="inputformflexcontainer">
+    <div class="inputform-flex-item-1">
       <form @submit.prevent="fetchData()">
         <input
           id="title"
@@ -19,7 +19,8 @@
         >
           {{ $t('fetch-data') }}
         </button>
-
+      </form>
+      <form>
         <input
           type="radio"
           id="en"
@@ -46,53 +47,6 @@
         />
         <label for="de">{{ $t('language-de') }}</label>
       </form>
-      <form>
-        <input
-          id="resultsCategories"
-          type="checkbox"
-          :disabled="inputsDisabled"
-          v-model="resultsCategoriesEnabled"
-          @change="resultsCategoriesChanged"
-        />
-        <label for="resultsCategories">{{
-          $t('show-results-categories')
-        }}</label>
-      </form>
-      <form>
-        <input
-          id="checkboxFilter"
-          type="checkbox"
-          :disabled="inputsDisabled || !resultsCategoriesEnabled"
-          v-model="checkboxFilterEnabled"
-          @change="checkboxFilterEnabledChange"
-        />
-        <label for="checkboxFilter">{{
-          $t('enable-categories-checkbox-filter')
-        }}</label>
-      </form>
-
-      <div
-        :style="{
-          visibility:
-            resultsCategoriesEnabled && !resultsCategoriesDone
-              ? 'visible'
-              : 'hidden',
-          color: 'red'
-        }"
-      >
-        {{ $t('fetching-results-categories') }}
-      </div>
-
-      <form>
-        <input
-          id="resultsRedirects"
-          type="checkbox"
-          :disabled="inputsDisabled"
-          v-model="resultsRedirectsEnabled"
-          @change="resultsRedirectsChanged"
-        />
-        <label for="resultsRedirects">{{ $t('show-used-redirects') }}</label>
-      </form>
 
       <form @submit.prevent="">
         <label for="filter">{{ $t('filter-results-titles') }}</label>
@@ -118,6 +72,43 @@
             !resultsCategoriesEnabled
           "
         />
+      </form>
+    </div>
+    <div class="inputform-flex-item-2">
+      <form>
+        <input
+          id="resultsCategories"
+          type="checkbox"
+          :disabled="inputsDisabled"
+          v-model="resultsCategoriesEnabled"
+          @change="resultsCategoriesChanged"
+        />
+        <label for="resultsCategories">{{
+          $t('show-results-categories')
+        }}</label>
+      </form>
+      <form>
+        <input
+          id="checkboxFilter"
+          type="checkbox"
+          :disabled="inputsDisabled || !resultsCategoriesEnabled"
+          v-model="checkboxFilterEnabled"
+          @change="checkboxFilterEnabledChange"
+        />
+        <label for="checkboxFilter">{{
+          $t('enable-categories-checkbox-filter')
+        }}</label>
+      </form>
+
+      <form>
+        <input
+          id="resultsRedirects"
+          type="checkbox"
+          :disabled="inputsDisabled"
+          v-model="resultsRedirectsEnabled"
+          @change="resultsRedirectsChanged"
+        />
+        <label for="resultsRedirects">{{ $t('show-used-redirects') }}</label>
       </form>
 
       <form>
@@ -147,12 +138,14 @@
         />
         <label for="catshover">{{ $t('cats-hover') }}</label>
       </form>
+    </div>
 
+    <div class="inputform-flex-item-3">
       <input
         type="range"
         min="2"
         step="2"
-        :max="36"
+        :max="40"
         v-model="sizePerPage"
         :disabled="inputsDisabled || filteredResultsArray.length === 0"
         :style="{
@@ -167,15 +160,47 @@
       >
         {{ $t('max-results-per-page') }}{{ sizePerPage }}
       </div>
-      <br />
 
+      <input
+        type="range"
+        min="0.33"
+        max="1.0"
+        step="0.01"
+        v-model="scalingFactor"
+        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+        @input="scalingFactorChanged"
+      />
       <div
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
+        {{ $t('scale-graph') }}
       </div>
+      <input
+        type="range"
+        min="200"
+        max="650"
+        step="1"
+        v-model="circleButtonRadius"
+        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+        @input="circleButtonRadiusChanged"
+      />
+      <div
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        {{ $t('graph-radius') }}
+      </div>
+    </div>
+    <div class="inputform-flex-item-4">
       <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
       <p
         :style="{
@@ -185,6 +210,16 @@
         {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
         }}{{ indexEnd + 1 }}
       </p>
+    </div>
+    <div class="inputform-flex-item-5">
+      <p
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
+      </p>
+
       <form
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
@@ -211,50 +246,23 @@
           {{ $t('next-page') }}
         </button>
       </form>
-      <input
-        type="range"
-        min="0.33"
-        max="1.0"
-        step="0.01"
-        v-model="scalingFactor"
-        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+      <p
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        @input="scalingFactorChanged"
-      />
-      <div
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility:
+            resultsCategoriesEnabled && !resultsCategoriesDone
+              ? 'visible'
+              : 'hidden',
+          color: 'red'
         }"
       >
-        {{ $t('scale-graph') }}
-      </div>
-    </div>
-    <div class="inputcategoriescontainer" ref="inputcategoriescontainer">
-      <categories-checkbox-filter
-        v-if="
-          resultsCategoriesEnabled &&
-          resultsCategoriesAllArray.length > 0 &&
-          resultsCategoriesDone &&
-          checkboxFilterEnabled
-        "
-        :items="resultsCategoriesAllArray"
-        :items-full="resultsCategoriesAllArrayUnfiltered"
-        :root-height="scrollboxContainerHeight"
-        @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-        @categoriesAll="categoriesAll"
-        @categoriesNone="categoriesNone"
-      ></categories-checkbox-filter>
+        {{ $t('fetching-results-categories') }}
+      </p>
     </div>
   </div>
 </template>
 <script>
-import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
-
 export default {
   name: 'InputForm',
-  components: { CategoriesCheckboxFilter },
 
   // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
   // should not be needed, when fixed
@@ -270,7 +278,10 @@ export default {
     'checkboxFilterEnabledChanged',
     'languageSwitched',
     'scalingFactorChanged',
-    'categories-hover-click-changed'
+    'categories-hover-click-changed',
+    'circle-button-radius-changed',
+    'grid-width-nocategories-changed',
+    'grid-height-changed'
   ],
 
   props: {
@@ -278,11 +289,6 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     filteredResultsArray: { required: true, default: () => [], type: Array },
-    resultsCategoriesAllArray: {
-      required: true,
-      default: () => [],
-      type: Array
-    },
     resultsCategoriesAllArrayUnfiltered: {
       required: true,
       default: () => [],
@@ -304,10 +310,6 @@ export default {
   },
 
   computed: {
-    scrollboxContainerHeight() {
-      return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
-    },
-
     numberOfPages() {
       return Math.ceil(this.filteredResultsArray.length / this.sizePerPage)
     },
@@ -343,9 +345,10 @@ export default {
       checkboxFilterEnabled: true,
       filterCategories: '',
       pageNumber: 0,
-      sizePerPage: 24,
+      sizePerPage: 16,
       checkedCategories: new Set(),
       scalingFactor: 1.0,
+      circleButtonRadius: 260,
       categoriesOnHoverOrClick: 'catsclick'
     }
   },
@@ -355,6 +358,7 @@ export default {
       this.$emit('fetchDataClicked', this.title)
     },
     resultsCategoriesChanged() {
+      this.windowResized()
       this.resetPageNumber()
       this.$emit('resultsCategoriesChanged', this.resultsCategoriesEnabled)
     },
@@ -387,21 +391,8 @@ export default {
         this.pageNumber--
       }
     },
-    resultsCategoriesCheckboxChanged(value) {
-      this.resetPageNumber()
-      this.$emit('resultsCategoriesCheckboxChanged', value)
-    },
-
-    categoriesAll(value) {
-      this.resetPageNumber()
-
-      this.$emit('resultsCategoriesCheckboxChanged', value)
-    },
-    categoriesNone(value) {
-      this.resetPageNumber()
-      this.$emit('resultsCategoriesCheckboxChanged', value)
-    },
     checkboxFilterEnabledChange() {
+      this.windowResized()
       this.resetPageNumber()
 
       this.$emit('checkboxFilterEnabledChanged', this.checkboxFilterEnabled)
@@ -421,40 +412,101 @@ export default {
     },
     scalingFactorChanged() {
       this.$emit('scalingFactorChanged', this.scalingFactor)
+    },
+    circleButtonRadiusChanged() {
+      this.$emit('circle-button-radius-changed', this.circleButtonRadius)
+    },
+    windowResized() {
+      this.$nextTick(() => {
+        let vw
+        if (typeof window.visualViewport === 'undefined') {
+          vw = Math.min(window.innerWidth, document.documentElement.clientWidth)
+        } else {
+          vw = Math.min(
+            window.innerWidth,
+            document.documentElement.clientWidth,
+            window.visualViewport.width
+          )
+        }
+
+        //min width categories checkbox filter
+        if (this.checkboxFilterEnabled && this.resultsCategoriesEnabled) {
+          vw -= 320
+        }
+
+        // remove inputform width in landscape
+        if (window.matchMedia('(orientation: landscape)').matches) {
+          vw -= this.$refs.inputformflexcontainer.getBoundingClientRect().width
+        }
+
+        // if (!this.checkboxFilterEnabled) {
+        this.$emit('grid-width-nocategories-changed', vw)
+        // }
+
+        let vh
+        if (window.matchMedia('(orientation: portrait)').matches) {
+          vh = this.$refs.inputformflexcontainer.getBoundingClientRect().height
+        } else {
+          vh = 0
+        }
+        this.$emit('grid-height-changed', vh)
+
+        let sf = vw / (this.circleButtonRadius * 1.25 * 2 + 220)
+
+        sf = Math.min(1.0, sf)
+        // documentElement.clientWidth can be unreliable, 0 or wrong values...simple safety measure here
+        // also generally restricting to min 0.33
+        sf = Math.max(0.33, sf)
+
+        this.scalingFactor = sf
+
+        this.$emit('scalingFactorChanged', this.scalingFactor)
+      })
     }
   },
   mounted() {
-    if (typeof window.visualViewport === 'undefined') {
-      this.scalingFactor = Math.min(
-        1,
-        window.innerWidth / 1080,
-        document.documentElement.clientWidth
-      )
-    } else {
-      this.scalingFactor = Math.min(
-        1,
-        window.innerWidth / 1080,
-        document.documentElement.clientWidth / 1080,
-        window.visualViewport.width / 1080
-      )
-    }
-    // documentElement.clientWidth can be unreliable, 0 or wrong values...simple safety measure here
-    // also generally restricting to min 0.33
-    this.scalingFactor = Math.max(0.33, this.scalingFactor)
+    window.addEventListener('resize', this.windowResized)
 
-    this.$emit('scalingFactorChanged', this.scalingFactor)
+    this.windowResized()
+  },
+  beforeUnMount() {
+    window.removeEventListener('resize', this.windowResized)
   }
 }
 </script>
 <style scoped>
-.container {
+.inputform-flex-container {
   display: flex;
+  /* flex-wrap: wrap; */
+  justify-content: space-around;
+  /* align-items: center; */
+  /* align-content: space-around; */
+  /* background-color: green; */
+  flex: 0 1 auto;
 }
-.inputform {
-  flex: 1;
+
+.inputform-flex-item-1,
+.inputform-flex-item-2,
+.inputform-flex-item-3,
+.inputform-flex-item-4,
+.inputform-flex-item-5 {
+  /* background-color: lightgreen; */
+  /* border: 1px solid black; */
+  flex: 0 1 auto;
+  /* width: 400px; */
 }
-.inputcategoriescontainer {
-  flex: 1;
-  position: relative;
+
+@media (orientation: landscape) {
+  .inputform-flex-container {
+    flex-direction: column;
+    min-width: 400px;
+    width: 400px;
+  }
+}
+
+@media (orientation: portrait) {
+  .inputform-flex-container {
+    flex-direction: row;
+  }
 }
 </style>
