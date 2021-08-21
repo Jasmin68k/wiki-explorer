@@ -749,7 +749,7 @@ export default {
 
 .grid-item-graph {
   grid-column: 1 / 2;
-  grid-row: 1;
+  grid-row: 1 / 2;
 }
 
 .grid-item-categories {
@@ -759,7 +759,7 @@ export default {
 
 .grid-item-maininfo {
   grid-column: 1 / 2;
-  grid-row: 2;
+  grid-row: 2 / 3;
   overflow-y: auto;
 }
 </style>
