@@ -1,6 +1,34 @@
 <template>
   <div class="inputform-flex-container" ref="inputformflexcontainer">
     <div class="inputform-flex-item-1">
+      <form>
+        <input
+          type="radio"
+          id="desktop"
+          value="desktop"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="mode"
+          @change="modeSwitched"
+        />
+
+        <label for="desktop">{{ $t('desktop-mode') }}</label>
+        <input
+          type="radio"
+          id="mobile"
+          value="mobile"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="mode"
+          @change="modeSwitched"
+        />
+        <label for="mobile">{{ $t('mobile-mode') }}</label>
+      </form>
+
       <form @submit.prevent="fetchData()">
         <input
           id="title"
@@ -281,7 +309,8 @@ export default {
     'categories-hover-click-changed',
     'circle-button-radius-changed',
     'grid-width-nocategories-changed',
-    'grid-height-changed'
+    'grid-height-changed',
+    'mode-switched'
   ],
 
   props: {
@@ -350,7 +379,8 @@ export default {
       checkedCategories: new Set(),
       scalingFactor: 1.0,
       circleButtonRadius: 260,
-      categoriesOnHoverOrClick: 'catsclick'
+      categoriesOnHoverOrClick: 'catsclick',
+      mode: 'desktop'
     }
   },
 
@@ -416,6 +446,9 @@ export default {
     },
     circleButtonRadiusChanged() {
       this.$emit('circle-button-radius-changed', this.circleButtonRadius)
+    },
+    modeSwitched() {
+      this.$emit('mode-switched', this.mode)
     },
     windowResized() {
       this.$nextTick(() => {

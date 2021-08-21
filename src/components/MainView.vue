@@ -24,6 +24,7 @@
       @categoriesHoverClickChanged="categoriesHoverClickChanged"
       @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
       @gridHeightChanged="gridHeightChanged"
+      @modeSwitched="modeSwitched"
       ref="inputForm"
     ></input-form>
 
@@ -150,11 +151,11 @@ export default {
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
-      mobileMode: true,
+      mobileMode: false,
       // enable one of these at a time in mobile mode
-      mobileMainInfo: true,
+      mobileMainInfo: false,
       mobileCategories: false,
-      mobileOutgraph: false
+      mobileOutgraph: true
     }
   },
 
@@ -696,6 +697,14 @@ export default {
     },
     gridHeightChanged(value) {
       this.gridHeightSubtract = value
+    },
+    modeSwitched(value) {
+      if (value === 'mobile') {
+        this.mobileMode = true
+      } else {
+        this.mobileMode = false
+      }
+      this.windowResized()
     },
     windowResized() {
       this.$nextTick(() => {

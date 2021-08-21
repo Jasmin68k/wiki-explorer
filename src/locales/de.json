@@ -25,5 +25,7 @@
   "show-cats-on": "Zeige Kategorien bei: ",
   "cats-hover": "Mausschweben",
   "cats-click": "Klick",
-  "graph-radius": "Graphenradius"
+  "graph-radius": "Graphenradius",
+  "desktop-mode": "Arbeitsplatzmodus",
+  "mobile-mode": "Mobiler Modus"
 }
