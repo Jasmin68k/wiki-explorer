@@ -293,7 +293,8 @@ export default {
       required: true,
       default: () => [],
       type: Array
-    }
+    },
+    mobileMode: { required: true, default: false, type: Boolean }
   },
   watch: {
     indexStart() {
@@ -430,7 +431,11 @@ export default {
         }
 
         //min width categories checkbox filter
-        if (this.checkboxFilterEnabled && this.resultsCategoriesEnabled) {
+        if (
+          this.checkboxFilterEnabled &&
+          this.resultsCategoriesEnabled &&
+          !this.mobileMode
+        ) {
           vw -= 320
         }
 

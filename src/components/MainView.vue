@@ -1,5 +1,5 @@
 <template>
-  <div class="page-flex-container">
+  <div class="page-flex-container" ref="flexcontainer">
     <input-form
       :inputs-disabled="inputsDisabled"
       :results-categories-done="resultsCategoriesDone"
@@ -8,6 +8,7 @@
         resultsCategoriesAllArrayUnfiltered
       "
       :parent-title="title"
+      :mobile-mode="mobileMode"
       @fetchDataClicked="fetchDataClicked"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
@@ -28,23 +29,38 @@
 
     <div
       :class="{
-        'grid-container': checkboxFilterEnabled && resultsCategoriesEnabled,
+        'grid-container':
+          checkboxFilterEnabled && resultsCategoriesEnabled && !mobileMode,
         'grid-container-nocategories':
-          !checkboxFilterEnabled || !resultsCategoriesEnabled
+          (!checkboxFilterEnabled || !resultsCategoriesEnabled) && !mobileMode,
+        'grid-container-mobile': mobileMode
       }"
       :style="{
         '--gridwidthnocategories': gridWidthNocategories + 'px',
-        '--gridheightsubtract': gridHeightSubtract + 'px'
+        '--gridheightsubtract': gridHeightSubtract + 'px',
+        '--gridmobileheight': scrollboxContainerHeight + 'px'
       }"
+      ref="gridcontainer"
     >
       <div
-        v-if="checkboxFilterEnabled"
-        class="inputcategoriescontainer grid-item-categories"
+        v-if="
+          (!mobileMode && checkboxFilterEnabled) ||
+          (mobileMode && mobileCategories)
+        "
+        class="inputcategoriescontainer"
+        :class="{
+          'grid-item-categories': !mobileMode,
+          'grid-item-categories-mobile': mobileMode
+        }"
+        :style="{
+          '--categoriesmobileheight': scrollboxContainerHeight + 'px'
+        }"
         ref="inputcategoriescontainer"
       >
         <categories-checkbox-filter
           v-if="
-            resultsCategoriesEnabled &&
+            ((!mobileMode && resultsCategoriesEnabled) ||
+              (mobileMode && mobileCategories)) &&
             resultsCategoriesAllArray.length > 0 &&
             resultsCategoriesDone
           "
@@ -58,6 +74,7 @@
       </div>
 
       <outgraph
+        v-if="!mobileMode || (mobileMode && mobileOutgraph)"
         class="grid-item-graph"
         :inputs-disabled="inputsDisabled"
         :title="returnedTitle"
@@ -76,7 +93,11 @@
       ></outgraph>
 
       <main-title-info
-        class="grid-item-maininfo"
+        v-if="!mobileMode || (mobileMode && mobileMainInfo)"
+        :class="{
+          'grid-item-maininfo': !mobileMode,
+          'grid-item-maininfo-mobile': mobileMode
+        }"
         :extract="extract"
         :image="returnedImage"
       ></main-title-info>
@@ -128,7 +149,12 @@ export default {
       categoriesOnHover: false,
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
-      scrollboxContainerHeight: 300
+      scrollboxContainerHeight: 300,
+      mobileMode: true,
+      // enable one of these at a time in mobile mode
+      mobileMainInfo: true,
+      mobileCategories: false,
+      mobileOutgraph: false
     }
   },
 
@@ -243,7 +269,8 @@ export default {
         if (
           this.resultsCategoriesEnabled &&
           this.resultsCategoriesDone &&
-          this.checkboxFilterEnabled
+          ((!this.mobileMode && this.checkboxFilterEnabled) ||
+            (this.mobileMode && this.mobileCategories))
         ) {
           filteredArray = filteredArray.filter((page) =>
             page.categories
@@ -277,7 +304,8 @@ export default {
       if (
         this.resultsCategoriesDone &&
         this.resultsCategoriesEnabled &&
-        this.checkboxFilterEnabled
+        ((!this.mobileMode && this.checkboxFilterEnabled) ||
+          (this.mobileMode && this.mobileCategories))
       ) {
         let allCategoriesSet = new Set()
 
@@ -314,7 +342,8 @@ export default {
       if (
         this.resultsCategoriesDone &&
         this.resultsCategoriesEnabled &&
-        this.checkboxFilterEnabled
+        ((!this.mobileMode && this.checkboxFilterEnabled) ||
+          (this.mobileMode && this.mobileCategories))
       ) {
         let allCategoriesSet = new Set()
 
@@ -670,9 +699,17 @@ export default {
     },
     windowResized() {
       this.$nextTick(() => {
-        if (this.$refs.inputcategoriescontainer) {
+        if (!this.mobileMode) {
+          if (this.$refs.inputcategoriescontainer) {
+            this.scrollboxContainerHeight =
+              this.$refs.inputcategoriescontainer.getBoundingClientRect().height
+          }
+        } else {
           this.scrollboxContainerHeight =
-            this.$refs.inputcategoriescontainer.getBoundingClientRect().height
+            this.$refs.flexcontainer.getBoundingClientRect().height -
+            this.gridHeightSubtract
+
+          this.$refs.inputForm.windowResized()
         }
       })
     }
@@ -740,6 +777,21 @@ export default {
   /* overflow-y: hidden; */
 }
 
+.grid-container-mobile {
+  /* background-color: lightpink; */
+  /* border: 1px solid black; */
+  flex: 1 0 auto;
+  display: grid;
+  grid-template-columns: var(--gridwidthnocategories);
+  grid-template-rows: var(--gridmobileheight);
+  /* grid-template-rows: minmax(0, 1fr); */
+  /* height: 100%; */
+
+  /* overflow-x: hidden; */
+
+  /* overflow-y: hidden; */
+}
+
 /* .grid-item-graph, */
 /* .grid-item-maininfo, */
 /* .grid-item-categories { */
@@ -760,6 +812,18 @@ export default {
 .grid-item-maininfo {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
+  overflow-y: auto;
+}
+
+.grid-item-categories-mobile {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  height: var(--categoriesmobileheight);
+}
+
+.grid-item-maininfo-mobile {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
   overflow-y: auto;
 }
 </style>
