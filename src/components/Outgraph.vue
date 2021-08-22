@@ -145,7 +145,14 @@ export default {
   },
   mounted() {
     this.outgraphcanvasref = this.$refs['outgraphcanvas']
+    this.$nextTick(() => {
+      this.clearCanvas()
+      this.drawLines()
+    })
   }
+  // beforeUnMount() {
+  //   this.clearCanvas()
+  // }
 }
 </script>
 <style scoped>

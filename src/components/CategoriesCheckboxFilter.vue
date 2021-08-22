@@ -38,8 +38,9 @@ export default {
 
   props: {
     items: { required: true, default: () => [], type: Array },
-    itemsFull: { required: true, default: () => [], type: Array },
-    rootHeight: { required: true, default: 300, type: Number }
+    // itemsFull: { required: true, default: () => [], type: Array },
+    rootHeight: { required: true, default: 300, type: Number },
+    checkedInit: { required: true, default: () => new Set(), type: Set }
   },
   data() {
     return {
@@ -115,7 +116,9 @@ export default {
       // Temp construct fixes checkboxes not updated from unchecked to check in certain situations,
       // e. g. none, scroll max down, filter categories, all
       // also triggers v-model update only at end, might even be faster
-      let checkedCategoriesTemp = new Set(this.checkedCategories)
+
+      // let checkedCategoriesTemp = new Set(this.checkedCategories)
+      let checkedCategoriesTemp = new Set()
 
       this.items.forEach((item) =>
         !checkedCategoriesTemp.has(item)
@@ -165,8 +168,10 @@ export default {
     // emit did not work for whatever reason
     this.$parent.windowResized()
 
-    this.checkedCategories = new Set(this.itemsFull)
-    this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+    // this.checkedCategories = new Set(this.itemsFull)
+    // this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+
+    this.checkedCategories = new Set(this.checkedInit)
 
     this.$refs.root.addEventListener('scroll', this.handleScroll, {
       passive: true

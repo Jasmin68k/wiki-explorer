@@ -27,5 +27,8 @@
   "cats-click": "Klick",
   "graph-radius": "Graphenradius",
   "desktop-mode": "Arbeitsplatzmodus",
-  "mobile-mode": "Mobiler Modus"
+  "mobile-mode": "Mobiler Modus",
+  "display-outgraph": "Graph",
+  "display-maininfo": "Haupttitelinfo",
+  "display-categories": "Checkbox-Filter für Kategorien"
 }

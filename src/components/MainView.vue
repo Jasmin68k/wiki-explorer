@@ -9,6 +9,7 @@
       "
       :parent-title="title"
       :mobile-mode="mobileMode"
+      :checkbox-dirty="checkboxDirty"
       @fetchDataClicked="fetchDataClicked"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
@@ -16,7 +17,6 @@
       @filterCategoriesChanged="filterCategoriesChanged"
       @indexStartChanged="indexStartChanged"
       @indexEndChanged="indexEndChanged"
-      @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
       @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
       @scalingFactorChanged="scalingFactorChanged"
@@ -25,6 +25,7 @@
       @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
       @gridHeightChanged="gridHeightChanged"
       @modeSwitched="modeSwitched"
+      @mobileDisplaySwitched="mobileDisplaySwitched"
       ref="inputForm"
     ></input-form>
 
@@ -66,10 +67,10 @@
             resultsCategoriesDone
           "
           :items="resultsCategoriesAllArray"
-          :items-full="resultsCategoriesAllArrayUnfiltered"
           :root-height="scrollboxContainerHeight"
+          :checked-init="checkedCategories"
           @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-          @categoriesAll="resultsCategoriesCheckboxChanged"
+          @categoriesAll="categoriesAll"
           @categoriesNone="resultsCategoriesCheckboxChanged"
         ></categories-checkbox-filter>
       </div>
@@ -77,6 +78,7 @@
       <outgraph
         v-if="!mobileMode || (mobileMode && mobileOutgraph)"
         class="grid-item-graph"
+        ref="outgraph"
         :inputs-disabled="inputsDisabled"
         :title="returnedTitle"
         :url="returnedUrl"
@@ -155,20 +157,30 @@ export default {
       // enable one of these at a time in mobile mode
       mobileMainInfo: false,
       mobileCategories: false,
-      mobileOutgraph: true
+      mobileOutgraph: true,
+      checkboxDirty: false
     }
   },
 
-  watch: {
-    resultsCategoriesEnabled() {
-      if (
-        this.resultsCategoriesEnabled === true &&
-        this.resultsCategoriesDone === false
-      ) {
-        this.getResultsCategories()
-      }
-    }
-  },
+  // watch: {
+  //   resultsCategoriesEnabled() {
+  //     if (
+  //       this.resultsCategoriesEnabled === true &&
+  //       this.resultsCategoriesDone === false
+  //     ) {
+  //       this.getResultsCategories()
+  //     }
+
+  //     if (
+  //       this.resultsCategoriesEnabled === true &&
+  //       this.resultsCategoriesDone ===
+  //     ) {
+  //       this.checkedCategories = new Set(
+  //         this.resultsCategoriesAllArrayUnfiltered
+  //       )
+  //     }
+  //   }
+  // },
 
   computed: {
     // scrollboxContainerHeight() {
@@ -271,7 +283,8 @@ export default {
           this.resultsCategoriesEnabled &&
           this.resultsCategoriesDone &&
           ((!this.mobileMode && this.checkboxFilterEnabled) ||
-            (this.mobileMode && this.mobileCategories))
+            // (this.mobileMode && this.mobileCategories))
+            this.mobileMode)
         ) {
           filteredArray = filteredArray.filter((page) =>
             page.categories
@@ -306,7 +319,8 @@ export default {
         this.resultsCategoriesDone &&
         this.resultsCategoriesEnabled &&
         ((!this.mobileMode && this.checkboxFilterEnabled) ||
-          (this.mobileMode && this.mobileCategories))
+          // (this.mobileMode && this.mobileCategories))
+          this.mobileMode)
       ) {
         let allCategoriesSet = new Set()
 
@@ -342,9 +356,12 @@ export default {
     resultsCategoriesAllArrayUnfiltered() {
       if (
         this.resultsCategoriesDone &&
-        this.resultsCategoriesEnabled &&
-        ((!this.mobileMode && this.checkboxFilterEnabled) ||
-          (this.mobileMode && this.mobileCategories))
+        this.resultsCategoriesEnabled
+
+        // need to calc also with !this.checkboxFilterEnabled for switch to mobile
+        // &&
+        // ((!this.mobileMode && this.checkboxFilterEnabled) ||
+        //   this.mobileMode)
       ) {
         let allCategoriesSet = new Set()
 
@@ -538,6 +555,8 @@ export default {
       }
 
       this.resultsCategoriesDone = true
+
+      this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
     },
 
     async getMainInfo() {
@@ -652,6 +671,19 @@ export default {
     },
     resultsCategoriesChanged(value) {
       this.resultsCategoriesEnabled = value
+
+      if (this.resultsCategoriesEnabled && !this.resultsCategoriesDone) {
+        this.getResultsCategories()
+      }
+      if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+        this.checkedCategories = new Set(
+          this.resultsCategoriesAllArrayUnfiltered
+        )
+      }
+
+      if (!this.resultsCategoriesEnabled) {
+        this.checkboxDirty = false
+      }
     },
     resultsRedirectsChanged(value) {
       this.resultsRedirectsEnabled = value
@@ -670,10 +702,40 @@ export default {
     },
     resultsCategoriesCheckboxChanged(value) {
       this.$refs.inputForm.resetPageNumber()
+      this.checkboxDirty = true
+
+      if (!this.checkboxFilterEnabled) {
+        // enable in desktop when changed in mobile
+        this.$refs.inputForm.setCheckboxFilterEnabled()
+        this.checkboxFilterEnabled = true
+      }
+
+      this.checkedCategories = value
+    },
+    categoriesAll(value) {
+      this.$refs.inputForm.resetPageNumber()
+      this.checkboxDirty = false
       this.checkedCategories = value
     },
     checkboxFilterEnabledChanged(value) {
+      // for switch from desktop to mobile
+      if (!value) {
+        this.checkedCategories = new Set(
+          this.resultsCategoriesAllArrayUnfiltered
+        )
+      }
+
       this.checkboxFilterEnabled = value
+
+      if (this.checkboxFilterEnabled) {
+        this.checkedCategories = new Set(
+          this.resultsCategoriesAllArrayUnfiltered
+        )
+      }
+
+      if (!this.checkboxFilterEnabled) {
+        this.checkboxDirty = false
+      }
     },
     languageSwitched(value) {
       this.$i18n.locale = value
@@ -705,6 +767,24 @@ export default {
         this.mobileMode = false
       }
       this.windowResized()
+    },
+    mobileDisplaySwitched(value) {
+      switch (value) {
+        case 'outgraph':
+          this.mobileMainInfo = false
+          this.mobileCategories = false
+          this.mobileOutgraph = true
+          break
+        case 'maininfo':
+          this.mobileOutgraph = false
+          this.mobileCategories = false
+          this.mobileMainInfo = true
+          break
+        case 'categories':
+          this.mobileOutgraph = false
+          this.mobileMainInfo = false
+          this.mobileCategories = true
+      }
     },
     windowResized() {
       this.$nextTick(() => {
@@ -833,6 +913,7 @@ export default {
 .grid-item-maininfo-mobile {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
+
   overflow-y: auto;
 }
 </style>

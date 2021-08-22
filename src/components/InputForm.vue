@@ -82,7 +82,9 @@
           id="filter"
           v-model="filter"
           @input="resetPageNumber(), filterChanged()"
-          :disabled="inputsDisabled"
+          :disabled="
+            inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
+          "
         />
       </form>
 
@@ -97,17 +99,68 @@
           :disabled="
             inputsDisabled ||
             !resultsCategoriesDone ||
-            !resultsCategoriesEnabled
+            !resultsCategoriesEnabled ||
+            (mobileMode && mobileDisplay === 'maininfo')
           "
         />
       </form>
     </div>
     <div class="inputform-flex-item-2">
+      <div v-if="mobileMode">
+        <input
+          type="radio"
+          id="outgraph"
+          value="outgraph"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="mobileDisplay"
+          @change="mobileDisplaySwitched"
+        />
+        <label for="outgraph">{{ $t('display-outgraph') }}</label>
+        <input
+          type="radio"
+          id="maininfo"
+          value="maininfo"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="mobileDisplay"
+          @change="mobileDisplaySwitched"
+        />
+        <label for="maininfo">{{ $t('display-maininfo') }}</label>
+        <input
+          type="radio"
+          id="categories"
+          value="categories"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+            !resultsCategoriesEnabled
+          "
+          v-model="mobileDisplay"
+          @change="mobileDisplaySwitched"
+        />
+        <label
+          for="categories"
+          :class="{
+            'checkbox-dirty': checkboxDirty
+          }"
+          >{{ $t('display-categories') }}</label
+        >
+      </div>
+
       <form>
         <input
           id="resultsCategories"
           type="checkbox"
-          :disabled="inputsDisabled"
+          :disabled="
+            inputsDisabled ||
+            (mobileMode &&
+              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+          "
           v-model="resultsCategoriesEnabled"
           @change="resultsCategoriesChanged"
         />
@@ -115,7 +168,7 @@
           $t('show-results-categories')
         }}</label>
       </form>
-      <form>
+      <form v-if="!mobileMode">
         <input
           id="checkboxFilter"
           type="checkbox"
@@ -132,7 +185,11 @@
         <input
           id="resultsRedirects"
           type="checkbox"
-          :disabled="inputsDisabled"
+          :disabled="
+            inputsDisabled ||
+            (mobileMode &&
+              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+          "
           v-model="resultsRedirectsEnabled"
           @change="resultsRedirectsChanged"
         />
@@ -147,7 +204,9 @@
           value="catsclick"
           :disabled="
             inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+            (mobileMode &&
+              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
           v-model="categoriesOnHoverOrClick"
           @change="categoriesOnHoverOrClickChanged"
@@ -159,7 +218,9 @@
           value="catshover"
           :disabled="
             inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+            (mobileMode &&
+              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
           v-model="categoriesOnHoverOrClick"
           @change="categoriesOnHoverOrClickChanged"
@@ -175,7 +236,12 @@
         step="2"
         :max="40"
         v-model="sizePerPage"
-        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+        :disabled="
+          inputsDisabled ||
+          filteredResultsArray.length === 0 ||
+          (mobileMode &&
+            (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+        "
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
@@ -195,7 +261,12 @@
         max="1.0"
         step="0.01"
         v-model="scalingFactor"
-        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+        :disabled="
+          inputsDisabled ||
+          filteredResultsArray.length === 0 ||
+          (mobileMode &&
+            (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+        "
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
@@ -214,7 +285,12 @@
         max="650"
         step="1"
         v-model="circleButtonRadius"
-        :disabled="inputsDisabled || filteredResultsArray.length === 0"
+        :disabled="
+          inputsDisabled ||
+          filteredResultsArray.length === 0 ||
+          (mobileMode &&
+            (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+        "
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
@@ -258,7 +334,9 @@
           :disabled="
             inputsDisabled ||
             filteredResultsArray.length === 0 ||
-            pageNumber === 0
+            pageNumber === 0 ||
+            (mobileMode &&
+              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
         >
           {{ $t('prev-page') }}
@@ -268,7 +346,9 @@
           :disabled="
             inputsDisabled ||
             filteredResultsArray.length === 0 ||
-            pageNumber + 1 === numberOfPages
+            pageNumber + 1 === numberOfPages ||
+            (mobileMode &&
+              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
         >
           {{ $t('next-page') }}
@@ -302,7 +382,7 @@ export default {
     'filterCategoriesChanged',
     'indexStartChanged',
     'indexEndChanged',
-    'resultsCategoriesCheckboxChanged',
+    // 'resultsCategoriesCheckboxChanged',
     'checkboxFilterEnabledChanged',
     'languageSwitched',
     'scalingFactorChanged',
@@ -310,19 +390,21 @@ export default {
     'circle-button-radius-changed',
     'grid-width-nocategories-changed',
     'grid-height-changed',
-    'mode-switched'
+    'mode-switched',
+    'mobile-display-switched'
   ],
 
   props: {
     parentTitle: { required: true, default: '', type: String },
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
+    checkboxDirty: { required: true, default: false, type: Boolean },
     filteredResultsArray: { required: true, default: () => [], type: Array },
-    resultsCategoriesAllArrayUnfiltered: {
-      required: true,
-      default: () => [],
-      type: Array
-    },
+    // resultsCategoriesAllArrayUnfiltered: {
+    //   required: true,
+    //   default: () => [],
+    //   type: Array
+    // },
     mobileMode: { required: true, default: false, type: Boolean }
   },
   watch: {
@@ -376,11 +458,12 @@ export default {
       filterCategories: '',
       pageNumber: 0,
       sizePerPage: 16,
-      checkedCategories: new Set(),
+      // checkedCategories: new Set(),
       scalingFactor: 1.0,
       circleButtonRadius: 260,
       categoriesOnHoverOrClick: 'catsclick',
-      mode: 'desktop'
+      mode: 'desktop',
+      mobileDisplay: 'outgraph'
     }
   },
 
@@ -428,8 +511,8 @@ export default {
 
       this.$emit('checkboxFilterEnabledChanged', this.checkboxFilterEnabled)
 
-      this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
-      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
+      // this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
+      // this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     },
     languageSwitched() {
       this.$emit('languageSwitched', this.language)
@@ -449,6 +532,12 @@ export default {
     },
     modeSwitched() {
       this.$emit('mode-switched', this.mode)
+    },
+    mobileDisplaySwitched() {
+      this.$emit('mobile-display-switched', this.mobileDisplay)
+    },
+    setCheckboxFilterEnabled() {
+      this.checkboxFilterEnabled = true
     },
     windowResized() {
       this.$nextTick(() => {
@@ -532,6 +621,10 @@ export default {
   /* border: 1px solid black; */
   flex: 0 1 auto;
   /* width: 400px; */
+}
+
+.checkbox-dirty {
+  text-decoration: underline;
 }
 
 @media (orientation: landscape) {
