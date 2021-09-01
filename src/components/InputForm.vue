@@ -3,6 +3,7 @@
     <div class="inputform-flex-item-1">
       <form>
         <input
+          class="radiobutton"
           type="radio"
           id="desktop"
           value="desktop"
@@ -14,8 +15,9 @@
           @change="modeSwitched"
         />
 
-        <label for="desktop">{{ $t('desktop-mode') }}</label>
+        <label class="radiolabel" for="desktop">{{ $t('desktop-mode') }}</label>
         <input
+          class="radiobutton"
           type="radio"
           id="mobile"
           value="mobile"
@@ -26,7 +28,37 @@
           v-model="mode"
           @change="modeSwitched"
         />
-        <label for="mobile">{{ $t('mobile-mode') }}</label>
+        <label class="radiolabel" for="mobile">{{ $t('mobile-mode') }}</label>
+      </form>
+
+      <form>
+        <input
+          class="radiobutton"
+          type="radio"
+          id="en"
+          value="en"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="language"
+          @change="languageSwitched"
+        />
+
+        <label class="radiolabel" for="en">{{ $t('language-en') }}</label>
+        <input
+          class="radiobutton"
+          type="radio"
+          id="de"
+          value="de"
+          :disabled="
+            inputsDisabled ||
+            (resultsCategoriesEnabled && !resultsCategoriesDone)
+          "
+          v-model="language"
+          @change="languageSwitched"
+        />
+        <label class="radiolabel" for="de">{{ $t('language-de') }}</label>
       </form>
 
       <form @submit.prevent="fetchData()">
@@ -47,33 +79,6 @@
         >
           {{ $t('fetch-data') }}
         </button>
-      </form>
-      <form>
-        <input
-          type="radio"
-          id="en"
-          value="en"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-          v-model="language"
-          @change="languageSwitched"
-        />
-
-        <label for="en">{{ $t('language-en') }}</label>
-        <input
-          type="radio"
-          id="de"
-          value="de"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
-          v-model="language"
-          @change="languageSwitched"
-        />
-        <label for="de">{{ $t('language-de') }}</label>
       </form>
 
       <form @submit.prevent="">
@@ -108,6 +113,7 @@
     <div class="inputform-flex-item-2">
       <div v-if="mobileMode">
         <input
+          class="radiobutton"
           type="radio"
           id="outgraph"
           value="outgraph"
@@ -118,8 +124,11 @@
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
-        <label for="outgraph">{{ $t('display-outgraph') }}</label>
+        <label class="radiolabel" for="outgraph">{{
+          $t('display-outgraph')
+        }}</label>
         <input
+          class="radiobutton"
           type="radio"
           id="maininfo"
           value="maininfo"
@@ -130,8 +139,11 @@
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
-        <label for="maininfo">{{ $t('display-maininfo') }}</label>
+        <label class="radiolabel" for="maininfo">{{
+          $t('display-maininfo')
+        }}</label>
         <input
+          class="radiobutton"
           type="radio"
           id="categories"
           value="categories"
@@ -144,6 +156,7 @@
           @change="mobileDisplaySwitched"
         />
         <label
+          class="radiolabel"
           for="categories"
           :class="{
             'checkbox-dirty': checkboxDirty
@@ -199,6 +212,7 @@
       <form>
         <span>{{ $t('show-cats-on') }}</span>
         <input
+          class="radiobutton"
           type="radio"
           id="catsclick"
           value="catsclick"
@@ -211,8 +225,9 @@
           v-model="categoriesOnHoverOrClick"
           @change="categoriesOnHoverOrClickChanged"
         />
-        <label for="catsclick">{{ $t('cats-click') }}</label>
+        <label class="radiolabel" for="catsclick">{{ $t('cats-click') }}</label>
         <input
+          class="radiobutton"
           type="radio"
           id="catshover"
           value="catshover"
@@ -225,7 +240,7 @@
           v-model="categoriesOnHoverOrClick"
           @change="categoriesOnHoverOrClickChanged"
         />
-        <label for="catshover">{{ $t('cats-hover') }}</label>
+        <label class="radiolabel" for="catshover">{{ $t('cats-hover') }}</label>
       </form>
     </div>
 
@@ -602,6 +617,25 @@ export default {
 }
 </script>
 <style scoped>
+.radiobutton {
+  opacity: 0;
+  width: 0;
+  position: fixed;
+}
+.radiobutton:checked + label {
+  background-color: mistyrose;
+}
+.radiobutton:focus + label {
+  border: 1px dashed black;
+}
+.radiolabel {
+  display: inline-block;
+  background-color: #ddd;
+  padding: 1px 1px;
+  border: 1px solid black;
+  font-size: 85%;
+}
+
 .inputform-flex-container {
   display: flex;
   /* flex-wrap: wrap; */
