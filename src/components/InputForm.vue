@@ -271,6 +271,7 @@
       </div>
 
       <input
+        v-if="!mobileMode"
         type="range"
         min="0.33"
         max="1.0"
@@ -288,6 +289,7 @@
         @input="scalingFactorChanged"
       />
       <div
+        v-if="!mobileMode"
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
@@ -295,6 +297,7 @@
         {{ $t('scale-graph') }}
       </div>
       <input
+        v-if="!mobileMode"
         type="range"
         min="200"
         max="650"
@@ -312,6 +315,7 @@
         @input="circleButtonRadiusChanged"
       />
       <div
+        v-if="!mobileMode"
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
@@ -319,6 +323,7 @@
         {{ $t('graph-radius') }}
       </div>
     </div>
+
     <div class="inputform-flex-item-4">
       <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
       <p
@@ -476,6 +481,8 @@ export default {
       // checkedCategories: new Set(),
       scalingFactor: 1.0,
       circleButtonRadius: 260,
+      scalingFactorSaved: 1.0,
+      circleButtonRadiusSaved: 260,
       categoriesOnHoverOrClick: 'catsclick',
       mode: 'desktop',
       mobileDisplay: 'outgraph'
@@ -546,6 +553,18 @@ export default {
       this.$emit('circle-button-radius-changed', this.circleButtonRadius)
     },
     modeSwitched() {
+      if (this.mode === 'mobile') {
+        this.scalingFactorSaved = this.scalingFactor
+        this.circleButtonRadiusSaved = this.circleButtonRadius
+        this.circleButtonRadius = 260
+      } else {
+        this.scalingFactor = this.scalingFactorSaved
+        this.circleButtonRadius = this.circleButtonRadiusSaved
+      }
+      // only emit radius, scalingFactor is recalculated in windowResized, called in MainView ONLY on switch TO mobile mode
+      // this way scale and radius are saved and reapplied for desktop mode
+      this.$emit('circle-button-radius-changed', this.circleButtonRadius)
+
       this.$emit('mode-switched', this.mode)
     },
     mobileDisplaySwitched() {
