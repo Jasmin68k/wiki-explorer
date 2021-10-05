@@ -336,21 +336,15 @@
       </p>
     </div>
     <div class="inputform-flex-item-5">
-      <p
+      <span
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
-      </p>
-
-      <form
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        <button
-          @click.prevent="prevPage"
+        <img
+          src="../assets/images/left-arrow.svg"
+          @click="prevPage"
+          class="left-right-arrows"
           :disabled="
             inputsDisabled ||
             filteredResultsArray.length === 0 ||
@@ -358,11 +352,14 @@
             (mobileMode &&
               (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
-        >
-          {{ $t('prev-page') }}
-        </button>
-        <button
-          @click.prevent="nextPage"
+        />
+
+        {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
+
+        <img
+          src="../assets/images/right-arrow.svg"
+          @click="nextPage"
+          class="left-right-arrows"
           :disabled="
             inputsDisabled ||
             filteredResultsArray.length === 0 ||
@@ -370,10 +367,9 @@
             (mobileMode &&
               (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
-        >
-          {{ $t('next-page') }}
-        </button>
-      </form>
+        />
+      </span>
+
       <p
         :style="{
           visibility:
@@ -678,6 +674,11 @@ export default {
 
 .checkbox-dirty {
   text-decoration: underline;
+}
+
+.left-right-arrows {
+  height: 1.75em;
+  vertical-align: middle;
 }
 
 @media (orientation: landscape) {
