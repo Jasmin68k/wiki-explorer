@@ -64,6 +64,8 @@
       <form @submit.prevent="fetchData()">
         <input
           id="title"
+          class="searchinputarea"
+          :placeholder="$t('search-on-wikipedia')"
           v-model="title"
           :disabled="
             inputsDisabled ||
@@ -83,9 +85,13 @@
       </form>
 
       <form @submit.prevent="">
-        <label for="filter">{{ $t('filter-results-titles') }}</label>
+        <label for="filter"
+          ><img class="titleicon" src="../assets/images/text-tool.svg"
+        /></label>
         <input
           id="filter"
+          class="titleinputarea"
+          :placeholder="$t('filter-results-titles')"
           v-model="filter"
           @input="resetPageNumber(), filterChanged()"
           :disabled="
@@ -95,11 +101,13 @@
       </form>
 
       <form @submit.prevent="">
-        <label for="filterCategories">{{
-          $t('filter-results-categories')
-        }}</label>
+        <label for="filterCategories">
+          <img class="categoriesicon" src="../assets/images/document2.svg" />
+        </label>
         <input
           id="filterCategories"
+          class="categoriesinputarea"
+          :placeholder="$t('filter-results-categories')"
           v-model="filterCategories"
           @input="resetPageNumber(), filterCategoriesChanged()"
           :disabled="
@@ -685,15 +693,13 @@ export default {
   height: 1.75em;
   float: left;
 }
-.leftarrow:hover {
+.leftarrow:hover,
+.rightarrow:hover {
   filter: invert(0.5);
 }
 .rightarrow {
   height: 1.75em;
   float: right;
-}
-.rightarrow:hover {
-  filter: invert(0.5);
 }
 .pagecount {
   display: inline-block;
@@ -704,10 +710,6 @@ export default {
   vertical-align: middle;
 }
 
-.searchicon {
-  height: 1.5em;
-  vertical-align: middle;
-}
 .searchicon:hover {
   filter: invert(0.5);
 }
@@ -715,6 +717,20 @@ export default {
 .searchbutton {
   border: none;
   background-color: transparent;
+}
+
+.categoriesicon,
+.titleicon,
+.searchicon {
+  height: 1.4em;
+  vertical-align: middle;
+}
+
+.searchinputarea:focus,
+.titleinputarea:focus,
+.categoriesinputarea:focus {
+  outline: none;
+  background-color: lavender;
 }
 
 @media (orientation: landscape) {

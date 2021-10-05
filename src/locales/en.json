@@ -7,8 +7,8 @@
   "enable-categories-checkbox-filter": "Enable categories checkbox filter",
   "fetching-results-categories": "Fetching results categories...",
   "show-used-redirects": "Show used redirects (not all possible ones)",
-  "filter-results-titles": "Filter results titles: ",
-  "filter-results-categories": "Filter results categories: ",
+  "filter-results-titles": "Filter results titles...",
+  "filter-results-categories": "Filter results categories...",
   "max-results-per-page": "Max. results per page: ",
   "page": "Page: ",
   "of": " of ",
@@ -27,5 +27,6 @@
   "mobile-mode": "Mobile mode",
   "display-outgraph": "Graph",
   "display-maininfo": "Main title info",
-  "display-categories": "Categories checkbox filter"
+  "display-categories": "Categories checkbox filter",
+  "search-on-wikipedia": "Search on Wikipedia..."
 }
