@@ -71,13 +71,14 @@
           "
         />
         <button
+          class="searchbutton"
           type="submit"
           :disabled="
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
         >
-          {{ $t('fetch-data') }}
+          <img class="searchicon" src="../assets/images/search.svg" />
         </button>
       </form>
 
@@ -684,12 +685,16 @@ export default {
   height: 1.75em;
   float: left;
 }
-
+.leftarrow:hover {
+  filter: invert(0.5);
+}
 .rightarrow {
   height: 1.75em;
   float: right;
 }
-
+.rightarrow:hover {
+  filter: invert(0.5);
+}
 .pagecount {
   display: inline-block;
   width: 200px;
@@ -697,6 +702,19 @@ export default {
 
 .pageinfotext {
   vertical-align: middle;
+}
+
+.searchicon {
+  height: 1.5em;
+  vertical-align: middle;
+}
+.searchicon:hover {
+  filter: invert(0.5);
+}
+
+.searchbutton {
+  border: none;
+  background-color: transparent;
 }
 
 @media (orientation: landscape) {
