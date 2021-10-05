@@ -340,11 +340,12 @@
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
+        class="pagecount"
       >
         <img
           src="../assets/images/left-arrow.svg"
           @click="prevPage"
-          class="left-right-arrows"
+          class="leftarrow"
           :disabled="
             inputsDisabled ||
             filteredResultsArray.length === 0 ||
@@ -354,12 +355,15 @@
           "
         />
 
-        {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of') }}{{ numberOfPages }}
+        <span class="pageinfotext">
+          {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of')
+          }}{{ numberOfPages }}</span
+        >
 
         <img
           src="../assets/images/right-arrow.svg"
           @click="nextPage"
-          class="left-right-arrows"
+          class="rightarrow"
           :disabled="
             inputsDisabled ||
             filteredResultsArray.length === 0 ||
@@ -676,8 +680,22 @@ export default {
   text-decoration: underline;
 }
 
-.left-right-arrows {
+.leftarrow {
   height: 1.75em;
+  float: left;
+}
+
+.rightarrow {
+  height: 1.75em;
+  float: right;
+}
+
+.pagecount {
+  display: inline-block;
+  width: 200px;
+}
+
+.pageinfotext {
   vertical-align: middle;
 }
 
