@@ -3,8 +3,6 @@
   "language-de": "German",
   "all": "All",
   "none": "None",
-  "show-results-categories": "Show results categories (slow init, esp. on big pages)",
-  "enable-categories-checkbox-filter": "Enable categories checkbox filter",
   "fetching-results-categories": "Fetching results categories...",
   "show-used-redirects": "Show used redirects (not all possible ones)",
   "filter-results-titles": "Filter results titles...",
@@ -19,14 +17,10 @@
   "category-prefix": "Category:",
   "no-category": "[ NO CATEGORY ]",
   "scale-graph": "Scale graph",
-  "show-cats-on": "Show categories on: ",
   "cats-hover": "Hover",
   "cats-click": "Click",
   "graph-radius": "Graph radius",
   "desktop-mode": "Desktop mode",
   "mobile-mode": "Mobile mode",
-  "display-outgraph": "Graph",
-  "display-maininfo": "Main title info",
-  "display-categories": "Categories checkbox filter",
   "search-on-wikipedia": "Search on Wikipedia..."
 }

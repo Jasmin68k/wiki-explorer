@@ -102,7 +102,7 @@
 
       <form @submit.prevent="">
         <label for="filterCategories">
-          <img class="categoriesicon" src="../assets/images/document2.svg" />
+          <img class="categoriesicon" src="../assets/images/document.svg" />
         </label>
         <input
           id="filterCategories"
@@ -133,9 +133,9 @@
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
-        <label class="radiolabel" for="outgraph">{{
-          $t('display-outgraph')
-        }}</label>
+        <label class="radiolabel" for="outgraph"
+          ><img class="graphicon" src="../assets/images/analytics-graph.svg"
+        /></label>
         <input
           class="radiobutton"
           type="radio"
@@ -148,9 +148,9 @@
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
-        <label class="radiolabel" for="maininfo">{{
-          $t('display-maininfo')
-        }}</label>
+        <label class="radiolabel" for="maininfo"
+          ><img class="titleicon" src="../assets/images/text-tool.svg"
+        /></label>
         <input
           class="radiobutton"
           type="radio"
@@ -170,56 +170,76 @@
           :class="{
             'checkbox-dirty': checkboxDirty
           }"
-          >{{ $t('display-categories') }}</label
         >
+          <img
+            class="checkboxfiltericon"
+            src="../assets/images/document2.svg"
+          />
+        </label>
+      </div>
+
+      <div>
+        <span>
+          <input
+            id="resultsCategories"
+            class="checkbox"
+            type="checkbox"
+            :disabled="
+              inputsDisabled ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+            "
+            v-model="resultsCategoriesEnabled"
+            @change="resultsCategoriesChanged"
+          />
+          <label class="checkboxlabel" for="resultsCategories">
+            <img class="categoriesicon" src="../assets/images/document.svg" />
+          </label>
+        </span>
+        <span v-if="!mobileMode">
+          <input
+            id="checkboxFilter"
+            class="checkbox"
+            type="checkbox"
+            :disabled="inputsDisabled || !resultsCategoriesEnabled"
+            v-model="checkboxFilterEnabled"
+            @change="checkboxFilterEnabledChange"
+          />
+          <label class="checkboxlabel" for="checkboxFilter">
+            <img
+              class="checkboxfiltericon"
+              src="../assets/images/document2.svg"
+            />
+          </label>
+        </span>
+        <span>
+          <input
+            id="resultsRedirects"
+            class="checkbox"
+            type="checkbox"
+            :disabled="
+              inputsDisabled ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+            "
+            v-model="resultsRedirectsEnabled"
+            @change="resultsRedirectsChanged"
+          />
+          <label class="checkboxlabel" for="resultsRedirects">
+            <img
+              class="redirectsicon"
+              src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+            />
+          </label>
+        </span>
       </div>
 
       <form>
-        <input
-          id="resultsCategories"
-          type="checkbox"
-          :disabled="
-            inputsDisabled ||
-            (mobileMode &&
-              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
-          "
-          v-model="resultsCategoriesEnabled"
-          @change="resultsCategoriesChanged"
-        />
-        <label for="resultsCategories">{{
-          $t('show-results-categories')
-        }}</label>
-      </form>
-      <form v-if="!mobileMode">
-        <input
-          id="checkboxFilter"
-          type="checkbox"
-          :disabled="inputsDisabled || !resultsCategoriesEnabled"
-          v-model="checkboxFilterEnabled"
-          @change="checkboxFilterEnabledChange"
-        />
-        <label for="checkboxFilter">{{
-          $t('enable-categories-checkbox-filter')
-        }}</label>
-      </form>
-
-      <form>
-        <input
-          id="resultsRedirects"
-          type="checkbox"
-          :disabled="
-            inputsDisabled ||
-            (mobileMode &&
-              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
-          "
-          v-model="resultsRedirectsEnabled"
-          @change="resultsRedirectsChanged"
-        />
-        <label for="resultsRedirects">{{ $t('show-used-redirects') }}</label>
-      </form>
-
-      <form>
-        <span>{{ $t('show-cats-on') }}</span>
+        <span
+          ><img class="categoriesicon" src="../assets/images/document.svg"
+        /></span>
         <input
           class="radiobutton"
           type="radio"
@@ -645,23 +665,33 @@ export default {
 }
 </script>
 <style scoped>
-.radiobutton {
+.radiobutton,
+.checkbox {
   opacity: 0;
   width: 0;
   position: fixed;
 }
-.radiobutton:checked + label {
+.radiobutton:checked + label,
+.checkbox:checked + label {
   background-color: mistyrose;
 }
-.radiobutton:focus + label {
+.radiobutton:focus + label,
+.checkbox:focus + label {
   border: 1px dashed black;
 }
-.radiolabel {
+
+.radiolabel,
+.checkboxlabel {
   display: inline-block;
   background-color: #ddd;
   padding: 1px 1px;
   border: 1px solid black;
   font-size: 85%;
+}
+
+.radiobutton:hover + label,
+.checkbox:hover + label {
+  filter: invert(0.25);
 }
 
 .inputform-flex-container {
@@ -721,7 +751,10 @@ export default {
 
 .categoriesicon,
 .titleicon,
-.searchicon {
+.searchicon,
+.checkboxfiltericon,
+.redirectsicon,
+.graphicon {
   height: 1.4em;
   vertical-align: middle;
 }
