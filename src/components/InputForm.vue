@@ -375,13 +375,15 @@
           src="../assets/images/left-arrow.svg"
           @click="prevPage"
           class="leftarrow"
-          :disabled="
-            inputsDisabled ||
-            filteredResultsArray.length === 0 ||
-            pageNumber === 0 ||
-            (mobileMode &&
-              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
-          "
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              filteredResultsArray.length === 0 ||
+              pageNumber === 0 ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+          }"
         />
 
         <span class="pageinfotext">
@@ -393,13 +395,15 @@
           src="../assets/images/right-arrow.svg"
           @click="nextPage"
           class="rightarrow"
-          :disabled="
-            inputsDisabled ||
-            filteredResultsArray.length === 0 ||
-            pageNumber + 1 === numberOfPages ||
-            (mobileMode &&
-              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
-          "
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              filteredResultsArray.length === 0 ||
+              pageNumber + 1 === numberOfPages ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+          }"
         />
       </span>
 
@@ -731,6 +735,10 @@ export default {
   height: 1.75em;
   float: right;
 }
+.itemdisabled {
+  filter: invert(0.75);
+}
+
 .pagecount {
   display: inline-block;
   width: 200px;
