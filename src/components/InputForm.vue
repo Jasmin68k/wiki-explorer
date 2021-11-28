@@ -71,6 +71,9 @@
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
+          :style="{
+            width: portraitMode && mobileMode ? '125px' : ''
+          }"
         />
         <button
           class="searchbutton"
@@ -97,6 +100,9 @@
           :disabled="
             inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
           "
+          :style="{
+            width: portraitMode && mobileMode ? '130px' : ''
+          }"
         />
       </form>
 
@@ -116,6 +122,9 @@
             !resultsCategoriesEnabled ||
             (mobileMode && mobileDisplay === 'maininfo')
           "
+          :style="{
+            width: portraitMode && mobileMode ? '130px' : ''
+          }"
         />
       </form>
     </div>
@@ -274,6 +283,68 @@
         />
         <label class="radiolabel" for="catshover">{{ $t('cats-hover') }}</label>
       </form>
+      <p>
+        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+          ><img
+            class="categoriesicon fetchingicon"
+            src="../assets/images/document.svg"
+        /></span>
+        <span>{{ $t('results') }}{{ filteredResultsArray.length }}</span>
+        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+          ><img
+            class="categoriesicon fetchingicon"
+            src="../assets/images/document.svg"
+        /></span>
+      </p>
+      <p
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+      >
+        {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
+        }}{{ indexEnd + 1 }}
+      </p>
+      <span
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+        class="pagecount"
+      >
+        <img
+          src="../assets/images/left-arrow.svg"
+          @click="prevPage"
+          class="leftarrow"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              filteredResultsArray.length === 0 ||
+              pageNumber === 0 ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+          }"
+        />
+
+        <span class="pageinfotext">
+          {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of')
+          }}{{ numberOfPages }}</span
+        >
+
+        <img
+          src="../assets/images/right-arrow.svg"
+          @click="nextPage"
+          class="rightarrow"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              filteredResultsArray.length === 0 ||
+              pageNumber + 1 === numberOfPages ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+          }"
+        />
+      </span>
     </div>
 
     <div
@@ -298,12 +369,12 @@
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden',
           width:
-            portraitMode && mobileMode ? flexContainerHeight * 0.7 + 'px' : '',
+            portraitMode && mobileMode ? flexContainerHeight * 0.8 + 'px' : '',
           transform:
             portraitMode && mobileMode
               ? 'rotate(90deg) translateX(' +
-                flexContainerHeight * 0.3 +
-                'px) translateY(150%)'
+                flexContainerHeight * 0.37 +
+                'px) translateY(288%)'
               : ''
         }"
         @input="resetPageNumber()"
@@ -381,71 +452,6 @@
       >
         {{ $t('graph-radius') }}
       </div>
-    </div>
-
-    <div class="inputform-flex-item-4">
-      <p>
-        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
-          ><img
-            class="categoriesicon fetchingicon"
-            src="../assets/images/document.svg"
-        /></span>
-        <span>{{ $t('results') }}{{ filteredResultsArray.length }}</span>
-        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
-          ><img
-            class="categoriesicon fetchingicon"
-            src="../assets/images/document.svg"
-        /></span>
-      </p>
-      <p
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
-        }}{{ indexEnd + 1 }}
-      </p>
-      <span
-        :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        class="pagecount"
-      >
-        <img
-          src="../assets/images/left-arrow.svg"
-          @click="prevPage"
-          class="leftarrow"
-          :class="{
-            itemdisabled:
-              inputsDisabled ||
-              filteredResultsArray.length === 0 ||
-              pageNumber === 0 ||
-              (mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
-          }"
-        />
-
-        <span class="pageinfotext">
-          {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of')
-          }}{{ numberOfPages }}</span
-        >
-
-        <img
-          src="../assets/images/right-arrow.svg"
-          @click="nextPage"
-          class="rightarrow"
-          :class="{
-            itemdisabled:
-              inputsDisabled ||
-              filteredResultsArray.length === 0 ||
-              pageNumber + 1 === numberOfPages ||
-              (mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
-          }"
-        />
-      </span>
     </div>
   </div>
 </template>
@@ -745,25 +751,12 @@ export default {
 
 .inputform-flex-item-1,
 .inputform-flex-item-2,
-.inputform-flex-item-3,
-.inputform-flex-item-4 {
+.inputform-flex-item-3 {
   /* background-color: lightgreen; */
   /* border: 1px solid black; */
   flex: 0 1 auto;
+  font-size: 90%;
   /* width: 400px; */
-}
-
-.inputform-flex-item-1 {
-  background-color: lightblue;
-}
-.inputform-flex-item-2 {
-  background-color: lightcoral;
-}
-.inputform-flex-item-3 {
-  background-color: lightcyan;
-}
-.inputform-flex-item-4 {
-  background-color: lightgoldenrodyellow;
 }
 
 .checkbox-dirty {
@@ -788,7 +781,7 @@ export default {
 
 .pagecount {
   display: inline-block;
-  width: 200px;
+  width: 180px;
 }
 
 .pageinfotext {

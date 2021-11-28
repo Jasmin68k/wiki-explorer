@@ -826,6 +826,9 @@ export default {
   /* align-items: center; */
   /* align-content: space-around; */
   height: 100vh;
+
+  /* only needed in mobile portrait mode - workaround scrollbars */
+  overflow: hidden;
 }
 
 @media (orientation: landscape) {
