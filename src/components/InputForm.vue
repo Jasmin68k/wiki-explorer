@@ -378,8 +378,6 @@
         {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
         }}{{ indexEnd + 1 }}
       </p>
-    </div>
-    <div class="inputform-flex-item-5">
       <span
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
@@ -714,8 +712,7 @@ export default {
 .inputform-flex-item-1,
 .inputform-flex-item-2,
 .inputform-flex-item-3,
-.inputform-flex-item-4,
-.inputform-flex-item-5 {
+.inputform-flex-item-4 {
   /* background-color: lightgreen; */
   /* border: 1px solid black; */
   flex: 0 1 auto;
@@ -734,9 +731,7 @@ export default {
 .inputform-flex-item-4 {
   background-color: lightgoldenrodyellow;
 }
-.inputform-flex-item-5 {
-  background-color: lightgreen;
-} */
+*/
 
 .checkbox-dirty {
   text-decoration: underline;
