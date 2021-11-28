@@ -276,7 +276,13 @@
       </form>
     </div>
 
-    <div class="inputform-flex-item-3">
+    <div
+      class="inputform-flex-item-3"
+      :class="{
+        positionrelative: mobileMode && portraitMode,
+        inputformflexitem3fixedwidth: mobileMode && portraitMode
+      }"
+    >
       <input
         type="range"
         min="2"
@@ -290,16 +296,37 @@
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden',
+          width:
+            portraitMode && mobileMode ? flexContainerHeight * 0.7 + 'px' : '',
+          transform:
+            portraitMode && mobileMode
+              ? 'rotate(90deg) translateX(' +
+                flexContainerHeight * 0.3 +
+                'px) translateY(150%)'
+              : ''
         }"
         @input="resetPageNumber()"
       />
       <div
+        v-show="!mobileMode"
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('max-results-per-page') }}{{ sizePerPage }}
+      </div>
+      <div
+        v-show="mobileMode"
+        :style="{
+          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+        }"
+        :class="{ absolutebottomcenter: portraitMode }"
+      >
+        <img
+          class="numberresultsicon"
+          src="../assets/images/analytics-graph.svg"
+        />
       </div>
 
       <input
@@ -520,7 +547,8 @@ export default {
       categoriesOnHoverOrClick: 'catsclick',
       mode: 'desktop',
       mobileDisplay: 'outgraph',
-      portraitMode: false
+      portraitMode: false,
+      flexContainerHeight: 0
     }
   },
 
@@ -642,9 +670,14 @@ export default {
         let vh
         if (window.matchMedia('(orientation: portrait)').matches) {
           vh = this.$refs.inputformflexcontainer.getBoundingClientRect().height
+          this.portraitMode = true
         } else {
           vh = 0
+          this.portraitMode = false
         }
+
+        this.flexContainerHeight = vh
+
         this.$emit('grid-height-changed', vh)
 
         let sf = vw / (this.circleButtonRadius * 1.25 * 2 + 220)
@@ -657,12 +690,6 @@ export default {
         this.scalingFactor = sf
 
         this.$emit('scalingFactorChanged', this.scalingFactor)
-
-        if (window.innerHeight > window.innerWidth) {
-          this.portraitMode = true
-        } else {
-          this.portraitMode = false
-        }
       })
     }
   },
@@ -787,6 +814,21 @@ export default {
   vertical-align: middle;
 }
 
+.numberresultsicon {
+  height: 1em;
+}
+
+.absolutebottomcenter {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.rotate90deg {
+  transform: rotate(90deg);
+}
+
 .searchinputarea:focus,
 .titleinputarea:focus,
 .categoriesinputarea:focus {
@@ -807,6 +849,14 @@ export default {
     brightness(105%) contrast(124%);
   animation: fadeIn 0.35s infinite alternate;
   height: 1em;
+}
+
+.positionrelative {
+  position: relative;
+}
+
+.inputformflexitem3fixedwidth {
+  width: 24px;
 }
 
 @media (orientation: landscape) {
