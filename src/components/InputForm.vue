@@ -357,7 +357,19 @@
     </div>
 
     <div class="inputform-flex-item-4">
-      <p>{{ $t('results') }}{{ filteredResultsArray.length }}</p>
+      <p>
+        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+          ><img
+            class="categoriesicon fetchingicon"
+            src="../assets/images/document.svg"
+        /></span>
+        <span>{{ $t('results') }}{{ filteredResultsArray.length }}</span>
+        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+          ><img
+            class="categoriesicon fetchingicon"
+            src="../assets/images/document.svg"
+        /></span>
+      </p>
       <p
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
@@ -409,18 +421,6 @@
           }"
         />
       </span>
-
-      <p
-        :style="{
-          visibility:
-            resultsCategoriesEnabled && !resultsCategoriesDone
-              ? 'visible'
-              : 'hidden',
-          color: 'red'
-        }"
-      >
-        {{ $t('fetching-results-categories') }}
-      </p>
     </div>
   </div>
 </template>
@@ -722,6 +722,22 @@ export default {
   /* width: 400px; */
 }
 
+/* .inputform-flex-item-1 {
+  background-color: lightblue;
+}
+.inputform-flex-item-2 {
+  background-color: lightcoral;
+}
+.inputform-flex-item-3 {
+  background-color: lightcyan;
+}
+.inputform-flex-item-4 {
+  background-color: lightgoldenrodyellow;
+}
+.inputform-flex-item-5 {
+  background-color: lightgreen;
+} */
+
 .checkbox-dirty {
   text-decoration: underline;
 }
@@ -775,6 +791,21 @@ export default {
 .categoriesinputarea:focus {
   outline: none;
   background-color: lavender;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+.fetchingicon {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  filter: invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg)
+    brightness(105%) contrast(124%);
+  animation: fadeIn 0.35s infinite alternate;
+  height: 1em;
 }
 
 @media (orientation: landscape) {
