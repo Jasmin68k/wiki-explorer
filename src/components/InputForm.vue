@@ -519,7 +519,8 @@ export default {
       circleButtonRadiusSaved: 260,
       categoriesOnHoverOrClick: 'catsclick',
       mode: 'desktop',
-      mobileDisplay: 'outgraph'
+      mobileDisplay: 'outgraph',
+      portraitMode: false
     }
   },
 
@@ -656,6 +657,12 @@ export default {
         this.scalingFactor = sf
 
         this.$emit('scalingFactorChanged', this.scalingFactor)
+
+        if (window.innerHeight > window.innerWidth) {
+          this.portraitMode = true
+        } else {
+          this.portraitMode = false
+        }
       })
     }
   },
@@ -719,7 +726,7 @@ export default {
   /* width: 400px; */
 }
 
-/* .inputform-flex-item-1 {
+.inputform-flex-item-1 {
   background-color: lightblue;
 }
 .inputform-flex-item-2 {
@@ -730,7 +737,7 @@ export default {
 }
 .inputform-flex-item-4 {
   background-color: lightgoldenrodyellow;
-} */
+}
 
 .checkbox-dirty {
   text-decoration: underline;
