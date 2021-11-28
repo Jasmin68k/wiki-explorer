@@ -209,6 +209,9 @@
           <label class="checkboxlabel" for="checkboxFilter">
             <img
               class="checkboxfiltericon"
+              :class="{
+                itemdisabled: inputsDisabled || !resultsCategoriesEnabled
+              }"
               src="../assets/images/document2.svg"
             />
           </label>
