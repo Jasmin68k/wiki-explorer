@@ -730,8 +730,7 @@ export default {
 }
 .inputform-flex-item-4 {
   background-color: lightgoldenrodyellow;
-}
-*/
+} */
 
 .checkbox-dirty {
   text-decoration: underline;
@@ -806,8 +805,8 @@ export default {
 @media (orientation: landscape) {
   .inputform-flex-container {
     flex-direction: column;
-    min-width: 400px;
-    width: 400px;
+    min-width: 250px;
+    width: 250px;
   }
 }
 
