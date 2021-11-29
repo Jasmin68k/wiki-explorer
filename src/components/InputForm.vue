@@ -1,6 +1,12 @@
 <template>
   <div class="inputform-flex-container" ref="inputformflexcontainer">
-    <div class="inputform-flex-item-1">
+    <div
+      class="inputform-flex-item-1"
+      :style="{
+        'margin-left': portraitMode && mobileMode ? '5px' : '',
+        'margin-top': portraitMode && mobileMode ? '5px' : ''
+      }"
+    >
       <form>
         <input
           class="radiobutton"
@@ -72,7 +78,7 @@
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
           :style="{
-            width: portraitMode && mobileMode ? '125px' : ''
+            width: portraitMode && mobileMode ? '115px' : ''
           }"
         />
         <button
@@ -101,7 +107,7 @@
             inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '130px' : ''
+            width: portraitMode && mobileMode ? '120px' : ''
           }"
         />
       </form>
@@ -123,12 +129,17 @@
             (mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '130px' : ''
+            width: portraitMode && mobileMode ? '120px' : ''
           }"
         />
       </form>
     </div>
-    <div class="inputform-flex-item-2">
+    <div
+      class="inputform-flex-item-2"
+      :style="{
+        'margin-top': portraitMode && mobileMode ? '5px' : ''
+      }"
+    >
       <div v-if="mobileMode">
         <input
           class="radiobutton"
@@ -353,6 +364,10 @@
         positionrelative: mobileMode && portraitMode,
         inputformflexitem3fixedwidth: mobileMode && portraitMode
       }"
+      :style="{
+        'margin-right': portraitMode && mobileMode ? '5px' : '',
+        'margin-top': portraitMode && mobileMode ? '5px' : ''
+      }"
     >
       <input
         type="range"
@@ -369,11 +384,11 @@
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden',
           width:
-            portraitMode && mobileMode ? flexContainerHeight * 0.8 + 'px' : '',
+            portraitMode && mobileMode ? flexContainerHeight * 0.78 + 'px' : '',
           transform:
             portraitMode && mobileMode
               ? 'rotate(90deg) translateX(' +
-                flexContainerHeight * 0.37 +
+                flexContainerHeight * 0.35 +
                 'px) translateY(288%)'
               : ''
         }"
@@ -758,6 +773,18 @@ export default {
   font-size: 90%;
   /* width: 400px; */
 }
+
+/* .inputform-flex-item-1 {
+  background-color: lightblue;
+}
+
+.inputform-flex-item-2 {
+  background-color: lightcyan;
+}
+
+.inputform-flex-item-3 {
+  background-color: lightgreen;
+} */
 
 .checkbox-dirty {
   text-decoration: underline;
