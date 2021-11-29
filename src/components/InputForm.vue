@@ -78,7 +78,7 @@
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
           :style="{
-            width: portraitMode && mobileMode ? '115px' : ''
+            width: portraitMode && mobileMode ? '110px' : ''
           }"
         />
         <button
@@ -107,7 +107,7 @@
             inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '120px' : ''
+            width: portraitMode && mobileMode ? '115px' : ''
           }"
         />
       </form>
@@ -129,7 +129,7 @@
             (mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '120px' : ''
+            width: portraitMode && mobileMode ? '115px' : ''
           }"
         />
       </form>
@@ -365,7 +365,7 @@
         inputformflexitem3fixedwidth: mobileMode && portraitMode
       }"
       :style="{
-        'margin-right': portraitMode && mobileMode ? '5px' : '',
+        'margin-right': portraitMode && mobileMode ? '10px' : '',
         'margin-top': portraitMode && mobileMode ? '5px' : ''
       }"
     >
@@ -388,7 +388,7 @@
           transform:
             portraitMode && mobileMode
               ? 'rotate(90deg) translateX(' +
-                flexContainerHeight * 0.35 +
+                flexContainerHeight * 0.37 +
                 'px) translateY(288%)'
               : ''
         }"
