@@ -253,7 +253,9 @@ export default {
     },
 
     filteredResultsArray() {
-      if (!this.inputsDisabled) {
+      if (this.inputsDisabled) {
+        return []
+      } else {
         let filteredArray = Object.values(this.resultsObject)
 
         // apply titles filter
@@ -282,9 +284,7 @@ export default {
         if (
           this.resultsCategoriesEnabled &&
           this.resultsCategoriesDone &&
-          ((!this.mobileMode && this.checkboxFilterEnabled) ||
-            // (this.mobileMode && this.mobileCategories))
-            this.mobileMode)
+          ((!this.mobileMode && this.checkboxFilterEnabled) || this.mobileMode)
         ) {
           filteredArray = filteredArray.filter((page) =>
             page.categories
@@ -299,29 +299,29 @@ export default {
         })
 
         return filteredArray
-      } else {
-        return []
       }
     },
 
     displayResultsArray() {
-      if (!this.inputsDisabled) {
+      if (this.inputsDisabled) {
+        return []
+      } else {
         return this.filteredResultsArray.slice(
           this.indexStart,
           this.indexEnd + 1
         )
-      } else {
-        return []
       }
     },
     resultsCategoriesAllArray() {
       if (
-        this.resultsCategoriesDone &&
-        this.resultsCategoriesEnabled &&
-        ((!this.mobileMode && this.checkboxFilterEnabled) ||
-          // (this.mobileMode && this.mobileCategories))
-          this.mobileMode)
+        !(
+          this.resultsCategoriesDone &&
+          this.resultsCategoriesEnabled &&
+          ((!this.mobileMode && this.checkboxFilterEnabled) || this.mobileMode)
+        )
       ) {
+        return []
+      } else {
         let allCategoriesSet = new Set()
 
         for (const property in this.resultsObject) {
@@ -349,20 +349,12 @@ export default {
         })
 
         return allCategories
-      } else {
-        return []
       }
     },
     resultsCategoriesAllArrayUnfiltered() {
-      if (
-        this.resultsCategoriesDone &&
-        this.resultsCategoriesEnabled
-
-        // need to calc also with !this.checkboxFilterEnabled for switch to mobile
-        // &&
-        // ((!this.mobileMode && this.checkboxFilterEnabled) ||
-        //   this.mobileMode)
-      ) {
+      if (!(this.resultsCategoriesDone && this.resultsCategoriesEnabled)) {
+        return []
+      } else {
         let allCategoriesSet = new Set()
 
         for (const property in this.resultsObject) {
@@ -382,8 +374,6 @@ export default {
         })
 
         return allCategories
-      } else {
-        return []
       }
     }
   },
