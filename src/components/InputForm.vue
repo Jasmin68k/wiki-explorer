@@ -721,12 +721,22 @@ export default {
       if (window.innerWidth < 860) {
         this.mode = 'mobile'
         this.categoriesOnHoverOrClick = 'catsclick'
+        this.$emit(
+          'categories-hover-click-changed',
+          this.categoriesOnHoverOrClick
+        )
+
         this.modeSwitched()
       }
     } else {
       if (window.innerWidth < 610) {
         this.mode = 'mobile'
         this.categoriesOnHoverOrClick = 'catsclick'
+        this.$emit(
+          'categories-hover-click-changed',
+          this.categoriesOnHoverOrClick
+        )
+
         this.modeSwitched()
       }
     }

@@ -149,7 +149,7 @@ export default {
       }),
       scalingFactor: 1.0,
       circleButtonRadius: 260,
-      categoriesOnHover: false,
+      categoriesOnHover: true,
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
