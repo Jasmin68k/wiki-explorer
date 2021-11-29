@@ -565,7 +565,7 @@ export default {
       circleButtonRadius: 260,
       scalingFactorSaved: 1.0,
       circleButtonRadiusSaved: 260,
-      categoriesOnHoverOrClick: 'catsclick',
+      categoriesOnHoverOrClick: 'catshover',
       mode: 'desktop',
       mobileDisplay: 'outgraph',
       portraitMode: false,
@@ -716,6 +716,20 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.windowResized)
+
+    if (window.matchMedia('(orientation: landscape)').matches) {
+      if (window.innerWidth < 860) {
+        this.mode = 'mobile'
+        this.categoriesOnHoverOrClick = 'catsclick'
+        this.modeSwitched()
+      }
+    } else {
+      if (window.innerWidth < 610) {
+        this.mode = 'mobile'
+        this.categoriesOnHoverOrClick = 'catsclick'
+        this.modeSwitched()
+      }
+    }
 
     this.windowResized()
   },
