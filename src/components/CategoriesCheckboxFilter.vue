@@ -226,5 +226,6 @@ li {
   overflow: auto;
   text-align: left;
   overscroll-behavior: none;
+  padding-left: 5px;
 }
 </style>

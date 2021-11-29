@@ -29,11 +29,14 @@ export default {
 .extract {
   text-align: justify;
   width: 100%;
+  padding-right: 10px;
+  padding-left: 5px;
 }
 .image {
   float: right;
   width: 33%;
   margin: 0 0 10px 10px;
+  padding-right: 10px;
 }
 .imageonly {
   width: 100%;
