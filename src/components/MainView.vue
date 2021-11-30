@@ -342,9 +342,8 @@ export default {
           if (this.jsonDataFullQueryPart.query) {
             for (const property in this.jsonDataFullQueryPart.query.pages) {
               if (!this.resultsObject[property]) {
-                this.resultsObject[property] = {
-                  ...this.jsonDataFullQueryPart.query.pages[property]
-                }
+                this.resultsObject[property] =
+                  this.jsonDataFullQueryPart.query.pages[property]
               }
             }
 
