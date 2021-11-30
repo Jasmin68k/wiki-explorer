@@ -252,14 +252,14 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const property in this.resultsObject) {
+      for (const page in this.resultsObject) {
         if (
-          this.resultsObject[property].categories &&
-          this.resultsObject[property].title
+          this.resultsObject[page].categories &&
+          this.resultsObject[page].title
             .toLowerCase()
             .includes(this.filter.toLowerCase())
         ) {
-          this.resultsObject[property].categories.forEach((category) =>
+          this.resultsObject[page].categories.forEach((category) =>
             !allCategoriesSet.has(category) &&
             category.toLowerCase().includes(this.filterCategories.toLowerCase())
               ? allCategoriesSet.add(category)
@@ -282,9 +282,9 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const property in this.resultsObject) {
-        if (this.resultsObject[property].categories) {
-          this.resultsObject[property].categories.forEach((category) =>
+      for (const page in this.resultsObject) {
+        if (this.resultsObject[page].categories) {
+          this.resultsObject[page].categories.forEach((category) =>
             !allCategoriesSet.has(category)
               ? allCategoriesSet.add(category)
               : null
@@ -319,12 +319,12 @@ export default {
             '&prop=info&inprop=url&origin=*'
 
           if (this.jsonDataFullQueryPart.continue) {
-            for (const property in this.jsonDataFullQueryPart.continue) {
+            for (const continueToken in this.jsonDataFullQueryPart.continue) {
               pageUrl +=
                 '&' +
-                property +
+                continueToken +
                 '=' +
-                this.jsonDataFullQueryPart.continue[property]
+                this.jsonDataFullQueryPart.continue[continueToken]
             }
           }
 
@@ -340,10 +340,10 @@ export default {
 
           // prevent console error when no result
           if (this.jsonDataFullQueryPart.query) {
-            for (const property in this.jsonDataFullQueryPart.query.pages) {
-              if (!this.resultsObject[property]) {
-                this.resultsObject[property] =
-                  this.jsonDataFullQueryPart.query.pages[property]
+            for (const page in this.jsonDataFullQueryPart.query.pages) {
+              if (!this.resultsObject[page]) {
+                this.resultsObject[page] =
+                  this.jsonDataFullQueryPart.query.pages[page]
               }
             }
 
@@ -366,13 +366,13 @@ export default {
         }
       } while (this.jsonDataFullQueryPart.continue)
       let usedKeys = ['pageid', 'title', 'fullurl', 'missing']
-      for (const property in this.resultsObject) {
-        for (const key in this.resultsObject[property]) {
+      for (const page in this.resultsObject) {
+        for (const key in this.resultsObject[page]) {
           if (!usedKeys.includes(key)) {
-            delete this.resultsObject[property][key]
+            delete this.resultsObject[page][key]
           }
           if (key === 'missing') {
-            this.resultsObject[property][key] = true
+            this.resultsObject[page][key] = true
           }
         }
       }
@@ -392,18 +392,18 @@ export default {
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=C64&prop=redirects&rdlimit=max
       // can possibly be combined into api fetch for all results, but not useful here, long list for each result and does not have any direct relation to searched page
 
-      for (const property in this.resultsObject) {
+      for (const page in this.resultsObject) {
         let redirectFrom = []
 
         for (let i = 0; i < redirectsArray.length; i++) {
-          if (this.resultsObject[property].title === redirectsArray[i].to) {
+          if (this.resultsObject[page].title === redirectsArray[i].to) {
             redirectFrom.push(redirectsArray[i].from)
             // break - do not break here, several possible!
           }
         }
         if (redirectFrom.length > 0) {
           redirectFrom.sort()
-          this.resultsObject[property].redirectFrom = [...redirectFrom]
+          this.resultsObject[page].redirectFrom = [...redirectFrom]
           redirectFrom = []
         }
       }
@@ -429,12 +429,12 @@ export default {
               '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
 
             if (this.jsonDataFullQueryPart.continue) {
-              for (const property in this.jsonDataFullQueryPart.continue) {
+              for (const continueToken in this.jsonDataFullQueryPart.continue) {
                 pageUrlCategories +=
                   '&' +
-                  property +
+                  continueToken +
                   '=' +
-                  this.jsonDataFullQueryPart.continue[property]
+                  this.jsonDataFullQueryPart.continue[continueToken]
               }
             }
 
@@ -450,34 +450,32 @@ export default {
 
             // no console error on no result
             if (this.jsonDataFullQueryPart.query) {
-              for (const property in this.jsonDataFullQueryPart.query.pages) {
-                if (
-                  this.jsonDataFullQueryPart.query.pages[property].categories
-                ) {
-                  if (!this.resultsObject[property].categories) {
-                    this.resultsObject[property].categories = []
+              for (const page in this.jsonDataFullQueryPart.query.pages) {
+                if (this.jsonDataFullQueryPart.query.pages[page].categories) {
+                  if (!this.resultsObject[page].categories) {
+                    this.resultsObject[page].categories = []
                   }
 
                   this.jsonDataFullQueryPart.query.pages[
-                    property
+                    page
                   ].categories.forEach((category) =>
-                    this.resultsObject[property].categories.push(category.title)
+                    this.resultsObject[page].categories.push(category.title)
                   )
 
                   // filter "Category:" at beginning
                   for (
                     let i = 0;
-                    i < this.resultsObject[property].categories.length;
+                    i < this.resultsObject[page].categories.length;
                     i++
                   ) {
                     // not sure it always starts with "Category:", check and only remove if it does
                     if (
-                      this.resultsObject[property].categories[i].startsWith(
+                      this.resultsObject[page].categories[i].startsWith(
                         this.$t('category-prefix')
                       )
                     ) {
-                      this.resultsObject[property].categories[i] =
-                        this.resultsObject[property].categories[i].substring(
+                      this.resultsObject[page].categories[i] =
+                        this.resultsObject[page].categories[i].substring(
                           this.$t('category-prefix').length
                         )
                     }
@@ -491,9 +489,9 @@ export default {
         } while (this.jsonDataFullQueryPart.continue)
 
         // add emptycategory to objects without category for filter
-        for (const property in this.resultsObject) {
-          if (!this.resultsObject[property].categories) {
-            this.resultsObject[property].categories = [this.$t('no-category')]
+        for (const page in this.resultsObject) {
+          if (!this.resultsObject[page].categories) {
+            this.resultsObject[page].categories = [this.$t('no-category')]
           }
         }
       }
@@ -570,12 +568,12 @@ export default {
             '&origin=*'
 
           if (this.categoriesQueryPart.continue) {
-            for (const property in this.categoriesQueryPart.continue) {
+            for (const continueToken in this.categoriesQueryPart.continue) {
               categoriesUrl +=
                 '&' +
-                property +
+                continueToken +
                 '=' +
-                this.categoriesQueryPart.continue[property]
+                this.categoriesQueryPart.continue[continueToken]
             }
           }
 
