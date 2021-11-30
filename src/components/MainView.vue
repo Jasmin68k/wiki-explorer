@@ -383,30 +383,29 @@ export default {
           if (!response.ok) {
             const message = `ERROR: ${response.status} ${response.statusText}`
             throw new Error(message)
-          } else {
-            this.jsonDataFullQueryPart = await response.json()
+          }
+          this.jsonDataFullQueryPart = await response.json()
 
-            // prevent console error when no result
-            if (this.jsonDataFullQueryPart.query) {
-              for (const property in this.jsonDataFullQueryPart.query.pages) {
-                if (!this.resultsObject[property]) {
-                  this.resultsObject[property] = {
-                    ...this.jsonDataFullQueryPart.query.pages[property]
-                  }
+          // prevent console error when no result
+          if (this.jsonDataFullQueryPart.query) {
+            for (const property in this.jsonDataFullQueryPart.query.pages) {
+              if (!this.resultsObject[property]) {
+                this.resultsObject[property] = {
+                  ...this.jsonDataFullQueryPart.query.pages[property]
                 }
               }
+            }
 
-              if (this.jsonDataFullQueryPart.query.redirects) {
-                const redir = this.jsonDataFullQueryPart.query.redirects
+            if (this.jsonDataFullQueryPart.query.redirects) {
+              const redir = this.jsonDataFullQueryPart.query.redirects
 
-                for (let i = 0; i < redir.length; i++) {
-                  let found = false
-                  for (let j = 0; j < redirectsArray.length && !found; j++) {
-                    found = redirectsArray[j].from === redir[i].from
-                  }
-                  if (!found) {
-                    redirectsArray.push(redir[i])
-                  }
+              for (let i = 0; i < redir.length; i++) {
+                let found = false
+                for (let j = 0; j < redirectsArray.length && !found; j++) {
+                  found = redirectsArray[j].from === redir[i].from
+                }
+                if (!found) {
+                  redirectsArray.push(redir[i])
                 }
               }
             }
@@ -477,44 +476,41 @@ export default {
             if (!response.ok) {
               const message = `ERROR: ${response.status} ${response.statusText}`
               throw new Error(message)
-            } else {
-              this.jsonDataFullQueryPart = await response.json()
+            }
+            this.jsonDataFullQueryPart = await response.json()
 
-              // no console error on no result
-              if (this.jsonDataFullQueryPart.query) {
-                for (const property in this.jsonDataFullQueryPart.query.pages) {
-                  if (
-                    this.jsonDataFullQueryPart.query.pages[property].categories
+            // no console error on no result
+            if (this.jsonDataFullQueryPart.query) {
+              for (const property in this.jsonDataFullQueryPart.query.pages) {
+                if (
+                  this.jsonDataFullQueryPart.query.pages[property].categories
+                ) {
+                  if (!this.resultsObject[property].categories) {
+                    this.resultsObject[property].categories = []
+                  }
+
+                  this.jsonDataFullQueryPart.query.pages[
+                    property
+                  ].categories.forEach((category) =>
+                    this.resultsObject[property].categories.push(category.title)
+                  )
+
+                  // filter "Category:" at beginning
+                  for (
+                    let i = 0;
+                    i < this.resultsObject[property].categories.length;
+                    i++
                   ) {
-                    if (!this.resultsObject[property].categories) {
-                      this.resultsObject[property].categories = []
-                    }
-
-                    this.jsonDataFullQueryPart.query.pages[
-                      property
-                    ].categories.forEach((category) =>
-                      this.resultsObject[property].categories.push(
-                        category.title
+                    // not sure it always starts with "Category:", check and only remove if it does
+                    if (
+                      this.resultsObject[property].categories[i].startsWith(
+                        this.$t('category-prefix')
                       )
-                    )
-
-                    // filter "Category:" at beginning
-                    for (
-                      let i = 0;
-                      i < this.resultsObject[property].categories.length;
-                      i++
                     ) {
-                      // not sure it always starts with "Category:", check and only remove if it does
-                      if (
-                        this.resultsObject[property].categories[i].startsWith(
-                          this.$t('category-prefix')
+                      this.resultsObject[property].categories[i] =
+                        this.resultsObject[property].categories[i].substring(
+                          this.$t('category-prefix').length
                         )
-                      ) {
-                        this.resultsObject[property].categories[i] =
-                          this.resultsObject[property].categories[i].substring(
-                            this.$t('category-prefix').length
-                          )
-                      }
                     }
                   }
                 }
@@ -554,32 +550,28 @@ export default {
           const message = `ERROR: ${response.status} ${response.statusText}`
           this.extract = message
           throw new Error(message)
-        } else {
-          // add error handling
-          const responseFull = await response.json()
-          const pageId = responseFull.query.pageids[0]
-          if (responseFull.query.pages[pageId].extract) {
-            this.extract = responseFull.query.pages[pageId].extract
-          }
-          this.returnedTitle = responseFull.query.pages[pageId].title
-          this.returnedUrl = responseFull.query.pages[pageId].fullurl
+        }
+        // add error handling
+        const responseFull = await response.json()
+        const pageId = responseFull.query.pageids[0]
+        if (responseFull.query.pages[pageId].extract) {
+          this.extract = responseFull.query.pages[pageId].extract
+        }
+        this.returnedTitle = responseFull.query.pages[pageId].title
+        this.returnedUrl = responseFull.query.pages[pageId].fullurl
 
-          if (responseFull.query.pages[pageId].missing !== '') {
-            this.titleMissing = false
-          }
+        if (responseFull.query.pages[pageId].missing !== '') {
+          this.titleMissing = false
+        }
 
-          if (responseFull.query.redirects) {
-            if (responseFull.query.redirects[0].from) {
-              this.returnedRedirect = responseFull.query.redirects[0].from
-            }
+        if (responseFull.query.redirects) {
+          if (responseFull.query.redirects[0].from) {
+            this.returnedRedirect = responseFull.query.redirects[0].from
           }
-          // check if image exists
-          if (
-            (this.returnedImage = responseFull.query.pages[pageId].original)
-          ) {
-            this.returnedImage =
-              responseFull.query.pages[pageId].original.source
-          }
+        }
+        // check if image exists
+        if ((this.returnedImage = responseFull.query.pages[pageId].original)) {
+          this.returnedImage = responseFull.query.pages[pageId].original.source
         }
       } catch (error) {
         throw new Error(error)
@@ -602,18 +594,15 @@ export default {
             const message = `ERROR: ${response.status} ${response.statusText}`
             this.categoriesArray = message
             throw new Error(message)
-          } else {
-            this.categoriesQueryPart = await response.json()
+          }
+          this.categoriesQueryPart = await response.json()
 
-            let resultsArray = Object.values(
-              this.categoriesQueryPart.query.pages
-            )
+          let resultsArray = Object.values(this.categoriesQueryPart.query.pages)
 
-            if (resultsArray[0].categories) {
-              // ...query.pages has only one prop at this level equal to page id. -> array index [0]
-              for (let i = 0; i < resultsArray[0].categories.length; i++) {
-                this.categoriesArray.push(resultsArray[0].categories[i].title)
-              }
+          if (resultsArray[0].categories) {
+            // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+            for (let i = 0; i < resultsArray[0].categories.length; i++) {
+              this.categoriesArray.push(resultsArray[0].categories[i].title)
             }
           }
         } catch (error) {
