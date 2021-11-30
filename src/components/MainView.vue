@@ -341,10 +341,8 @@ export default {
           // prevent console error when no result
           if (this.jsonDataFullQueryPart.query) {
             for (const page in this.jsonDataFullQueryPart.query.pages) {
-              if (!this.resultsObject[page]) {
-                this.resultsObject[page] =
-                  this.jsonDataFullQueryPart.query.pages[page]
-              }
+              this.resultsObject[page] =
+                this.jsonDataFullQueryPart.query.pages[page]
             }
 
             if (this.jsonDataFullQueryPart.query.redirects) {
