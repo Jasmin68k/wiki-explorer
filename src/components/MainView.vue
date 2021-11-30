@@ -363,10 +363,12 @@ export default {
           throw new Error(error)
         }
       } while (this.jsonDataFullQueryPart.continue)
-      let usedKeys = ['pageid', 'title', 'fullurl', 'missing']
+
+      let usedKeys = { pageid: true, title: true, fullurl: true, missing: true }
+
       for (const page in this.resultsObject) {
         for (const key in this.resultsObject[page]) {
-          if (!usedKeys.includes(key)) {
+          if (!usedKeys[key]) {
             delete this.resultsObject[page][key]
           }
           if (key === 'missing') {
