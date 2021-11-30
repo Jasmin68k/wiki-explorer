@@ -187,71 +187,6 @@ export default {
     //   return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
     // },
 
-    mainInfoUrl() {
-      let url =
-        'https://' +
-        this.language +
-        '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
-        this.title +
-        '&origin=*'
-
-      return url
-    },
-
-    // separate categories fetch, instead of adding to main info, for simple continue handling
-    categoriesUrl() {
-      let url =
-        'https://' +
-        this.language +
-        '.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
-        this.title +
-        '&origin=*'
-
-      if (this.categoriesQueryPart.continue) {
-        for (const property in this.categoriesQueryPart.continue) {
-          url +=
-            '&' + property + '=' + this.categoriesQueryPart.continue[property]
-        }
-      }
-
-      return url
-    },
-    pageUrl() {
-      let url =
-        'https://' +
-        this.language +
-        '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-        this.title +
-        '&prop=info&inprop=url&origin=*'
-
-      if (this.jsonDataFullQueryPart.continue) {
-        for (const property in this.jsonDataFullQueryPart.continue) {
-          url +=
-            '&' + property + '=' + this.jsonDataFullQueryPart.continue[property]
-        }
-      }
-
-      return url
-    },
-    // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
-    pageUrlCategories() {
-      let url =
-        'https://' +
-        this.language +
-        '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-        this.title +
-        '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
-
-      if (this.jsonDataFullQueryPart.continue) {
-        for (const property in this.jsonDataFullQueryPart.continue) {
-          url +=
-            '&' + property + '=' + this.jsonDataFullQueryPart.continue[property]
-        }
-      }
-
-      return url
-    },
-
     filteredResultsArray() {
       if (this.inputsDisabled) {
         return []
@@ -376,7 +311,24 @@ export default {
 
       do {
         try {
-          const response = await fetch(this.pageUrl, {
+          let pageUrl =
+            'https://' +
+            this.language +
+            '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+            this.title +
+            '&prop=info&inprop=url&origin=*'
+
+          if (this.jsonDataFullQueryPart.continue) {
+            for (const property in this.jsonDataFullQueryPart.continue) {
+              pageUrl +=
+                '&' +
+                property +
+                '=' +
+                this.jsonDataFullQueryPart.continue[property]
+            }
+          }
+
+          const response = await fetch(pageUrl, {
             headers: this.fetchHeaders
           })
 
@@ -469,7 +421,25 @@ export default {
       if (Object.keys(this.resultsObject).length > 0) {
         do {
           try {
-            const response = await fetch(this.pageUrlCategories, {
+            // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
+            let pageUrlCategories =
+              'https://' +
+              this.language +
+              '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+              this.title +
+              '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
+
+            if (this.jsonDataFullQueryPart.continue) {
+              for (const property in this.jsonDataFullQueryPart.continue) {
+                pageUrlCategories +=
+                  '&' +
+                  property +
+                  '=' +
+                  this.jsonDataFullQueryPart.continue[property]
+              }
+            }
+
+            const response = await fetch(pageUrlCategories, {
               headers: this.fetchHeaders
             })
 
@@ -541,7 +511,14 @@ export default {
       this.titleMissing = true
 
       try {
-        const response = await fetch(this.mainInfoUrl, {
+        let mainInfoUrl =
+          'https://' +
+          this.language +
+          '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
+          this.title +
+          '&origin=*'
+
+        const response = await fetch(mainInfoUrl, {
           headers: this.fetchHeaders
         })
 
@@ -585,7 +562,25 @@ export default {
 
       do {
         try {
-          const response = await fetch(this.categoriesUrl, {
+          // separate categories fetch, instead of adding to main info, for simple continue handling
+          let categoriesUrl =
+            'https://' +
+            this.language +
+            '.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
+            this.title +
+            '&origin=*'
+
+          if (this.categoriesQueryPart.continue) {
+            for (const property in this.categoriesQueryPart.continue) {
+              categoriesUrl +=
+                '&' +
+                property +
+                '=' +
+                this.categoriesQueryPart.continue[property]
+            }
+          }
+
+          const response = await fetch(categoriesUrl, {
             headers: this.fetchHeaders
           })
 
