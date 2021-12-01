@@ -114,6 +114,9 @@ import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 
+let resultsObject = {}
+let jsonDataFullQueryPart = {}
+
 export default {
   name: 'MainView',
   components: { InputForm, MainTitleInfo, Outgraph, CategoriesCheckboxFilter },
@@ -125,10 +128,8 @@ export default {
       title: '',
       filter: '',
       filterCategories: '',
-      jsonDataFullQueryPart: {},
       categoriesArray: [],
       checkedCategories: new Set(),
-      categoriesQueryPart: {},
       extract: '',
       checkboxFilterEnabled: true,
       returnedTitle: '',
@@ -139,7 +140,6 @@ export default {
       resultsCategoriesDone: true,
       resultsRedirectsEnabled: true,
       inputsDisabled: false,
-      resultsObject: {},
       titleMissing: true,
       // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
       // User-Agent might not be possible to set in every browser
@@ -191,7 +191,7 @@ export default {
       if (this.inputsDisabled) {
         return []
       }
-      let filteredArray = Object.values(this.resultsObject)
+      let filteredArray = Object.values(resultsObject)
 
       // apply titles filter
       filteredArray = filteredArray.filter((page) =>
@@ -252,14 +252,13 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const page in this.resultsObject) {
+      for (const pageId in resultsObject) {
+        const resultPage = resultsObject[pageId]
         if (
-          this.resultsObject[page].categories &&
-          this.resultsObject[page].title
-            .toLowerCase()
-            .includes(this.filter.toLowerCase())
+          resultPage.categories &&
+          resultPage.title.toLowerCase().includes(this.filter.toLowerCase())
         ) {
-          this.resultsObject[page].categories.forEach((category) =>
+          resultPage.categories.forEach((category) =>
             !allCategoriesSet.has(category) &&
             category.toLowerCase().includes(this.filterCategories.toLowerCase())
               ? allCategoriesSet.add(category)
@@ -282,9 +281,10 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const page in this.resultsObject) {
-        if (this.resultsObject[page].categories) {
-          this.resultsObject[page].categories.forEach((category) =>
+      for (const pageId in resultsObject) {
+        const resultPage = resultsObject[pageId]
+        if (resultPage.categories) {
+          resultPage.categories.forEach((category) =>
             !allCategoriesSet.has(category)
               ? allCategoriesSet.add(category)
               : null
@@ -306,7 +306,7 @@ export default {
     async getJson() {
       this.inputsDisabled = true
 
-      this.resultsObject = {}
+      resultsObject = {}
       const redirects = {}
 
       do {
@@ -318,13 +318,13 @@ export default {
             this.title +
             '&prop=info&inprop=url&origin=*'
 
-          if (this.jsonDataFullQueryPart.continue) {
-            for (const continueToken in this.jsonDataFullQueryPart.continue) {
+          if (jsonDataFullQueryPart.continue) {
+            for (const continueToken in jsonDataFullQueryPart.continue) {
               pageUrl +=
                 '&' +
                 continueToken +
                 '=' +
-                this.jsonDataFullQueryPart.continue[continueToken]
+                jsonDataFullQueryPart.continue[continueToken]
             }
           }
 
@@ -336,41 +336,41 @@ export default {
             const message = `ERROR: ${response.status} ${response.statusText}`
             throw new Error(message)
           }
-          this.jsonDataFullQueryPart = await response.json()
+          jsonDataFullQueryPart = await response.json()
 
           // prevent console error when no result
-          if (!this.jsonDataFullQueryPart.query) {
+          if (!jsonDataFullQueryPart.query) {
             continue
           }
 
-          for (const page in this.jsonDataFullQueryPart.query.pages) {
-            this.resultsObject[page] =
-              this.jsonDataFullQueryPart.query.pages[page]
+          for (const pageId in jsonDataFullQueryPart.query.pages) {
+            resultsObject[pageId] = jsonDataFullQueryPart.query.pages[pageId]
           }
 
-          if (!this.jsonDataFullQueryPart.query.redirects) {
+          if (!jsonDataFullQueryPart.query.redirects) {
             continue
           }
 
-          for (const redirect of this.jsonDataFullQueryPart.query.redirects) {
+          for (const redirect of jsonDataFullQueryPart.query.redirects) {
             redirects[redirect.from] = redirect
           }
         } catch (error) {
           throw new Error(error)
         }
-      } while (this.jsonDataFullQueryPart.continue)
+      } while (jsonDataFullQueryPart.continue)
 
       const redirectsArray = Object.values(redirects)
 
       let usedKeys = { pageid: true, title: true, fullurl: true, missing: true }
 
-      for (const page in this.resultsObject) {
-        for (const key in this.resultsObject[page]) {
+      for (const pageId in resultsObject) {
+        const resultPage = resultsObject[pageId]
+        for (const key in resultPage) {
           if (!usedKeys[key]) {
-            delete this.resultsObject[page][key]
+            delete resultPage[key]
           }
           if (key === 'missing') {
-            this.resultsObject[page][key] = true
+            resultPage[key] = true
           }
         }
       }
@@ -390,18 +390,19 @@ export default {
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=C64&prop=redirects&rdlimit=max
       // can possibly be combined into api fetch for all results, but not useful here, long list for each result and does not have any direct relation to searched page
 
-      for (const page in this.resultsObject) {
+      for (const pageId in resultsObject) {
+        const resultPage = resultsObject[pageId]
         let redirectFrom = []
 
         for (let i = 0; i < redirectsArray.length; i++) {
-          if (this.resultsObject[page].title === redirectsArray[i].to) {
+          if (resultPage.title === redirectsArray[i].to) {
             redirectFrom.push(redirectsArray[i].from)
             // break - do not break here, several possible!
           }
         }
         if (redirectFrom.length > 0) {
           redirectFrom.sort()
-          this.resultsObject[page].redirectFrom = [...redirectFrom]
+          resultPage.redirectFrom = [...redirectFrom]
           redirectFrom = []
         }
       }
@@ -415,7 +416,7 @@ export default {
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
 
       // skip fetch when no results
-      if (Object.keys(this.resultsObject).length > 0) {
+      if (Object.keys(resultsObject).length > 0) {
         do {
           try {
             // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
@@ -426,13 +427,13 @@ export default {
               this.title +
               '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
 
-            if (this.jsonDataFullQueryPart.continue) {
-              for (const continueToken in this.jsonDataFullQueryPart.continue) {
+            if (jsonDataFullQueryPart.continue) {
+              for (const continueToken in jsonDataFullQueryPart.continue) {
                 pageUrlCategories +=
                   '&' +
                   continueToken +
                   '=' +
-                  this.jsonDataFullQueryPart.continue[continueToken]
+                  jsonDataFullQueryPart.continue[continueToken]
               }
             }
 
@@ -444,39 +445,36 @@ export default {
               const message = `ERROR: ${response.status} ${response.statusText}`
               throw new Error(message)
             }
-            this.jsonDataFullQueryPart = await response.json()
+            jsonDataFullQueryPart = await response.json()
 
             // no console error on no result
-            if (!this.jsonDataFullQueryPart.query) {
+            if (!jsonDataFullQueryPart.query) {
               continue
             }
 
-            for (const page in this.jsonDataFullQueryPart.query.pages) {
-              if (this.jsonDataFullQueryPart.query.pages[page].categories) {
-                if (!this.resultsObject[page].categories) {
-                  this.resultsObject[page].categories = []
+            for (const pageId in jsonDataFullQueryPart.query.pages) {
+              const page = jsonDataFullQueryPart.query.pages[pageId]
+              const resultPage = resultsObject[pageId]
+              if (page.categories) {
+                if (!resultPage.categories) {
+                  resultPage.categories = []
                 }
 
-                this.jsonDataFullQueryPart.query.pages[page].categories.forEach(
-                  (category) =>
-                    this.resultsObject[page].categories.push(category.title)
+                page.categories.forEach((category) =>
+                  resultPage.categories.push(category.title)
                 )
 
                 // filter "Category:" at beginning
-                for (
-                  let i = 0;
-                  i < this.resultsObject[page].categories.length;
-                  i++
-                ) {
+                for (let i = 0; i < resultPage.categories.length; i++) {
                   // not sure it always starts with "Category:", check and only remove if it does
                   if (
-                    this.resultsObject[page].categories[i].startsWith(
+                    resultPage.categories[i].startsWith(
                       this.$t('category-prefix')
                     )
                   ) {
-                    this.resultsObject[page].categories[i] = this.resultsObject[
-                      page
-                    ].categories[i].substring(this.$t('category-prefix').length)
+                    resultPage.categories[i] = resultPage.categories[
+                      i
+                    ].substring(this.$t('category-prefix').length)
                   }
                 }
               }
@@ -484,12 +482,13 @@ export default {
           } catch (error) {
             throw new Error(error)
           }
-        } while (this.jsonDataFullQueryPart.continue)
+        } while (jsonDataFullQueryPart.continue)
 
         // add emptycategory to objects without category for filter
-        for (const page in this.resultsObject) {
-          if (!this.resultsObject[page].categories) {
-            this.resultsObject[page].categories = [this.$t('no-category')]
+        for (const pageId in resultsObject) {
+          const resultPage = resultsObject[pageId]
+          if (!resultPage.categories) {
+            resultPage.categories = [this.$t('no-category')]
           }
         }
       }
@@ -555,6 +554,8 @@ export default {
     async getCategories() {
       this.categoriesArray = []
 
+      let categoriesQueryPart = {}
+
       do {
         try {
           // separate categories fetch, instead of adding to main info, for simple continue handling
@@ -565,13 +566,13 @@ export default {
             this.title +
             '&origin=*'
 
-          if (this.categoriesQueryPart.continue) {
-            for (const continueToken in this.categoriesQueryPart.continue) {
+          if (categoriesQueryPart.continue) {
+            for (const continueToken in categoriesQueryPart.continue) {
               categoriesUrl +=
                 '&' +
                 continueToken +
                 '=' +
-                this.categoriesQueryPart.continue[continueToken]
+                categoriesQueryPart.continue[continueToken]
             }
           }
 
@@ -585,9 +586,9 @@ export default {
             this.categoriesArray = message
             throw new Error(message)
           }
-          this.categoriesQueryPart = await response.json()
+          categoriesQueryPart = await response.json()
 
-          let resultsArray = Object.values(this.categoriesQueryPart.query.pages)
+          let resultsArray = Object.values(categoriesQueryPart.query.pages)
 
           if (!resultsArray[0].categories) {
             continue
@@ -599,7 +600,7 @@ export default {
         } catch (error) {
           throw new Error(error)
         }
-      } while (this.categoriesQueryPart.continue)
+      } while (categoriesQueryPart.continue)
 
       // filter "Category:" at beginning
       for (let i = 0; i < this.categoriesArray.length; i++) {
