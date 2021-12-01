@@ -340,17 +340,18 @@ export default {
           this.jsonDataFullQueryPart = await response.json()
 
           // prevent console error when no result
-          if (this.jsonDataFullQueryPart.query) {
-            for (const page in this.jsonDataFullQueryPart.query.pages) {
-              this.resultsObject[page] =
-                this.jsonDataFullQueryPart.query.pages[page]
-            }
+          if (!this.jsonDataFullQueryPart.query) {
+            continue
+          }
 
-            if (this.jsonDataFullQueryPart.query.redirects) {
-              for (const redirect of this.jsonDataFullQueryPart.query
-                .redirects) {
-                redirects[redirect.from] = redirect
-              }
+          for (const page in this.jsonDataFullQueryPart.query.pages) {
+            this.resultsObject[page] =
+              this.jsonDataFullQueryPart.query.pages[page]
+          }
+
+          if (this.jsonDataFullQueryPart.query.redirects) {
+            for (const redirect of this.jsonDataFullQueryPart.query.redirects) {
+              redirects[redirect.from] = redirect
             }
           }
         } catch (error) {
