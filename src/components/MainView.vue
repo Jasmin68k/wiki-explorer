@@ -306,7 +306,6 @@ export default {
     async getJson() {
       this.inputsDisabled = true
 
-      let redirectsArray = []
       this.resultsObject = {}
       const redirects = {}
 
@@ -361,7 +360,7 @@ export default {
         }
       } while (this.jsonDataFullQueryPart.continue)
 
-      redirectsArray = Object.values(redirects)
+      const redirectsArray = Object.values(redirects)
 
       let usedKeys = { pageid: true, title: true, fullurl: true, missing: true }
 
