@@ -308,6 +308,7 @@ export default {
 
       let redirectsArray = []
       this.resultsObject = {}
+      const redirects = {}
 
       do {
         try {
@@ -346,16 +347,9 @@ export default {
             }
 
             if (this.jsonDataFullQueryPart.query.redirects) {
-              const redir = this.jsonDataFullQueryPart.query.redirects
-
-              for (let i = 0; i < redir.length; i++) {
-                let found = false
-                for (let j = 0; j < redirectsArray.length && !found; j++) {
-                  found = redirectsArray[j].from === redir[i].from
-                }
-                if (!found) {
-                  redirectsArray.push(redir[i])
-                }
+              for (const redirect of this.jsonDataFullQueryPart.query
+                .redirects) {
+                redirects[redirect.from] = redirect
               }
             }
           }
@@ -363,6 +357,8 @@ export default {
           throw new Error(error)
         }
       } while (this.jsonDataFullQueryPart.continue)
+
+      redirectsArray = Object.values(redirects)
 
       let usedKeys = { pageid: true, title: true, fullurl: true, missing: true }
 
