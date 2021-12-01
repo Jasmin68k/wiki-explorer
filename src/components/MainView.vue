@@ -349,10 +349,12 @@ export default {
               this.jsonDataFullQueryPart.query.pages[page]
           }
 
-          if (this.jsonDataFullQueryPart.query.redirects) {
-            for (const redirect of this.jsonDataFullQueryPart.query.redirects) {
-              redirects[redirect.from] = redirect
-            }
+          if (!this.jsonDataFullQueryPart.query.redirects) {
+            continue
+          }
+
+          for (const redirect of this.jsonDataFullQueryPart.query.redirects) {
+            redirects[redirect.from] = redirect
           }
         } catch (error) {
           throw new Error(error)
@@ -446,36 +448,36 @@ export default {
             this.jsonDataFullQueryPart = await response.json()
 
             // no console error on no result
-            if (this.jsonDataFullQueryPart.query) {
-              for (const page in this.jsonDataFullQueryPart.query.pages) {
-                if (this.jsonDataFullQueryPart.query.pages[page].categories) {
-                  if (!this.resultsObject[page].categories) {
-                    this.resultsObject[page].categories = []
-                  }
+            if (!this.jsonDataFullQueryPart.query) {
+              continue
+            }
 
-                  this.jsonDataFullQueryPart.query.pages[
-                    page
-                  ].categories.forEach((category) =>
+            for (const page in this.jsonDataFullQueryPart.query.pages) {
+              if (this.jsonDataFullQueryPart.query.pages[page].categories) {
+                if (!this.resultsObject[page].categories) {
+                  this.resultsObject[page].categories = []
+                }
+
+                this.jsonDataFullQueryPart.query.pages[page].categories.forEach(
+                  (category) =>
                     this.resultsObject[page].categories.push(category.title)
-                  )
+                )
 
-                  // filter "Category:" at beginning
-                  for (
-                    let i = 0;
-                    i < this.resultsObject[page].categories.length;
-                    i++
+                // filter "Category:" at beginning
+                for (
+                  let i = 0;
+                  i < this.resultsObject[page].categories.length;
+                  i++
+                ) {
+                  // not sure it always starts with "Category:", check and only remove if it does
+                  if (
+                    this.resultsObject[page].categories[i].startsWith(
+                      this.$t('category-prefix')
+                    )
                   ) {
-                    // not sure it always starts with "Category:", check and only remove if it does
-                    if (
-                      this.resultsObject[page].categories[i].startsWith(
-                        this.$t('category-prefix')
-                      )
-                    ) {
-                      this.resultsObject[page].categories[i] =
-                        this.resultsObject[page].categories[i].substring(
-                          this.$t('category-prefix').length
-                        )
-                    }
+                    this.resultsObject[page].categories[i] = this.resultsObject[
+                      page
+                    ].categories[i].substring(this.$t('category-prefix').length)
                   }
                 }
               }
@@ -588,11 +590,12 @@ export default {
 
           let resultsArray = Object.values(this.categoriesQueryPart.query.pages)
 
-          if (resultsArray[0].categories) {
-            // ...query.pages has only one prop at this level equal to page id. -> array index [0]
-            for (let i = 0; i < resultsArray[0].categories.length; i++) {
-              this.categoriesArray.push(resultsArray[0].categories[i].title)
-            }
+          if (!resultsArray[0].categories) {
+            continue
+          }
+          // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+          for (let i = 0; i < resultsArray[0].categories.length; i++) {
+            this.categoriesArray.push(resultsArray[0].categories[i].title)
           }
         } catch (error) {
           throw new Error(error)
