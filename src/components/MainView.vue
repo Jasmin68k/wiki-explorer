@@ -252,7 +252,7 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId in resultsObject) {
+      for (const pageId of Object.keys(resultsObject)) {
         const resultPage = resultsObject[pageId]
         if (
           resultPage.categories &&
@@ -281,7 +281,7 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId in resultsObject) {
+      for (const pageId of Object.keys(resultsObject)) {
         const resultPage = resultsObject[pageId]
         if (resultPage.categories) {
           resultPage.categories.forEach((category) =>
@@ -319,7 +319,9 @@ export default {
             '&prop=info&inprop=url&origin=*'
 
           if (jsonDataFullQueryPart.continue) {
-            for (const continueToken in jsonDataFullQueryPart.continue) {
+            for (const continueToken of Object.keys(
+              jsonDataFullQueryPart.continue
+            )) {
               pageUrl +=
                 '&' +
                 continueToken +
@@ -343,7 +345,7 @@ export default {
             continue
           }
 
-          for (const pageId in jsonDataFullQueryPart.query.pages) {
+          for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
             resultsObject[pageId] = jsonDataFullQueryPart.query.pages[pageId]
           }
 
@@ -364,9 +366,9 @@ export default {
 
       let usedKeys = { pageid: true, title: true, fullurl: true, missing: true }
 
-      for (const pageId in resultsObject) {
+      for (const pageId of Object.keys(resultsObject)) {
         const resultPage = resultsObject[pageId]
-        for (const key in resultPage) {
+        for (const key of Object.keys(resultPage)) {
           if (!usedKeys[key]) {
             delete resultPage[key]
           }
@@ -391,7 +393,7 @@ export default {
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=C64&prop=redirects&rdlimit=max
       // can possibly be combined into api fetch for all results, but not useful here, long list for each result and does not have any direct relation to searched page
 
-      for (const pageId in resultsObject) {
+      for (const pageId of Object.keys(resultsObject)) {
         const resultPage = resultsObject[pageId]
         let redirectFrom = []
 
@@ -429,7 +431,9 @@ export default {
               '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
 
             if (jsonDataFullQueryPart.continue) {
-              for (const continueToken in jsonDataFullQueryPart.continue) {
+              for (const continueToken of Object.keys(
+                jsonDataFullQueryPart.continue
+              )) {
                 pageUrlCategories +=
                   '&' +
                   continueToken +
@@ -453,7 +457,9 @@ export default {
               continue
             }
 
-            for (const pageId in jsonDataFullQueryPart.query.pages) {
+            for (const pageId of Object.keys(
+              jsonDataFullQueryPart.query.pages
+            )) {
               const page = jsonDataFullQueryPart.query.pages[pageId]
               const resultPage = resultsObject[pageId]
               if (page.categories) {
@@ -481,7 +487,7 @@ export default {
               }
             }
           } catch (error) {
-            for (const pageId in resultsObject) {
+            for (const pageId of Object.keys(resultsObject)) {
               const resultPage = resultsObject[pageId]
               resultPage.categories = [error.message]
             }
@@ -490,7 +496,7 @@ export default {
         } while (jsonDataFullQueryPart.continue)
 
         // add emptycategory to objects without category for filter
-        for (const pageId in resultsObject) {
+        for (const pageId of Object.keys(resultsObject)) {
           const resultPage = resultsObject[pageId]
           if (!resultPage.categories) {
             resultPage.categories = [this.$t('no-category')]
@@ -572,7 +578,9 @@ export default {
             '&origin=*'
 
           if (categoriesQueryPart.continue) {
-            for (const continueToken in categoriesQueryPart.continue) {
+            for (const continueToken of Object.keys(
+              categoriesQueryPart.continue
+            )) {
               categoriesUrl +=
                 '&' +
                 continueToken +
