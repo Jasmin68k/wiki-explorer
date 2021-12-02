@@ -20,8 +20,16 @@
           v-model="mode"
           @change="modeSwitched"
         />
-
-        <label class="radiolabel" for="desktop">{{ $t('desktop-mode') }}</label>
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone)
+          }"
+          for="desktop"
+          >{{ $t('desktop-mode') }}</label
+        >
         <input
           class="radiobutton"
           type="radio"
@@ -34,7 +42,16 @@
           v-model="mode"
           @change="modeSwitched"
         />
-        <label class="radiolabel" for="mobile">{{ $t('mobile-mode') }}</label>
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone)
+          }"
+          for="mobile"
+          >{{ $t('mobile-mode') }}</label
+        >
       </form>
 
       <form>
@@ -50,8 +67,16 @@
           v-model="language"
           @change="languageSwitched"
         />
-
-        <label class="radiolabel" for="en">{{ $t('language-en') }}</label>
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone)
+          }"
+          for="en"
+          >{{ $t('language-en') }}</label
+        >
         <input
           class="radiobutton"
           type="radio"
@@ -64,7 +89,16 @@
           v-model="language"
           @change="languageSwitched"
         />
-        <label class="radiolabel" for="de">{{ $t('language-de') }}</label>
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone)
+          }"
+          for="de"
+          >{{ $t('language-de') }}</label
+        >
       </form>
 
       <form @submit.prevent="fetchData()">
