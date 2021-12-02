@@ -333,7 +333,7 @@ export default {
           })
 
           if (!response.ok) {
-            const message = `ERROR: ${response.status} ${response.statusText}`
+            const message = `${response.status} ${response.statusText}`
             throw new Error(message)
           }
           jsonDataFullQueryPart = await response.json()
@@ -355,7 +355,8 @@ export default {
             redirects[redirect.from] = redirect
           }
         } catch (error) {
-          throw new Error(error)
+          resultsObject['error'] = { title: error.message }
+          console.error(error.message)
         }
       } while (jsonDataFullQueryPart.continue)
 
@@ -442,7 +443,7 @@ export default {
             })
 
             if (!response.ok) {
-              const message = `ERROR: ${response.status} ${response.statusText}`
+              const message = `${response.status} ${response.statusText}`
               throw new Error(message)
             }
             jsonDataFullQueryPart = await response.json()
@@ -480,7 +481,11 @@ export default {
               }
             }
           } catch (error) {
-            throw new Error(error)
+            for (const pageId in resultsObject) {
+              const resultPage = resultsObject[pageId]
+              resultPage.categories = [error.message]
+            }
+            console.error(error.message)
           }
         } while (jsonDataFullQueryPart.continue)
 
@@ -518,8 +523,7 @@ export default {
 
         // ok = true on http 200-299 good response
         if (!response.ok) {
-          const message = `ERROR: ${response.status} ${response.statusText}`
-          this.extract = message
+          const message = `${response.status} ${response.statusText}`
           throw new Error(message)
         }
         // add error handling
@@ -545,7 +549,8 @@ export default {
           this.returnedImage = responseFull.query.pages[pageId].original.source
         }
       } catch (error) {
-        throw new Error(error)
+        this.extract = error.message
+        console.error(error.message)
       }
       if (this.titleMissing === false) {
         this.getCategories()
@@ -582,8 +587,8 @@ export default {
 
           // ok = true on http 200-299 good response
           if (!response.ok) {
-            const message = `ERROR: ${response.status} ${response.statusText}`
-            this.categoriesArray = message
+            const message = `${response.status} ${response.statusText}`
+
             throw new Error(message)
           }
           categoriesQueryPart = await response.json()
@@ -598,7 +603,8 @@ export default {
             this.categoriesArray.push(resultsArray[0].categories[i].title)
           }
         } catch (error) {
-          throw new Error(error)
+          this.categoriesArray[0] = error.message
+          console.error(error.message)
         }
       } while (categoriesQueryPart.continue)
 
