@@ -242,7 +242,17 @@
             v-model="resultsCategoriesEnabled"
             @change="resultsCategoriesChanged"
           />
-          <label class="checkboxlabel" for="resultsCategories">
+          <label
+            class="checkboxlabel"
+            :class="{
+              itemdisabled:
+                inputsDisabled ||
+                (mobileMode &&
+                  (mobileDisplay === 'maininfo' ||
+                    mobileDisplay === 'categories'))
+            }"
+            for="resultsCategories"
+          >
             <img class="categoriesicon" src="../assets/images/document.svg" />
           </label>
         </span>
@@ -255,7 +265,13 @@
             v-model="checkboxFilterEnabled"
             @change="checkboxFilterEnabledChange"
           />
-          <label class="checkboxlabel" for="checkboxFilter">
+          <label
+            class="checkboxlabel"
+            :class="{
+              itemdisabled: inputsDisabled || !resultsCategoriesEnabled
+            }"
+            for="checkboxFilter"
+          >
             <img
               class="checkboxfiltericon"
               :class="{
@@ -279,7 +295,17 @@
             v-model="resultsRedirectsEnabled"
             @change="resultsRedirectsChanged"
           />
-          <label class="checkboxlabel" for="resultsRedirects">
+          <label
+            class="checkboxlabel"
+            :class="{
+              itemdisabled:
+                inputsDisabled ||
+                (mobileMode &&
+                  (mobileDisplay === 'maininfo' ||
+                    mobileDisplay === 'categories'))
+            }"
+            for="resultsRedirects"
+          >
             <img
               class="redirectsicon"
               src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
