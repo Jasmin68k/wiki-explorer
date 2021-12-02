@@ -332,7 +332,19 @@
           v-model="categoriesOnHoverOrClick"
           @change="categoriesOnHoverOrClickChanged"
         />
-        <label class="radiolabel" for="catsclick">{{ $t('cats-click') }}</label>
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+          }"
+          for="catsclick"
+          >{{ $t('cats-click') }}</label
+        >
         <input
           class="radiobutton"
           type="radio"
@@ -347,7 +359,19 @@
           v-model="categoriesOnHoverOrClick"
           @change="categoriesOnHoverOrClickChanged"
         />
-        <label class="radiolabel" for="catshover">{{ $t('cats-hover') }}</label>
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+              (mobileMode &&
+                (mobileDisplay === 'maininfo' ||
+                  mobileDisplay === 'categories'))
+          }"
+          for="catshover"
+          >{{ $t('cats-hover') }}</label
+        >
       </form>
       <p>
         <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
