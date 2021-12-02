@@ -123,7 +123,15 @@
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
         >
-          <img class="searchicon" src="../assets/images/search.svg" />
+          <img
+            class="searchicon"
+            :class="{
+              itemdisabled:
+                inputsDisabled ||
+                (resultsCategoriesEnabled && !resultsCategoriesDone)
+            }"
+            src="../assets/images/search.svg"
+          />
         </button>
       </form>
 
