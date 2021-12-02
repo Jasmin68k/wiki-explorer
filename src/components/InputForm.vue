@@ -188,10 +188,6 @@
           type="radio"
           id="outgraph"
           value="outgraph"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
@@ -203,10 +199,6 @@
           type="radio"
           id="maininfo"
           value="maininfo"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
-          "
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
@@ -218,11 +210,6 @@
           type="radio"
           id="categories"
           value="categories"
-          :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone) ||
-            !resultsCategoriesEnabled
-          "
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
