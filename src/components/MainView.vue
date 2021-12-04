@@ -117,6 +117,20 @@ import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 let resultsObject = {}
 let jsonDataFullQueryPart = {}
 
+class NetworkError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'NetworkError'
+  }
+}
+
+class DataError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'DataError'
+  }
+}
+
 export default {
   name: 'MainView',
   components: { InputForm, MainTitleInfo, Outgraph, CategoriesCheckboxFilter },
@@ -336,13 +350,12 @@ export default {
 
           if (!response.ok) {
             const message = `${response.status} ${response.statusText}`
-            throw new Error(message)
+            throw new NetworkError(message)
           }
           jsonDataFullQueryPart = await response.json()
 
-          // prevent console error when no result
           if (!jsonDataFullQueryPart.query) {
-            continue
+            throw new DataError('No result from API')
           }
 
           for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
@@ -357,8 +370,8 @@ export default {
             redirects[redirect.from] = redirect
           }
         } catch (error) {
-          resultsObject['error'] = { title: error.message }
-          console.error(error.message)
+          resultsObject['error'] = { title: error.name + ': ' + error.message }
+          console.error(`${error.name}: ${error.message}`)
         }
       } while (jsonDataFullQueryPart.continue)
 
@@ -448,13 +461,12 @@ export default {
 
             if (!response.ok) {
               const message = `${response.status} ${response.statusText}`
-              throw new Error(message)
+              throw new NetworkError(message)
             }
             jsonDataFullQueryPart = await response.json()
 
-            // no console error on no result
             if (!jsonDataFullQueryPart.query) {
-              continue
+              throw new DataError('No result from API')
             }
 
             for (const pageId of Object.keys(
@@ -489,7 +501,7 @@ export default {
           } catch (error) {
             for (const pageId of Object.keys(resultsObject)) {
               const resultPage = resultsObject[pageId]
-              resultPage.categories = [error.message]
+              resultPage.categories = [error.name + ': ' + error.message]
             }
             console.error(error.message)
           }
@@ -530,7 +542,7 @@ export default {
         // ok = true on http 200-299 good response
         if (!response.ok) {
           const message = `${response.status} ${response.statusText}`
-          throw new Error(message)
+          throw new NetworkError(message)
         }
         // add error handling
         const responseFull = await response.json()
@@ -555,7 +567,7 @@ export default {
           this.returnedImage = responseFull.query.pages[pageId].original.source
         }
       } catch (error) {
-        this.extract = error.message
+        this.extract = error.name + ': ' + error.message
         console.error(error.message)
       }
       if (this.titleMissing === false) {
@@ -596,8 +608,7 @@ export default {
           // ok = true on http 200-299 good response
           if (!response.ok) {
             const message = `${response.status} ${response.statusText}`
-
-            throw new Error(message)
+            throw new NetworkError(message)
           }
           categoriesQueryPart = await response.json()
 
@@ -611,7 +622,7 @@ export default {
             this.categoriesArray.push(resultsArray[0].categories[i].title)
           }
         } catch (error) {
-          this.categoriesArray[0] = error.message
+          this.categoriesArray[0] = error.name + ': ' + error.message
           console.error(error.message)
         }
       } while (categoriesQueryPart.continue)
