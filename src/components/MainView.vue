@@ -114,7 +114,7 @@ import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 
-let resultsObject = {}
+let resultsMap = new Map()
 let jsonDataFullQueryPart = {}
 
 class NetworkError extends Error {
@@ -205,7 +205,8 @@ export default {
       if (this.inputsDisabled) {
         return []
       }
-      let filteredArray = Object.values(resultsObject)
+
+      let filteredArray = Array.from(resultsMap.values())
 
       // apply titles filter
       filteredArray = filteredArray.filter((page) =>
@@ -266,8 +267,8 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId of Object.keys(resultsObject)) {
-        const resultPage = resultsObject[pageId]
+      for (const pageId of resultsMap.keys()) {
+        const resultPage = resultsMap.get(pageId)
         if (
           resultPage.categories &&
           resultPage.title.toLowerCase().includes(this.filter.toLowerCase())
@@ -295,8 +296,8 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId of Object.keys(resultsObject)) {
-        const resultPage = resultsObject[pageId]
+      for (const pageId of resultsMap.keys()) {
+        const resultPage = resultsMap.get(pageId)
         if (resultPage.categories) {
           resultPage.categories.forEach((category) =>
             !allCategoriesSet.has(category)
@@ -320,7 +321,7 @@ export default {
     async getJson() {
       this.inputsDisabled = true
 
-      resultsObject = {}
+      resultsMap.clear()
       const redirects = {}
 
       do {
@@ -359,7 +360,7 @@ export default {
           }
 
           for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
-            resultsObject[pageId] = jsonDataFullQueryPart.query.pages[pageId]
+            resultsMap.set(pageId, jsonDataFullQueryPart.query.pages[pageId])
           }
 
           if (!jsonDataFullQueryPart.query.redirects) {
@@ -370,7 +371,7 @@ export default {
             redirects[redirect.from] = redirect
           }
         } catch (error) {
-          resultsObject['error'] = { title: error.name + ': ' + error.message }
+          resultsMap.set('error', { title: error.name + ': ' + error.message })
           console.error(`${error.name}: ${error.message}`)
         }
       } while (jsonDataFullQueryPart.continue)
@@ -379,8 +380,8 @@ export default {
 
       let usedKeys = { pageid: true, title: true, fullurl: true, missing: true }
 
-      for (const pageId of Object.keys(resultsObject)) {
-        const resultPage = resultsObject[pageId]
+      for (const pageId of resultsMap.keys()) {
+        const resultPage = resultsMap.get(pageId)
         for (const key of Object.keys(resultPage)) {
           if (!usedKeys[key]) {
             delete resultPage[key]
@@ -406,8 +407,8 @@ export default {
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=C64&prop=redirects&rdlimit=max
       // can possibly be combined into api fetch for all results, but not useful here, long list for each result and does not have any direct relation to searched page
 
-      for (const pageId of Object.keys(resultsObject)) {
-        const resultPage = resultsObject[pageId]
+      for (const pageId of resultsMap.keys()) {
+        const resultPage = resultsMap.get(pageId)
         let redirectFrom = []
 
         for (let i = 0; i < redirectsArray.length; i++) {
@@ -432,7 +433,7 @@ export default {
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
 
       // skip fetch when no results
-      if (Object.keys(resultsObject).length > 0) {
+      if (resultsMap.size > 0) {
         do {
           try {
             // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
@@ -473,7 +474,7 @@ export default {
               jsonDataFullQueryPart.query.pages
             )) {
               const page = jsonDataFullQueryPart.query.pages[pageId]
-              const resultPage = resultsObject[pageId]
+              const resultPage = resultsMap.get(pageId)
               if (page.categories) {
                 if (!resultPage.categories) {
                   resultPage.categories = []
@@ -499,8 +500,8 @@ export default {
               }
             }
           } catch (error) {
-            for (const pageId of Object.keys(resultsObject)) {
-              const resultPage = resultsObject[pageId]
+            for (const pageId of resultsMap.keys()) {
+              const resultPage = resultsMap.get(pageId)
               resultPage.categories = [error.name + ': ' + error.message]
             }
             console.error(error.message)
@@ -508,8 +509,8 @@ export default {
         } while (jsonDataFullQueryPart.continue)
 
         // add emptycategory to objects without category for filter
-        for (const pageId of Object.keys(resultsObject)) {
-          const resultPage = resultsObject[pageId]
+        for (const pageId of resultsMap.keys()) {
+          const resultPage = resultsMap.get(pageId)
           if (!resultPage.categories) {
             resultPage.categories = [this.$t('no-category')]
           }
