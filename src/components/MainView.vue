@@ -30,12 +30,13 @@
     ></input-form>
 
     <div
+      class="grid-container-base"
       :class="{
+        mobile: mobileMode,
         'grid-container':
           checkboxFilterEnabled && resultsCategoriesEnabled && !mobileMode,
         'grid-container-nocategories':
-          (!checkboxFilterEnabled || !resultsCategoriesEnabled) && !mobileMode,
-        'grid-container-mobile': mobileMode
+          (!checkboxFilterEnabled || !resultsCategoriesEnabled) && !mobileMode
       }"
       :style="{
         '--gridwidthnocategories': gridWidthNocategories + 'px',
@@ -49,10 +50,9 @@
           (!mobileMode && checkboxFilterEnabled) ||
           (mobileMode && mobileCategories)
         "
-        class="inputcategoriescontainer"
+        class="inputcategoriescontainer grid-item-categories"
         :class="{
-          'grid-item-categories': !mobileMode,
-          'grid-item-categories-mobile': mobileMode
+          mobile: mobileMode
         }"
         :style="{
           '--categoriesmobileheight': scrollboxContainerHeight + 'px'
@@ -97,9 +97,9 @@
 
       <main-title-info
         v-if="!mobileMode || (mobileMode && mobileMainInfo)"
+        class="grid-item-maininfo"
         :class="{
-          'grid-item-maininfo': !mobileMode,
-          'grid-item-maininfo-mobile': mobileMode
+          mobile: mobileMode
         }"
         :extract="extract"
         :image="returnedImage"
@@ -817,11 +817,14 @@ export default {
   }
 }
 
+.grid-container-base {
+  flex: 1 0 auto;
+  display: grid;
+}
+
 .grid-container {
   /* background-color: lightpink; */
   /* border: 1px solid black; */
-  flex: 1 0 auto;
-  display: grid;
   grid-template-columns: min-content minmax(320px, 1fr);
   grid-template-rows: min-content minmax(0, 1fr);
   /* height: 100%; */
@@ -833,8 +836,6 @@ export default {
 .grid-container-nocategories {
   /* background-color: lightpink; */
   /* border: 1px solid black; */
-  flex: 1 0 auto;
-  display: grid;
   grid-template-columns: var(--gridwidthnocategories);
   grid-template-rows: min-content minmax(0, 1fr);
   /* height: 100%; */
@@ -843,11 +844,9 @@ export default {
   /* overflow-y: hidden; */
 }
 
-.grid-container-mobile {
+.grid-container-base.mobile {
   /* background-color: lightpink; */
   /* border: 1px solid black; */
-  flex: 1 0 auto;
-  display: grid;
   grid-template-columns: var(--gridwidthnocategories);
   grid-template-rows: var(--gridmobileheight);
   /* grid-template-rows: minmax(0, 1fr); */
@@ -881,13 +880,13 @@ export default {
   overflow-y: auto;
 }
 
-.grid-item-categories-mobile {
+.grid-item-categories.mobile {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
   height: var(--categoriesmobileheight);
 }
 
-.grid-item-maininfo-mobile {
+.grid-item-maininfo.mobile {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
 
