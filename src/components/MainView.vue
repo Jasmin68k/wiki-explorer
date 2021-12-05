@@ -393,6 +393,32 @@ export default {
 
           for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
             resultsMap.set(pageId, jsonDataFullQueryPart.query.pages[pageId])
+
+            if (jsonDataFullQueryPart.query.pages[pageId].missing !== '') {
+              resultsMap.set(
+                pageId,
+                new Page(
+                  jsonDataFullQueryPart.query.pages[pageId].title,
+                  jsonDataFullQueryPart.query.pages[pageId].fullurl,
+                  jsonDataFullQueryPart.query.pages[pageId].pageid,
+                  [],
+                  [],
+                  false
+                )
+              )
+            } else {
+              resultsMap.set(
+                pageId,
+                new Page(
+                  jsonDataFullQueryPart.query.pages[pageId].title,
+                  jsonDataFullQueryPart.query.pages[pageId].fullurl,
+                  0,
+                  [],
+                  [],
+                  true
+                )
+              )
+            }
           }
 
           if (!jsonDataFullQueryPart.query.redirects) {
@@ -403,26 +429,15 @@ export default {
             redirects[redirect.from] = redirect
           }
         } catch (error) {
-          resultsMap.set('error', { title: error.name + ': ' + error.message })
+          resultsMap.set(
+            'error',
+            new Page(error.name + ': ' + error.message, '', 0, [], [], false)
+          )
           console.error(`${error.name}: ${error.message}`)
         }
       } while (jsonDataFullQueryPart.continue)
 
       const redirectsArray = Object.values(redirects)
-
-      let usedKeys = { pageid: true, title: true, fullurl: true, missing: true }
-
-      for (const pageId of resultsMap.keys()) {
-        const resultPage = resultsMap.get(pageId)
-        for (const key of Object.keys(resultPage)) {
-          if (!usedKeys[key]) {
-            delete resultPage[key]
-          }
-          if (key === 'missing') {
-            resultPage[key] = true
-          }
-        }
-      }
 
       this.resultsCategoriesDone = false
 
@@ -451,7 +466,7 @@ export default {
         }
         if (redirectFrom.length > 0) {
           redirectFrom.sort()
-          resultPage.redirectFrom = [...redirectFrom]
+          resultPage.redirects = [...redirectFrom]
           redirectFrom = []
         }
       }
@@ -508,9 +523,9 @@ export default {
               const page = jsonDataFullQueryPart.query.pages[pageId]
               const resultPage = resultsMap.get(pageId)
               if (page.categories) {
-                if (!resultPage.categories) {
-                  resultPage.categories = []
-                }
+                // if (!resultPage.categories) {
+                //   resultPage.categories = []
+                // }
 
                 page.categories.forEach((category) =>
                   resultPage.categories.push(category.title)

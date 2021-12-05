@@ -149,7 +149,7 @@
       :style="{ 'font-size': 70 * scalingFactor + '%' }"
     >
       <ul
-        v-for="(redirect, index) in displayResultsArray[index].redirectFrom"
+        v-for="(redirect, index) in displayResultsArray[index].redirects"
         :key="index"
       >
         <li>{{ redirect }}</li>
