@@ -80,15 +80,15 @@
         class="grid-item-graph"
         ref="outgraph"
         :inputs-disabled="inputsDisabled"
-        :title="returnedTitle"
-        :url="returnedUrl"
+        :title="titlePage.title"
+        :url="titlePage.url"
         :results-redirects-enabled="resultsRedirectsEnabled"
-        :redirect="returnedRedirect"
+        :redirect="titlePage.redirects[0]"
         :display-results-array="displayResultsArray"
-        :categories-array="categoriesArray"
+        :categories-array="titlePage.categories"
         :results-categories-enabled="resultsCategoriesEnabled"
         :results-categories-done="resultsCategoriesDone"
-        :title-missing="titleMissing"
+        :title-missing="titlePage.missing"
         :scaling-factor="scalingFactor"
         :circle-button-radius="circleButtonRadius"
         :categories-on-hover="categoriesOnHover"
@@ -101,8 +101,8 @@
         :class="{
           mobile: mobileMode
         }"
-        :extract="extract"
-        :image="returnedImage"
+        :extract="titlePage.extract"
+        :image="titlePage.image"
       ></main-title-info>
     </div>
   </div>
@@ -131,6 +131,43 @@ class DataError extends Error {
   }
 }
 
+// title: String
+// url: String - URL to Wikipedia entry
+// pageid: Number
+// redirects: Array - only one member for TitlePage
+// categories: Array
+// missing: Boolean
+// extract: String - contains HTML, can be directly rendered
+// image: String - URL to image
+
+class Page {
+  constructor(title, url, pageid, redirects, categories, missing) {
+    this.title = title
+    this.url = url
+    this.pageid = pageid
+    this.redirects = redirects
+    this.categories = categories
+    this.missing = missing
+  }
+}
+
+class TitlePage extends Page {
+  constructor(
+    title,
+    url,
+    pageid,
+    redirects,
+    categories,
+    missing,
+    extract,
+    image
+  ) {
+    super(title, url, pageid, redirects, categories, missing)
+    this.extract = extract
+    this.image = image
+  }
+}
+
 export default {
   name: 'MainView',
   components: { InputForm, MainTitleInfo, Outgraph, CategoriesCheckboxFilter },
@@ -142,19 +179,13 @@ export default {
       title: '',
       filter: '',
       filterCategories: '',
-      categoriesArray: [],
       checkedCategories: new Set(),
-      extract: '',
       checkboxFilterEnabled: true,
-      returnedTitle: '',
-      returnedUrl: '',
-      returnedImage: '',
-      returnedRedirect: '',
       resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
       resultsRedirectsEnabled: true,
       inputsDisabled: false,
-      titleMissing: true,
+
       // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
       // User-Agent might not be possible to set in every browser
       fetchHeaders: new Headers({
@@ -172,7 +203,8 @@ export default {
       mobileMainInfo: false,
       mobileCategories: false,
       mobileOutgraph: true,
-      checkboxDirty: false
+      checkboxDirty: false,
+      titlePage: new TitlePage('', '', 0, [], [], true, '', '')
     }
   },
 
@@ -523,10 +555,10 @@ export default {
     },
 
     async getMainInfo() {
-      this.extract = ''
-      this.returnedImage = ''
-      this.returnedRedirect = ''
-      this.titleMissing = true
+      this.titlePage.extract = ''
+      this.titlePage.image = ''
+      this.titlePage.redirects = []
+      this.titlePage.missing = ''
 
       try {
         let mainInfoUrl =
@@ -549,34 +581,38 @@ export default {
         const responseFull = await response.json()
         const pageId = responseFull.query.pageids[0]
         if (responseFull.query.pages[pageId].extract) {
-          this.extract = responseFull.query.pages[pageId].extract
+          this.titlePage.extract = responseFull.query.pages[pageId].extract
         }
-        this.returnedTitle = responseFull.query.pages[pageId].title
-        this.returnedUrl = responseFull.query.pages[pageId].fullurl
+        this.titlePage.title = responseFull.query.pages[pageId].title
+        this.titlePage.url = responseFull.query.pages[pageId].fullurl
+        this.titlePage.pageId = pageId
 
         if (responseFull.query.pages[pageId].missing !== '') {
-          this.titleMissing = false
+          this.titlePage.missing = false
         }
 
         if (responseFull.query.redirects) {
           if (responseFull.query.redirects[0].from) {
-            this.returnedRedirect = responseFull.query.redirects[0].from
+            this.titlePage.redirects[0] = responseFull.query.redirects[0].from
           }
         }
         // check if image exists
-        if ((this.returnedImage = responseFull.query.pages[pageId].original)) {
-          this.returnedImage = responseFull.query.pages[pageId].original.source
+        if (
+          (this.titlePage.image = responseFull.query.pages[pageId].original)
+        ) {
+          this.titlePage.image =
+            responseFull.query.pages[pageId].original.source
         }
       } catch (error) {
-        this.extract = error.name + ': ' + error.message
+        this.titlePage.extract = error.name + ': ' + error.message
         console.error(error.message)
       }
-      if (this.titleMissing === false) {
+      if (!this.titlePage.missing) {
         this.getCategories()
       }
     },
     async getCategories() {
-      this.categoriesArray = []
+      this.titlePage.categories = []
 
       let categoriesQueryPart = {}
 
@@ -620,26 +656,28 @@ export default {
           }
           // ...query.pages has only one prop at this level equal to page id. -> array index [0]
           for (let i = 0; i < resultsArray[0].categories.length; i++) {
-            this.categoriesArray.push(resultsArray[0].categories[i].title)
+            this.titlePage.categories.push(resultsArray[0].categories[i].title)
           }
         } catch (error) {
-          this.categoriesArray[0] = error.name + ': ' + error.message
+          this.titlePage.categories[0] = error.name + ': ' + error.message
           console.error(error.message)
         }
       } while (categoriesQueryPart.continue)
 
       // filter "Category:" at beginning
-      for (let i = 0; i < this.categoriesArray.length; i++) {
+      for (let i = 0; i < this.titlePage.categories.length; i++) {
         // not sure it always starts with "Category:", check and only remove if it does
-        if (this.categoriesArray[i].startsWith(this.$t('category-prefix'))) {
-          this.categoriesArray[i] = this.categoriesArray[i].substring(
+        if (
+          this.titlePage.categories[i].startsWith(this.$t('category-prefix'))
+        ) {
+          this.titlePage.categories[i] = this.titlePage.categories[i].substring(
             this.$t('category-prefix').length
           )
         }
       }
 
       //sort - results seem sorted, but just to be sure
-      this.categoriesArray.sort()
+      this.titlePage.categories.sort()
     },
     circleButtonClicked(index) {
       this.title = this.displayResultsArray[index].title
