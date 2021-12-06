@@ -392,8 +392,6 @@ export default {
           }
 
           for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
-            resultsMap.set(pageId, jsonDataFullQueryPart.query.pages[pageId])
-
             if (jsonDataFullQueryPart.query.pages[pageId].missing !== '') {
               resultsMap.set(
                 pageId,
