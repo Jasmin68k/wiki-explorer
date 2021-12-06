@@ -107,7 +107,7 @@
           }"
           :style="{ 'line-height': 100 * scalingFactor + '%' }"
         >
-          <a :href="displayResultsArray[index].fullurl" target="_blank"
+          <a :href="displayResultsArray[index].url" target="_blank"
             ><img
               class="icon"
               :class="{
