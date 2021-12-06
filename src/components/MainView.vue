@@ -558,7 +558,7 @@ export default {
         // add emptycategory to objects without category for filter
         for (const pageId of resultsMap.keys()) {
           const resultPage = resultsMap.get(pageId)
-          if (!resultPage.categories) {
+          if (resultPage.categories.length === 0) {
             resultPage.categories = [this.$t('no-category')]
           }
         }
