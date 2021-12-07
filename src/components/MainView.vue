@@ -155,7 +155,7 @@ export default {
       mobileCategories: false,
       mobileOutgraph: true,
       checkboxDirty: false,
-      titlePage: new TitlePage('', '', 0, [], [], true, '', '')
+      titlePage: new TitlePage({})
     }
   },
 
@@ -346,26 +346,20 @@ export default {
             if (jsonDataFullQueryPart.query.pages[pageId].missing !== '') {
               resultsMap.set(
                 pageId,
-                new Page(
-                  jsonDataFullQueryPart.query.pages[pageId].title,
-                  jsonDataFullQueryPart.query.pages[pageId].fullurl,
-                  jsonDataFullQueryPart.query.pages[pageId].pageid,
-                  [],
-                  [],
-                  false
-                )
+                new Page({
+                  title: jsonDataFullQueryPart.query.pages[pageId].title,
+                  url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
+                  pageid: jsonDataFullQueryPart.query.pages[pageId].pageid,
+                  missing: false
+                })
               )
             } else {
               resultsMap.set(
                 pageId,
-                new Page(
-                  jsonDataFullQueryPart.query.pages[pageId].title,
-                  jsonDataFullQueryPart.query.pages[pageId].fullurl,
-                  0,
-                  [],
-                  [],
-                  true
-                )
+                new Page({
+                  title: jsonDataFullQueryPart.query.pages[pageId].title,
+                  url: jsonDataFullQueryPart.query.pages[pageId].fullurl
+                })
               )
             }
           }
@@ -380,7 +374,10 @@ export default {
         } catch (error) {
           resultsMap.set(
             'error',
-            new Page(error.name + ': ' + error.message, '', 0, [], [], false)
+            new Page({
+              title: error.name + ': ' + error.message,
+              missing: false
+            })
           )
           console.error(`${error.name}: ${error.message}`)
         }
