@@ -546,7 +546,7 @@ export default {
         }
         this.titlePage.title = responseFull.query.pages[pageId].title
         this.titlePage.url = responseFull.query.pages[pageId].fullurl
-        this.titlePage.pageId = pageId
+        this.titlePage.pageid = pageId
 
         if (responseFull.query.pages[pageId].missing !== '') {
           this.titlePage.missing = false
