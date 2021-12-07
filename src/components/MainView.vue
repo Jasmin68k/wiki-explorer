@@ -113,60 +113,11 @@ import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
+import { Page, TitlePage } from '../datamodels.js'
+import { NetworkError, DataError } from '../customerrors.js'
 
 let resultsMap = new Map()
 let jsonDataFullQueryPart = {}
-
-class NetworkError extends Error {
-  constructor(message) {
-    super(message)
-    this.name = 'NetworkError'
-  }
-}
-
-class DataError extends Error {
-  constructor(message) {
-    super(message)
-    this.name = 'DataError'
-  }
-}
-
-// title: String
-// url: String - URL to Wikipedia entry
-// pageid: Number
-// redirects: Array - only one member for TitlePage
-// categories: Array
-// missing: Boolean
-// extract: String - contains HTML, can be directly rendered
-// image: String - URL to image
-
-class Page {
-  constructor(title, url, pageid, redirects, categories, missing) {
-    this.title = title
-    this.url = url
-    this.pageid = pageid
-    this.redirects = redirects
-    this.categories = categories
-    this.missing = missing
-  }
-}
-
-class TitlePage extends Page {
-  constructor(
-    title,
-    url,
-    pageid,
-    redirects,
-    categories,
-    missing,
-    extract,
-    image
-  ) {
-    super(title, url, pageid, redirects, categories, missing)
-    this.extract = extract
-    this.image = image
-  }
-}
 
 export default {
   name: 'MainView',
