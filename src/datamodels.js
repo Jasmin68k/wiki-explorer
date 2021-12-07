@@ -9,9 +9,9 @@ export class Page {
   /** @member {Number} pageid */
   pageid
   /** @member {String[]} redirects */
-  redirects
+  redirects = []
   /** @member {String[]} categories */
-  categories
+  categories = []
   /** @member {Boolean} missing */
   missing
 
@@ -34,11 +34,43 @@ export class Page {
     categories = [],
     missing = true
   }) {
+    // use ducktyping to detect strings
+    if (!title.substring) {
+      throw new TypeError('Expected title to be a string.')
+    }
     this.title = title
+
+    // Maybe add check for valid url later
+    if (!url.substring) {
+      throw new TypeError('Expected url to be a string.')
+    }
     this.url = url
+
+    if (isNaN(pageid)) {
+      throw new TypeError('Expected pageid to be a number.')
+    }
     this.pageid = pageid
-    this.redirects = redirects
-    this.categories = categories
+
+    if (
+      !Array.isArray(redirects) ||
+      !redirects.every((redirect) => !!redirect.substring)
+    ) {
+      throw new TypeError('Expected redirects to be an array of strings.')
+    }
+    // only set the values of the given array, not the array itself as it's an external reference
+    this.redirects.push(...redirects)
+
+    if (
+      !Array.isArray(categories) ||
+      !categories.every((category) => !!category.substring)
+    ) {
+      throw new TypeError('Expected categories to be an array of strings.')
+    }
+    this.categories.push(...categories)
+
+    if (!(!!missing === missing)) {
+      throw new TypeError('Expected missing to be a boolean.')
+    }
     this.missing = missing
   }
 }
@@ -83,7 +115,15 @@ export class TitlePage extends Page {
       categories: categories,
       missing: missing
     })
+    if (!extract.substring) {
+      throw new TypeError('Expected extract to be a string.')
+    }
     this.extract = extract
+
+    // Maybe add check for valid url later
+    if (!image.substring) {
+      throw new TypeError('Expected image to be a string.')
+    }
     this.image = image
   }
 }
