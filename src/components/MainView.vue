@@ -372,13 +372,7 @@ export default {
             redirects[redirect.from] = redirect
           }
         } catch (error) {
-          resultsMap.set(
-            'error',
-            new Page({
-              title: error.name + ': ' + error.message,
-              missing: false
-            })
-          )
+          // add error/display for user or similar
           console.error(`${error.name}: ${error.message}`)
         }
       } while (jsonDataFullQueryPart.continue)
@@ -493,10 +487,7 @@ export default {
               }
             }
           } catch (error) {
-            for (const pageId of resultsMap.keys()) {
-              const resultPage = resultsMap.get(pageId)
-              resultPage.categories = [error.name + ': ' + error.message]
-            }
+            // add error/display for user or similar
             console.error(error.message)
           }
         } while (jsonDataFullQueryPart.continue)
@@ -565,7 +556,7 @@ export default {
             responseFull.query.pages[pageId].original.source
         }
       } catch (error) {
-        this.titlePage.extract = error.name + ': ' + error.message
+        // add error/display for user or similar
         console.error(error.message)
       }
       if (!this.titlePage.missing) {
@@ -620,7 +611,7 @@ export default {
             this.titlePage.categories.push(resultsArray[0].categories[i].title)
           }
         } catch (error) {
-          this.titlePage.categories[0] = error.name + ': ' + error.message
+          // add error/display for user or similar
           console.error(error.message)
         }
       } while (categoriesQueryPart.continue)
