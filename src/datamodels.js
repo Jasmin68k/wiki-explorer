@@ -26,6 +26,7 @@ export class Page {
    * @param {Boolean} missing - page is missing on Wikipedia
    */
 
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#unpacking_fields_from_objects_passed_as_a_function_parameter
   constructor({
     title = '',
     url = '',
@@ -33,7 +34,7 @@ export class Page {
     redirects = [],
     categories = [],
     missing = true
-  }) {
+  } = {}) {
     // use ducktyping to detect strings
     if (!title.substring) {
       throw new TypeError('Expected title to be a string.')
@@ -106,7 +107,7 @@ export class TitlePage extends Page {
     missing = true,
     extract = '',
     image = ''
-  }) {
+  } = {}) {
     super({
       title: title,
       url: url,

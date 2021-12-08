@@ -155,7 +155,7 @@ export default {
       mobileCategories: false,
       mobileOutgraph: true,
       checkboxDirty: false,
-      titlePage: new TitlePage({})
+      titlePage: new TitlePage()
     }
   },
 
