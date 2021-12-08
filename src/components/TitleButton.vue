@@ -5,7 +5,11 @@
       'line-height': 100 * scalingFactor + '%',
       'max-width': 200 * scalingFactor + 'px'
     }"
-    v-show="!inputsDisabled && title && !titleMissing"
+    v-show="
+      resultsRedirectsEnabled
+        ? !inputsDisabled && title && !titleMissing && redirectsDone
+        : !inputsDisabled && title && !titleMissing
+    "
     ref="titlebutton"
     v-on="{
       mouseover: categoriesOnHover ? hoverButtonTitleOn : null,
