@@ -83,7 +83,7 @@
         :title="titlePage.title"
         :url="titlePage.url"
         :results-redirects-enabled="resultsRedirectsEnabled"
-        :redirect="titlePage.redirects[0]"
+        :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
         :results-categories-enabled="resultsCategoriesEnabled"
@@ -92,6 +92,7 @@
         :scaling-factor="scalingFactor"
         :circle-button-radius="circleButtonRadius"
         :categories-on-hover="categoriesOnHover"
+        :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
       ></outgraph>
 
@@ -155,7 +156,8 @@ export default {
       mobileCategories: false,
       mobileOutgraph: true,
       checkboxDirty: false,
-      titlePage: new TitlePage()
+      titlePage: new TitlePage(),
+      redirectsDone: false
     }
   },
 
@@ -515,9 +517,9 @@ export default {
     async getMainInfo() {
       this.titlePage.extract = ''
       this.titlePage.image = ''
-      this.titlePage.redirects = []
-      this.titlePage.missing = true
 
+      this.titlePage.missing = true
+      let redirectTarget = ''
       try {
         let mainInfoUrl =
           'https://' +
@@ -550,10 +552,13 @@ export default {
         }
 
         if (responseFull.query.redirects) {
-          if (responseFull.query.redirects[0].from) {
-            this.titlePage.redirects[0] = responseFull.query.redirects[0].from
+          if (responseFull.query.redirects[0].to) {
+            redirectTarget = responseFull.query.redirects[0].to
           }
+        } else {
+          redirectTarget = this.title
         }
+
         // check if image exists
         if (
           (this.titlePage.image = responseFull.query.pages[pageId].original)
@@ -565,8 +570,12 @@ export default {
         // add error/display for user or similar
         console.error(error.message)
       }
+
+      this.redirectsDone = false
+
       if (!this.titlePage.missing) {
         this.getCategories()
+        this.getRedirects(redirectTarget)
       }
     },
     async getCategories() {
@@ -637,6 +646,61 @@ export default {
       //sort - results seem sorted, but just to be sure
       this.titlePage.categories.sort()
     },
+    async getRedirects(redirectTarget) {
+      this.titlePage.redirects = []
+      let redirectsQueryPart = {}
+
+      do {
+        try {
+          let redirectsUrl =
+            'https://' +
+            this.language +
+            '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&titles=' +
+            redirectTarget +
+            '&origin=*'
+          if (redirectsQueryPart.continue) {
+            for (const continueToken of Object.keys(
+              redirectsQueryPart.continue
+            )) {
+              redirectsUrl +=
+                '&' +
+                continueToken +
+                '=' +
+                redirectsQueryPart.continue[continueToken]
+            }
+          }
+
+          const response = await fetch(redirectsUrl, {
+            headers: this.fetchHeaders
+          })
+
+          // ok = true on http 200-299 good response
+          if (!response.ok) {
+            const message = `${response.status} ${response.statusText}`
+            throw new NetworkError(message)
+          }
+          redirectsQueryPart = await response.json()
+
+          let resultsArray = Object.values(redirectsQueryPart.query.pages)
+
+          if (!resultsArray[0].redirects) {
+            continue
+          }
+          // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+          for (let i = 0; i < resultsArray[0].redirects.length; i++) {
+            this.titlePage.redirects.push(resultsArray[0].redirects[i].title)
+          }
+        } catch (error) {
+          // add error/display for user or similar
+          console.error(error.message)
+        }
+      } while (redirectsQueryPart.continue)
+
+      //sort
+      this.titlePage.redirects.sort()
+      this.redirectsDone = true
+    },
+
     circleButtonClicked(index) {
       this.title = this.displayResultsArray[index].title
 

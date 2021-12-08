@@ -13,12 +13,13 @@
       :title="title"
       :title-missing="titleMissing"
       :results-redirects-enabled="resultsRedirectsEnabled"
-      :redirect="redirect"
+      :redirects="redirects"
       :categories-array="categoriesArray"
       :url="url"
       :outgraphcanvasref="outgraphcanvasref"
       :scalingFactor="scalingFactor"
       :categoriesOnHover="categoriesOnHover"
+      :redirects-done="redirectsDone"
     ></title-button>
 
     <div v-for="(page, index) in displayResultsArray" :key="index">
@@ -56,7 +57,7 @@ export default {
     title: { required: true, default: '', type: String },
     url: { required: true, default: '', type: String },
     resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
-    redirect: { required: true, default: '', type: String },
+    redirects: { required: true, default: () => [], type: Array },
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
@@ -64,7 +65,8 @@ export default {
     titleMissing: { required: true, default: true, type: Boolean },
     scalingFactor: { required: true, default: 1.0, type: Number },
     circleButtonRadius: { required: true, default: 260, type: Number },
-    categoriesOnHover: { required: true, default: true, type: Boolean }
+    categoriesOnHover: { required: true, default: true, type: Boolean },
+    redirectsDone: { required: true, default: false, type: Boolean }
   },
   data() {
     return {

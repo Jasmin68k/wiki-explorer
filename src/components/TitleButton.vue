@@ -71,11 +71,11 @@
     </div>
 
     <div
-      class="redirect"
-      v-if="resultsRedirectsEnabled"
+      class="redirects"
+      v-if="resultsRedirectsEnabled && redirectsDone"
       :style="{ 'font-size': 70 * scalingFactor + '%' }"
     >
-      <ul>
+      <ul v-for="(redirect, index) in redirects" :key="index">
         <li>{{ redirect }}</li>
       </ul>
     </div>
@@ -110,13 +110,14 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
     resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
-    redirect: { required: true, default: '', type: String },
+    redirects: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },
     url: { required: true, default: '', type: String },
     outgraphcanvasref: { required: true, default: {} },
     scalingFactor: { required: true, default: 1.0, type: Number },
-    categoriesOnHover: { required: true, default: true, type: Boolean }
+    categoriesOnHover: { required: true, default: true, type: Boolean },
+    redirectsDone: { required: true, default: false, type: Boolean }
   },
   watch: {
     categoriesOnHover() {
@@ -185,6 +186,10 @@ ul li {
   background-color: palegoldenrod;
 }
 
+.titlebutton:hover {
+  z-index: 3;
+}
+
 .titlebuttonhover {
   background-color: honeydew;
   border: 1px solid black;
@@ -193,7 +198,7 @@ ul li {
   top: var(--postoptitle);
   z-index: 5;
 }
-.redirect {
+.redirects {
   background-color: lavender;
 }
 .buttonicongridcontainer {
