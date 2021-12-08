@@ -358,7 +358,13 @@ export default {
                 pageId,
                 new Page({
                   title: jsonDataFullQueryPart.query.pages[pageId].title,
-                  url: jsonDataFullQueryPart.query.pages[pageId].fullurl
+                  url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
+                  // in case of missing page jsonDataFullQueryPart.query.pages[pageId].pageid does not exist,
+                  // which is otherwise identical to pageId.
+                  // the values for pageId for all missing pages are consecutive negative integers starting at -1,
+                  // which naturally do not reference an actual Wikipedia page, but are assigned here to
+                  // Page's pageid to make it unique, too.
+                  pageid: pageId
                 })
               )
             }
