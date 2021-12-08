@@ -516,7 +516,7 @@ export default {
       this.titlePage.extract = ''
       this.titlePage.image = ''
       this.titlePage.redirects = []
-      this.titlePage.missing = ''
+      this.titlePage.missing = true
 
       try {
         let mainInfoUrl =
