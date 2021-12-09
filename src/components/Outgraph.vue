@@ -56,7 +56,7 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
     url: { required: true, default: '', type: String },
-    resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
+    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     redirects: { required: true, default: () => [], type: Array },
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },

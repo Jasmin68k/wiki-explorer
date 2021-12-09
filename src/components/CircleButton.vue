@@ -199,7 +199,7 @@ export default {
   props: {
     index: { required: true, default: -1, type: Number },
     inputsDisabled: { required: true, default: false, type: Boolean },
-    resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
+    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     displayResultsArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
