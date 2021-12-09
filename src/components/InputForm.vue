@@ -966,7 +966,7 @@ export default {
 .searchiconsmall,
 .titleiconsmall,
 .categoriesiconsmall {
-  width: 1.6em;
+  width: 1.4em;
   height: 1.4em;
   vertical-align: middle;
 }
