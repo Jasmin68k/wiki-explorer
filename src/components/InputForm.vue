@@ -212,6 +212,7 @@
         <input
           class="radiobutton"
           type="radio"
+          :disabled="mobileMode && !resultsCategoriesEnabled"
           id="categories"
           value="categories"
           v-model="mobileDisplay"
@@ -221,7 +222,9 @@
           class="radiolabel"
           for="categories"
           :class="{
-            'checkbox-dirty': checkboxDirty
+            'checkbox-dirty': checkboxDirty,
+
+            itemdisabled: mobileMode && !resultsCategoriesEnabled
           }"
         >
           <img
