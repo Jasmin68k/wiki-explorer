@@ -28,8 +28,9 @@
               (resultsCategoriesEnabled && !resultsCategoriesDone)
           }"
           for="desktop"
-          >{{ $t('desktop-mode') }}</label
         >
+          <img class="desktopicon" src="../assets/images/desktop-pc.svg" />
+        </label>
         <input
           class="radiobutton"
           type="radio"
@@ -50,8 +51,8 @@
               (resultsCategoriesEnabled && !resultsCategoriesDone)
           }"
           for="mobile"
-          >{{ $t('mobile-mode') }}</label
-        >
+          ><img class="mobileicon" src="../assets/images/smartphone.svg" />
+        </label>
       </form>
 
       <form>
@@ -75,8 +76,8 @@
               (resultsCategoriesEnabled && !resultsCategoriesDone)
           }"
           for="en"
-          >{{ $t('language-en') }}</label
-        >
+          ><img class="flagicon" src="../assets/images/us-flag.svg"
+        /></label>
         <input
           class="radiobutton"
           type="radio"
@@ -97,8 +98,8 @@
               (resultsCategoriesEnabled && !resultsCategoriesDone)
           }"
           for="de"
-          >{{ $t('language-de') }}</label
-        >
+          ><img class="flagicon" src="../assets/images/de-flag.svg"
+        /></label>
       </form>
 
       <form @submit.prevent="fetchData()">
@@ -124,7 +125,7 @@
           "
         >
           <img
-            class="searchicon"
+            class="searchiconsmall"
             :class="{
               itemdisabled:
                 inputsDisabled ||
@@ -137,7 +138,7 @@
 
       <form @submit.prevent="">
         <label for="filter"
-          ><img class="titleicon" src="../assets/images/text-tool.svg"
+          ><img class="titleiconsmall" src="../assets/images/text-tool.svg"
         /></label>
         <input
           id="filter"
@@ -156,7 +157,10 @@
 
       <form @submit.prevent="">
         <label for="filterCategories">
-          <img class="categoriesicon" src="../assets/images/document.svg" />
+          <img
+            class="categoriesiconsmall"
+            src="../assets/images/document.svg"
+          />
         </label>
         <input
           id="filterCategories"
@@ -316,7 +320,7 @@
 
       <form>
         <span
-          ><img class="categoriesicon" src="../assets/images/document.svg"
+          ><img class="categoriesiconsmall" src="../assets/images/document.svg"
         /></span>
         <input
           class="radiobutton"
@@ -343,8 +347,8 @@
                   mobileDisplay === 'categories'))
           }"
           for="catsclick"
-          >{{ $t('cats-click') }}</label
-        >
+          ><img class="clickicon" src="../assets/images/mouse-click.svg"
+        /></label>
         <input
           class="radiobutton"
           type="radio"
@@ -370,30 +374,34 @@
                   mobileDisplay === 'categories'))
           }"
           for="catshover"
-          >{{ $t('cats-hover') }}</label
-        >
+          ><img class="hovericon" src="../assets/images/mouse-hover.svg"
+        /></label>
       </form>
-      <p>
+      <div>
         <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
           ><img
-            class="categoriesicon fetchingicon"
+            class="categoriesicon fetchingicon fetchingiconleft"
             src="../assets/images/document.svg"
         /></span>
-        <span>{{ $t('results') }}{{ filteredResultsArray.length }}</span>
+
+        <span class="fontsize90"
+          >{{ $t('results') }}{{ filteredResultsArray.length }}</span
+        >
         <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
           ><img
-            class="categoriesicon fetchingicon"
+            class="categoriesicon fetchingicon fetchingiconright"
             src="../assets/images/document.svg"
         /></span>
-      </p>
-      <p
+      </div>
+      <div
+        class="fontsize90"
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
         }}{{ indexEnd + 1 }}
-      </p>
+      </div>
       <span
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
@@ -415,7 +423,7 @@
           }"
         />
 
-        <span class="pageinfotext">
+        <span class="pageinfotext fontsize90">
           {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of')
           }}{{ numberOfPages }}</span
         >
@@ -463,12 +471,12 @@
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden',
           width:
-            portraitMode && mobileMode ? flexContainerHeight * 0.78 + 'px' : '',
+            portraitMode && mobileMode ? flexContainerHeight * 0.77 + 'px' : '',
           transform:
             portraitMode && mobileMode
               ? 'rotate(90deg) translateX(' +
-                flexContainerHeight * 0.37 +
-                'px) translateY(288%)'
+                flexContainerHeight * 0.35 +
+                'px) translateY(247%)'
               : ''
         }"
         @input="resetPageNumber()"
@@ -828,6 +836,10 @@ export default {
 }
 </script>
 <style scoped>
+.fontsize90 {
+  font-size: 90%;
+}
+
 .radiobutton,
 .checkbox {
   opacity: 0;
@@ -850,6 +862,7 @@ export default {
   padding: 1px 1px;
   border: 1px solid black;
   font-size: 85%;
+  margin: 3px;
 }
 
 .radiobutton:hover + label,
@@ -896,14 +909,17 @@ export default {
 .leftarrow {
   height: 1.75em;
   float: left;
-}
-.leftarrow:hover,
-.rightarrow:hover {
-  filter: invert(0.5);
+  margin-left: 5px;
 }
 .rightarrow {
   height: 1.75em;
   float: right;
+  margin-right: 5px;
+}
+
+.leftarrow:hover,
+.rightarrow:hover {
+  filter: invert(0.5);
 }
 .itemdisabled {
   filter: invert(0.75);
@@ -932,7 +948,25 @@ export default {
 .searchicon,
 .checkboxfiltericon,
 .redirectsicon,
-.graphicon {
+.graphicon,
+.desktopicon,
+.mobileicon,
+.flagicon,
+.clickicon,
+.hovericon {
+  width: 2.66em;
+  height: 1.4em;
+  vertical-align: middle;
+}
+
+.flagicon {
+  padding: 2px;
+}
+
+.searchiconsmall,
+.titleiconsmall,
+.categoriesiconsmall {
+  width: 1.6em;
   height: 1.4em;
   vertical-align: middle;
 }
@@ -952,6 +986,13 @@ export default {
   transform: rotate(90deg);
 }
 
+.searchinputarea,
+.titleinputarea,
+.categoriesinputarea {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
 .searchinputarea:focus,
 .titleinputarea:focus,
 .categoriesinputarea:focus {
@@ -966,12 +1007,18 @@ export default {
 }
 
 .fetchingicon {
-  margin-left: 0.5em;
-  margin-right: 0.5em;
   filter: invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg)
     brightness(105%) contrast(124%);
   animation: fadeIn 0.35s infinite alternate;
   height: 1em;
+}
+
+.fetchingiconleft {
+  margin-right: 0.5em;
+}
+
+.fetchingiconright {
+  margin-left: 0.5em;
 }
 
 .positionrelative {

@@ -831,6 +831,7 @@ export default {
           this.mobileMainInfo = false
           this.mobileCategories = true
       }
+      this.windowResized()
     },
     windowResized() {
       this.$nextTick(() => {
