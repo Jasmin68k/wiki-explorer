@@ -21,9 +21,9 @@ export class Page {
    * @param {String} title - page title
    * @param {String} url - URL to Wikipedia entry
    * @param {Number} pageid - pageId
-   * @param {String[]} redirects - redirects to page (only one member for TitlePage)
+   * @param {String[]} redirects - redirects to page
    * @param {String[]} categories - page's categories
-   * @param {Boolean} missing - page is missing on Wikipedia
+   * @param {Boolean} missing - page is missing on Wikipedia (resultPage) or no search result (titlePage)
    */
 
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#unpacking_fields_from_objects_passed_as_a_function_parameter
@@ -87,13 +87,13 @@ export class TitlePage extends Page {
   image
   /**
    * title page
-   * @param {Object} resultPage
+   * @param {Object} titlePage
    * @param {String} title - page title
    * @param {String} url - URL to Wikipedia entry
    * @param {Number} pageid - pageId
-   * @param {String[]} redirects - redirects to page (only one member for TitlePage)
+   * @param {String[]} redirects - redirects to page
    * @param {String[]} categories - page's categories
-   * @param {Boolean} missing - page is missing on Wikipedia
+   * @param {Boolean} missing - page is missing on Wikipedia (resultPage) or no search result (titlePage)
    * @param {String} extract - page extract (contains HTML, can be directly rendered)
    * @param {String} image - URL to page image
    */
