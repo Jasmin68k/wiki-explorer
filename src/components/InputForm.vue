@@ -814,16 +814,18 @@ export default {
 
         this.$emit('grid-height-changed', vh)
 
-        let sf = vw / (this.circleButtonRadius * 1.25 * 2 + 220)
+        if (!this.showHelp) {
+          let sf = vw / (this.circleButtonRadius * 1.25 * 2 + 220)
 
-        sf = Math.min(1.0, sf)
-        // documentElement.clientWidth can be unreliable, 0 or wrong values...simple safety measure here
-        // also generally restricting to min 0.33
-        sf = Math.max(0.33, sf)
+          sf = Math.min(1.0, sf)
+          // documentElement.clientWidth can be unreliable, 0 or wrong values...simple safety measure here
+          // also generally restricting to min 0.33
+          sf = Math.max(0.33, sf)
 
-        this.scalingFactor = sf
+          this.scalingFactor = sf
 
-        this.$emit('scalingFactorChanged', this.scalingFactor)
+          this.$emit('scalingFactorChanged', this.scalingFactor)
+        }
       })
     }
   },
