@@ -213,29 +213,37 @@
         <input
           class="radiobutton"
           type="radio"
+          :disabled="showHelp"
           id="outgraph"
           value="outgraph"
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
-        <label class="radiolabel" for="outgraph"
+        <label
+          class="radiolabel"
+          for="outgraph"
+          :class="{ itemdisabled: showHelp }"
           ><img class="graphicon" src="../assets/images/analytics-graph.svg"
         /></label>
         <input
           class="radiobutton"
           type="radio"
+          :disabled="showHelp"
           id="maininfo"
           value="maininfo"
           v-model="mobileDisplay"
           @change="mobileDisplaySwitched"
         />
-        <label class="radiolabel" for="maininfo"
+        <label
+          class="radiolabel"
+          for="maininfo"
+          :class="{ itemdisabled: showHelp }"
           ><img class="titleicon" src="../assets/images/text-tool.svg"
         /></label>
         <input
           class="radiobutton"
           type="radio"
-          :disabled="mobileMode && !resultsCategoriesEnabled"
+          :disabled="showHelp || (mobileMode && !resultsCategoriesEnabled)"
           id="categories"
           value="categories"
           v-model="mobileDisplay"
@@ -247,7 +255,7 @@
           :class="{
             'checkbox-dirty': checkboxDirty,
 
-            itemdisabled: mobileMode && !resultsCategoriesEnabled
+            itemdisabled: showHelp || (mobileMode && !resultsCategoriesEnabled)
           }"
         >
           <img
