@@ -8,6 +8,21 @@
       }"
     >
       <form>
+        <span>
+          <input
+            id="showHelp"
+            class="checkbox"
+            type="checkbox"
+            v-model="showHelp"
+            @change="showHelpClicked"
+          />
+          <label class="checkboxlabel" for="showHelp">
+            <img
+              class="categoriesicon"
+              src="../assets/images/question-mark.svg"
+            />
+          </label>
+        </span>
         <input
           class="radiobutton"
           type="radio"
@@ -583,7 +598,8 @@ export default {
     'grid-width-nocategories-changed',
     'grid-height-changed',
     'mode-switched',
-    'mobile-display-switched'
+    'mobile-display-switched',
+    'show-help-switched'
   ],
 
   props: {
@@ -659,7 +675,8 @@ export default {
       mode: 'desktop',
       mobileDisplay: 'outgraph',
       portraitMode: false,
-      flexContainerHeight: 0
+      flexContainerHeight: 0,
+      showHelp: false
     }
   },
 
@@ -747,6 +764,11 @@ export default {
     setCheckboxFilterEnabled() {
       this.checkboxFilterEnabled = true
     },
+    showHelpClicked() {
+      // resize needed here, not after emit in MainView
+      this.windowResized()
+      this.$emit('show-help-switched', this.showHelp)
+    },
     windowResized() {
       this.$nextTick(() => {
         let vw
@@ -764,7 +786,8 @@ export default {
         if (
           this.checkboxFilterEnabled &&
           this.resultsCategoriesEnabled &&
-          !this.mobileMode
+          !this.mobileMode &&
+          !this.showHelp
         ) {
           vw -= 320
         }

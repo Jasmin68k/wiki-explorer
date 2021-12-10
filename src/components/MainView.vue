@@ -26,10 +26,12 @@
       @gridHeightChanged="gridHeightChanged"
       @modeSwitched="modeSwitched"
       @mobileDisplaySwitched="mobileDisplaySwitched"
+      @showHelpSwitched="showHelpSwitched"
       ref="inputForm"
     ></input-form>
 
     <div
+      v-if="!showHelp"
       class="grid-container-base"
       :class="{
         mobile: mobileMode,
@@ -106,6 +108,20 @@
         :image="titlePage.image"
       ></main-title-info>
     </div>
+
+    <div
+      v-if="showHelp"
+      class="grid-container-base mobile"
+      :style="{
+        '--gridwidthnocategories': gridWidthNocategories + 'px',
+        '--gridheightsubtract': gridHeightSubtract + 'px',
+        '--gridmobileheight': scrollboxContainerHeight + 'px'
+      }"
+    >
+      <div class="grid-item-maininfo mobile">
+        <p>INSERT HELP HERE</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -157,7 +173,8 @@ export default {
       mobileOutgraph: true,
       checkboxDirty: false,
       titlePage: new TitlePage(),
-      redirectsDone: false
+      redirectsDone: false,
+      showHelp: false
     }
   },
 
@@ -832,6 +849,10 @@ export default {
           this.mobileCategories = true
       }
       this.windowResized()
+    },
+    showHelpSwitched(value) {
+      // this.windowResized()
+      this.showHelp = value
     },
     windowResized() {
       this.$nextTick(() => {
