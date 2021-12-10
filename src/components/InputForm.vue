@@ -29,8 +29,9 @@
           id="desktop"
           value="desktop"
           :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            !showHelp &&
+            (inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           v-model="mode"
           @change="modeSwitched"
@@ -39,8 +40,9 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone)
+              !showHelp &&
+              (inputsDisabled ||
+                (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
           for="desktop"
         >
@@ -52,8 +54,9 @@
           id="mobile"
           value="mobile"
           :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            !showHelp &&
+            (inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           v-model="mode"
           @change="modeSwitched"
@@ -62,8 +65,9 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone)
+              !showHelp &&
+              (inputsDisabled ||
+                (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
           for="mobile"
           ><img class="mobileicon" src="../assets/images/smartphone.svg" />
@@ -77,8 +81,9 @@
           id="en"
           value="en"
           :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            !showHelp &&
+            (inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           v-model="language"
           @change="languageSwitched"
@@ -87,8 +92,9 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone)
+              !showHelp &&
+              (inputsDisabled ||
+                (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
           for="en"
           ><img class="flagicon" src="../assets/images/us-flag.svg"
@@ -99,8 +105,9 @@
           id="de"
           value="de"
           :disabled="
-            inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            !showHelp &&
+            (inputsDisabled ||
+              (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           v-model="language"
           @change="languageSwitched"
@@ -109,8 +116,9 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone)
+              !showHelp &&
+              (inputsDisabled ||
+                (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
           for="de"
           ><img class="flagicon" src="../assets/images/de-flag.svg"

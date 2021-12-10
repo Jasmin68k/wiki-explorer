@@ -852,6 +852,7 @@ export default {
     },
     showHelpSwitched(value) {
       // this.windowResized()
+      this.inputsDisabled = value
       this.showHelp = value
     },
     windowResized() {
