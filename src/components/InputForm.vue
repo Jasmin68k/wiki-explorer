@@ -832,6 +832,154 @@ export default {
     }
 
     this.windowResized()
+
+    // handle parameters from URL
+    /**
+     * URL Parameters
+     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valie (this.mode)
+     * @param {String} lang - UI and Wikipedia language, en or de valid (this.language)
+     * @param {String} categories - Enable/disable results categories, on or off valid (boolean to this.resultsCategoriesEnabled)
+     * @param {String} titlefilter - String to filter results titles with (this.filter)
+     * @param {String} categoriesfilter - String to filter results categories with (this.filterCategories)
+     * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, info, categories (outgraph, maininfo, categories -> this.mobileDisplay)
+     * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to this.checkboxFilterEnabled)
+     * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to this.resultsRedirectsEnabled)
+     * @param {String} categoriesmode - Show categories on click or hover, valid click or hover (this.categoriesOnHoverOrClick)
+     * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (this.sizePerPage)
+     * @param {String} search - Wikipedia page to search for (this.title)
+     */
+
+    const urlParameters = new URLSearchParams(window.location.search)
+
+    const mode = urlParameters.get('mode')
+    const lang = urlParameters.get('lang')
+    const titlefilter = urlParameters.get('titlefilter')
+    const categoriesfilter = urlParameters.get('categoriesfilter')
+    const categories = urlParameters.get('categories')
+    const mobileview = urlParameters.get('mobileview')
+    const checkboxfilter = urlParameters.get('checkboxfilter')
+    const redirects = urlParameters.get('redirects')
+    const categoriesmode = urlParameters.get('categoriesmode')
+    let resultsperpage = parseInt(urlParameters.get('resultsperpage'), 10)
+    const search = urlParameters.get('search')
+
+    if (mode === 'desktop' || mode === 'mobile') {
+      this.mode = mode
+      this.modeSwitched()
+    }
+
+    if (lang === 'en' || lang === 'de') {
+      this.language = lang
+      this.languageSwitched()
+    }
+
+    if (categories === 'on' || categories === 'off') {
+      switch (categories) {
+        case 'on':
+          this.resultsCategoriesEnabled = true
+          break
+
+        case 'off':
+          this.resultsCategoriesEnabled = false
+          break
+      }
+      this.resultsCategoriesChanged()
+    }
+
+    if (titlefilter && titlefilter.length > 0) {
+      this.filter = titlefilter
+      this.resetPageNumber()
+      this.filterChanged()
+    }
+
+    if (
+      categoriesfilter &&
+      categoriesfilter.length > 0 &&
+      this.resultsCategoriesEnabled
+    ) {
+      this.filterCategories = categoriesfilter
+      this.resetPageNumber()
+      this.filterCategoriesChanged()
+    }
+
+    if (
+      this.mode === 'mobile' &&
+      (mobileview === 'graph' ||
+        mobileview === 'info' ||
+        mobileview === 'categories')
+    ) {
+      switch (mobileview) {
+        case 'graph':
+          this.mobileDisplay = 'outgraph'
+          this.mobileDisplaySwitched()
+          break
+        case 'info':
+          this.mobileDisplay = 'maininfo'
+          this.mobileDisplaySwitched()
+          break
+        case 'categories':
+          if (this.resultsCategoriesEnabled) {
+            this.mobileDisplay = 'categories'
+            this.mobileDisplaySwitched()
+          }
+          break
+      }
+    }
+
+    if (
+      this.mode === 'desktop' &&
+      (checkboxfilter === 'on' || checkboxfilter === 'off')
+    ) {
+      switch (checkboxfilter) {
+        case 'on':
+          if (this.resultsCategoriesEnabled) {
+            this.checkboxFilterEnabled = true
+          }
+          this.checkboxFilterEnabledChange()
+          break
+        case 'off':
+          this.checkboxFilterEnabled = false
+          this.checkboxFilterEnabledChange()
+          break
+      }
+    }
+
+    if (redirects === 'on' || redirects === 'off') {
+      switch (redirects) {
+        case 'on':
+          this.resultsRedirectsEnabled = true
+          break
+        case 'off':
+          this.resultsRedirectsEnabled = false
+          break
+      }
+      this.resultsRedirectsChanged()
+    }
+
+    if (categoriesmode === 'click' || categoriesmode === 'hover') {
+      switch (categoriesmode) {
+        case 'click':
+          this.categoriesOnHoverOrClick = 'catsclick'
+          break
+
+        case 'hover':
+          this.categoriesOnHoverOrClick = 'catshover'
+          break
+      }
+      this.categoriesOnHoverOrClickChanged()
+    }
+
+    if (!isNaN(resultsperpage)) {
+      resultsperpage = Math.max(2, Math.min(40, resultsperpage))
+      this.sizePerPage = resultsperpage
+      this.resetPageNumber()
+    }
+
+    // do search last after evaluating all other parameters
+    if (search && search.length > 0) {
+      this.title = search
+      this.fetchData()
+    }
   },
   beforeUnMount() {
     window.removeEventListener('resize', this.windowResized)
