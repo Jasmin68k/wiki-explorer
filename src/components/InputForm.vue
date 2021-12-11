@@ -170,7 +170,7 @@
             inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '115px' : ''
+            width: portraitMode && mobileMode ? '120px' : ''
           }"
         />
       </form>
@@ -195,7 +195,7 @@
             (mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '115px' : ''
+            width: portraitMode && mobileMode ? '120px' : ''
           }"
         />
       </form>

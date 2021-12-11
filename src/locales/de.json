@@ -29,9 +29,10 @@
   "help-filter-titles": "Ergebnistitel filtern",
   "help-filter-categories": "Ergebniskategorien filtern",
   "help-mobile-view": "[Nur mobiler Modus] Wähle Ansicht: Graph, Info oder Kontrollkästchenfilter für Kategorien",
-  "help-categories-switch": "Zeige/verstecke Kategorienansicht in Graph. Verstecken schaltet auch Kontrollkästchenfilter für Kategorien aus.",
+  "help-categories-switch": "Holen/zeigen von Kategorien ein-/ausschalten.",
   "help-checkboxfilter-switch": "[Nur Arbeitsplatzmodus] Zeige/verstecke Kontrollkästchenfilter für Kategorien.",
   "help-redirects-switch": "Zeige/verstecke Weiterleitungen in Graph.",
-  "help-categoriesclickhover-switch": "Zeige Kategorien in Graph durch Klicken oder Mausschweben.",
+  "help-categoriesclickhover-switch1": "Zeige Kategorien in Graph durch Klicken (",
+  "help-categoriesclickhover-switch2": " in Graph) oder Mausschweben.",
   "help-mobile-maxresults": "[Mobiler Modus] Maximale Anzahl Ergebnisse in Graph einstellen."
 }

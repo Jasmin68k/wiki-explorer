@@ -29,9 +29,10 @@
   "help-filter-titles": "Filter results titles",
   "help-filter-categories": "Filter results categories",
   "help-mobile-view": "[Mobile mode only] Select view: graph, info or categories checkbox filter",
-  "help-categories-switch": "Show/hide categories in graph. Hiding also disables categories checkbox filter.",
+  "help-categories-switch": "Enable/disable fetching/showing of categories.",
   "help-checkboxfilter-switch": "[Desktop mode only] Show/hide categories checkbox filter.",
   "help-redirects-switch": "Show/hide redirects in graph.",
-  "help-categoriesclickhover-switch": "Show results categories in graph on click or hover.",
+  "help-categoriesclickhover-switch1": "Show results categories in graph on click (",
+  "help-categoriesclickhover-switch2": " in graph) or hover.",
   "help-mobile-maxresults": "[Mobile mode] Adjust maximum number of results in graph."
 }

@@ -110,7 +110,9 @@
       </div>
     </div>
     <div class="help-text">
-      {{ $t('help-categoriesclickhover-switch') }}
+      {{ $t('help-categoriesclickhover-switch1') }}
+      <span><img class="icon-help3" src="../assets/images/document.svg" /></span
+      >{{ $t('help-categoriesclickhover-switch2') }}
     </div>
     <div>
       <div>
@@ -150,6 +152,11 @@ export default {
   height: 1em;
   font-size: 90%;
   vertical-align: middle;
+}
+.icon-help3 {
+  height: 1em;
+  vertical-align: middle;
+  margin-left: -0.25em;
 }
 
 .icon-help-small-left {
