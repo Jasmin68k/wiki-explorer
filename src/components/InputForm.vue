@@ -17,10 +17,7 @@
             @change="showHelpClicked"
           />
           <label class="checkboxlabel" for="showHelp">
-            <img
-              class="categoriesicon"
-              src="../assets/images/question-mark.svg"
-            />
+            <img class="helpicon" src="../assets/images/question-mark.svg" />
           </label>
         </span>
         <input
@@ -1145,7 +1142,8 @@ export default {
 .mobileicon,
 .flagicon,
 .clickicon,
-.hovericon {
+.hovericon,
+.helpicon {
   width: 2.66em;
   height: 1.4em;
   vertical-align: middle;
