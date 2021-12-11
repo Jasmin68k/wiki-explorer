@@ -21,5 +21,17 @@
   "graph-radius": "Graphenradius",
   "desktop-mode": "Arbeitsplatzmodus",
   "mobile-mode": "Mobiler Modus",
-  "search-on-wikipedia": "Bei Wikipedia suchen..."
+  "search-on-wikipedia": "Bei Wikipedia suchen...",
+  "help-help": "Diese Hilfe-Seite",
+  "help-desktop-mobile": "Arbeitsplatzmodus oder mobiler Modus",
+  "help-language": "Sprache für Wikipedia und Bedienelemente",
+  "help-search": "Suche bei Wikipedia",
+  "help-filter-titles": "Ergebnistitel filtern",
+  "help-filter-categories": "Ergebniskategorien filtern",
+  "help-mobile-view": "[Nur mobiler Modus] Wähle Ansicht: Graph, Info oder Kontrollkästchenfilter für Kategorien",
+  "help-categories-switch": "Zeige/verstecke Kategorienansicht in Graph. Verstecken schaltet auch Kontrollkästchenfilter für Kategorien aus.",
+  "help-checkboxfilter-switch": "[Nur Arbeitsplatzmodus] Zeige/verstecke Kontrollkästchenfilter für Kategorien.",
+  "help-redirects-switch": "Zeige/verstecke Weiterleitungen in Graph.",
+  "help-categoriesclickhover-switch": "Zeige Kategorien in Graph durch Klicken oder Mausschweben.",
+  "help-mobile-maxresults": "[Mobiler Modus] Maximale Anzahl Ergebnisse in Graph einstellen."
 }

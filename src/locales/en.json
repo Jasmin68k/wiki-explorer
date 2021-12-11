@@ -4,7 +4,6 @@
   "all": "All",
   "none": "None",
   "fetching-results-categories": "Fetching results categories...",
-  "show-used-redirects": "Show used redirects (not all possible ones)",
   "filter-results-titles": "Filter results titles...",
   "filter-results-categories": "Filter results categories...",
   "max-results-per-page": "Max. results per page: ",
@@ -22,5 +21,17 @@
   "graph-radius": "Graph radius",
   "desktop-mode": "Desktop mode",
   "mobile-mode": "Mobile mode",
-  "search-on-wikipedia": "Search on Wikipedia..."
+  "search-on-wikipedia": "Search on Wikipedia...",
+  "help-help": "This help page",
+  "help-desktop-mobile": "Desktop or mobile mode",
+  "help-language": "Language for Wikipedia and user interface",
+  "help-search": "Search on Wikipedia",
+  "help-filter-titles": "Filter results titles",
+  "help-filter-categories": "Filter results categories",
+  "help-mobile-view": "[Mobile mode only] Select view: graph, info or categories checkbox filter",
+  "help-categories-switch": "Show/hide categories in graph. Hiding also disables categories checkbox filter.",
+  "help-checkboxfilter-switch": "[Desktop mode only] Show/hide categories checkbox filter.",
+  "help-redirects-switch": "Show/hide redirects in graph.",
+  "help-categoriesclickhover-switch": "Show results categories in graph on click or hover.",
+  "help-mobile-maxresults": "[Mobile mode] Adjust maximum number of results in graph."
 }
