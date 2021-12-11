@@ -1,5 +1,11 @@
 <template>
   <div class="grid-container-help">
+    <div class="twocolumns help-text">
+      <h3>Wiki-Explorer</h3>
+      <p>{{ $t('help-intro1') }}</p>
+      <p>{{ $t('help-intro2') }}</p>
+      <p>{{ $t('help-intro3') }}</p>
+    </div>
     <div>
       <div class="icon-help-container">
         <img class="icon-help" src="../assets/images/question-mark.svg" />
@@ -74,7 +80,17 @@
       </div>
     </div>
     <div class="help-text">
-      {{ $t('help-categories-switch') }}
+      {{ $t('help-categories-switch1') }}
+      <span
+        ><img
+          class="icon-help3"
+          :style="{
+            filter:
+              'invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg) brightness(105%) contrast(124%)'
+          }"
+          src="../assets/images/document.svg"
+      /></span>
+      {{ $t('help-categories-switch2') }}
     </div>
     <div>
       <div class="icon-help-container">
@@ -202,5 +218,8 @@ export default {
   /* width: 90px; */
   min-width: 70%;
   max-width: 70%;
+}
+.twocolumns {
+  grid-column: 1 / 3;
 }
 </style>

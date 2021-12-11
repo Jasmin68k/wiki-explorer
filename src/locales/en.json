@@ -28,11 +28,15 @@
   "help-search": "Search on Wikipedia",
   "help-filter-titles": "Filter results titles",
   "help-filter-categories": "Filter results categories",
-  "help-mobile-view": "[Mobile mode only] Select view: graph, info or categories checkbox filter",
-  "help-categories-switch": "Enable/disable fetching/showing of categories.",
+  "help-mobile-view": "[Mobile mode only] Select view: graph, extract or categories checkbox filter.",
+  "help-categories-switch1": "Enable/disable fetching/showing of categories. Can be slow for big pages. ",
+  "help-categories-switch2": " blinking during fetch.",
   "help-checkboxfilter-switch": "[Desktop mode only] Show/hide categories checkbox filter.",
   "help-redirects-switch": "Show/hide redirects in graph.",
   "help-categoriesclickhover-switch1": "Show results categories in graph on click (",
   "help-categoriesclickhover-switch2": " in graph) or hover.",
-  "help-mobile-maxresults": "[Mobile mode] Adjust maximum number of results in graph."
+  "help-mobile-maxresults": "[Mobile mode] Adjust maximum number of results in graph.",
+  "help-intro1": "Search for a Wikipedia page and explore all linked Wikipedia pages with the help of a graph. Click on any outer result page's title in the graph to make it the new search target. The Wikipedia icon opens the corresponding Wikipedia page in a new tab/window. Hovering over a title or clicking on the categories icon (only visible, when click mode is enabled, see below) on a title in the graph will show its categories.",
+  "help-intro2": "Result pages can be filtered by titles and/or categories, just start typing in the corresponding text input fields. Categories can also be filtered with a checkbox filter containing a list of all categories of all result pages. Missing pages (which are linked to on Wikipedia, but have not yet been created) are marked in red. An extract with image is also available.",
+  "help-intro3": "You can also enable showing all of Wikipedia's redirects (alternative search terms) leading to each page in the graph."
 }

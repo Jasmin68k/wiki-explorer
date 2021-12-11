@@ -28,11 +28,15 @@
   "help-search": "Suche bei Wikipedia",
   "help-filter-titles": "Ergebnistitel filtern",
   "help-filter-categories": "Ergebniskategorien filtern",
-  "help-mobile-view": "[Nur mobiler Modus] Wähle Ansicht: Graph, Info oder Kontrollkästchenfilter für Kategorien",
-  "help-categories-switch": "Holen/zeigen von Kategorien ein-/ausschalten.",
+  "help-mobile-view": "[Nur mobiler Modus] Wähle Ansicht: Graph, Auszug oder Kontrollkästchenfilter für Kategorien.",
+  "help-categories-switch1": "Holen/zeigen von Kategorien ein-/ausschalten. Kann für große Seiten langsam sein. ",
+  "help-categories-switch2": " blinkt während des Holens.",
   "help-checkboxfilter-switch": "[Nur Arbeitsplatzmodus] Zeige/verstecke Kontrollkästchenfilter für Kategorien.",
   "help-redirects-switch": "Zeige/verstecke Weiterleitungen in Graph.",
   "help-categoriesclickhover-switch1": "Zeige Kategorien in Graph durch Klicken (",
   "help-categoriesclickhover-switch2": " in Graph) oder Mausschweben.",
-  "help-mobile-maxresults": "[Mobiler Modus] Maximale Anzahl Ergebnisse in Graph einstellen."
+  "help-mobile-maxresults": "[Mobiler Modus] Maximale Anzahl Ergebnisse in Graph einstellen.",
+  "help-intro1": "Suche nach einer Wikipedia-Seite und erkunde alle verlinkten Wikipedia-Seiten mit Hilfe eines Graphen. Klicke auf den Titel irgendeiner äußeren Ergebnisseite im Graphen um diese zum neuen Suchziel zu machen. Das Wikipedia-Piktogramm öffnet die dazugehörige Wikipedia-Seite in einem neuen Reiter/Fenster. Mausschweben über einem Titel oder Klicken auf das Kategorien-Piktogramm (nur sichtbar, wenn Klick-Modus eingeschaltet ist, s. unten) auf einem Titel im Graphen zeigt seine Kategorien.",
+  "help-intro2": "Ergebnisseiten können nach Titeln und/oder Kategorien gefiltert werden, einfach in den dazugehörigen Texteingabefeldern anfangen zu tippen. Kategorien können auch mit einem Kontrollkästchenfilter, der eine Liste aller Kategorien aller Ergebnisseiten beinhaltet, gefiltert werden. Fehlende Seiten (welche bei Wikipedia verlinkt sind, aber noch nicht angelegt wurden) sind rot markiert. Ein Auszug mit Bild ist auch verfügbar.",
+  "help-intro3": "Die Anzeige aller Weiterleitungen von Wikipedia (alternative Suchbegriffe), die zu jeder einzelnen Seite im Graphen führen, kann auch eingeschaltet werden."
 }
