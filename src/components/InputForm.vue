@@ -133,7 +133,7 @@
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
           :style="{
-            width: portraitMode && mobileMode ? '110px' : ''
+            width: portraitMode && mobileMode ? '108px' : ''
           }"
         />
         <button
@@ -499,16 +499,10 @@
           (mobileMode &&
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
+        :class="{ slidervertical: portraitMode && mobileMode }"
         :style="{
           visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden',
-          width:
-            portraitMode && mobileMode ? flexContainerHeight * 0.77 + 'px' : '',
-          transform:
-            portraitMode && mobileMode
-              ? 'rotate(90deg) translateX(' +
-                flexContainerHeight * 0.35 +
-                'px) translateY(247%)'
-              : ''
+          '--height': flexContainerHeight * 0.75 + 'px'
         }"
         @input="resetPageNumber()"
       />
@@ -1217,6 +1211,12 @@ export default {
 
 .inputformflexitem3fixedwidth {
   width: 24px;
+}
+
+.slidervertical {
+  width: var(--height);
+  transform-origin: left;
+  transform: rotate(90deg) translateY(-50%) translateX(-3%);
 }
 
 @media (orientation: landscape) {
