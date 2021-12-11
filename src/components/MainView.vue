@@ -109,18 +109,8 @@
       ></main-title-info>
     </div>
 
-    <div
-      v-if="showHelp"
-      class="grid-container-base mobile"
-      :style="{
-        '--gridwidthnocategories': gridWidthNocategories + 'px',
-        '--gridheightsubtract': gridHeightSubtract + 'px',
-        '--gridmobileheight': scrollboxContainerHeight + 'px'
-      }"
-    >
-      <div class="grid-item-maininfo mobile">
-        <p>INSERT HELP HERE</p>
-      </div>
+    <div v-if="showHelp" class="help-container">
+      <help></help>
     </div>
   </div>
 </template>
@@ -130,6 +120,7 @@ import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
+import Help from './Help.vue'
 import { Page, TitlePage } from '../datamodels.js'
 import { NetworkError, DataError } from '../customerrors.js'
 
@@ -138,7 +129,13 @@ let jsonDataFullQueryPart = {}
 
 export default {
   name: 'MainView',
-  components: { InputForm, MainTitleInfo, Outgraph, CategoriesCheckboxFilter },
+  components: {
+    InputForm,
+    MainTitleInfo,
+    Outgraph,
+    CategoriesCheckboxFilter,
+    Help
+  },
   data() {
     return {
       language: 'en',
@@ -985,6 +982,12 @@ export default {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
 
+  overflow-y: auto;
+}
+.help-container {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  width: 100%;
   overflow-y: auto;
 }
 </style>
