@@ -156,16 +156,34 @@
     <div class="twocolumns help-text">
       <h2>{{ $t('help-outro0') }}</h2>
       <p>{{ $t('help-outro1') }}</p>
-      <p>{{ $t('help-outro2') }}</p>
+      <p>
+        <em>{{ currentUrl + $t('help-outro2') }}</em>
+      </p>
       <h3>{{ $t('help-outro3') }}</h3>
       <p>{{ $t('help-outro4') }}</p>
-      <p>{{ $t('help-outro5') }}</p>
+      <p>
+        <a :href="currentUrl + $t('help-outro5')" target="_blank">{{
+          currentUrl + $t('help-outro5')
+        }}</a>
+      </p>
       <p>{{ $t('help-outro6') }}</p>
-      <p>{{ $t('help-outro7') }}</p>
+      <p>
+        <a :href="currentUrl + $t('help-outro7')" target="_blank">{{
+          currentUrl + $t('help-outro7')
+        }}</a>
+      </p>
       <p>{{ $t('help-outro8') }}</p>
-      <p>{{ $t('help-outro9') }}</p>
+      <p>
+        <a :href="currentUrl + $t('help-outro9')" target="_blank">{{
+          currentUrl + $t('help-outro9')
+        }}</a>
+      </p>
       <p>{{ $t('help-outro10') }}</p>
-      <p>{{ $t('help-outro11') }}</p>
+      <p>
+        <a :href="currentUrl + $t('help-outro11')" target="_blank">{{
+          currentUrl + $t('help-outro11')
+        }}</a>
+      </p>
       <p>{{ $t('help-outro12') }}</p>
       <p>
         {{ $t('help-outro13a') }}<br />
@@ -185,7 +203,17 @@
 </template>
 <script>
 export default {
-  name: 'Help'
+  name: 'Help',
+  data() {
+    return {
+      currentUrl: ''
+    }
+  },
+  mounted() {
+    // both versions work
+    // this.currentUrl = window.location.origin + window.location.pathname
+    this.currentUrl = window.location.href.split('?')[0]
+  }
 }
 </script>
 <style scoped>
