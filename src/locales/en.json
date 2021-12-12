@@ -38,5 +38,6 @@
   "help-mobile-maxresults": "[Mobile mode] Adjust maximum number of results in graph.",
   "help-intro1": "Search for a Wikipedia page and explore all linked Wikipedia pages with the help of a graph. Click on any outer result page's title in the graph to make it the new search target. The Wikipedia icon opens the corresponding Wikipedia page in a new tab/window. Hovering over a title or clicking on the categories icon (only visible, when click mode is enabled, see below) on a title in the graph will show its categories.",
   "help-intro2": "Result pages can be filtered by titles and/or categories, just start typing in the corresponding text input fields. Categories can also be filtered with a checkbox filter containing a list of all categories of all result pages. Missing pages (which are linked to on Wikipedia, but have not yet been created) are marked in red. An extract with image is also available.",
-  "help-intro3": "You can also enable showing all of Wikipedia's redirects (alternative search terms) leading to each page in the graph."
+  "help-intro3": "You can also enable showing all of Wikipedia's redirects (alternative search terms) leading to each page in the graph. Number of results per graph page can be adjusted in desktop and mobile mode. In desktop mode only you can also scale the graph's size and adjust its radius.",
+  "help-arrows": "Previous/next result page in graph"
 }

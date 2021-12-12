@@ -138,6 +138,21 @@
     <div class="help-text">
       {{ $t('help-mobile-maxresults') }}
     </div>
+    <div>
+      <div>
+        <img
+          class="icon-help-small-left3"
+          src="../assets/images/left-arrow.svg"
+        />
+        <img
+          class="icon-help-small-right3"
+          src="../assets/images/right-arrow.svg"
+        />
+      </div>
+    </div>
+    <div class="help-text">
+      {{ $t('help-arrows') }}
+    </div>
   </div>
 </template>
 <script>
@@ -193,6 +208,14 @@ export default {
   /* margin-right: -5px; */
 }
 
+.icon-help-small-left3 {
+  height: 1.75em;
+  vertical-align: middle;
+  font-size: 90%;
+  margin-top: 2px;
+  margin-right: 15px;
+}
+
 .icon-help-small-right {
   width: 1.4em;
   height: 1.4em;
@@ -200,6 +223,14 @@ export default {
   font-size: 83.3%;
   margin-top: 2px;
   margin-left: 1px;
+}
+
+.icon-help-small-right3 {
+  height: 1.75em;
+  vertical-align: middle;
+  font-size: 90%;
+  margin-top: 2px;
+  margin-left: 15px;
 }
 
 .help-text {
