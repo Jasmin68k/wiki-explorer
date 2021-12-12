@@ -868,7 +868,7 @@ export default {
     // handle parameters from URL
     /**
      * URL Parameters
-     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valie (this.mode)
+     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (this.mode)
      * @param {String} lang - UI and Wikipedia language, en or de valid (this.language)
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to this.resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (this.filter)
