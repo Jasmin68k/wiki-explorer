@@ -1,7 +1,7 @@
 <template>
   <div class="grid-container-help">
     <div class="twocolumns help-text">
-      <h3>Wiki-Explorer</h3>
+      <h1>Wiki-Explorer</h1>
       <p>{{ $t('help-intro1') }}</p>
       <p>{{ $t('help-intro2') }}</p>
       <p>{{ $t('help-intro3') }}</p>

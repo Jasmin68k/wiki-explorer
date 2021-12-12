@@ -22,7 +22,7 @@
   "desktop-mode": "Desktop mode",
   "mobile-mode": "Mobile mode",
   "search-on-wikipedia": "Search on Wikipedia...",
-  "help-help": "This help page",
+  "help-help": "Show/hide this help page.",
   "help-desktop-mobile": "Desktop or mobile mode",
   "help-language": "Language for Wikipedia and user interface",
   "help-search": "Search on Wikipedia",
