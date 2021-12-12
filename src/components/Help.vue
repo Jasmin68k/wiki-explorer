@@ -153,6 +153,34 @@
     <div class="help-text">
       {{ $t('help-arrows') }}
     </div>
+    <div class="twocolumns help-text">
+      <h2>{{ $t('help-outro0') }}</h2>
+      <p>{{ $t('help-outro1') }}</p>
+      <p>{{ $t('help-outro2') }}</p>
+      <h3>{{ $t('help-outro3') }}</h3>
+      <p>{{ $t('help-outro4') }}</p>
+      <p>{{ $t('help-outro5') }}</p>
+      <p>{{ $t('help-outro6') }}</p>
+      <p>{{ $t('help-outro7') }}</p>
+      <p>{{ $t('help-outro8') }}</p>
+      <p>{{ $t('help-outro9') }}</p>
+      <p>{{ $t('help-outro10') }}</p>
+      <p>{{ $t('help-outro11') }}</p>
+      <p>{{ $t('help-outro12') }}</p>
+      <p>
+        {{ $t('help-outro13a') }}<br />
+        {{ $t('help-outro13b') }}<br />
+        {{ $t('help-outro13c') }}<br />
+        {{ $t('help-outro13d') }}<br />
+        {{ $t('help-outro13e') }}<br />
+        {{ $t('help-outro13f') }}<br />
+        {{ $t('help-outro13g') }}<br />
+        {{ $t('help-outro13h') }}<br />
+        {{ $t('help-outro13i') }}<br />
+        {{ $t('help-outro13j') }}<br />
+        {{ $t('help-outro13k') }}
+      </p>
+    </div>
   </div>
 </template>
 <script>
