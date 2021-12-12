@@ -819,6 +819,12 @@ export default {
     },
     gridHeightChanged(value) {
       this.gridHeightSubtract = value
+      // needed for init, first display, otherwise --gridmobileheight wrong
+      if (this.mobileMode) {
+        this.scrollboxContainerHeight =
+          this.$refs.flexcontainer.getBoundingClientRect().height -
+          this.gridHeightSubtract
+      }
     },
     modeSwitched(value) {
       if (value === 'mobile') {
