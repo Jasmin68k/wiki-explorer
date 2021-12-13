@@ -1,20 +1,18 @@
 <template>
   <div class="root" ref="root" :style="rootStyle">
     <div class="viewport" ref="viewport" :style="viewportStyle">
-      <div class="spacer" ref="spacer" :style="spacerStyle">
-        <ul v-for="item in visibleItems" :key="item">
-          <li>
-            <input
-              type="checkbox"
-              :id="item"
-              :value="item"
-              v-model="checkedCategories"
-              @change="resultsCategoriesCheckboxChanged"
-            />
-            <label :for="item">{{ item }}</label>
-          </li>
-        </ul>
-      </div>
+      <ul class="spacer" ref="spacer" :style="spacerStyle">
+        <li v-for="item in visibleItems" :key="item">
+          <input
+            type="checkbox"
+            :id="item"
+            :value="item"
+            v-model="checkedCategories"
+            @change="resultsCategoriesCheckboxChanged"
+          />
+          <label :for="item">{{ item }}</label>
+        </li>
+      </ul>
     </div>
   </div>
   <div class="checkboxbuttons">

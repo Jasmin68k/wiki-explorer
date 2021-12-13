@@ -148,11 +148,13 @@
       v-if="resultsRedirectsEnabled"
       :style="{ 'font-size': 70 * scalingFactor + '%' }"
     >
-      <ul
-        v-for="(redirect, index) in displayResultsArray[index].redirects"
-        :key="index"
-      >
-        <li>{{ redirect }}</li>
+      <ul>
+        <li
+          v-for="(redirect, index) in displayResultsArray[index].redirects"
+          :key="index"
+        >
+          {{ redirect }}
+        </li>
       </ul>
     </div>
   </div>
@@ -173,11 +175,11 @@
       'font-size': 70 * scalingFactor + '%'
     }"
   >
-    <ul
-      v-for="category in displayResultsArray[hoverButtonIndex].categories"
-      :key="category"
-    >
-      <li>
+    <ul>
+      <li
+        v-for="category in displayResultsArray[hoverButtonIndex].categories"
+        :key="category"
+      >
         {{ category }}
       </li>
     </ul>
