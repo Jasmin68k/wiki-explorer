@@ -30,7 +30,7 @@
   "help-filter-categories": "Filter results categories",
   "help-mobile-view": "[Mobile mode only] Select view: graph, extract or categories checkbox filter.",
   "help-categories-switch1": "Enable/disable fetching/showing of categories. Can be slow for big pages. ",
-  "help-categories-switch2": " blinking during fetch.",
+  "help-categories-switch2": " blinking and click on result page in graph disabled during fetch.",
   "help-checkboxfilter-switch": "[Desktop mode only] Show/hide categories checkbox filter.",
   "help-redirects-switch": "Show/hide redirects in graph.",
   "help-categoriesclickhover-switch1": "Show results categories in graph on click (",
