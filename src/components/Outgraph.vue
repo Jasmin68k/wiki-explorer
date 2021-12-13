@@ -17,6 +17,7 @@
       :categories-array="categoriesArray"
       :url="url"
       :outgraphcanvasref="outgraphcanvasref"
+      :circle-button-radius="circleButtonRadius"
       :scalingFactor="scalingFactor"
       :categoriesOnHover="categoriesOnHover"
       :redirects-done="redirectsDone"

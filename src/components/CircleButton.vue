@@ -2,6 +2,7 @@
   <div
     v-show="!inputsDisabled"
     class="circlebutton"
+    :class="{ hoverdisabled: !categoriesOnHover }"
     :style="{
       '--angle':
         270 +
@@ -57,10 +58,7 @@
         'px'
     }"
     :ref="`circlebutton${index}`"
-    v-on="{
-      mouseover: categoriesOnHover ? () => hoverButtonOn(index) : null,
-      mouseleave: categoriesOnHover ? hoverButtonOff : null
-    }"
+    v-on="{ mouseenter: () => initHoverButtonCircleCoords(index) }"
   >
     <div
       class="buttonicongridcontainer"
@@ -146,7 +144,10 @@
     <div
       class="redirects"
       v-if="resultsRedirectsEnabled"
-      :style="{ 'font-size': 70 * scalingFactor + '%' }"
+      :style="{
+        'font-size': 70 * scalingFactor + '%',
+        '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
+      }"
     >
       <ul>
         <li
@@ -162,22 +163,26 @@
   <div
     v-if="
       !inputsDisabled &&
-      hoverButton &&
       displayResultsArray.length > 0 &&
       resultsCategoriesEnabled &&
       resultsCategoriesDone &&
-      displayResultsArray[hoverButtonIndex].categories
+      displayResultsArray[index].categories
     "
     class="circlebuttonhover"
+    :class="{
+      circlebuttonhoverdisplayoverride: circleButtonHoverOverride,
+      hoverdisabled: !categoriesOnHover
+    }"
     :style="{
       '--posleft': hoverRight + 'px',
       '--postop': hoverBottom - 1 + 'px',
-      'font-size': 70 * scalingFactor + '%'
+      'font-size': 70 * scalingFactor + '%',
+      '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
     }"
   >
     <ul>
       <li
-        v-for="category in displayResultsArray[hoverButtonIndex].categories"
+        v-for="category in displayResultsArray[index].categories"
         :key="category"
       >
         {{ category }}
@@ -193,7 +198,8 @@ export default {
       hoverRight: 0,
       hoverBottom: 0,
       hoverButton: false,
-      hoverButtonIndex: -1
+
+      circleButtonHoverOverride: false
     }
   },
 
@@ -212,37 +218,39 @@ export default {
   },
   watch: {
     displayResultsArray() {
-      this.hoverButtonOff()
+      this.circleButtonHoverOverride = false
     },
     categoriesOnHover() {
-      this.hoverButtonOff()
+      this.circleButtonHoverOverride = false
+    },
+    scalingFactor() {
+      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
+    },
+    circleButtonRadius() {
+      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
+    },
+    resultsRedirectsEnabled() {
+      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
     }
   },
   methods: {
-    hoverButtonOn(index) {
-      this.hoverButtonIndex = index
-
+    initHoverButtonCircleCoords(index) {
       this.hoverRight =
         this.$refs[`circlebutton${index}`].getBoundingClientRect().left -
         this.outgraphcanvasref.getBoundingClientRect().left
       this.hoverBottom =
         this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
         this.outgraphcanvasref.getBoundingClientRect().top
-
-      this.hoverButton = true
-    },
-    hoverButtonOff() {
-      this.hoverButton = false
-      this.hoverButtonIndex = -1
     },
     circleButton(index) {
       this.$emit('circleButtonClicked', index)
     },
     catsClick(index) {
       if (this.resultsCategoriesDone) {
-        this.hoverButton
-          ? this.hoverButtonOff(index)
-          : this.hoverButtonOn(index)
+        if (!this.circleButtonHoverOverride) {
+          this.initHoverButtonCircleCoords(index)
+          this.circleButtonHoverOverride = true
+        } else this.circleButtonHoverOverride = false
       }
     }
   }
@@ -272,6 +280,7 @@ ul li {
 .circlebuttonactualhover:hover {
   background-color: palegoldenrod;
 }
+
 .circlebutton {
   background-color: lightgrey;
   border: 1px solid black;
@@ -297,7 +306,28 @@ ul li {
   left: var(--posleft);
   top: var(--postop);
   z-index: 5;
+  max-height: var(--maxheight);
+  overflow-y: auto;
+  display: none;
 }
+
+.circlebuttonhoverdisplayoverride {
+  display: block;
+}
+
+.circlebutton:hover {
+  z-index: 3;
+}
+
+.circlebutton:not(.hoverdisabled):hover
+  + .circlebuttonhover:not(.hoverdisabled) {
+  display: block;
+}
+
+.circlebuttonhover:hover {
+  display: block;
+}
+
 .icon:hover {
   filter: invert(1);
 }
@@ -319,6 +349,8 @@ ul li {
 }
 .redirects {
   background-color: lavender;
+  max-height: var(--maxheight);
+  overflow-y: auto;
 }
 .iconverticalaligntop {
   vertical-align: top;

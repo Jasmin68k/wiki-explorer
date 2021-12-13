@@ -1,6 +1,7 @@
 <template>
   <div
     class="titlebutton"
+    :class="{ hoverdisabled: !categoriesOnHover }"
     :style="{
       'line-height': 100 * scalingFactor + '%',
       'max-width': 200 * scalingFactor + 'px'
@@ -11,10 +12,7 @@
         : !inputsDisabled && title && !titleMissing
     "
     ref="titlebutton"
-    v-on="{
-      mouseover: categoriesOnHover ? hoverButtonTitleOn : null,
-      mouseleave: categoriesOnHover ? hoverButtonTitleOff : null
-    }"
+    v-on="{ mouseenter: initHoverButtonTitleCoords }"
   >
     <div
       class="buttonicongridcontainer"
@@ -77,7 +75,10 @@
     <div
       class="redirects"
       v-if="resultsRedirectsEnabled && redirectsDone"
-      :style="{ 'font-size': 70 * scalingFactor + '%' }"
+      :style="{
+        'font-size': 70 * scalingFactor + '%',
+        '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
+      }"
     >
       <ul>
         <li v-for="(redirect, index) in redirects" :key="index">
@@ -86,13 +87,19 @@
       </ul>
     </div>
   </div>
+
   <div
-    v-if="!inputsDisabled && hoverButtonTitle && categoriesArray.length > 0"
+    v-if="!inputsDisabled && categoriesArray.length > 0"
     class="titlebuttonhover"
+    :class="{
+      titlebuttonhoverdisplayoverride: titleButtonHoverOverride,
+      hoverdisabled: !categoriesOnHover
+    }"
     :style="{
       '--poslefttitle': hoverRightTitle + 'px',
       '--postoptitle': hoverBottomTitle - 1 + 'px',
-      'font-size': 70 * scalingFactor + '%'
+      'font-size': 70 * scalingFactor + '%',
+      '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
     }"
   >
     <ul>
@@ -109,7 +116,8 @@ export default {
     return {
       hoverRightTitle: 0,
       hoverBottomTitle: 0,
-      hoverButtonTitle: false
+      hoverButtonTitle: false,
+      titleButtonHoverOverride: false
     }
   },
   props: {
@@ -121,41 +129,47 @@ export default {
     titleMissing: { required: true, default: true, type: Boolean },
     url: { required: true, default: '', type: String },
     outgraphcanvasref: { required: true, default: {} },
+    circleButtonRadius: { required: true, default: 250, type: Number },
     scalingFactor: { required: true, default: 1.0, type: Number },
     categoriesOnHover: { required: true, default: true, type: Boolean },
     redirectsDone: { required: true, default: false, type: Boolean }
   },
+
   watch: {
     categoriesOnHover() {
-      this.hoverButtonTitleOff()
+      this.titleButtonHoverOverride = false
     },
     inputsDisabled() {
-      this.hoverButtonTitleOff()
+      this.titleButtonHoverOverride = false
+    },
+    scalingFactor() {
+      this.$nextTick(() => this.initHoverButtonTitleCoords())
+    },
+    circleButtonRadius() {
+      this.$nextTick(() => this.initHoverButtonTitleCoords())
+    },
+    resultsRedirectsEnabled() {
+      this.$nextTick(() => this.initHoverButtonTitleCoords())
     }
   },
-
   methods: {
-    hoverButtonTitleOn() {
+    titleButton() {
+      // window.location = this.url
+      window.open(this.url, '_blank')
+    },
+    initHoverButtonTitleCoords() {
       this.hoverRightTitle =
         this.$refs['titlebutton'].getBoundingClientRect().left -
         this.outgraphcanvasref.getBoundingClientRect().left
       this.hoverBottomTitle =
         this.$refs['titlebutton'].getBoundingClientRect().bottom -
         this.outgraphcanvasref.getBoundingClientRect().top
-
-      this.hoverButtonTitle = true
-    },
-    hoverButtonTitleOff() {
-      this.hoverButtonTitle = false
-    },
-    titleButton() {
-      // window.location = this.url
-      window.open(this.url, '_blank')
     },
     catsClick() {
-      this.hoverButtonTitle
-        ? this.hoverButtonTitleOff()
-        : this.hoverButtonTitleOn()
+      if (!this.titleButtonHoverOverride) {
+        this.initHoverButtonTitleCoords()
+        this.titleButtonHoverOverride = true
+      } else this.titleButtonHoverOverride = false
     }
   }
 }
@@ -192,10 +206,6 @@ ul li {
   background-color: palegoldenrod;
 }
 
-.titlebutton:hover {
-  z-index: 3;
-}
-
 .titlebuttonhover {
   background-color: honeydew;
   border: 1px solid black;
@@ -203,9 +213,31 @@ ul li {
   left: var(--poslefttitle);
   top: var(--postoptitle);
   z-index: 5;
+  max-height: var(--maxheight);
+  overflow-y: auto;
+  display: none;
 }
+
+.titlebuttonhoverdisplayoverride {
+  display: block;
+}
+
+.titlebutton:hover {
+  z-index: 3;
+}
+
+.titlebutton:not(.hoverdisabled):hover + .titlebuttonhover:not(.hoverdisabled) {
+  display: block;
+}
+
+.titlebuttonhover:hover {
+  display: block;
+}
+
 .redirects {
   background-color: lavender;
+  max-height: var(--maxheight);
+  overflow-y: auto;
 }
 .buttonicongridcontainer {
   display: grid;
