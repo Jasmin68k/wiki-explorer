@@ -29,7 +29,7 @@
   "help-filter-titles": "Ergebnistitel filtern",
   "help-filter-categories": "Ergebniskategorien filtern",
   "help-mobile-view": "[Nur mobiler Modus] Wähle Ansicht: Graph, Auszug oder Kontrollkästchenfilter für Kategorien.",
-  "help-categories-switch1": "Holen/zeigen von Kategorien ein-/ausschalten. Kann für große Seiten langsam sein. ",
+  "help-categories-switch1": "Holen/zeigen von Ergebniskategorien ein-/ausschalten. Kann für große Seiten langsam sein. ",
   "help-categories-switch2": " blinkt und Klick auf den Titel einer Ergebnnisseite im Graphen ist ausgeschaltet während des Holens.",
   "help-checkboxfilter-switch": "[Nur Arbeitsplatzmodus] Zeige/verstecke Kontrollkästchenfilter für Kategorien.",
   "help-redirects-switch": "Zeige/verstecke Weiterleitungen in Graph.",
