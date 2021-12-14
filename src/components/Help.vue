@@ -109,7 +109,17 @@
       </div>
     </div>
     <div class="help-text">
-      {{ $t('help-redirects-switch') }}
+      {{ $t('help-redirects-switch1') }}
+      <span
+        ><img
+          class="icon-help3"
+          :style="{
+            filter:
+              'invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg) brightness(105%) contrast(124%)'
+          }"
+          src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+      /></span>
+      {{ $t('help-redirects-switch2') }}
     </div>
     <div>
       <span>
@@ -243,7 +253,7 @@ export default {
 .icon-help3 {
   height: 1em;
   vertical-align: middle;
-  margin-left: -0.25em;
+  /* margin-left: -0.25em; */
 }
 
 .icon-help-small-left {

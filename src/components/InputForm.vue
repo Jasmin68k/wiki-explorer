@@ -410,18 +410,25 @@
       </form>
       <div>
         <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+          ><img class="fetchingicon" src="../assets/images/document.svg"
+        /></span>
+
+        <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
           ><img
-            class="categoriesicon fetchingicon fetchingiconleft"
-            src="../assets/images/document.svg"
+            class="fetchingicon"
+            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
 
         <span class="fontsize90"
           >{{ $t('results') }}{{ filteredResultsArray.length }}</span
         >
         <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+          ><img class="fetchingicon" src="../assets/images/document.svg"
+        /></span>
+        <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
           ><img
-            class="categoriesicon fetchingicon fetchingiconright"
-            src="../assets/images/document.svg"
+            class="fetchingicon"
+            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
       </div>
       <div
@@ -613,6 +620,7 @@ export default {
     parentTitle: { required: true, default: '', type: String },
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
+    resultsRedirectsDone: { required: true, default: true, type: Boolean },
     checkboxDirty: { required: true, default: false, type: Boolean },
     filteredResultsArray: { required: true, default: () => [], type: Array },
     // resultsCategoriesAllArrayUnfiltered: {
@@ -668,7 +676,7 @@ export default {
       title: '',
       filter: '',
       resultsCategoriesEnabled: true,
-      resultsRedirectsEnabled: true,
+      resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
       filterCategories: '',
       pageNumber: 0,
@@ -1195,14 +1203,9 @@ export default {
     brightness(105%) contrast(124%);
   animation: fadeIn 0.35s infinite alternate;
   height: 1em;
-}
-
-.fetchingiconleft {
-  margin-right: 0.5em;
-}
-
-.fetchingiconright {
-  margin-left: 0.5em;
+  vertical-align: middle;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
 }
 
 .positionrelative {

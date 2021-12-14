@@ -87,7 +87,8 @@
         }"
         :disabled="
           displayResultsArray[index].missing ||
-          (resultsCategoriesEnabled && !resultsCategoriesDone)
+          (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+          (resultsRedirectsEnabled && !resultsRedirectsDone)
         "
         @click.prevent="circleButton(index), hoverButtonOff(index)"
       >
@@ -143,10 +144,10 @@
 
     <div
       class="redirects"
-      v-if="resultsRedirectsEnabled"
+      v-if="resultsRedirectsEnabled && resultsRedirectsDone"
       :style="{
         'font-size': 70 * scalingFactor + '%',
-        '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
+        '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
       }"
     >
       <ul>
@@ -177,7 +178,7 @@
       '--posleft': hoverRight + 'px',
       '--postop': hoverBottom - 1 + 'px',
       'font-size': 70 * scalingFactor + '%',
-      '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
+      '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
     }"
   >
     <ul>
@@ -207,10 +208,11 @@ export default {
   props: {
     index: { required: true, default: -1, type: Number },
     inputsDisabled: { required: true, default: false, type: Boolean },
-    resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
+    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     displayResultsArray: { required: true, default: () => [], type: Array },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
+    resultsRedirectsDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} },
     circleButtonRadius: { required: true, default: 250, type: Number },
     scalingFactor: { required: true, default: 1.0, type: Number },

@@ -77,7 +77,7 @@
       v-if="resultsRedirectsEnabled && redirectsDone"
       :style="{
         'font-size': 70 * scalingFactor + '%',
-        '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
+        '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
       }"
     >
       <ul>
@@ -99,7 +99,7 @@
       '--poslefttitle': hoverRightTitle + 'px',
       '--postoptitle': hoverBottomTitle - 1 + 'px',
       'font-size': 70 * scalingFactor + '%',
-      '--maxheight': circleButtonRadius * scalingFactor * 0.4 + 'px'
+      '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
     }"
   >
     <ul>
@@ -123,7 +123,8 @@ export default {
   props: {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
-    resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
+    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
+
     redirects: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },

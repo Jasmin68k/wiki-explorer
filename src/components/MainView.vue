@@ -3,6 +3,7 @@
     <input-form
       :inputs-disabled="inputsDisabled"
       :results-categories-done="resultsCategoriesDone"
+      :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array="filteredResultsArray"
       :results-categories-all-array-unfiltered="
         resultsCategoriesAllArrayUnfiltered
@@ -90,6 +91,7 @@
         :categories-array="titlePage.categories"
         :results-categories-enabled="resultsCategoriesEnabled"
         :results-categories-done="resultsCategoriesDone"
+        :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
         :scaling-factor="scalingFactor"
         :circle-button-radius="circleButtonRadius"
@@ -126,6 +128,7 @@ import { NetworkError, DataError } from '../customerrors.js'
 
 let resultsMap = new Map()
 let jsonDataFullQueryPart = {}
+let redirectTargetGlobal = ''
 
 export default {
   name: 'MainView',
@@ -148,7 +151,8 @@ export default {
       checkboxFilterEnabled: true,
       resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
-      resultsRedirectsEnabled: true,
+      resultsRedirectsEnabled: false,
+      resultsRedirectsDone: true,
       inputsDisabled: false,
 
       // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
@@ -321,7 +325,7 @@ export default {
       this.inputsDisabled = true
 
       resultsMap.clear()
-      const redirects = {}
+      // const redirects = {}
 
       do {
         try {
@@ -386,20 +390,20 @@ export default {
             }
           }
 
-          if (!jsonDataFullQueryPart.query.redirects) {
-            continue
-          }
+          // if (!jsonDataFullQueryPart.query.redirects) {
+          //   continue
+          // }
 
-          for (const redirect of jsonDataFullQueryPart.query.redirects) {
-            redirects[redirect.from] = redirect
-          }
+          // for (const redirect of jsonDataFullQueryPart.query.redirects) {
+          //   redirects[redirect.from] = redirect
+          // }
         } catch (error) {
           // add error/display for user or similar
           console.error(`${error.name}: ${error.message}`)
         }
       } while (jsonDataFullQueryPart.continue)
 
-      const redirectsArray = Object.values(redirects)
+      // const redirectsArray = Object.values(redirects)
 
       this.resultsCategoriesDone = false
 
@@ -416,21 +420,27 @@ export default {
       // https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=C64&prop=redirects&rdlimit=max
       // can possibly be combined into api fetch for all results, but not useful here, long list for each result and does not have any direct relation to searched page
 
-      for (const pageId of resultsMap.keys()) {
-        const resultPage = resultsMap.get(pageId)
-        let redirectFrom = []
+      // for (const pageId of resultsMap.keys()) {
+      //   const resultPage = resultsMap.get(pageId)
+      //   let redirectFrom = []
 
-        for (let i = 0; i < redirectsArray.length; i++) {
-          if (resultPage.title === redirectsArray[i].to) {
-            redirectFrom.push(redirectsArray[i].from)
-            // break - do not break here, several possible!
-          }
-        }
-        if (redirectFrom.length > 0) {
-          redirectFrom.sort()
-          resultPage.redirects = [...redirectFrom]
-          redirectFrom = []
-        }
+      //   for (let i = 0; i < redirectsArray.length; i++) {
+      //     if (resultPage.title === redirectsArray[i].to) {
+      //       redirectFrom.push(redirectsArray[i].from)
+      //       // break - do not break here, several possible!
+      //     }
+      //   }
+      //   if (redirectFrom.length > 0) {
+      //     redirectFrom.sort()
+      //     resultPage.redirects = [...redirectFrom]
+      //     redirectFrom = []
+      //   }
+      // }
+
+      this.resultsRedirectsDone = false
+
+      if (this.resultsRedirectsEnabled) {
+        this.getResultsRedirects()
       }
 
       this.$refs.inputForm.resetPageNumber()
@@ -446,6 +456,8 @@ export default {
         do {
           try {
             // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
+
+            // remove redirects and use proper redirecttarget for title
             let pageUrlCategories =
               'https://' +
               this.language +
@@ -528,12 +540,109 @@ export default {
       this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
     },
 
+    async getRedirectTarget() {
+      try {
+        let redirectTargetUrl =
+          'https://' +
+          this.language +
+          '.wikipedia.org/w/api.php?action=query&format=json&titles=' +
+          this.title +
+          '&redirects&origin=*'
+
+        const response = await fetch(redirectTargetUrl, {
+          headers: this.fetchHeaders
+        })
+        // ok = true on http 200-299 good response
+        if (!response.ok) {
+          const message = `${response.status} ${response.statusText}`
+          throw new NetworkError(message)
+        }
+
+        const redirectFull = await response.json()
+
+        if (redirectFull.query.pages) {
+          const pageId = Object.keys(redirectFull.query.pages)[0]
+          redirectTargetGlobal = redirectFull.query.pages[pageId].title
+        }
+      } catch (error) {
+        // add error/display for user or similar
+        console.error(error.message)
+      }
+    },
+
+    async getResultsRedirects() {
+      // skip fetch when no results
+      if (resultsMap.size > 0) {
+        let redirectsQueryPart = {}
+
+        await this.getRedirectTarget()
+
+        do {
+          try {
+            let redirectsUrl =
+              'https://' +
+              this.language +
+              '.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&prop=redirects&rdlimit=max&titles=' +
+              redirectTargetGlobal +
+              '&origin=*'
+
+            if (redirectsQueryPart.continue) {
+              for (const continueToken of Object.keys(
+                redirectsQueryPart.continue
+              )) {
+                redirectsUrl +=
+                  '&' +
+                  continueToken +
+                  '=' +
+                  redirectsQueryPart.continue[continueToken]
+              }
+            }
+
+            const response = await fetch(redirectsUrl, {
+              headers: this.fetchHeaders
+            })
+
+            // ok = true on http 200-299 good response
+            if (!response.ok) {
+              const message = `${response.status} ${response.statusText}`
+              throw new NetworkError(message)
+            }
+            redirectsQueryPart = await response.json()
+
+            if (!redirectsQueryPart.query) {
+              throw new DataError('No result from API')
+            }
+
+            for (const pageId of Object.keys(redirectsQueryPart.query.pages)) {
+              const page = redirectsQueryPart.query.pages[pageId]
+              const resultPage = resultsMap.get(pageId)
+              if (page.redirects) {
+                page.redirects.forEach((redirect) =>
+                  resultPage.redirects.push(redirect.title)
+                )
+              }
+            }
+          } catch (error) {
+            // add error/display for user or similar
+            console.error(error.message)
+          }
+        } while (redirectsQueryPart.continue)
+
+        //sort
+        for (const pageId of resultsMap.keys()) {
+          const resultPage = resultsMap.get(pageId)
+          resultPage.redirects.sort()
+        }
+      }
+      this.resultsRedirectsDone = true
+    },
+
     async getMainInfo() {
       this.titlePage.extract = ''
       this.titlePage.image = ''
 
       this.titlePage.missing = true
-      let redirectTarget = ''
+      // let redirectTarget = ''
       try {
         let mainInfoUrl =
           'https://' +
@@ -565,13 +674,13 @@ export default {
           this.titlePage.missing = false
         }
 
-        if (responseFull.query.redirects) {
-          if (responseFull.query.redirects[0].to) {
-            redirectTarget = responseFull.query.redirects[0].to
-          }
-        } else {
-          redirectTarget = this.title
-        }
+        // if (responseFull.query.redirects) {
+        //   if (responseFull.query.redirects[0].to) {
+        //     redirectTarget = responseFull.query.redirects[0].to
+        //   }
+        // } else {
+        //   redirectTarget = this.title
+        // }
 
         // check if image exists
         if (
@@ -589,7 +698,7 @@ export default {
 
       if (!this.titlePage.missing) {
         this.getCategories()
-        this.getRedirects(redirectTarget)
+        this.getRedirects()
       }
     },
     async getCategories() {
@@ -660,17 +769,20 @@ export default {
       //sort - results seem sorted, but just to be sure
       this.titlePage.categories.sort()
     },
-    async getRedirects(redirectTarget) {
+
+    async getRedirects() {
       this.titlePage.redirects = []
       let redirectsQueryPart = {}
+
+      await this.getRedirectTarget()
 
       do {
         try {
           let redirectsUrl =
             'https://' +
             this.language +
-            '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&titles=' +
-            redirectTarget +
+            '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
+            redirectTargetGlobal +
             '&origin=*'
           if (redirectsQueryPart.continue) {
             for (const continueToken of Object.keys(
@@ -717,16 +829,15 @@ export default {
 
     circleButtonClicked(index) {
       this.title = this.displayResultsArray[index].title
-
-      this.getJson()
       this.getMainInfo()
+      this.getJson()
     },
     fetchDataClicked(value) {
       if (value) {
         this.title = value
-
-        this.getJson()
+        this.getRedirectTarget()
         this.getMainInfo()
+        this.getJson()
       }
     },
     resultsCategoriesChanged(value) {
@@ -747,6 +858,10 @@ export default {
     },
     resultsRedirectsChanged(value) {
       this.resultsRedirectsEnabled = value
+
+      if (this.resultsRedirectsEnabled && !this.resultsRedirectsDone) {
+        this.getResultsRedirects()
+      }
     },
     filterChanged(value) {
       this.filter = value
