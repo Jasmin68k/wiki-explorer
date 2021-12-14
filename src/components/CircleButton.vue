@@ -90,7 +90,7 @@
           (resultsCategoriesEnabled && !resultsCategoriesDone) ||
           (resultsRedirectsEnabled && !resultsRedirectsDone)
         "
-        @click.prevent="circleButton(index), hoverButtonOff(index)"
+        @click.prevent="circleButton(index)"
       >
         {{ displayResultsArray[index].title }}
       </button>

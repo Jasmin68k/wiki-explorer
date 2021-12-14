@@ -324,8 +324,6 @@ export default {
     async getJson() {
       this.inputsDisabled = true
 
-      await this.getRedirectTarget()
-
       resultsMap.clear()
       // const redirects = {}
 
@@ -463,7 +461,6 @@ export default {
 
       // skip fetch when no results
       if (resultsMap.size > 0) {
-        await this.getRedirectTarget()
         do {
           try {
             // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
@@ -589,8 +586,6 @@ export default {
       // skip fetch when no results
       if (resultsMap.size > 0) {
         let redirectsQueryPart = {}
-
-        await this.getRedirectTarget()
 
         do {
           try {
@@ -793,8 +788,6 @@ export default {
       this.titlePage.redirects = []
       let redirectsQueryPart = {}
 
-      await this.getRedirectTarget()
-
       do {
         try {
           let redirectsUrl =
@@ -846,15 +839,16 @@ export default {
       this.redirectsDone = true
     },
 
-    circleButtonClicked(index) {
+    async circleButtonClicked(index) {
       this.title = this.displayResultsArray[index].title
+      await this.getRedirectTarget()
       this.getMainInfo()
       this.getJson()
     },
-    fetchDataClicked(value) {
+    async fetchDataClicked(value) {
       if (value) {
         this.title = value
-        this.getRedirectTarget()
+        await this.getRedirectTarget()
         this.getMainInfo()
         this.getJson()
       }
