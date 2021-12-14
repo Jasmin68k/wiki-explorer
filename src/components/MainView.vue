@@ -324,6 +324,8 @@ export default {
     async getJson() {
       this.inputsDisabled = true
 
+      await this.getRedirectTarget()
+
       resultsMap.clear()
       // const redirects = {}
 
@@ -363,30 +365,38 @@ export default {
           }
 
           for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
-            if (jsonDataFullQueryPart.query.pages[pageId].missing !== '') {
-              resultsMap.set(
-                pageId,
-                new Page({
-                  title: jsonDataFullQueryPart.query.pages[pageId].title,
-                  url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
-                  pageid: jsonDataFullQueryPart.query.pages[pageId].pageid,
-                  missing: false
-                })
+            // ignore (sometimes) appearing title page in results
+            if (
+              !(
+                jsonDataFullQueryPart.query.pages[pageId].title ===
+                redirectTargetGlobal
               )
-            } else {
-              resultsMap.set(
-                pageId,
-                new Page({
-                  title: jsonDataFullQueryPart.query.pages[pageId].title,
-                  url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
-                  // in case of missing page jsonDataFullQueryPart.query.pages[pageId].pageid does not exist,
-                  // which is otherwise identical to pageId.
-                  // the values for pageId for all missing pages are consecutive negative integers starting at -1,
-                  // which naturally do not reference an actual Wikipedia page, but are assigned here to
-                  // Page's pageid to make it unique, too.
-                  pageid: pageId
-                })
-              )
+            ) {
+              if (jsonDataFullQueryPart.query.pages[pageId].missing !== '') {
+                resultsMap.set(
+                  pageId,
+                  new Page({
+                    title: jsonDataFullQueryPart.query.pages[pageId].title,
+                    url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
+                    pageid: jsonDataFullQueryPart.query.pages[pageId].pageid,
+                    missing: false
+                  })
+                )
+              } else {
+                resultsMap.set(
+                  pageId,
+                  new Page({
+                    title: jsonDataFullQueryPart.query.pages[pageId].title,
+                    url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
+                    // in case of missing page jsonDataFullQueryPart.query.pages[pageId].pageid does not exist,
+                    // which is otherwise identical to pageId.
+                    // the values for pageId for all missing pages are consecutive negative integers starting at -1,
+                    // which naturally do not reference an actual Wikipedia page, but are assigned here to
+                    // Page's pageid to make it unique, too.
+                    pageid: pageId
+                  })
+                )
+              }
             }
           }
 
@@ -453,6 +463,7 @@ export default {
 
       // skip fetch when no results
       if (resultsMap.size > 0) {
+        await this.getRedirectTarget()
         do {
           try {
             // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
@@ -495,27 +506,31 @@ export default {
               jsonDataFullQueryPart.query.pages
             )) {
               const page = jsonDataFullQueryPart.query.pages[pageId]
-              const resultPage = resultsMap.get(pageId)
-              if (page.categories) {
-                // if (!resultPage.categories) {
-                //   resultPage.categories = []
-                // }
 
-                page.categories.forEach((category) =>
-                  resultPage.categories.push(category.title)
-                )
+              // ignore possibly non existing (ignored before) title page in results
+              if (!(page.title === redirectTargetGlobal)) {
+                const resultPage = resultsMap.get(pageId)
+                if (page.categories) {
+                  // if (!resultPage.categories) {
+                  //   resultPage.categories = []
+                  // }
 
-                // filter "Category:" at beginning
-                for (let i = 0; i < resultPage.categories.length; i++) {
-                  // not sure it always starts with "Category:", check and only remove if it does
-                  if (
-                    resultPage.categories[i].startsWith(
-                      this.$t('category-prefix')
-                    )
-                  ) {
-                    resultPage.categories[i] = resultPage.categories[
-                      i
-                    ].substring(this.$t('category-prefix').length)
+                  page.categories.forEach((category) =>
+                    resultPage.categories.push(category.title)
+                  )
+
+                  // filter "Category:" at beginning
+                  for (let i = 0; i < resultPage.categories.length; i++) {
+                    // not sure it always starts with "Category:", check and only remove if it does
+                    if (
+                      resultPage.categories[i].startsWith(
+                        this.$t('category-prefix')
+                      )
+                    ) {
+                      resultPage.categories[i] = resultPage.categories[
+                        i
+                      ].substring(this.$t('category-prefix').length)
+                    }
                   }
                 }
               }
@@ -615,11 +630,15 @@ export default {
 
             for (const pageId of Object.keys(redirectsQueryPart.query.pages)) {
               const page = redirectsQueryPart.query.pages[pageId]
-              const resultPage = resultsMap.get(pageId)
-              if (page.redirects) {
-                page.redirects.forEach((redirect) =>
-                  resultPage.redirects.push(redirect.title)
-                )
+
+              // ignore possibly non existing (ignored before) title page in results
+              if (!(page.title === redirectTargetGlobal)) {
+                const resultPage = resultsMap.get(pageId)
+                if (page.redirects) {
+                  page.redirects.forEach((redirect) =>
+                    resultPage.redirects.push(redirect.title)
+                  )
+                }
               }
             }
           } catch (error) {
