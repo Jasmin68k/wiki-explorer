@@ -148,7 +148,7 @@ export default {
       checkboxFilterEnabled: true,
       resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
-      resultsRedirectsEnabled: false,
+      resultsRedirectsEnabled: true,
       inputsDisabled: false,
 
       // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)

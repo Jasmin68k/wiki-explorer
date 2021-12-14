@@ -668,7 +668,7 @@ export default {
       title: '',
       filter: '',
       resultsCategoriesEnabled: true,
-      resultsRedirectsEnabled: false,
+      resultsRedirectsEnabled: true,
       checkboxFilterEnabled: true,
       filterCategories: '',
       pageNumber: 0,

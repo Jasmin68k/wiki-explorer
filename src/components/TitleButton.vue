@@ -123,7 +123,7 @@ export default {
   props: {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
-    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
+    resultsRedirectsEnabled: { required: true, default: true, type: Boolean },
     redirects: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },
