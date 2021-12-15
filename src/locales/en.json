@@ -32,7 +32,7 @@
   "help-categories-switch1": "Enable/disable fetching/showing of results categories. Can be slow for big pages. ",
   "help-categories-switch2": " blinking and click on result page in graph disabled during fetch.",
   "help-checkboxfilter-switch": "[Desktop mode only] Show/hide categories checkbox filter.",
-  "help-redirects-switch1": "Show/hide redirects in graph. Fetching slow for big pages. ",
+  "help-redirects-switch1": "Show/hide redirects in graph. Fetching can be slow for big pages. ",
   "help-redirects-switch2": " blinking and click on result page in graph disabled during fetch.",
   "help-categoriesclickhover-switch1": "Show results categories in graph on click (",
   "help-categoriesclickhover-switch2": " in graph) or hover.",

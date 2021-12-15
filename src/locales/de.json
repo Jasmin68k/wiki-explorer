@@ -32,7 +32,7 @@
   "help-categories-switch1": "Holen/zeigen von Ergebniskategorien ein-/ausschalten. Kann für große Seiten langsam sein. ",
   "help-categories-switch2": " blinkt und Klick auf den Titel einer Ergebnnisseite im Graphen ist ausgeschaltet während des Holens.",
   "help-checkboxfilter-switch": "[Nur Arbeitsplatzmodus] Zeige/verstecke Kontrollkästchenfilter für Kategorien.",
-  "help-redirects-switch1": "Zeige/verstecke Weiterleitungen in Graph. Holen für große Seiten langsam. ",
+  "help-redirects-switch1": "Zeige/verstecke Weiterleitungen in Graph. Holen für große Seiten kann  langsam sein. ",
   "help-redirects-switch2": " blinkt und Klick auf den Titel einer Ergebnnisseite im Graphen ist ausgeschaltet während des Holens.",
   "help-categoriesclickhover-switch1": "Zeige Kategorien in Graph durch Klicken (",
   "help-categoriesclickhover-switch2": " in Graph) oder Mausschweben.",

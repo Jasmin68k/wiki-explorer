@@ -652,66 +652,82 @@ export default {
     //   this.resultsRedirectsDone = true
     // },
 
+    // parallelized single requests with throttle
+    // todo: handle api errors (ratelimited) with exp backoff, general 429 and general retry
+    //       in the future maybe bundle several titles with titles=title1|title2|title3...
+    //       also maybe bundle batch of requests and wait for them to finish before continuing
     async getResultsRedirects() {
       // skip fetch when no results
       if (resultsMap.size > 0) {
+        let resultsPromises = new Map()
+
+        // parallelized fetching of redirects
         for (const pageId of resultsMap.keys()) {
           const resultPage = resultsMap.get(pageId)
-
-          let redirectsQueryPart = {}
-
-          do {
-            try {
-              let redirectsUrl =
-                'https://' +
-                this.language +
-                '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
-                resultPage.title +
-                '&origin=*'
-              if (redirectsQueryPart.continue) {
-                for (const continueToken of Object.keys(
-                  redirectsQueryPart.continue
-                )) {
-                  redirectsUrl +=
-                    '&' +
-                    continueToken +
-                    '=' +
-                    redirectsQueryPart.continue[continueToken]
-                }
-              }
-
-              const response = await fetch(redirectsUrl, {
-                headers: this.fetchHeaders
-              })
-
-              // ok = true on http 200-299 good response
-              if (!response.ok) {
-                const message = `${response.status} ${response.statusText}`
-                throw new NetworkError(message)
-              }
-              redirectsQueryPart = await response.json()
-
-              let resultsArray = Object.values(redirectsQueryPart.query.pages)
-
-              if (!resultsArray[0].redirects) {
-                continue
-              }
-
-              // ...query.pages has only one prop at this level equal to page id. -> array index [0]
-              for (let i = 0; i < resultsArray[0].redirects.length; i++) {
-                resultPage.redirects.push(resultsArray[0].redirects[i].title)
-              }
-            } catch (error) {
-              // add error/display for user or similar
-              console.error(error.message)
-            }
-          } while (redirectsQueryPart.continue)
-
-          //sort
-          resultPage.redirects.sort()
+          // don't fire too many at once -> 429/ratelimited
+          await new Promise((resolve) => setTimeout(resolve, 20))
+          resultsPromises.set(pageId, this.getSingleRedirect(resultPage))
+        }
+        for (const pagePromise of resultsPromises.values()) {
+          await pagePromise
         }
       }
       this.resultsRedirectsDone = true
+    },
+
+    // for parallelized fetching of redirects
+    async getSingleRedirect(resultPage) {
+      let redirectsQueryPart = {}
+
+      do {
+        try {
+          let redirectsUrl =
+            'https://' +
+            this.language +
+            '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
+            resultPage.title +
+            '&origin=*'
+          if (redirectsQueryPart.continue) {
+            for (const continueToken of Object.keys(
+              redirectsQueryPart.continue
+            )) {
+              redirectsUrl +=
+                '&' +
+                continueToken +
+                '=' +
+                redirectsQueryPart.continue[continueToken]
+            }
+          }
+
+          const response = await fetch(redirectsUrl, {
+            headers: this.fetchHeaders
+          })
+
+          // ok = true on http 200-299 good response
+          if (!response.ok) {
+            const message = `${response.status} ${response.statusText}`
+            throw new NetworkError(message)
+          }
+          redirectsQueryPart = await response.json()
+
+          let resultsArray = Object.values(redirectsQueryPart.query.pages)
+
+          if (!resultsArray[0].redirects) {
+            continue
+          }
+
+          // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+          for (let i = 0; i < resultsArray[0].redirects.length; i++) {
+            resultPage.redirects.push(resultsArray[0].redirects[i].title)
+          }
+        } catch (error) {
+          // add error/display for user or similar
+          console.error(error.message)
+        }
+      } while (redirectsQueryPart.continue)
+
+      //sort
+      resultPage.redirects.sort()
     },
 
     async getMainInfo() {
