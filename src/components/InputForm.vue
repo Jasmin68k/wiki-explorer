@@ -412,23 +412,21 @@
         <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
-
         <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
           ><img
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
-
         <span class="fontsize90"
           >{{ $t('results') }}{{ filteredResultsArray.length }}</span
         >
-        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
-          ><img class="fetchingicon" src="../assets/images/document.svg"
-        /></span>
         <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
           ><img
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+        /></span>
+        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+          ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
       </div>
       <div
