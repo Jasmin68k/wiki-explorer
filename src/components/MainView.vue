@@ -582,69 +582,132 @@ export default {
       }
     },
 
+    // this faster method doesn't get all redirects - seems to skip ones which are redirects and not original names in title page
+    // async getResultsRedirects() {
+    //   // skip fetch when no results
+    //   if (resultsMap.size > 0) {
+    //     let redirectsQueryPart = {}
+
+    //     do {
+    //       try {
+    //         let redirectsUrl =
+    //           'https://' +
+    //           this.language +
+    //           '.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&prop=redirects&rdlimit=max&titles=' +
+    //           redirectTargetGlobal +
+    //           '&origin=*'
+
+    //         if (redirectsQueryPart.continue) {
+    //           for (const continueToken of Object.keys(
+    //             redirectsQueryPart.continue
+    //           )) {
+    //             redirectsUrl +=
+    //               '&' +
+    //               continueToken +
+    //               '=' +
+    //               redirectsQueryPart.continue[continueToken]
+    //           }
+    //         }
+
+    //         const response = await fetch(redirectsUrl, {
+    //           headers: this.fetchHeaders
+    //         })
+
+    //         // ok = true on http 200-299 good response
+    //         if (!response.ok) {
+    //           const message = `${response.status} ${response.statusText}`
+    //           throw new NetworkError(message)
+    //         }
+    //         redirectsQueryPart = await response.json()
+
+    //         if (!redirectsQueryPart.query) {
+    //           throw new DataError('No result from API')
+    //         }
+
+    //         for (const pageId of Object.keys(redirectsQueryPart.query.pages)) {
+    //           const page = redirectsQueryPart.query.pages[pageId]
+
+    //           // ignore possibly non existing (ignored before) title page in results
+    //           if (!(page.title === redirectTargetGlobal)) {
+    //             const resultPage = resultsMap.get(pageId)
+    //             if (page.redirects) {
+    //               page.redirects.forEach((redirect) =>
+    //                 resultPage.redirects.push(redirect.title)
+    //               )
+    //             }
+    //           }
+    //         }
+    //       } catch (error) {
+    //         // add error/display for user or similar
+    //         console.error(error.message)
+    //       }
+    //     } while (redirectsQueryPart.continue)
+
+    //     //sort
+    //     for (const pageId of resultsMap.keys()) {
+    //       const resultPage = resultsMap.get(pageId)
+    //       resultPage.redirects.sort()
+    //     }
+    //   }
+    //   this.resultsRedirectsDone = true
+    // },
+
     async getResultsRedirects() {
       // skip fetch when no results
       if (resultsMap.size > 0) {
-        let redirectsQueryPart = {}
-
-        do {
-          try {
-            let redirectsUrl =
-              'https://' +
-              this.language +
-              '.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&prop=redirects&rdlimit=max&titles=' +
-              redirectTargetGlobal +
-              '&origin=*'
-
-            if (redirectsQueryPart.continue) {
-              for (const continueToken of Object.keys(
-                redirectsQueryPart.continue
-              )) {
-                redirectsUrl +=
-                  '&' +
-                  continueToken +
-                  '=' +
-                  redirectsQueryPart.continue[continueToken]
-              }
-            }
-
-            const response = await fetch(redirectsUrl, {
-              headers: this.fetchHeaders
-            })
-
-            // ok = true on http 200-299 good response
-            if (!response.ok) {
-              const message = `${response.status} ${response.statusText}`
-              throw new NetworkError(message)
-            }
-            redirectsQueryPart = await response.json()
-
-            if (!redirectsQueryPart.query) {
-              throw new DataError('No result from API')
-            }
-
-            for (const pageId of Object.keys(redirectsQueryPart.query.pages)) {
-              const page = redirectsQueryPart.query.pages[pageId]
-
-              // ignore possibly non existing (ignored before) title page in results
-              if (!(page.title === redirectTargetGlobal)) {
-                const resultPage = resultsMap.get(pageId)
-                if (page.redirects) {
-                  page.redirects.forEach((redirect) =>
-                    resultPage.redirects.push(redirect.title)
-                  )
-                }
-              }
-            }
-          } catch (error) {
-            // add error/display for user or similar
-            console.error(error.message)
-          }
-        } while (redirectsQueryPart.continue)
-
-        //sort
         for (const pageId of resultsMap.keys()) {
           const resultPage = resultsMap.get(pageId)
+
+          let redirectsQueryPart = {}
+
+          do {
+            try {
+              let redirectsUrl =
+                'https://' +
+                this.language +
+                '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
+                resultPage.title +
+                '&origin=*'
+              if (redirectsQueryPart.continue) {
+                for (const continueToken of Object.keys(
+                  redirectsQueryPart.continue
+                )) {
+                  redirectsUrl +=
+                    '&' +
+                    continueToken +
+                    '=' +
+                    redirectsQueryPart.continue[continueToken]
+                }
+              }
+
+              const response = await fetch(redirectsUrl, {
+                headers: this.fetchHeaders
+              })
+
+              // ok = true on http 200-299 good response
+              if (!response.ok) {
+                const message = `${response.status} ${response.statusText}`
+                throw new NetworkError(message)
+              }
+              redirectsQueryPart = await response.json()
+
+              let resultsArray = Object.values(redirectsQueryPart.query.pages)
+
+              if (!resultsArray[0].redirects) {
+                continue
+              }
+
+              // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+              for (let i = 0; i < resultsArray[0].redirects.length; i++) {
+                resultPage.redirects.push(resultsArray[0].redirects[i].title)
+              }
+            } catch (error) {
+              // add error/display for user or similar
+              console.error(error.message)
+            }
+          } while (redirectsQueryPart.continue)
+
+          //sort
           resultPage.redirects.sort()
         }
       }
