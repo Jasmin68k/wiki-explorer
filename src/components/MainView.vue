@@ -653,7 +653,6 @@ export default {
     // },
 
     // parallelized single requests with throttle
-    // todo: handle api errors (ratelimited) with exp backoff, general 429 and general retry
     //       in the future maybe bundle several titles with titles=title1|title2|title3...
     //       also maybe bundle batch of requests and wait for them to finish before continuing
     async getResultsRedirects() {
@@ -661,12 +660,20 @@ export default {
       if (resultsMap.size > 0) {
         let resultsPromises = new Map()
 
+        // initial throttle value in ms
+        const throttle = 20
+        // number of retries with throttle doubled each time
+        const retries = 10
+
         // parallelized fetching of redirects
         for (const pageId of resultsMap.keys()) {
           const resultPage = resultsMap.get(pageId)
           // don't fire too many at once -> 429/ratelimited
-          await new Promise((resolve) => setTimeout(resolve, 20))
-          resultsPromises.set(pageId, this.getSingleRedirect(resultPage))
+          await new Promise((resolve) => setTimeout(resolve, throttle))
+          resultsPromises.set(
+            pageId,
+            this.getSingleRedirect(resultPage, throttle, retries)
+          )
         }
         for (const pagePromise of resultsPromises.values()) {
           await pagePromise
@@ -676,7 +683,7 @@ export default {
     },
 
     // for parallelized fetching of redirects
-    async getSingleRedirect(resultPage) {
+    async getSingleRedirect(resultPage, throttle, retries) {
       let redirectsQueryPart = {}
 
       do {
@@ -699,15 +706,25 @@ export default {
             }
           }
 
-          const response = await fetch(redirectsUrl, {
-            headers: this.fetchHeaders
-          })
+          // const response = await fetch(redirectsUrl, {
+          //   headers: this.fetchHeaders
+          // })
 
-          // ok = true on http 200-299 good response
-          if (!response.ok) {
-            const message = `${response.status} ${response.statusText}`
-            throw new NetworkError(message)
-          }
+          const response = await this.fetchRetry(
+            redirectsUrl,
+            {
+              headers: this.fetchHeaders
+            },
+            retries,
+            throttle
+          )
+
+          // // ok = true on http 200-299 good response
+          // if (!response.ok) {
+          //   const message = `${response.status} ${response.statusText}`
+          //   throw new NetworkError(message)
+          // }
+
           redirectsQueryPart = await response.json()
 
           let resultsArray = Object.values(redirectsQueryPart.query.pages)
@@ -728,6 +745,37 @@ export default {
 
       //sort
       resultPage.redirects.sort()
+    },
+
+    async fetchRetry(url, options, retries, throttle) {
+      // wiki returns cross origin request blocked, code 429, when too fast
+      let response = ''
+      try {
+        response = await fetch(url, options)
+        if (response.ok) {
+          return response
+        }
+        // in case fetch does not throw (usually does not for regular 4xx 5xx errors, but wiki cross origin blocked with 429), but !response.ok
+        // console.log('FETCH FAILED WITHOUT THROW')
+        throw new NetworkError()
+      } catch (error) {
+        // console.log(
+        //   `FETCH FAILED WITH THROW - retries ${retries} - throttle ${throttle}`
+        // )
+        if (retries <= 1) {
+          // console.log('FETCH FAILED retries <= 1')
+          //empty on fetch throw
+          let message = ''
+          if (response) {
+            message = `${response.status} ${response.statusText}`
+          } else {
+            message = 'API Fetch thrown. No status response.'
+          }
+          throw new NetworkError(message)
+        }
+        await new Promise((resolve) => setTimeout(resolve, throttle * 2))
+        return await this.fetchRetry(url, options, retries - 1, throttle * 2)
+      }
     },
 
     async getMainInfo() {
