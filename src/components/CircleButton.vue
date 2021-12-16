@@ -233,6 +233,9 @@ export default {
     },
     resultsRedirectsEnabled() {
       this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
+    },
+    resultsRedirectsDone() {
+      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
     }
   },
   methods: {
