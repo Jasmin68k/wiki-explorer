@@ -274,7 +274,8 @@ export default {
           resultPage.title.toLowerCase().includes(this.filter.toLowerCase())
         ) {
           resultPage.categories.forEach((category) =>
-            !allCategoriesSet.has(category) &&
+            // no duplicate check needed in Set
+            // !allCategoriesSet.has(category) &&
             category.toLowerCase().includes(this.filterCategories.toLowerCase())
               ? allCategoriesSet.add(category)
               : null
