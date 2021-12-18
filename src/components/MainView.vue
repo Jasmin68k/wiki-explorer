@@ -5,9 +5,6 @@
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array="filteredResultsArray"
-      :results-categories-all-array-unfiltered="
-        resultsCategoriesAllArrayUnfiltered
-      "
       :parent-title="title"
       :mobile-mode="mobileMode"
       :checkbox-dirty="checkboxDirty"
@@ -302,10 +299,15 @@ export default {
       for (const pageId of resultsMap.keys()) {
         const resultPage = resultsMap.get(pageId)
         if (resultPage.categories) {
+          // resultPage.categories.forEach((category) =>
+          //   !allCategoriesSet.has(category)
+          //     ? allCategoriesSet.add(category)
+          //     : null
+          // )
+
+          // Set doesn't allow duplicate values, so no check needed
           resultPage.categories.forEach((category) =>
-            !allCategoriesSet.has(category)
-              ? allCategoriesSet.add(category)
-              : null
+            allCategoriesSet.add(category)
           )
         }
       }
