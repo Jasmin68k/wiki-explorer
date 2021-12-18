@@ -118,11 +118,14 @@ export default {
       // let checkedCategoriesTemp = new Set(this.checkedCategories)
       let checkedCategoriesTemp = new Set()
 
-      this.items.forEach((item) =>
-        !checkedCategoriesTemp.has(item)
-          ? checkedCategoriesTemp.add(item)
-          : null
-      )
+      // this.items.forEach((item) =>
+      //   !checkedCategoriesTemp.has(item)
+      //     ? checkedCategoriesTemp.add(item)
+      //     : null
+      // )
+
+      // no duplicate check needed in Set
+      this.items.forEach((item) => checkedCategoriesTemp.add(item))
 
       this.checkedCategories = checkedCategoriesTemp
 
