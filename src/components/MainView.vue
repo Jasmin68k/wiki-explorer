@@ -8,10 +8,10 @@
       :parent-title="title"
       :mobile-mode="mobileMode"
       :checkbox-dirty="checkboxDirty"
+      v-model:filter="filter"
       @fetchDataClicked="fetchDataClicked"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
-      @filterChanged="filterChanged"
       @filterCategoriesChanged="filterCategoriesChanged"
       @indexStartChanged="indexStartChanged"
       @indexEndChanged="indexEndChanged"
@@ -1006,9 +1006,9 @@ export default {
         this.getResultsRedirects()
       }
     },
-    filterChanged(value) {
-      this.filter = value
-    },
+    // filterChanged(value) {
+    //   this.filter = value
+    // },
     filterCategoriesChanged(value) {
       this.filterCategories = value
     },

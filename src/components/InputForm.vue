@@ -156,16 +156,17 @@
         </button>
       </form>
 
-      <form @submit.prevent="">
+      <form>
         <label for="filter"
           ><img class="titleiconsmall" src="../assets/images/text-tool.svg"
         /></label>
         <input
+          type="text"
           id="filter"
           class="titleinputarea"
           :placeholder="$t('filter-results-titles')"
-          v-model="filter"
-          @input="resetPageNumber(), filterChanged()"
+          :value="filter"
+          @input="resetPageNumber(), filterChanged($event.target.value)"
           :disabled="
             inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
           "
@@ -597,7 +598,7 @@ export default {
     'fetchDataClicked',
     'resultsCategoriesChanged',
     'resultsRedirectsChanged',
-    'filterChanged',
+    'update:filter',
     'filterCategoriesChanged',
     'indexStartChanged',
     'indexEndChanged',
@@ -626,7 +627,8 @@ export default {
     //   default: () => [],
     //   type: Array
     // },
-    mobileMode: { required: true, default: false, type: Boolean }
+    mobileMode: { required: true, default: false, type: Boolean },
+    filter: { required: true, default: '', type: String }
   },
   watch: {
     indexStart() {
@@ -672,7 +674,7 @@ export default {
     return {
       language: 'en',
       title: '',
-      filter: '',
+      // filter: '',
       resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
@@ -705,15 +707,15 @@ export default {
     resultsRedirectsChanged() {
       this.$emit('resultsRedirectsChanged', this.resultsRedirectsEnabled)
     },
-    filterChanged() {
-      this.$emit('filterChanged', this.filter)
+    filterChanged(value) {
+      this.$emit('update:filter', value)
     },
     filterCategoriesChanged() {
       this.$emit('filterCategoriesChanged', this.filterCategories)
     },
-    indexChanged() {
-      this.$emit('indexChanged', this.indexStart, this.indexEnd)
-    },
+    // indexChanged() {
+    //   this.$emit('indexChanged', this.indexStart, this.indexEnd)
+    // },
 
     resetPageNumber() {
       this.pageNumber = 0
@@ -925,9 +927,9 @@ export default {
     }
 
     if (titlefilter && titlefilter.length > 0) {
-      this.filter = titlefilter
+      // this.filter = titlefilter
       this.resetPageNumber()
-      this.filterChanged()
+      this.filterChanged(titlefilter)
     }
 
     if (
