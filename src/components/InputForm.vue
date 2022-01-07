@@ -176,7 +176,7 @@
         />
       </form>
 
-      <form @submit.prevent="">
+      <form>
         <label for="filterCategories">
           <img
             class="categoriesiconsmall"
@@ -184,11 +184,14 @@
           />
         </label>
         <input
+          type="text"
           id="filterCategories"
           class="categoriesinputarea"
           :placeholder="$t('filter-results-categories')"
-          v-model="filterCategories"
-          @input="resetPageNumber(), filterCategoriesChanged()"
+          :value="filterCategories"
+          @input="
+            resetPageNumber(), filterCategoriesChanged($event.target.value)
+          "
           :disabled="
             inputsDisabled ||
             !resultsCategoriesDone ||
@@ -599,7 +602,7 @@ export default {
     'resultsCategoriesChanged',
     'resultsRedirectsChanged',
     'update:filter',
-    'filterCategoriesChanged',
+    'update:filterCategories',
     'indexStartChanged',
     'indexEndChanged',
     // 'resultsCategoriesCheckboxChanged',
@@ -628,7 +631,8 @@ export default {
     //   type: Array
     // },
     mobileMode: { required: true, default: false, type: Boolean },
-    filter: { required: true, default: '', type: String }
+    filter: { required: true, default: '', type: String },
+    filterCategories: { required: true, default: '', type: String }
   },
   watch: {
     indexStart() {
@@ -678,7 +682,7 @@ export default {
       resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
-      filterCategories: '',
+      // filterCategories: '',
       pageNumber: 0,
       sizePerPage: 16,
       // checkedCategories: new Set(),
@@ -710,8 +714,8 @@ export default {
     filterChanged(value) {
       this.$emit('update:filter', value)
     },
-    filterCategoriesChanged() {
-      this.$emit('filterCategoriesChanged', this.filterCategories)
+    filterCategoriesChanged(value) {
+      this.$emit('update:filterCategories', value)
     },
     // indexChanged() {
     //   this.$emit('indexChanged', this.indexStart, this.indexEnd)
@@ -879,8 +883,8 @@ export default {
      * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (this.mode)
      * @param {String} lang - UI and Wikipedia language, en or de valid (this.language)
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to this.resultsCategoriesEnabled)
-     * @param {String} titlefilter - String to filter results titles with (this.filter)
-     * @param {String} categoriesfilter - String to filter results categories with (this.filterCategories)
+     * @param {String} titlefilter - String to filter results titles with (prop filter)
+     * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> this.mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to this.checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to this.resultsRedirectsEnabled)
@@ -937,9 +941,9 @@ export default {
       categoriesfilter.length > 0 &&
       this.resultsCategoriesEnabled
     ) {
-      this.filterCategories = categoriesfilter
+      // this.filterCategories = categoriesfilter
       this.resetPageNumber()
-      this.filterCategoriesChanged()
+      this.filterCategoriesChanged(categoriesfilter)
     }
 
     if (

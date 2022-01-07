@@ -9,10 +9,10 @@
       :mobile-mode="mobileMode"
       :checkbox-dirty="checkboxDirty"
       v-model:filter="inputFormState.filter"
+      v-model:filterCategories="inputFormState.filterCategories"
       @fetchDataClicked="fetchDataClicked"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
-      @filterCategoriesChanged="filterCategoriesChanged"
       @indexStartChanged="indexStartChanged"
       @indexEndChanged="indexEndChanged"
       @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
@@ -140,7 +140,8 @@ export default {
   setup() {
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      filter: ''
+      filter: '',
+      filterCategories: ''
     })
     return { inputFormState }
   },
@@ -151,7 +152,7 @@ export default {
       indexEnd: 0,
       title: '',
       // filter: '',
-      filterCategories: '',
+      // filterCategories: '',
       checkedCategories: new Set(),
       checkboxFilterEnabled: true,
       resultsCategoriesEnabled: true,
@@ -228,12 +229,14 @@ export default {
       if (
         this.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
-        this.filterCategories
+        this.inputFormState.filterCategories
       ) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
             ? page.categories.find((item) =>
-                item.toLowerCase().includes(this.filterCategories.toLowerCase())
+                item
+                  .toLowerCase()
+                  .includes(this.inputFormState.filterCategories.toLowerCase())
               )
             : null
         )
@@ -288,7 +291,9 @@ export default {
           resultPage.categories.forEach((category) =>
             // no duplicate check needed in Set
             // !allCategoriesSet.has(category) &&
-            category.toLowerCase().includes(this.filterCategories.toLowerCase())
+            category
+              .toLowerCase()
+              .includes(this.inputFormState.filterCategories.toLowerCase())
               ? allCategoriesSet.add(category)
               : null
           )
@@ -1021,9 +1026,9 @@ export default {
     // filterChanged(value) {
     //   this.filter = value
     // },
-    filterCategoriesChanged(value) {
-      this.filterCategories = value
-    },
+    // filterCategoriesChanged(value) {
+    //   this.filterCategories = value
+    // },
     indexStartChanged(value) {
       this.indexStart = value
     },
