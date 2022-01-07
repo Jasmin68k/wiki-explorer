@@ -8,7 +8,7 @@
       :parent-title="title"
       :mobile-mode="mobileMode"
       :checkbox-dirty="checkboxDirty"
-      v-model:filter="filter"
+      v-model:filter="inputFormState.filter"
       @fetchDataClicked="fetchDataClicked"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import { reactive } from 'vue'
 import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
@@ -136,13 +137,20 @@ export default {
     CategoriesCheckboxFilter,
     Help
   },
+  setup() {
+    // state of inputForm in composition API style
+    const inputFormState = reactive({
+      filter: ''
+    })
+    return { inputFormState }
+  },
   data() {
     return {
       language: 'en',
       indexStart: 0,
       indexEnd: 0,
       title: '',
-      filter: '',
+      // filter: '',
       filterCategories: '',
       checkedCategories: new Set(),
       checkboxFilterEnabled: true,
@@ -210,7 +218,9 @@ export default {
 
       // apply titles filter
       filteredArray = filteredArray.filter((page) =>
-        page.title.toLowerCase().includes(this.filter.toLowerCase())
+        page.title
+          .toLowerCase()
+          .includes(this.inputFormState.filter.toLowerCase())
       )
 
       // good - maybe rewrite without ternary
@@ -271,7 +281,9 @@ export default {
         const resultPage = resultsMap.get(pageId)
         if (
           resultPage.categories &&
-          resultPage.title.toLowerCase().includes(this.filter.toLowerCase())
+          resultPage.title
+            .toLowerCase()
+            .includes(this.inputFormState.filter.toLowerCase())
         ) {
           resultPage.categories.forEach((category) =>
             // no duplicate check needed in Set
