@@ -6,6 +6,7 @@
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array-length="filteredResultsArray.length"
       :mobile-mode="inputFormState.mobileMode"
+      :mobile-display="inputFormState.mobileDisplay"
       :checkbox-dirty="checkboxDirty"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
@@ -52,7 +53,8 @@
       <div
         v-if="
           (!inputFormState.mobileMode && checkboxFilterEnabled) ||
-          (inputFormState.mobileMode && mobileCategories)
+          (inputFormState.mobileMode &&
+            inputFormState.mobileDisplay === 'categories')
         "
         class="inputcategoriescontainer grid-item-categories"
         :class="{
@@ -66,7 +68,8 @@
         <categories-checkbox-filter
           v-if="
             ((!inputFormState.mobileMode && resultsCategoriesEnabled) ||
-              (inputFormState.mobileMode && mobileCategories)) &&
+              (inputFormState.mobileMode &&
+                inputFormState.mobileDisplay === 'categories')) &&
             resultsCategoriesAllArray.length > 0 &&
             resultsCategoriesDone
           "
@@ -82,7 +85,8 @@
       <outgraph
         v-if="
           !inputFormState.mobileMode ||
-          (inputFormState.mobileMode && mobileOutgraph)
+          (inputFormState.mobileMode &&
+            inputFormState.mobileDisplay === 'outgraph')
         "
         class="grid-item-graph"
         ref="outgraph"
@@ -107,7 +111,8 @@
       <main-title-info
         v-if="
           !inputFormState.mobileMode ||
-          (inputFormState.mobileMode && mobileMainInfo)
+          (inputFormState.mobileMode &&
+            inputFormState.mobileDisplay === 'maininfo')
         "
         class="grid-item-maininfo"
         :class="{
@@ -155,7 +160,8 @@ export default {
       title: '',
       showHelp: false,
       mobileMode: false,
-      language: 'en'
+      language: 'en',
+      mobileDisplay: 'outgraph'
     })
     return { inputFormState }
   },
@@ -189,9 +195,6 @@ export default {
       scrollboxContainerHeight: 300,
       // mobileMode: false,
       // enable one of these at a time in mobile mode
-      mobileMainInfo: false,
-      mobileCategories: false,
-      mobileOutgraph: true,
       checkboxDirty: false,
       titlePage: new TitlePage(),
       redirectsDone: false
@@ -1125,22 +1128,7 @@ export default {
       this.windowResized()
     },
     mobileDisplaySwitched(value) {
-      switch (value) {
-        case 'outgraph':
-          this.mobileMainInfo = false
-          this.mobileCategories = false
-          this.mobileOutgraph = true
-          break
-        case 'maininfo':
-          this.mobileOutgraph = false
-          this.mobileCategories = false
-          this.mobileMainInfo = true
-          break
-        case 'categories':
-          this.mobileOutgraph = false
-          this.mobileMainInfo = false
-          this.mobileCategories = true
-      }
+      this.inputFormState.mobileDisplay = value
       this.windowResized()
     },
     showHelpSwitched() {

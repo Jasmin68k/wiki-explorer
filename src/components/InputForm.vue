@@ -219,8 +219,8 @@
           :disabled="showHelp"
           id="outgraph"
           value="outgraph"
-          v-model="mobileDisplay"
-          @change="mobileDisplaySwitched"
+          :checked="mobileDisplay === 'outgraph'"
+          @change="mobileDisplaySwitched($event.target.value)"
         />
         <label
           class="radiolabel"
@@ -234,8 +234,8 @@
           :disabled="showHelp"
           id="maininfo"
           value="maininfo"
-          v-model="mobileDisplay"
-          @change="mobileDisplaySwitched"
+          :checked="mobileDisplay === 'maininfo'"
+          @change="mobileDisplaySwitched($event.target.value)"
         />
         <label
           class="radiolabel"
@@ -249,8 +249,8 @@
           :disabled="showHelp || (mobileMode && !resultsCategoriesEnabled)"
           id="categories"
           value="categories"
-          v-model="mobileDisplay"
-          @change="mobileDisplaySwitched"
+          :checked="mobileDisplay === 'categories'"
+          @change="mobileDisplaySwitched($event.target.value)"
         />
         <label
           class="radiolabel"
@@ -636,7 +636,8 @@ export default {
     filter: { required: true, default: '', type: String },
     filterCategories: { required: true, default: '', type: String },
     title: { required: true, default: '', type: String },
-    showHelp: { required: true, default: false, type: Boolean }
+    showHelp: { required: true, default: false, type: Boolean },
+    mobileDisplay: { required: true, default: 'outgraph', type: String }
   },
   watch: {
     indexStart() {
@@ -696,7 +697,7 @@ export default {
       circleButtonRadiusSaved: 260,
       categoriesOnHoverOrClick: 'catshover',
       // mode: 'desktop',
-      mobileDisplay: 'outgraph',
+      // mobileDisplay: 'outgraph',
       portraitMode: false,
       flexContainerHeight: 0
     }
@@ -796,8 +797,8 @@ export default {
 
       this.$emit('mode-switched', value)
     },
-    mobileDisplaySwitched() {
-      this.$emit('mobile-display-switched', this.mobileDisplay)
+    mobileDisplaySwitched(value) {
+      this.$emit('mobile-display-switched', value)
     },
     setCheckboxFilterEnabled() {
       this.checkboxFilterEnabled = true
@@ -907,7 +908,7 @@ export default {
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to this.resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (prop filter)
      * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
-     * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> this.mobileDisplay)
+     * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to this.checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to this.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover (this.categoriesOnHoverOrClick)
@@ -974,22 +975,7 @@ export default {
         mobileview === 'extract' ||
         mobileview === 'categories')
     ) {
-      switch (mobileview) {
-        case 'graph':
-          this.mobileDisplay = 'outgraph'
-          this.mobileDisplaySwitched()
-          break
-        case 'extract':
-          this.mobileDisplay = 'maininfo'
-          this.mobileDisplaySwitched()
-          break
-        case 'categories':
-          if (this.resultsCategoriesEnabled) {
-            this.mobileDisplay = 'categories'
-            this.mobileDisplaySwitched()
-          }
-          break
-      }
+      this.mobileDisplaySwitched(mobileview)
     }
 
     if (
