@@ -122,12 +122,13 @@
         /></label>
       </form>
 
-      <form @submit.prevent="fetchData()">
+      <form @submit.prevent="fetchData">
         <input
+          type="text"
           id="title"
           class="searchinputarea"
           :placeholder="$t('search-on-wikipedia')"
-          v-model="title"
+          :value="title"
           :disabled="
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone)
@@ -598,7 +599,7 @@ export default {
   // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
   // should not be needed, when fixed
   emits: [
-    'fetchDataClicked',
+    'update:title',
     'resultsCategoriesChanged',
     'resultsRedirectsChanged',
     'update:filter',
@@ -619,7 +620,7 @@ export default {
   ],
 
   props: {
-    parentTitle: { required: true, default: '', type: String },
+    // parentTitle: { required: true, default: '', type: String },
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
@@ -632,7 +633,8 @@ export default {
     // },
     mobileMode: { required: true, default: false, type: Boolean },
     filter: { required: true, default: '', type: String },
-    filterCategories: { required: true, default: '', type: String }
+    filterCategories: { required: true, default: '', type: String },
+    title: { required: true, default: '', type: String }
   },
   watch: {
     indexStart() {
@@ -640,12 +642,12 @@ export default {
     },
     indexEnd() {
       this.$emit('indexEndChanged', this.indexEnd)
-    },
-    parentTitle() {
-      if (this.parentTitle) {
-        this.title = this.parentTitle
-      }
     }
+    // parentTitle() {
+    //   if (this.parentTitle) {
+    //     this.title = this.parentTitle
+    //   }
+    // }
   },
 
   computed: {
@@ -677,7 +679,7 @@ export default {
   data() {
     return {
       language: 'en',
-      title: '',
+      // title: '',
       // filter: '',
       resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
@@ -700,8 +702,16 @@ export default {
   },
 
   methods: {
-    fetchData() {
-      this.$emit('fetchDataClicked', this.title)
+    // can this be done more elegantly? Sticking to v-model would still require variable on instance.
+    fetchData(submitEvent) {
+      let value = ''
+      for (let element of submitEvent.target.elements) {
+        if (element.id === 'title') {
+          value = element.value
+          break
+        }
+      }
+      this.$emit('update:title', value)
     },
     resultsCategoriesChanged() {
       this.windowResized()
@@ -890,7 +900,7 @@ export default {
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to this.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover (this.categoriesOnHoverOrClick)
      * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (this.sizePerPage)
-     * @param {String} search - Wikipedia page to search for (this.title)
+     * @param {String} search - Wikipedia page to search for (prop title)
      */
 
     const urlParameters = new URLSearchParams(window.location.search)
@@ -1021,8 +1031,9 @@ export default {
 
     // do search last after evaluating all other parameters
     if (search && search.length > 0) {
-      this.title = search
-      this.fetchData()
+      // this.title = search
+      // this.fetchData(search)
+      this.$emit('update:title', search)
     }
   },
   beforeUnMount() {

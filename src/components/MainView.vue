@@ -5,12 +5,12 @@
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array="filteredResultsArray"
-      :parent-title="title"
       :mobile-mode="mobileMode"
       :checkbox-dirty="checkboxDirty"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
-      @fetchDataClicked="fetchDataClicked"
+      v-model:title="inputFormState.title"
+      @update:title="fetchDataClicked"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
       @indexStartChanged="indexStartChanged"
@@ -141,7 +141,8 @@ export default {
     // state of inputForm in composition API style
     const inputFormState = reactive({
       filter: '',
-      filterCategories: ''
+      filterCategories: '',
+      title: ''
     })
     return { inputFormState }
   },
@@ -150,7 +151,7 @@ export default {
       language: 'en',
       indexStart: 0,
       indexEnd: 0,
-      title: '',
+      // title: '',
       // filter: '',
       // filterCategories: '',
       checkedCategories: new Set(),
@@ -353,7 +354,7 @@ export default {
             'https://' +
             this.language +
             '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-            this.title +
+            this.inputFormState.title +
             '&prop=info&inprop=url&origin=*'
 
           if (jsonDataFullQueryPart.continue) {
@@ -490,7 +491,7 @@ export default {
               'https://' +
               this.language +
               '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-              this.title +
+              this.inputFormState.title +
               '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
 
             if (jsonDataFullQueryPart.continue) {
@@ -578,7 +579,7 @@ export default {
           'https://' +
           this.language +
           '.wikipedia.org/w/api.php?action=query&format=json&titles=' +
-          this.title +
+          this.inputFormState.title +
           '&redirects&origin=*'
 
         const response = await fetch(redirectTargetUrl, {
@@ -809,7 +810,7 @@ export default {
           'https://' +
           this.language +
           '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
-          this.title +
+          this.inputFormState.title +
           '&origin=*'
 
         const response = await fetch(mainInfoUrl, {
@@ -874,7 +875,7 @@ export default {
             'https://' +
             this.language +
             '.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
-            this.title +
+            this.inputFormState.title +
             '&origin=*'
 
           if (categoriesQueryPart.continue) {
@@ -987,14 +988,14 @@ export default {
     },
 
     async circleButtonClicked(index) {
-      this.title = this.displayResultsArray[index].title
+      this.inputFormState.title = this.displayResultsArray[index].title
       await this.getRedirectTarget()
       this.getMainInfo()
       this.getJson()
     },
     async fetchDataClicked(value) {
       if (value) {
-        this.title = value
+        // this.title = value
         await this.getRedirectTarget()
         this.getMainInfo()
         this.getJson()
