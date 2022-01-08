@@ -154,13 +154,14 @@ export default {
       filterCategories: '',
       title: '',
       showHelp: false,
-      mobileMode: false
+      mobileMode: false,
+      language: 'en'
     })
     return { inputFormState }
   },
   data() {
     return {
-      language: 'en',
+      // language: 'en',
       indexStart: 0,
       indexEnd: 0,
       // title: '',
@@ -365,7 +366,7 @@ export default {
         try {
           let pageUrl =
             'https://' +
-            this.language +
+            this.inputFormState.language +
             '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
             this.inputFormState.title +
             '&prop=info&inprop=url&origin=*'
@@ -502,7 +503,7 @@ export default {
             // remove redirects and use proper redirecttarget for title
             let pageUrlCategories =
               'https://' +
-              this.language +
+              this.inputFormState.language +
               '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
               this.inputFormState.title +
               '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
@@ -590,7 +591,7 @@ export default {
       try {
         let redirectTargetUrl =
           'https://' +
-          this.language +
+          this.inputFormState.language +
           '.wikipedia.org/w/api.php?action=query&format=json&titles=' +
           this.inputFormState.title +
           '&redirects&origin=*'
@@ -724,7 +725,7 @@ export default {
         try {
           let redirectsUrl =
             'https://' +
-            this.language +
+            this.inputFormState.language +
             '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
             resultPage.title +
             '&origin=*'
@@ -821,7 +822,7 @@ export default {
       try {
         let mainInfoUrl =
           'https://' +
-          this.language +
+          this.inputFormState.language +
           '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
           this.inputFormState.title +
           '&origin=*'
@@ -886,7 +887,7 @@ export default {
           // separate categories fetch, instead of adding to main info, for simple continue handling
           let categoriesUrl =
             'https://' +
-            this.language +
+            this.inputFormState.language +
             '.wikipedia.org/w/api.php?action=query&format=json&prop=categories&redirects&cllimit=max&clshow=!hidden&titles=' +
             this.inputFormState.title +
             '&origin=*'
@@ -953,7 +954,7 @@ export default {
         try {
           let redirectsUrl =
             'https://' +
-            this.language +
+            this.inputFormState.language +
             '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
             redirectTargetGlobal +
             '&origin=*'
@@ -1088,7 +1089,7 @@ export default {
     },
     languageSwitched(value) {
       this.$i18n.locale = value
-      this.language = value
+      this.inputFormState.language = value
     },
     scalingFactorChanged(value) {
       this.scalingFactor = parseFloat(value)

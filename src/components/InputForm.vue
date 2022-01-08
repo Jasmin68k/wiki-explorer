@@ -83,8 +83,8 @@
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
-          v-model="language"
-          @change="languageSwitched"
+          @change="languageSwitched($event.target.value)"
+          ref="langEn"
         />
         <label
           class="radiolabel"
@@ -107,8 +107,8 @@
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
-          v-model="language"
-          @change="languageSwitched"
+          @change="languageSwitched($event.target.value)"
+          ref="langDe"
         />
         <label
           class="radiolabel"
@@ -680,7 +680,7 @@ export default {
   },
   data() {
     return {
-      language: 'en',
+      // language: 'en',
       // title: '',
       // filter: '',
       resultsCategoriesEnabled: true,
@@ -757,8 +757,16 @@ export default {
       // this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
       // this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     },
-    languageSwitched() {
-      this.$emit('languageSwitched', this.language)
+    languageSwitched(value) {
+      if (value === 'en') {
+        this.$refs.langEn.checked = true
+        this.$refs.langDe.checked = false
+      } else {
+        this.$refs.langEn.checked = false
+        this.$refs.langDe.checked = true
+      }
+
+      this.$emit('languageSwitched', value)
     },
 
     categoriesOnHoverOrClickChanged() {
@@ -888,11 +896,14 @@ export default {
 
     this.windowResized()
 
+    // init
+    this.$refs.langEn.checked = true
+
     // handle parameters from URL
     /**
      * URL Parameters
      * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> prop mobileMode true/false)
-     * @param {String} lang - UI and Wikipedia language, en or de valid (this.language)
+     * @param {String} lang - UI and Wikipedia language, en or de valid
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to this.resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (prop filter)
      * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
@@ -924,8 +935,8 @@ export default {
     }
 
     if (lang === 'en' || lang === 'de') {
-      this.language = lang
-      this.languageSwitched()
+      // this.language = lang
+      this.languageSwitched(lang)
     }
 
     if (categories === 'on' || categories === 'off') {
