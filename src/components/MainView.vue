@@ -1090,15 +1090,15 @@ export default {
       this.checkboxDirty = false
       this.checkedCategories = value
     },
-    checkboxFilterEnabledChanged(value) {
+    checkboxFilterEnabledChanged() {
       // for switch from desktop to mobile
-      if (!value) {
+      if (!this.inputFormState.checkboxFilterEnabled) {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
 
-      this.inputFormState.checkboxFilterEnabled = value
+      // this.inputFormState.checkboxFilterEnabled = value
 
       if (this.inputFormState.checkboxFilterEnabled) {
         this.checkedCategories = new Set(
