@@ -19,18 +19,19 @@
             <img class="helpicon" src="../assets/images/question-mark.svg" />
           </label>
         </span>
+
         <input
           class="radiobutton"
           type="radio"
           id="desktop"
           value="desktop"
+          :checked="!mobileMode"
           :disabled="
             !showHelp &&
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
-          v-model="mode"
-          @change="modeSwitched"
+          @change="modeSwitched($event.target.value)"
         />
         <label
           class="radiolabel"
@@ -49,14 +50,15 @@
           type="radio"
           id="mobile"
           value="mobile"
+          :checked="mobileMode"
           :disabled="
             !showHelp &&
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
-          v-model="mode"
-          @change="modeSwitched"
+          @change="modeSwitched($event.target.value)"
         />
+
         <label
           class="radiolabel"
           :class="{
@@ -693,7 +695,7 @@ export default {
       scalingFactorSaved: 1.0,
       circleButtonRadiusSaved: 260,
       categoriesOnHoverOrClick: 'catshover',
-      mode: 'desktop',
+      // mode: 'desktop',
       mobileDisplay: 'outgraph',
       portraitMode: false,
       flexContainerHeight: 0
@@ -771,8 +773,8 @@ export default {
     circleButtonRadiusChanged() {
       this.$emit('circle-button-radius-changed', this.circleButtonRadius)
     },
-    modeSwitched() {
-      if (this.mode === 'mobile') {
+    modeSwitched(value) {
+      if (value === 'mobile') {
         this.scalingFactorSaved = this.scalingFactor
         this.circleButtonRadiusSaved = this.circleButtonRadius
         this.circleButtonRadius = 260
@@ -784,7 +786,7 @@ export default {
       // this way scale and radius are saved and reapplied for desktop mode
       this.$emit('circle-button-radius-changed', this.circleButtonRadius)
 
-      this.$emit('mode-switched', this.mode)
+      this.$emit('mode-switched', value)
     },
     mobileDisplaySwitched() {
       this.$emit('mobile-display-switched', this.mobileDisplay)
@@ -862,25 +864,25 @@ export default {
 
     if (window.matchMedia('(orientation: landscape)').matches) {
       if (window.innerWidth < 860) {
-        this.mode = 'mobile'
+        // this.mode = 'mobile'
         this.categoriesOnHoverOrClick = 'catsclick'
         this.$emit(
           'categories-hover-click-changed',
           this.categoriesOnHoverOrClick
         )
 
-        this.modeSwitched()
+        this.modeSwitched('mobile')
       }
     } else {
       if (window.innerWidth < 610) {
-        this.mode = 'mobile'
+        // this.mode = 'mobile'
         this.categoriesOnHoverOrClick = 'catsclick'
         this.$emit(
           'categories-hover-click-changed',
           this.categoriesOnHoverOrClick
         )
 
-        this.modeSwitched()
+        this.modeSwitched('mobile')
       }
     }
 
@@ -889,7 +891,7 @@ export default {
     // handle parameters from URL
     /**
      * URL Parameters
-     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (this.mode)
+     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> prop mobileMode true/false)
      * @param {String} lang - UI and Wikipedia language, en or de valid (this.language)
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to this.resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (prop filter)
@@ -917,8 +919,8 @@ export default {
     const search = urlParameters.get('search')
 
     if (mode === 'desktop' || mode === 'mobile') {
-      this.mode = mode
-      this.modeSwitched()
+      // this.mode = mode
+      this.modeSwitched(mode)
     }
 
     if (lang === 'en' || lang === 'de') {
@@ -956,7 +958,7 @@ export default {
     }
 
     if (
-      this.mode === 'mobile' &&
+      this.mobileMode &&
       (mobileview === 'graph' ||
         mobileview === 'extract' ||
         mobileview === 'categories')
@@ -980,7 +982,7 @@ export default {
     }
 
     if (
-      this.mode === 'desktop' &&
+      !this.mobileMode &&
       (checkboxfilter === 'on' || checkboxfilter === 'off')
     ) {
       switch (checkboxfilter) {

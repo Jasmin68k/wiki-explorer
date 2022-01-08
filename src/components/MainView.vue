@@ -5,7 +5,7 @@
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array="filteredResultsArray"
-      :mobile-mode="mobileMode"
+      :mobile-mode="inputFormState.mobileMode"
       :checkbox-dirty="checkboxDirty"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
@@ -33,11 +33,14 @@
       v-if="!inputFormState.showHelp"
       class="grid-container-base"
       :class="{
-        mobile: mobileMode,
+        mobile: inputFormState.mobileMode,
         'grid-container':
-          checkboxFilterEnabled && resultsCategoriesEnabled && !mobileMode,
+          checkboxFilterEnabled &&
+          resultsCategoriesEnabled &&
+          !inputFormState.mobileMode,
         'grid-container-nocategories':
-          (!checkboxFilterEnabled || !resultsCategoriesEnabled) && !mobileMode
+          (!checkboxFilterEnabled || !resultsCategoriesEnabled) &&
+          !inputFormState.mobileMode
       }"
       :style="{
         '--gridwidthnocategories': gridWidthNocategories + 'px',
@@ -48,12 +51,12 @@
     >
       <div
         v-if="
-          (!mobileMode && checkboxFilterEnabled) ||
-          (mobileMode && mobileCategories)
+          (!inputFormState.mobileMode && checkboxFilterEnabled) ||
+          (inputFormState.mobileMode && mobileCategories)
         "
         class="inputcategoriescontainer grid-item-categories"
         :class="{
-          mobile: mobileMode
+          mobile: inputFormState.mobileMode
         }"
         :style="{
           '--categoriesmobileheight': scrollboxContainerHeight + 'px'
@@ -62,8 +65,8 @@
       >
         <categories-checkbox-filter
           v-if="
-            ((!mobileMode && resultsCategoriesEnabled) ||
-              (mobileMode && mobileCategories)) &&
+            ((!inputFormState.mobileMode && resultsCategoriesEnabled) ||
+              (inputFormState.mobileMode && mobileCategories)) &&
             resultsCategoriesAllArray.length > 0 &&
             resultsCategoriesDone
           "
@@ -77,7 +80,10 @@
       </div>
 
       <outgraph
-        v-if="!mobileMode || (mobileMode && mobileOutgraph)"
+        v-if="
+          !inputFormState.mobileMode ||
+          (inputFormState.mobileMode && mobileOutgraph)
+        "
         class="grid-item-graph"
         ref="outgraph"
         :inputs-disabled="inputsDisabled"
@@ -99,10 +105,13 @@
       ></outgraph>
 
       <main-title-info
-        v-if="!mobileMode || (mobileMode && mobileMainInfo)"
+        v-if="
+          !inputFormState.mobileMode ||
+          (inputFormState.mobileMode && mobileMainInfo)
+        "
         class="grid-item-maininfo"
         :class="{
-          mobile: mobileMode
+          mobile: inputFormState.mobileMode
         }"
         :extract="titlePage.extract"
         :image="titlePage.image"
@@ -144,7 +153,8 @@ export default {
       filter: '',
       filterCategories: '',
       title: '',
-      showHelp: false
+      showHelp: false,
+      mobileMode: false
     })
     return { inputFormState }
   },
@@ -176,7 +186,7 @@ export default {
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
-      mobileMode: false,
+      // mobileMode: false,
       // enable one of these at a time in mobile mode
       mobileMainInfo: false,
       mobileCategories: false,
@@ -247,7 +257,8 @@ export default {
       if (
         this.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
-        ((!this.mobileMode && this.checkboxFilterEnabled) || this.mobileMode)
+        ((!this.inputFormState.mobileMode && this.checkboxFilterEnabled) ||
+          this.inputFormState.mobileMode)
       ) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
@@ -275,7 +286,8 @@ export default {
         !(
           this.resultsCategoriesDone &&
           this.resultsCategoriesEnabled &&
-          ((!this.mobileMode && this.checkboxFilterEnabled) || this.mobileMode)
+          ((!this.inputFormState.mobileMode && this.checkboxFilterEnabled) ||
+            this.inputFormState.mobileMode)
         )
       ) {
         return []
@@ -1097,7 +1109,7 @@ export default {
     gridHeightChanged(value) {
       this.gridHeightSubtract = value
       // needed for init, first display, otherwise --gridmobileheight wrong
-      if (this.mobileMode) {
+      if (this.inputFormState.mobileMode) {
         this.scrollboxContainerHeight =
           this.$refs.flexcontainer.getBoundingClientRect().height -
           this.gridHeightSubtract
@@ -1105,9 +1117,9 @@ export default {
     },
     modeSwitched(value) {
       if (value === 'mobile') {
-        this.mobileMode = true
+        this.inputFormState.mobileMode = true
       } else {
-        this.mobileMode = false
+        this.inputFormState.mobileMode = false
       }
       this.windowResized()
     },
@@ -1137,7 +1149,7 @@ export default {
     },
     windowResized() {
       this.$nextTick(() => {
-        if (!this.mobileMode) {
+        if (!this.inputFormState.mobileMode) {
           if (this.$refs.inputcategoriescontainer) {
             this.scrollboxContainerHeight =
               this.$refs.inputcategoriescontainer.getBoundingClientRect().height
