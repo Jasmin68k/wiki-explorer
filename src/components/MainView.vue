@@ -7,7 +7,6 @@
       :filtered-results-array-length="filteredResultsArray.length"
       :mobile-mode="inputFormState.mobileMode"
       :mobile-display="inputFormState.mobileDisplay"
-      :checkbox-dirty="checkboxDirty"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
@@ -202,7 +201,7 @@ export default {
       scrollboxContainerHeight: 300,
       // mobileMode: false,
       // enable one of these at a time in mobile mode
-      checkboxDirty: false,
+
       titlePage: new TitlePage(),
       redirectsDone: false
     }
@@ -1049,10 +1048,6 @@ export default {
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
-
-      if (!this.inputFormState.resultsCategoriesEnabled) {
-        this.checkboxDirty = false
-      }
     },
     resultsRedirectsChanged(value) {
       this.resultsRedirectsEnabled = value
@@ -1075,7 +1070,6 @@ export default {
     },
     resultsCategoriesCheckboxChanged(value) {
       this.$refs.inputForm.resetPageNumber()
-      this.checkboxDirty = true
 
       if (!this.inputFormState.checkboxFilterEnabled) {
         // enable in desktop when changed in mobile
@@ -1087,7 +1081,7 @@ export default {
     },
     categoriesAll(value) {
       this.$refs.inputForm.resetPageNumber()
-      this.checkboxDirty = false
+
       this.checkedCategories = value
     },
     checkboxFilterEnabledChanged() {
@@ -1104,10 +1098,6 @@ export default {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
-      }
-
-      if (!this.inputFormState.checkboxFilterEnabled) {
-        this.checkboxDirty = false
       }
     },
     languageSwitched(value) {

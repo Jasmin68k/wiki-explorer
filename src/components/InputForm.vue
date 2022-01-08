@@ -256,8 +256,6 @@
           class="radiolabel"
           for="categories"
           :class="{
-            'checkbox-dirty': checkboxDirty,
-
             itemdisabled: showHelp || (mobileMode && !resultsCategoriesEnabled)
           }"
         >
@@ -625,7 +623,7 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
-    checkboxDirty: { required: true, default: false, type: Boolean },
+
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     // resultsCategoriesAllArrayUnfiltered: {
     //   required: true,
@@ -1104,10 +1102,6 @@ export default {
 .inputform-flex-item-3 {
   background-color: lightgreen;
 } */
-
-.checkbox-dirty {
-  text-decoration: underline;
-}
 
 .leftarrow {
   height: 1.75em;
