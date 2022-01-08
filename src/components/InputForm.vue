@@ -13,8 +13,8 @@
             id="showHelp"
             class="checkbox"
             type="checkbox"
-            v-model="showHelp"
-            @change="showHelpClicked"
+            :value="showHelp"
+            @change="showHelpClicked($event.target.checked)"
           />
           <label class="checkboxlabel" for="showHelp">
             <img class="helpicon" src="../assets/images/question-mark.svg" />
@@ -604,6 +604,7 @@ export default {
     'resultsRedirectsChanged',
     'update:filter',
     'update:filterCategories',
+    'update:showHelp',
     'indexStartChanged',
     'indexEndChanged',
     // 'resultsCategoriesCheckboxChanged',
@@ -615,8 +616,7 @@ export default {
     'grid-width-nocategories-changed',
     'grid-height-changed',
     'mode-switched',
-    'mobile-display-switched',
-    'show-help-switched'
+    'mobile-display-switched'
   ],
 
   props: {
@@ -634,7 +634,8 @@ export default {
     mobileMode: { required: true, default: false, type: Boolean },
     filter: { required: true, default: '', type: String },
     filterCategories: { required: true, default: '', type: String },
-    title: { required: true, default: '', type: String }
+    title: { required: true, default: '', type: String },
+    showHelp: { required: true, default: false, type: Boolean }
   },
   watch: {
     indexStart() {
@@ -696,8 +697,7 @@ export default {
       mode: 'desktop',
       mobileDisplay: 'outgraph',
       portraitMode: false,
-      flexContainerHeight: 0,
-      showHelp: false
+      flexContainerHeight: 0
     }
   },
 
@@ -793,10 +793,10 @@ export default {
     setCheckboxFilterEnabled() {
       this.checkboxFilterEnabled = true
     },
-    showHelpClicked() {
+    showHelpClicked(value) {
       // resize needed here, not after emit in MainView
       this.windowResized()
-      this.$emit('show-help-switched', this.showHelp)
+      this.$emit('update:showHelp', value)
     },
     windowResized() {
       this.$nextTick(() => {

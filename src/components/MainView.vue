@@ -10,7 +10,9 @@
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
+      v-model:showHelp="inputFormState.showHelp"
       @update:title="fetchDataClicked"
+      @update:showHelp="showHelpSwitched"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
       @indexStartChanged="indexStartChanged"
@@ -24,12 +26,11 @@
       @gridHeightChanged="gridHeightChanged"
       @modeSwitched="modeSwitched"
       @mobileDisplaySwitched="mobileDisplaySwitched"
-      @showHelpSwitched="showHelpSwitched"
       ref="inputForm"
     ></input-form>
 
     <div
-      v-if="!showHelp"
+      v-if="!inputFormState.showHelp"
       class="grid-container-base"
       :class="{
         mobile: mobileMode,
@@ -108,7 +109,7 @@
       ></main-title-info>
     </div>
 
-    <div v-if="showHelp" class="help-container">
+    <div v-if="inputFormState.showHelp" class="help-container">
       <help></help>
     </div>
   </div>
@@ -142,7 +143,8 @@ export default {
     const inputFormState = reactive({
       filter: '',
       filterCategories: '',
-      title: ''
+      title: '',
+      showHelp: false
     })
     return { inputFormState }
   },
@@ -181,8 +183,7 @@ export default {
       mobileOutgraph: true,
       checkboxDirty: false,
       titlePage: new TitlePage(),
-      redirectsDone: false,
-      showHelp: false
+      redirectsDone: false
     }
   },
 
@@ -1129,10 +1130,10 @@ export default {
       }
       this.windowResized()
     },
-    showHelpSwitched(value) {
+    showHelpSwitched() {
       // this.windowResized()
-      this.inputsDisabled = value
-      this.showHelp = value
+      this.inputsDisabled = this.inputFormState.showHelp
+      // this.showHelp = value
     },
     windowResized() {
       this.$nextTick(() => {
