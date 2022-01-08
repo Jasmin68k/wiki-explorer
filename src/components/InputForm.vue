@@ -274,14 +274,14 @@
             id="resultsCategories"
             class="checkbox"
             type="checkbox"
+            :checked="resultsCategoriesEnabled"
             :disabled="
               inputsDisabled ||
               (mobileMode &&
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
             "
-            v-model="resultsCategoriesEnabled"
-            @change="resultsCategoriesChanged"
+            @change="resultsCategoriesChanged($event.target.checked)"
           />
           <label
             class="checkboxlabel"
@@ -601,11 +601,12 @@ export default {
   // should not be needed, when fixed
   emits: [
     'update:title',
-    'resultsCategoriesChanged',
+
     'resultsRedirectsChanged',
     'update:filter',
     'update:filterCategories',
     'update:showHelp',
+    'update:resultsCategoriesEnabled',
     'indexStartChanged',
     'indexEndChanged',
     // 'resultsCategoriesCheckboxChanged',
@@ -637,7 +638,8 @@ export default {
     filterCategories: { required: true, default: '', type: String },
     title: { required: true, default: '', type: String },
     showHelp: { required: true, default: false, type: Boolean },
-    mobileDisplay: { required: true, default: 'outgraph', type: String }
+    mobileDisplay: { required: true, default: 'outgraph', type: String },
+    resultsCategoriesEnabled: { required: true, default: true, type: Boolean }
   },
   watch: {
     indexStart() {
@@ -684,7 +686,7 @@ export default {
       // language: 'en',
       // title: '',
       // filter: '',
-      resultsCategoriesEnabled: true,
+      // resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
       // filterCategories: '',
@@ -715,10 +717,10 @@ export default {
       }
       this.$emit('update:title', value)
     },
-    resultsCategoriesChanged() {
+    resultsCategoriesChanged(value) {
       this.windowResized()
       this.resetPageNumber()
-      this.$emit('resultsCategoriesChanged', this.resultsCategoriesEnabled)
+      this.$emit('update:resultsCategoriesEnabled', value)
     },
     resultsRedirectsChanged() {
       this.$emit('resultsRedirectsChanged', this.resultsRedirectsEnabled)
@@ -905,7 +907,7 @@ export default {
      * URL Parameters
      * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> prop mobileMode true/false)
      * @param {String} lang - UI and Wikipedia language, en or de valid
-     * @param {String} categories - Enable/disable results categories, on or off valid (boolean to this.resultsCategoriesEnabled)
+     * @param {String} categories - Enable/disable results categories, on or off valid (boolean to prop resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (prop filter)
      * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
@@ -943,14 +945,13 @@ export default {
     if (categories === 'on' || categories === 'off') {
       switch (categories) {
         case 'on':
-          this.resultsCategoriesEnabled = true
+          this.resultsCategoriesChanged(true)
           break
 
         case 'off':
-          this.resultsCategoriesEnabled = false
+          this.resultsCategoriesChanged(false)
           break
       }
-      this.resultsCategoriesChanged()
     }
 
     if (titlefilter && titlefilter.length > 0) {

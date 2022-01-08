@@ -12,9 +12,10 @@
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
       v-model:showHelp="inputFormState.showHelp"
+      v-model:resultsCategoriesEnabled="inputFormState.resultsCategoriesEnabled"
       @update:title="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
-      @resultsCategoriesChanged="resultsCategoriesChanged"
+      @update:resultsCategoriesEnabled="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
       @indexStartChanged="indexStartChanged"
       @indexEndChanged="indexEndChanged"
@@ -37,10 +38,11 @@
         mobile: inputFormState.mobileMode,
         'grid-container':
           checkboxFilterEnabled &&
-          resultsCategoriesEnabled &&
+          inputFormState.resultsCategoriesEnabled &&
           !inputFormState.mobileMode,
         'grid-container-nocategories':
-          (!checkboxFilterEnabled || !resultsCategoriesEnabled) &&
+          (!checkboxFilterEnabled ||
+            !inputFormState.resultsCategoriesEnabled) &&
           !inputFormState.mobileMode
       }"
       :style="{
@@ -67,7 +69,8 @@
       >
         <categories-checkbox-filter
           v-if="
-            ((!inputFormState.mobileMode && resultsCategoriesEnabled) ||
+            ((!inputFormState.mobileMode &&
+              inputFormState.resultsCategoriesEnabled) ||
               (inputFormState.mobileMode &&
                 inputFormState.mobileDisplay === 'categories')) &&
             resultsCategoriesAllArray.length > 0 &&
@@ -97,7 +100,7 @@
         :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
-        :results-categories-enabled="resultsCategoriesEnabled"
+        :results-categories-enabled="inputFormState.resultsCategoriesEnabled"
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
@@ -161,7 +164,8 @@ export default {
       showHelp: false,
       mobileMode: false,
       language: 'en',
-      mobileDisplay: 'outgraph'
+      mobileDisplay: 'outgraph',
+      resultsCategoriesEnabled: true
     })
     return { inputFormState }
   },
@@ -175,7 +179,7 @@ export default {
       // filterCategories: '',
       checkedCategories: new Set(),
       checkboxFilterEnabled: true,
-      resultsCategoriesEnabled: true,
+      // resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
       resultsRedirectsEnabled: false,
       resultsRedirectsDone: true,
@@ -243,7 +247,7 @@ export default {
       // good - maybe rewrite without ternary
       // needs to check this.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
       if (
-        this.resultsCategoriesEnabled &&
+        this.inputFormState.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
         this.inputFormState.filterCategories
       ) {
@@ -259,7 +263,7 @@ export default {
       }
 
       if (
-        this.resultsCategoriesEnabled &&
+        this.inputFormState.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
         ((!this.inputFormState.mobileMode && this.checkboxFilterEnabled) ||
           this.inputFormState.mobileMode)
@@ -289,7 +293,7 @@ export default {
       if (
         !(
           this.resultsCategoriesDone &&
-          this.resultsCategoriesEnabled &&
+          this.inputFormState.resultsCategoriesEnabled &&
           ((!this.inputFormState.mobileMode && this.checkboxFilterEnabled) ||
             this.inputFormState.mobileMode)
         )
@@ -327,7 +331,12 @@ export default {
       return allCategories
     },
     resultsCategoriesAllArrayUnfiltered() {
-      if (!(this.resultsCategoriesDone && this.resultsCategoriesEnabled)) {
+      if (
+        !(
+          this.resultsCategoriesDone &&
+          this.inputFormState.resultsCategoriesEnabled
+        )
+      ) {
         return []
       }
       let allCategoriesSet = new Set()
@@ -453,7 +462,7 @@ export default {
 
       this.resultsCategoriesDone = false
 
-      if (this.resultsCategoriesEnabled) {
+      if (this.inputFormState.resultsCategoriesEnabled) {
         this.getResultsCategories()
       }
 
@@ -1018,19 +1027,25 @@ export default {
         this.getJson()
       }
     },
-    resultsCategoriesChanged(value) {
-      this.resultsCategoriesEnabled = value
+    resultsCategoriesChanged() {
+      // this.resultsCategoriesEnabled = value
 
-      if (this.resultsCategoriesEnabled && !this.resultsCategoriesDone) {
+      if (
+        this.inputFormState.resultsCategoriesEnabled &&
+        !this.resultsCategoriesDone
+      ) {
         this.getResultsCategories()
       }
-      if (this.resultsCategoriesEnabled && this.resultsCategoriesDone) {
+      if (
+        this.inputFormState.resultsCategoriesEnabled &&
+        this.resultsCategoriesDone
+      ) {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
 
-      if (!this.resultsCategoriesEnabled) {
+      if (!this.inputFormState.resultsCategoriesEnabled) {
         this.checkboxDirty = false
       }
     },
