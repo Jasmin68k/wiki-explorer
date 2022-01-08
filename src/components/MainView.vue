@@ -13,13 +13,14 @@
       v-model:title="inputFormState.title"
       v-model:showHelp="inputFormState.showHelp"
       v-model:resultsCategoriesEnabled="inputFormState.resultsCategoriesEnabled"
+      v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
       @update:title="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
       @update:resultsCategoriesEnabled="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
       @indexStartChanged="indexStartChanged"
       @indexEndChanged="indexEndChanged"
-      @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
+      @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
       @scalingFactorChanged="scalingFactorChanged"
       @circleButtonRadiusChanged="circleButtonRadiusChanged"
@@ -37,11 +38,11 @@
       :class="{
         mobile: inputFormState.mobileMode,
         'grid-container':
-          checkboxFilterEnabled &&
+          inputFormState.checkboxFilterEnabled &&
           inputFormState.resultsCategoriesEnabled &&
           !inputFormState.mobileMode,
         'grid-container-nocategories':
-          (!checkboxFilterEnabled ||
+          (!inputFormState.checkboxFilterEnabled ||
             !inputFormState.resultsCategoriesEnabled) &&
           !inputFormState.mobileMode
       }"
@@ -54,7 +55,8 @@
     >
       <div
         v-if="
-          (!inputFormState.mobileMode && checkboxFilterEnabled) ||
+          (!inputFormState.mobileMode &&
+            inputFormState.checkboxFilterEnabled) ||
           (inputFormState.mobileMode &&
             inputFormState.mobileDisplay === 'categories')
         "
@@ -165,7 +167,8 @@ export default {
       mobileMode: false,
       language: 'en',
       mobileDisplay: 'outgraph',
-      resultsCategoriesEnabled: true
+      resultsCategoriesEnabled: true,
+      checkboxFilterEnabled: true
     })
     return { inputFormState }
   },
@@ -178,7 +181,7 @@ export default {
       // filter: '',
       // filterCategories: '',
       checkedCategories: new Set(),
-      checkboxFilterEnabled: true,
+      // checkboxFilterEnabled: true,
       // resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
       resultsRedirectsEnabled: false,
@@ -265,7 +268,8 @@ export default {
       if (
         this.inputFormState.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
-        ((!this.inputFormState.mobileMode && this.checkboxFilterEnabled) ||
+        ((!this.inputFormState.mobileMode &&
+          this.inputFormState.checkboxFilterEnabled) ||
           this.inputFormState.mobileMode)
       ) {
         filteredArray = filteredArray.filter((page) =>
@@ -294,7 +298,8 @@ export default {
         !(
           this.resultsCategoriesDone &&
           this.inputFormState.resultsCategoriesEnabled &&
-          ((!this.inputFormState.mobileMode && this.checkboxFilterEnabled) ||
+          ((!this.inputFormState.mobileMode &&
+            this.inputFormState.checkboxFilterEnabled) ||
             this.inputFormState.mobileMode)
         )
       ) {
@@ -1072,10 +1077,10 @@ export default {
       this.$refs.inputForm.resetPageNumber()
       this.checkboxDirty = true
 
-      if (!this.checkboxFilterEnabled) {
+      if (!this.inputFormState.checkboxFilterEnabled) {
         // enable in desktop when changed in mobile
-        this.$refs.inputForm.setCheckboxFilterEnabled()
-        this.checkboxFilterEnabled = true
+        // this.$refs.inputForm.setCheckboxFilterEnabled()
+        this.inputFormState.checkboxFilterEnabled = true
       }
 
       this.checkedCategories = value
@@ -1093,15 +1098,15 @@ export default {
         )
       }
 
-      this.checkboxFilterEnabled = value
+      this.inputFormState.checkboxFilterEnabled = value
 
-      if (this.checkboxFilterEnabled) {
+      if (this.inputFormState.checkboxFilterEnabled) {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
 
-      if (!this.checkboxFilterEnabled) {
+      if (!this.inputFormState.checkboxFilterEnabled) {
         this.checkboxDirty = false
       }
     },

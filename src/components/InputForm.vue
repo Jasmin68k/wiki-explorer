@@ -302,9 +302,9 @@
             id="checkboxFilter"
             class="checkbox"
             type="checkbox"
+            :checked="checkboxFilterEnabled"
             :disabled="inputsDisabled || !resultsCategoriesEnabled"
-            v-model="checkboxFilterEnabled"
-            @change="checkboxFilterEnabledChange"
+            @change="checkboxFilterEnabledChange($event.target.checked)"
           />
           <label
             class="checkboxlabel"
@@ -607,10 +607,9 @@ export default {
     'update:filterCategories',
     'update:showHelp',
     'update:resultsCategoriesEnabled',
+    'update:checkboxFilterEnabled',
     'indexStartChanged',
     'indexEndChanged',
-    // 'resultsCategoriesCheckboxChanged',
-    'checkboxFilterEnabledChanged',
     'languageSwitched',
     'scalingFactorChanged',
     'categories-hover-click-changed',
@@ -639,7 +638,8 @@ export default {
     title: { required: true, default: '', type: String },
     showHelp: { required: true, default: false, type: Boolean },
     mobileDisplay: { required: true, default: 'outgraph', type: String },
-    resultsCategoriesEnabled: { required: true, default: true, type: Boolean }
+    resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
+    checkboxFilterEnabled: { required: true, default: true, type: Boolean }
   },
   watch: {
     indexStart() {
@@ -688,7 +688,7 @@ export default {
       // filter: '',
       // resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
-      checkboxFilterEnabled: true,
+      // checkboxFilterEnabled: true,
       // filterCategories: '',
       pageNumber: 0,
       sizePerPage: 16,
@@ -751,11 +751,11 @@ export default {
         this.pageNumber--
       }
     },
-    checkboxFilterEnabledChange() {
+    checkboxFilterEnabledChange(value) {
       this.windowResized()
       this.resetPageNumber()
 
-      this.$emit('checkboxFilterEnabledChanged', this.checkboxFilterEnabled)
+      this.$emit('update:checkboxFilterEnabled', value)
 
       // this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
       // this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
@@ -802,9 +802,9 @@ export default {
     mobileDisplaySwitched(value) {
       this.$emit('mobile-display-switched', value)
     },
-    setCheckboxFilterEnabled() {
-      this.checkboxFilterEnabled = true
-    },
+    // setCheckboxFilterEnabled() {
+    //   this.checkboxFilterEnabled = true
+    // },
     showHelpClicked(value) {
       // resize needed here, not after emit in MainView
       this.windowResized()
@@ -911,7 +911,7 @@ export default {
      * @param {String} titlefilter - String to filter results titles with (prop filter)
      * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
-     * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to this.checkboxFilterEnabled)
+     * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to this.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover (this.categoriesOnHoverOrClick)
      * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (this.sizePerPage)
@@ -986,13 +986,11 @@ export default {
       switch (checkboxfilter) {
         case 'on':
           if (this.resultsCategoriesEnabled) {
-            this.checkboxFilterEnabled = true
+            this.checkboxFilterEnabledChange(true)
           }
-          this.checkboxFilterEnabledChange()
           break
         case 'off':
-          this.checkboxFilterEnabled = false
-          this.checkboxFilterEnabledChange()
+          this.checkboxFilterEnabledChange(false)
           break
       }
     }
