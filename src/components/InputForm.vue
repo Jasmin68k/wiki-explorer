@@ -13,7 +13,7 @@
             id="showHelp"
             class="checkbox"
             type="checkbox"
-            :value="showHelp"
+            :checked="showHelp"
             @change="showHelpClicked($event.target.checked)"
           />
           <label class="checkboxlabel" for="showHelp">
