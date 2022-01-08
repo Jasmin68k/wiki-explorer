@@ -424,7 +424,7 @@
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
         <span class="fontsize90"
-          >{{ $t('results') }}{{ filteredResultsArray.length }}</span
+          >{{ $t('results') }}{{ filteredResultsArrayLength }}</span
         >
         <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
           ><img
@@ -438,7 +438,7 @@
       <div
         class="fontsize90"
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
@@ -446,7 +446,7 @@
       </div>
       <span
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
         class="pagecount"
       >
@@ -457,7 +457,7 @@
           :class="{
             itemdisabled:
               inputsDisabled ||
-              filteredResultsArray.length === 0 ||
+              filteredResultsArrayLength === 0 ||
               pageNumber === 0 ||
               (mobileMode &&
                 (mobileDisplay === 'maininfo' ||
@@ -477,7 +477,7 @@
           :class="{
             itemdisabled:
               inputsDisabled ||
-              filteredResultsArray.length === 0 ||
+              filteredResultsArrayLength === 0 ||
               pageNumber + 1 === numberOfPages ||
               (mobileMode &&
                 (mobileDisplay === 'maininfo' ||
@@ -506,13 +506,13 @@
         v-model="sizePerPage"
         :disabled="
           inputsDisabled ||
-          filteredResultsArray.length === 0 ||
+          filteredResultsArrayLength === 0 ||
           (mobileMode &&
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
         :class="{ slidervertical: portraitMode && mobileMode }"
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden',
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden',
           '--height': flexContainerHeight * 0.75 + 'px'
         }"
         @input="resetPageNumber()"
@@ -520,7 +520,7 @@
       <div
         v-show="!mobileMode"
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('max-results-per-page') }}{{ sizePerPage }}
@@ -528,7 +528,7 @@
       <div
         v-show="mobileMode"
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
         :class="{ absolutebottomcenter: portraitMode }"
       >
@@ -547,19 +547,19 @@
         v-model="scalingFactor"
         :disabled="
           inputsDisabled ||
-          filteredResultsArray.length === 0 ||
+          filteredResultsArrayLength === 0 ||
           (mobileMode &&
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
         @input="scalingFactorChanged"
       />
       <div
         v-if="!mobileMode"
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('scale-graph') }}
@@ -573,19 +573,19 @@
         v-model="circleButtonRadius"
         :disabled="
           inputsDisabled ||
-          filteredResultsArray.length === 0 ||
+          filteredResultsArrayLength === 0 ||
           (mobileMode &&
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
         @input="circleButtonRadiusChanged"
       />
       <div
         v-if="!mobileMode"
         :style="{
-          visibility: filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('graph-radius') }}
@@ -626,7 +626,7 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     checkboxDirty: { required: true, default: false, type: Boolean },
-    filteredResultsArray: { required: true, default: () => [], type: Array },
+    filteredResultsArrayLength: { required: true, default: 0, type: Number },
     // resultsCategoriesAllArrayUnfiltered: {
     //   required: true,
     //   default: () => [],
@@ -654,12 +654,12 @@ export default {
 
   computed: {
     numberOfPages() {
-      return Math.ceil(this.filteredResultsArray.length / this.sizePerPage)
+      return Math.ceil(this.filteredResultsArrayLength / this.sizePerPage)
     },
     indexStart() {
       let indexStart = this.pageNumber * this.sizePerPage
-      if (indexStart > this.filteredResultsArray.length - 1) {
-        indexStart = this.filteredResultsArray.length - 1
+      if (indexStart > this.filteredResultsArrayLength - 1) {
+        indexStart = this.filteredResultsArrayLength - 1
       }
 
       return indexStart
@@ -667,8 +667,8 @@ export default {
     indexEnd() {
       let indexEnd = (this.pageNumber + 1) * this.sizePerPage - 1
 
-      if (indexEnd > this.filteredResultsArray.length - 1) {
-        indexEnd = this.filteredResultsArray.length - 1
+      if (indexEnd > this.filteredResultsArrayLength - 1) {
+        indexEnd = this.filteredResultsArrayLength - 1
       }
 
       if (indexEnd < 0) {
@@ -738,7 +738,7 @@ export default {
     nextPage() {
       if (
         this.pageNumber + 1 <
-        this.filteredResultsArray.length / this.sizePerPage
+        this.filteredResultsArrayLength / this.sizePerPage
       ) {
         this.pageNumber++
       }

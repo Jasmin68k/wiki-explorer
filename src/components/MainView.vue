@@ -4,7 +4,7 @@
       :inputs-disabled="inputsDisabled"
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
-      :filtered-results-array="filteredResultsArray"
+      :filtered-results-array-length="filteredResultsArray.length"
       :mobile-mode="inputFormState.mobileMode"
       :checkbox-dirty="checkboxDirty"
       v-model:filter="inputFormState.filter"
