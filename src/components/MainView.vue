@@ -20,6 +20,7 @@
       v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
       v-model:resultsRedirectsEnabled="inputFormState.resultsRedirectsEnabled"
       v-model:sizePerPage="inputFormState.sizePerPage"
+      v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
       @pageNumberChanged="pageNumberChanged"
       @update:title="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
@@ -176,7 +177,8 @@ export default {
       checkboxFilterEnabled: true,
       categoriesOnHover: true,
       sizePerPage: 16,
-      scalingFactor: 1.0
+      scalingFactor: 1.0,
+      scalingFactorSaved: 1.0
     })
     return { inputFormState }
   },

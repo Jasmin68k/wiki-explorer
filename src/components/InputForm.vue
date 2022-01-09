@@ -608,8 +608,8 @@ export default {
     'update:checkboxFilterEnabled',
     'update:sizePerPage',
     'update:scalingFactor',
+    'update:scalingFactorSaved',
     'languageSwitched',
-
     'categories-hover-click-changed',
     'circle-button-radius-changed',
     'grid-width-nocategories-changed',
@@ -625,6 +625,7 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     scalingFactor: { required: true, default: 1.0, type: Number },
+    scalingFactorSaved: { required: true, default: 1.0, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     // resultsCategoriesAllArrayUnfiltered: {
     //   required: true,
@@ -700,7 +701,7 @@ export default {
       // checkedCategories: new Set(),
       // scalingFactor: 1.0,
       circleButtonRadius: 260,
-      scalingFactorSaved: 1.0,
+      // scalingFactorSaved: 1.0,
       circleButtonRadiusSaved: 260,
       // categoriesOnHoverOrClick: 'catshover',
       // mode: 'desktop',
@@ -793,7 +794,7 @@ export default {
     },
     modeSwitched(value) {
       if (value === 'mobile') {
-        this.scalingFactorSaved = this.scalingFactor
+        this.$emit('update:scalingFactorSaved', this.scalingFactor)
         this.circleButtonRadiusSaved = this.circleButtonRadius
         this.circleButtonRadius = 260
       } else {
