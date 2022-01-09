@@ -108,7 +108,7 @@
         :title-missing="titlePage.missing"
         :scaling-factor="scalingFactor"
         :circle-button-radius="circleButtonRadius"
-        :categories-on-hover="categoriesOnHover"
+        :categories-on-hover="inputFormState.categoriesOnHover"
         :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
       ></outgraph>
@@ -169,7 +169,8 @@ export default {
       mobileDisplay: 'outgraph',
       resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
-      checkboxFilterEnabled: true
+      checkboxFilterEnabled: true,
+      categoriesOnHover: true
     })
     return { inputFormState }
   },
@@ -197,7 +198,7 @@ export default {
       }),
       scalingFactor: 1.0,
       circleButtonRadius: 260,
-      categoriesOnHover: true,
+      // categoriesOnHover: true,
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
@@ -1117,9 +1118,9 @@ export default {
     },
     categoriesHoverClickChanged(value) {
       if (value === 'catshover') {
-        this.categoriesOnHover = true
+        this.inputFormState.categoriesOnHover = true
       } else {
-        this.categoriesOnHover = false
+        this.inputFormState.categoriesOnHover = false
       }
     },
     gridWidthNocategoriesChanged(value) {

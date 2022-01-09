@@ -369,8 +369,8 @@
             (mobileMode &&
               (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
-          v-model="categoriesOnHoverOrClick"
-          @change="categoriesOnHoverOrClickChanged"
+          ref="catsClick"
+          @change="categoriesOnHoverOrClickChanged($event.target.value)"
         />
         <label
           class="radiolabel"
@@ -396,8 +396,8 @@
             (mobileMode &&
               (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
-          v-model="categoriesOnHoverOrClick"
-          @change="categoriesOnHoverOrClickChanged"
+          ref="catsHover"
+          @change="categoriesOnHoverOrClickChanged($event.target.value)"
         />
         <label
           class="radiolabel"
@@ -696,7 +696,7 @@ export default {
       circleButtonRadius: 260,
       scalingFactorSaved: 1.0,
       circleButtonRadiusSaved: 260,
-      categoriesOnHoverOrClick: 'catshover',
+      // categoriesOnHoverOrClick: 'catshover',
       // mode: 'desktop',
       // mobileDisplay: 'outgraph',
       portraitMode: false,
@@ -771,11 +771,16 @@ export default {
       this.$emit('languageSwitched', value)
     },
 
-    categoriesOnHoverOrClickChanged() {
-      this.$emit(
-        'categories-hover-click-changed',
-        this.categoriesOnHoverOrClick
-      )
+    categoriesOnHoverOrClickChanged(value) {
+      if (value === 'catshover') {
+        this.$refs.catsHover.checked = true
+        this.$refs.catsClick.checked = false
+      } else {
+        this.$refs.catsHover.checked = false
+        this.$refs.catsClick.checked = true
+      }
+
+      this.$emit('categories-hover-click-changed', value)
     },
     scalingFactorChanged() {
       this.$emit('scalingFactorChanged', this.scalingFactor)
@@ -872,34 +877,31 @@ export default {
   mounted() {
     window.addEventListener('resize', this.windowResized)
 
+    // init
+    this.languageSwitched('en')
+    this.categoriesOnHoverOrClickChanged('catshover')
+
     if (window.matchMedia('(orientation: landscape)').matches) {
       if (window.innerWidth < 860) {
         // this.mode = 'mobile'
-        this.categoriesOnHoverOrClick = 'catsclick'
-        this.$emit(
-          'categories-hover-click-changed',
-          this.categoriesOnHoverOrClick
-        )
+
+        this.$emit('categories-hover-click-changed', 'catsclick')
 
         this.modeSwitched('mobile')
+        this.categoriesOnHoverOrClickChanged('catsclick')
       }
     } else {
       if (window.innerWidth < 610) {
         // this.mode = 'mobile'
-        this.categoriesOnHoverOrClick = 'catsclick'
-        this.$emit(
-          'categories-hover-click-changed',
-          this.categoriesOnHoverOrClick
-        )
+
+        this.$emit('categories-hover-click-changed', 'catsclick')
 
         this.modeSwitched('mobile')
+        this.categoriesOnHoverOrClickChanged('catsclick')
       }
     }
 
     this.windowResized()
-
-    // init
-    this.$refs.langEn.checked = true
 
     // handle parameters from URL
     /**
@@ -912,7 +914,7 @@ export default {
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to prop resultsRedirectsEnabled)
-     * @param {String} categoriesmode - Show categories on click or hover, valid click or hover (this.categoriesOnHoverOrClick)
+     * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
      * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (this.sizePerPage)
      * @param {String} search - Wikipedia page to search for (prop title)
      */
@@ -1007,14 +1009,12 @@ export default {
     if (categoriesmode === 'click' || categoriesmode === 'hover') {
       switch (categoriesmode) {
         case 'click':
-          this.categoriesOnHoverOrClick = 'catsclick'
+          this.categoriesOnHoverOrClickChanged('catsclick')
           break
 
         case 'hover':
-          this.categoriesOnHoverOrClick = 'catshover'
-          break
+          this.categoriesOnHoverOrClickChanged('catshover')
       }
-      this.categoriesOnHoverOrClickChanged()
     }
 
     if (!isNaN(resultsperpage)) {
