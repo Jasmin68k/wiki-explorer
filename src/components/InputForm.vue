@@ -502,7 +502,7 @@
         min="2"
         step="2"
         :max="40"
-        v-model="sizePerPage"
+        :value="sizePerPage"
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
@@ -514,7 +514,7 @@
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden',
           '--height': flexContainerHeight * 0.75 + 'px'
         }"
-        @input="resetPageNumber()"
+        @input="resetPageNumber(), sizePerPageChanged($event.target.value)"
       />
       <div
         v-show="!mobileMode"
@@ -606,6 +606,7 @@ export default {
     'update:showHelp',
     'update:resultsCategoriesEnabled',
     'update:checkboxFilterEnabled',
+    'update:sizePerPage',
     'indexStartChanged',
     'indexEndChanged',
     'languageSwitched',
@@ -638,7 +639,8 @@ export default {
     mobileDisplay: { required: true, default: 'outgraph', type: String },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
-    resultsRedirectsEnabled: { required: true, default: false, type: Boolean }
+    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
+    sizePerPage: { required: true, default: 16, type: Number }
   },
   watch: {
     indexStart() {
@@ -690,7 +692,7 @@ export default {
       // checkboxFilterEnabled: true,
       // filterCategories: '',
       pageNumber: 0,
-      sizePerPage: 16,
+      // sizePerPage: 16,
       // checkedCategories: new Set(),
       scalingFactor: 1.0,
       circleButtonRadius: 260,
@@ -814,6 +816,9 @@ export default {
       this.windowResized()
       this.$emit('update:showHelp', value)
     },
+    sizePerPageChanged(value) {
+      this.$emit('update:sizePerPage', value)
+    },
     windowResized() {
       this.$nextTick(() => {
         let vw
@@ -915,7 +920,7 @@ export default {
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to prop resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
-     * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (this.sizePerPage)
+     * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (prop sizePerPage)
      * @param {String} search - Wikipedia page to search for (prop title)
      */
 
@@ -1019,7 +1024,7 @@ export default {
 
     if (!isNaN(resultsperpage)) {
       resultsperpage = Math.max(2, Math.min(40, resultsperpage))
-      this.sizePerPage = resultsperpage
+      this.$emit('update:sizePerPage', resultsperpage)
       this.resetPageNumber()
     }
 
