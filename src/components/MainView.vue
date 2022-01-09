@@ -21,6 +21,7 @@
       v-model:resultsRedirectsEnabled="inputFormState.resultsRedirectsEnabled"
       v-model:sizePerPage="inputFormState.sizePerPage"
       v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
+      v-model:circleButtonRadius="inputFormState.circleButtonRadius"
       @pageNumberChanged="pageNumberChanged"
       @update:title="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
@@ -28,7 +29,6 @@
       @update:resultsRedirectsEnabled="resultsRedirectsChanged"
       @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
-      @circleButtonRadiusChanged="circleButtonRadiusChanged"
       @categoriesHoverClickChanged="categoriesHoverClickChanged"
       @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
       @gridHeightChanged="gridHeightChanged"
@@ -112,7 +112,7 @@
         :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
         :scaling-factor="inputFormState.scalingFactor"
-        :circle-button-radius="circleButtonRadius"
+        :circle-button-radius="inputFormState.circleButtonRadius"
         :categories-on-hover="inputFormState.categoriesOnHover"
         :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
@@ -178,7 +178,8 @@ export default {
       categoriesOnHover: true,
       sizePerPage: 16,
       scalingFactor: 1.0,
-      scalingFactorSaved: 1.0
+      scalingFactorSaved: 1.0,
+      circleButtonRadius: 260
     })
     return { inputFormState }
   },
@@ -205,7 +206,7 @@ export default {
         'User-Agent': 'WikiExplorer/0.1'
       }),
       // scalingFactor: 1.0,
-      circleButtonRadius: 260,
+      // circleButtonRadius: 260,
       // categoriesOnHover: true,
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
@@ -1149,9 +1150,9 @@ export default {
       this.$i18n.locale = value
       this.inputFormState.language = value
     },
-    circleButtonRadiusChanged(value) {
-      this.circleButtonRadius = parseInt(value)
-    },
+    // circleButtonRadiusChanged(value) {
+    //   this.circleButtonRadius = parseInt(value)
+    // },
     categoriesHoverClickChanged(value) {
       if (value === 'catshover') {
         this.inputFormState.categoriesOnHover = true

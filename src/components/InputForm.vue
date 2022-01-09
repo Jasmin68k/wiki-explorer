@@ -569,7 +569,7 @@
         min="200"
         max="650"
         step="1"
-        v-model="circleButtonRadius"
+        :value="circleButtonRadius"
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
@@ -579,7 +579,7 @@
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
-        @input="circleButtonRadiusChanged"
+        @input="circleButtonRadiusChanged($event.target.value)"
       />
       <div
         v-if="!mobileMode"
@@ -611,7 +611,7 @@ export default {
     'update:scalingFactorSaved',
     'languageSwitched',
     'categories-hover-click-changed',
-    'circle-button-radius-changed',
+    'update:circleButtonRadius',
     'grid-width-nocategories-changed',
     'grid-height-changed',
     'mode-switched',
@@ -626,6 +626,7 @@ export default {
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     scalingFactor: { required: true, default: 1.0, type: Number },
     scalingFactorSaved: { required: true, default: 1.0, type: Number },
+    circleButtonRadius: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     // resultsCategoriesAllArrayUnfiltered: {
     //   required: true,
@@ -700,7 +701,7 @@ export default {
       // sizePerPage: 16,
       // checkedCategories: new Set(),
       // scalingFactor: 1.0,
-      circleButtonRadius: 260,
+      // circleButtonRadius: 260,
       // scalingFactorSaved: 1.0,
       circleButtonRadiusSaved: 260,
       // categoriesOnHoverOrClick: 'catshover',
@@ -789,21 +790,21 @@ export default {
 
       this.$emit('categories-hover-click-changed', value)
     },
-    circleButtonRadiusChanged() {
-      this.$emit('circle-button-radius-changed', this.circleButtonRadius)
+    circleButtonRadiusChanged(value) {
+      this.$emit('update:circleButtonRadius', parseInt(value))
     },
     modeSwitched(value) {
       if (value === 'mobile') {
         this.$emit('update:scalingFactorSaved', this.scalingFactor)
         this.circleButtonRadiusSaved = this.circleButtonRadius
-        this.circleButtonRadius = 260
+        this.circleButtonRadiusChanged(260)
       } else {
         this.scalingFactorChanged(this.scalingFactorSaved)
-        this.circleButtonRadius = this.circleButtonRadiusSaved
+        this.circleButtonRadiusChanged(this.circleButtonRadiusSaved)
       }
       // only emit radius, scalingFactor is recalculated in windowResized, called in MainView ONLY on switch TO mobile mode
       // this way scale and radius are saved and reapplied for desktop mode
-      this.$emit('circle-button-radius-changed', this.circleButtonRadius)
+      // this.$emit('circle-button-radius-changed', this.circleButtonRadius)
 
       this.$emit('mode-switched', value)
     },
