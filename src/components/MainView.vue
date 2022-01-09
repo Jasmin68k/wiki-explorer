@@ -538,7 +538,7 @@ export default {
         this.getResultsRedirects()
       }
 
-      this.$refs.inputForm.resetPageNumber()
+      this.pageNumber = 0
 
       this.inputsDisabled = false
     },
@@ -1111,7 +1111,7 @@ export default {
       this.pageNumber = value
     },
     resultsCategoriesCheckboxChanged(value) {
-      this.$refs.inputForm.resetPageNumber()
+      this.pageNumber = 0
 
       if (!this.inputFormState.checkboxFilterEnabled) {
         // enable in desktop when changed in mobile
@@ -1122,7 +1122,7 @@ export default {
       this.checkedCategories = value
     },
     categoriesAll(value) {
-      this.$refs.inputForm.resetPageNumber()
+      this.pageNumber = 0
 
       this.checkedCategories = value
     },
