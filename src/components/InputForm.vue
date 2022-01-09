@@ -616,7 +616,8 @@ export default {
     'grid-width-nocategories-changed',
     'grid-height-changed',
     'mode-switched',
-    'mobile-display-switched'
+    'mobile-display-switched',
+    'page-number-changed'
   ],
 
   props: {
@@ -641,7 +642,8 @@ export default {
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
     resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     sizePerPage: { required: true, default: 16, type: Number },
-    numberOfPages: { required: true, default: 0, type: Number }
+    numberOfPages: { required: true, default: 0, type: Number },
+    pageNumber: { required: true, default: 0, type: Number }
   },
   watch: {
     indexStart() {
@@ -692,7 +694,7 @@ export default {
       // resultsRedirectsEnabled: false,
       // checkboxFilterEnabled: true,
       // filterCategories: '',
-      pageNumber: 0,
+      // pageNumber: 0,
       // sizePerPage: 16,
       // checkedCategories: new Set(),
       scalingFactor: 1.0,
@@ -738,19 +740,19 @@ export default {
     // },
 
     resetPageNumber() {
-      this.pageNumber = 0
+      this.$emit('page-number-changed', 0)
     },
     nextPage() {
       if (
         this.pageNumber + 1 <
         this.filteredResultsArrayLength / this.sizePerPage
       ) {
-        this.pageNumber++
+        this.$emit('page-number-changed', this.pageNumber + 1)
       }
     },
     prevPage() {
       if (this.pageNumber > 0) {
-        this.pageNumber--
+        this.$emit('page-number-changed', this.pageNumber - 1)
       }
     },
     checkboxFilterEnabledChange(value) {

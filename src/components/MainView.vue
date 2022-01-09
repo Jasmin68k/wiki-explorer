@@ -8,6 +8,7 @@
       :mobile-mode="inputFormState.mobileMode"
       :mobile-display="inputFormState.mobileDisplay"
       :number-of-pages="numberOfPages"
+      :page-number="pageNumber"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
@@ -16,6 +17,7 @@
       v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
       v-model:resultsRedirectsEnabled="inputFormState.resultsRedirectsEnabled"
       v-model:sizePerPage="inputFormState.sizePerPage"
+      @pageNumberChanged="pageNumberChanged"
       @update:title="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
       @update:resultsCategoriesEnabled="resultsCategoriesChanged"
@@ -209,7 +211,8 @@ export default {
       // enable one of these at a time in mobile mode
 
       titlePage: new TitlePage(),
-      redirectsDone: false
+      redirectsDone: false,
+      pageNumber: 0
     }
   },
 
@@ -1082,6 +1085,9 @@ export default {
     },
     indexEndChanged(value) {
       this.indexEnd = value
+    },
+    pageNumberChanged(value) {
+      this.pageNumber = value
     },
     resultsCategoriesCheckboxChanged(value) {
       this.$refs.inputForm.resetPageNumber()
