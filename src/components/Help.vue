@@ -253,7 +253,6 @@ export default {
 .icon-help3 {
   height: 1em;
   vertical-align: middle;
-  /* margin-left: -0.25em; */
 }
 
 .icon-help-small-left {
@@ -270,8 +269,6 @@ export default {
   height: 1.4em;
   vertical-align: middle;
   font-size: 90%;
-  /* margin-top: 2px; */
-  /* margin-right: -5px; */
 }
 
 .icon-help-small-left3 {
@@ -312,7 +309,6 @@ export default {
   margin-top: 3px;
   margin-bottom: 3px;
   margin-right: 3px;
-  /* width: 90px; */
   min-width: 70%;
   max-width: 70%;
 }

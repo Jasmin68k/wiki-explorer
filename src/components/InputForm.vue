@@ -595,9 +595,6 @@
 <script>
 export default {
   name: 'InputForm',
-
-  // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
-  // should not be needed, when fixed
   emits: [
     'update:title',
     'update:resultsRedirectsEnabled',
@@ -621,7 +618,6 @@ export default {
   ],
 
   props: {
-    // parentTitle: { required: true, default: '', type: String },
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
@@ -630,11 +626,6 @@ export default {
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    // resultsCategoriesAllArrayUnfiltered: {
-    //   required: true,
-    //   default: () => [],
-    //   type: Array
-    // },
     mobileMode: { required: true, default: false, type: Boolean },
     filter: { required: true, default: '', type: String },
     filterCategories: { required: true, default: '', type: String },
@@ -650,65 +641,8 @@ export default {
     indexStart: { required: true, default: 0, type: Number },
     indexEnd: { required: true, default: 0, type: Number }
   },
-  // watch: {
-  //   indexStart() {
-  //     this.$emit('indexStartChanged', this.indexStart)
-  //   },
-  //   indexEnd() {
-  //     this.$emit('indexEndChanged', this.indexEnd)
-  //   }
-  //   // parentTitle() {
-  //   //   if (this.parentTitle) {
-  //   //     this.title = this.parentTitle
-  //   //   }
-  //   // }
-  // },
-
-  // computed: {
-  // numberOfPages() {
-  //   return Math.ceil(this.filteredResultsArrayLength / this.sizePerPage)
-  // },
-  // indexStart() {
-  //   let indexStart = this.pageNumber * this.sizePerPage
-  //   if (indexStart > this.filteredResultsArrayLength - 1) {
-  //     indexStart = this.filteredResultsArrayLength - 1
-  //   }
-
-  //   return indexStart
-  // },
-  // indexEnd() {
-  //   let indexEnd = (this.pageNumber + 1) * this.sizePerPage - 1
-
-  //   if (indexEnd > this.filteredResultsArrayLength - 1) {
-  //     indexEnd = this.filteredResultsArrayLength - 1
-  //   }
-
-  //   if (indexEnd < 0) {
-  //     indexEnd = 0
-  //   }
-
-  //   return indexEnd
-  // }
-  // },
   data() {
     return {
-      // language: 'en',
-      // title: '',
-      // filter: '',
-      // resultsCategoriesEnabled: true,
-      // resultsRedirectsEnabled: false,
-      // checkboxFilterEnabled: true,
-      // filterCategories: '',
-      // pageNumber: 0,
-      // sizePerPage: 16,
-      // checkedCategories: new Set(),
-      // scalingFactor: 1.0,
-      // circleButtonRadius: 260,
-      // scalingFactorSaved: 1.0,
-      // circleButtonRadiusSaved: 260,
-      // categoriesOnHoverOrClick: 'catshover',
-      // mode: 'desktop',
-      // mobileDisplay: 'outgraph',
       portraitMode: false,
       flexContainerHeight: 0
     }
@@ -740,10 +674,6 @@ export default {
     filterCategoriesChanged(value) {
       this.$emit('update:filterCategories', value)
     },
-    // indexChanged() {
-    //   this.$emit('indexChanged', this.indexStart, this.indexEnd)
-    // },
-
     resetPageNumber() {
       this.$emit('page-number-changed', 0)
     },
@@ -765,9 +695,6 @@ export default {
       this.resetPageNumber()
 
       this.$emit('update:checkboxFilterEnabled', value)
-
-      // this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
-      // this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     },
     languageSwitched(value) {
       if (value === 'en') {
@@ -780,7 +707,6 @@ export default {
 
       this.$emit('languageSwitched', value)
     },
-
     categoriesOnHoverOrClickChanged(value) {
       if (value === 'catshover') {
         this.$refs.catsHover.checked = true
@@ -804,18 +730,11 @@ export default {
         this.scalingFactorChanged(this.scalingFactorSaved)
         this.circleButtonRadiusChanged(this.circleButtonRadiusSaved)
       }
-      // only emit radius, scalingFactor is recalculated in windowResized, called in MainView ONLY on switch TO mobile mode
-      // this way scale and radius are saved and reapplied for desktop mode
-      // this.$emit('circle-button-radius-changed', this.circleButtonRadius)
-
       this.$emit('mode-switched', value)
     },
     mobileDisplaySwitched(value) {
       this.$emit('mobile-display-switched', value)
     },
-    // setCheckboxFilterEnabled() {
-    //   this.checkboxFilterEnabled = true
-    // },
     showHelpClicked(value) {
       // resize needed here, not after emit in MainView
       this.windowResized()
@@ -856,9 +775,7 @@ export default {
           vw -= this.$refs.inputformflexcontainer.getBoundingClientRect().width
         }
 
-        // if (!this.checkboxFilterEnabled) {
         this.$emit('grid-width-nocategories-changed', vw)
-        // }
 
         let vh
         if (window.matchMedia('(orientation: portrait)').matches) {
@@ -895,19 +812,13 @@ export default {
 
     if (window.matchMedia('(orientation: landscape)').matches) {
       if (window.innerWidth < 860) {
-        // this.mode = 'mobile'
-
         this.$emit('categories-hover-click-changed', 'catsclick')
-
         this.modeSwitched('mobile')
         this.categoriesOnHoverOrClickChanged('catsclick')
       }
     } else {
       if (window.innerWidth < 610) {
-        // this.mode = 'mobile'
-
         this.$emit('categories-hover-click-changed', 'catsclick')
-
         this.modeSwitched('mobile')
         this.categoriesOnHoverOrClickChanged('catsclick')
       }
@@ -946,12 +857,10 @@ export default {
     const search = urlParameters.get('search')
 
     if (mode === 'desktop' || mode === 'mobile') {
-      // this.mode = mode
       this.modeSwitched(mode)
     }
 
     if (lang === 'en' || lang === 'de') {
-      // this.language = lang
       this.languageSwitched(lang)
     }
 
@@ -968,7 +877,6 @@ export default {
     }
 
     if (titlefilter && titlefilter.length > 0) {
-      // this.filter = titlefilter
       this.resetPageNumber()
       this.filterChanged(titlefilter)
     }
@@ -978,7 +886,6 @@ export default {
       categoriesfilter.length > 0 &&
       this.resultsCategoriesEnabled
     ) {
-      // this.filterCategories = categoriesfilter
       this.resetPageNumber()
       this.filterCategoriesChanged(categoriesfilter)
     }
@@ -1037,8 +944,6 @@ export default {
 
     // do search last after evaluating all other parameters
     if (search && search.length > 0) {
-      // this.title = search
-      // this.fetchData(search)
       this.$emit('update:title', search)
     }
   },
@@ -1084,36 +989,16 @@ export default {
 
 .inputform-flex-container {
   display: flex;
-  /* flex-wrap: wrap; */
   justify-content: space-around;
-  /* align-items: center; */
-  /* align-content: space-around; */
-  /* background-color: green; */
   flex: 0 1 auto;
 }
 
 .inputform-flex-item-1,
 .inputform-flex-item-2,
 .inputform-flex-item-3 {
-  /* background-color: lightgreen; */
-  /* border: 1px solid black; */
   flex: 0 1 auto;
   font-size: 90%;
-  /* width: 400px; */
 }
-
-/* .inputform-flex-item-1 {
-  background-color: lightblue;
-}
-
-.inputform-flex-item-2 {
-  background-color: lightcyan;
-}
-
-.inputform-flex-item-3 {
-  background-color: lightgreen;
-} */
-
 .leftarrow {
   height: 1.75em;
   float: left;

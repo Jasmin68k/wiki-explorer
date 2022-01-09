@@ -36,7 +36,6 @@ export default {
 
   props: {
     items: { required: true, default: () => [], type: Array },
-    // itemsFull: { required: true, default: () => [], type: Array },
     rootHeight: { required: true, default: 300, type: Number },
     checkedInit: { required: true, default: () => new Set(), type: Set }
   },
@@ -115,20 +114,10 @@ export default {
       // e. g. none, scroll max down, filter categories, all
       // also triggers v-model update only at end, might even be faster
 
-      // let checkedCategoriesTemp = new Set(this.checkedCategories)
       let checkedCategoriesTemp = new Set()
-
-      // this.items.forEach((item) =>
-      //   !checkedCategoriesTemp.has(item)
-      //     ? checkedCategoriesTemp.add(item)
-      //     : null
-      // )
-
       // no duplicate check needed in Set
       this.items.forEach((item) => checkedCategoriesTemp.add(item))
-
       this.checkedCategories = checkedCategoriesTemp
-
       this.$emit('categoriesAll', this.checkedCategories)
     },
     categoriesNone() {
@@ -168,9 +157,6 @@ export default {
   mounted() {
     // emit did not work for whatever reason
     this.$parent.windowResized()
-
-    // this.checkedCategories = new Set(this.itemsFull)
-    // this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
 
     this.checkedCategories = new Set(this.checkedInit)
 
@@ -213,7 +199,6 @@ li {
 }
 
 .checkboxbuttons {
-  /* position: fixed; */
   position: absolute;
   right: 30px;
   z-index: 1;

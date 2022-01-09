@@ -187,17 +187,8 @@ export default {
   },
   data() {
     return {
-      // language: 'en',
-      // indexStart: 0,
-      // indexEnd: 0,
-      // title: '',
-      // filter: '',
-      // filterCategories: '',
       checkedCategories: new Set(),
-      // checkboxFilterEnabled: true,
-      // resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
-      // resultsRedirectsEnabled: false,
       resultsRedirectsDone: true,
       inputsDisabled: false,
 
@@ -207,41 +198,14 @@ export default {
         'Api-User-Agent': 'WikiExplorer/0.1',
         'User-Agent': 'WikiExplorer/0.1'
       }),
-      // scalingFactor: 1.0,
-      // circleButtonRadius: 260,
-      // categoriesOnHover: true,
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
-      // mobileMode: false,
-      // enable one of these at a time in mobile mode
-
       titlePage: new TitlePage(),
       redirectsDone: false,
       pageNumber: 0
     }
   },
-
-  // watch: {
-  //   resultsCategoriesEnabled() {
-  //     if (
-  //       this.resultsCategoriesEnabled === true &&
-  //       this.resultsCategoriesDone === false
-  //     ) {
-  //       this.getResultsCategories()
-  //     }
-
-  //     if (
-  //       this.resultsCategoriesEnabled === true &&
-  //       this.resultsCategoriesDone ===
-  //     ) {
-  //       this.checkedCategories = new Set(
-  //         this.resultsCategoriesAllArrayUnfiltered
-  //       )
-  //     }
-  //   }
-  // },
-
   computed: {
     indexStart() {
       let indexStart = this.pageNumber * this.inputFormState.sizePerPage
@@ -269,11 +233,6 @@ export default {
         this.filteredResultsArray.length / this.inputFormState.sizePerPage
       )
     },
-
-    // scrollboxContainerHeight() {
-    //   return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
-    // },
-
     filteredResultsArray() {
       if (this.inputsDisabled) {
         return []
@@ -289,7 +248,7 @@ export default {
       )
 
       // good - maybe rewrite without ternary
-      // needs to check this.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
+      // needs to check this.inputFormState.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
       if (
         this.inputFormState.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
@@ -358,7 +317,6 @@ export default {
         ) {
           resultPage.categories.forEach((category) =>
             // no duplicate check needed in Set
-            // !allCategoriesSet.has(category) &&
             category
               .toLowerCase()
               .includes(this.inputFormState.filterCategories.toLowerCase())
@@ -390,12 +348,6 @@ export default {
       for (const pageId of resultsMap.keys()) {
         const resultPage = resultsMap.get(pageId)
         if (resultPage.categories) {
-          // resultPage.categories.forEach((category) =>
-          //   !allCategoriesSet.has(category)
-          //     ? allCategoriesSet.add(category)
-          //     : null
-          // )
-
           // Set doesn't allow duplicate values, so no check needed
           resultPage.categories.forEach((category) =>
             allCategoriesSet.add(category)
@@ -418,8 +370,6 @@ export default {
       this.inputsDisabled = true
 
       resultsMap.clear()
-      // const redirects = {}
-
       do {
         try {
           let pageUrl =
@@ -490,53 +440,17 @@ export default {
               }
             }
           }
-
-          // if (!jsonDataFullQueryPart.query.redirects) {
-          //   continue
-          // }
-
-          // for (const redirect of jsonDataFullQueryPart.query.redirects) {
-          //   redirects[redirect.from] = redirect
-          // }
         } catch (error) {
           // add error/display for user or similar
           console.error(`${error.name}: ${error.message}`)
         }
       } while (jsonDataFullQueryPart.continue)
 
-      // const redirectsArray = Object.values(redirects)
-
       this.resultsCategoriesDone = false
 
       if (this.inputFormState.resultsCategoriesEnabled) {
         this.getResultsCategories()
       }
-
-      // attaching redirects to appropriate pages in resultsobject - if redirectsArray not used
-      // otherwise, sort above not needed.
-      // could also maybe scrape this from redirectsarray directly on display, but going for
-      // having it all in one data structure
-      // THESE ARE ONLY REDIRECTS USED ON SEARCHED PAGE, NOT ALL POSSIBLE ONES
-      // for all redirects for a given page use prop=redirects
-      // https://en.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&titles=C64&prop=redirects&rdlimit=max
-      // can possibly be combined into api fetch for all results, but not useful here, long list for each result and does not have any direct relation to searched page
-
-      // for (const pageId of resultsMap.keys()) {
-      //   const resultPage = resultsMap.get(pageId)
-      //   let redirectFrom = []
-
-      //   for (let i = 0; i < redirectsArray.length; i++) {
-      //     if (resultPage.title === redirectsArray[i].to) {
-      //       redirectFrom.push(redirectsArray[i].from)
-      //       // break - do not break here, several possible!
-      //     }
-      //   }
-      //   if (redirectFrom.length > 0) {
-      //     redirectFrom.sort()
-      //     resultPage.redirects = [...redirectFrom]
-      //     redirectFrom = []
-      //   }
-      // }
 
       this.resultsRedirectsDone = false
 
@@ -558,7 +472,6 @@ export default {
           try {
             // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
 
-            // remove redirects and use proper redirecttarget for title
             let pageUrlCategories =
               'https://' +
               this.inputFormState.language +
@@ -601,10 +514,6 @@ export default {
               if (!(page.title === redirectTargetGlobal)) {
                 const resultPage = resultsMap.get(pageId)
                 if (page.categories) {
-                  // if (!resultPage.categories) {
-                  //   resultPage.categories = []
-                  // }
-
                   page.categories.forEach((category) =>
                     resultPage.categories.push(category.title)
                   )
@@ -674,80 +583,6 @@ export default {
         console.error(error.message)
       }
     },
-
-    // this faster method doesn't get all redirects - seems to skip ones which are redirects and not original names in title page
-    // async getResultsRedirects() {
-    //   // skip fetch when no results
-    //   if (resultsMap.size > 0) {
-    //     let redirectsQueryPart = {}
-
-    //     do {
-    //       try {
-    //         let redirectsUrl =
-    //           'https://' +
-    //           this.language +
-    //           '.wikipedia.org/w/api.php?action=query&generator=links&gpllimit=max&gplnamespace=0&format=json&prop=redirects&rdlimit=max&titles=' +
-    //           redirectTargetGlobal +
-    //           '&origin=*'
-
-    //         if (redirectsQueryPart.continue) {
-    //           for (const continueToken of Object.keys(
-    //             redirectsQueryPart.continue
-    //           )) {
-    //             redirectsUrl +=
-    //               '&' +
-    //               continueToken +
-    //               '=' +
-    //               redirectsQueryPart.continue[continueToken]
-    //           }
-    //         }
-
-    //         const response = await fetch(redirectsUrl, {
-    //           headers: this.fetchHeaders
-    //         })
-
-    //         // ok = true on http 200-299 good response
-    //         if (!response.ok) {
-    //           const message = `${response.status} ${response.statusText}`
-    //           throw new NetworkError(message)
-    //         }
-    //         redirectsQueryPart = await response.json()
-
-    //         if (!redirectsQueryPart.query) {
-    //           throw new DataError('No result from API')
-    //         }
-
-    //         for (const pageId of Object.keys(redirectsQueryPart.query.pages)) {
-    //           const page = redirectsQueryPart.query.pages[pageId]
-
-    //           // ignore possibly non existing (ignored before) title page in results
-    //           if (!(page.title === redirectTargetGlobal)) {
-    //             const resultPage = resultsMap.get(pageId)
-    //             if (page.redirects) {
-    //               page.redirects.forEach((redirect) =>
-    //                 resultPage.redirects.push(redirect.title)
-    //               )
-    //             }
-    //           }
-    //         }
-    //       } catch (error) {
-    //         // add error/display for user or similar
-    //         console.error(error.message)
-    //       }
-    //     } while (redirectsQueryPart.continue)
-
-    //     //sort
-    //     for (const pageId of resultsMap.keys()) {
-    //       const resultPage = resultsMap.get(pageId)
-    //       resultPage.redirects.sort()
-    //     }
-    //   }
-    //   this.resultsRedirectsDone = true
-    // },
-
-    // parallelized single requests with throttle
-    //       in the future maybe bundle several titles with titles=title1|title2|title3...
-    //       also maybe bundle batch of requests and wait for them to finish before continuing
     async getResultsRedirects() {
       // skip fetch when no results
       if (resultsMap.size > 0) {
@@ -799,10 +634,6 @@ export default {
             }
           }
 
-          // const response = await fetch(redirectsUrl, {
-          //   headers: this.fetchHeaders
-          // })
-
           const response = await this.fetchRetry(
             redirectsUrl,
             {
@@ -811,12 +642,6 @@ export default {
             retries,
             throttle
           )
-
-          // // ok = true on http 200-299 good response
-          // if (!response.ok) {
-          //   const message = `${response.status} ${response.statusText}`
-          //   throw new NetworkError(message)
-          // }
 
           redirectsQueryPart = await response.json()
 
@@ -852,11 +677,7 @@ export default {
         // console.log('FETCH FAILED WITHOUT THROW')
         throw new NetworkError()
       } catch (error) {
-        // console.log(
-        //   `FETCH FAILED WITH THROW - retries ${retries} - throttle ${throttle}`
-        // )
         if (retries <= 1) {
-          // console.log('FETCH FAILED retries <= 1')
           //empty on fetch throw
           let message = ''
           if (response) {
@@ -876,7 +697,6 @@ export default {
       this.titlePage.image = ''
 
       this.titlePage.missing = true
-      // let redirectTarget = ''
       try {
         let mainInfoUrl =
           'https://' +
@@ -907,14 +727,6 @@ export default {
         if (responseFull.query.pages[pageId].missing !== '') {
           this.titlePage.missing = false
         }
-
-        // if (responseFull.query.redirects) {
-        //   if (responseFull.query.redirects[0].to) {
-        //     redirectTarget = responseFull.query.redirects[0].to
-        //   }
-        // } else {
-        //   redirectTarget = this.title
-        // }
 
         // check if image exists
         if (
@@ -1067,15 +879,12 @@ export default {
     },
     async fetchDataClicked(value) {
       if (value) {
-        // this.title = value
         await this.getRedirectTarget()
         this.getMainInfo()
         this.getJson()
       }
     },
     resultsCategoriesChanged() {
-      // this.resultsCategoriesEnabled = value
-
       if (
         this.inputFormState.resultsCategoriesEnabled &&
         !this.resultsCategoriesDone
@@ -1092,8 +901,6 @@ export default {
       }
     },
     resultsRedirectsChanged() {
-      // this.resultsRedirectsEnabled = value
-
       if (
         this.inputFormState.resultsRedirectsEnabled &&
         !this.resultsRedirectsDone
@@ -1101,18 +908,6 @@ export default {
         this.getResultsRedirects()
       }
     },
-    // filterChanged(value) {
-    //   this.filter = value
-    // },
-    // filterCategoriesChanged(value) {
-    //   this.filterCategories = value
-    // },
-    // indexStartChanged(value) {
-    //   this.indexStart = value
-    // },
-    // indexEndChanged(value) {
-    //   this.indexEnd = value
-    // },
     pageNumberChanged(value) {
       this.pageNumber = value
     },
@@ -1121,7 +916,6 @@ export default {
 
       if (!this.inputFormState.checkboxFilterEnabled) {
         // enable in desktop when changed in mobile
-        // this.$refs.inputForm.setCheckboxFilterEnabled()
         this.inputFormState.checkboxFilterEnabled = true
       }
 
@@ -1140,8 +934,6 @@ export default {
         )
       }
 
-      // this.inputFormState.checkboxFilterEnabled = value
-
       if (this.inputFormState.checkboxFilterEnabled) {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
@@ -1152,9 +944,6 @@ export default {
       this.$i18n.locale = value
       this.inputFormState.language = value
     },
-    // circleButtonRadiusChanged(value) {
-    //   this.circleButtonRadius = parseInt(value)
-    // },
     categoriesHoverClickChanged(value) {
       if (value === 'catshover') {
         this.inputFormState.categoriesOnHover = true
@@ -1187,9 +976,7 @@ export default {
       this.windowResized()
     },
     showHelpSwitched() {
-      // this.windowResized()
       this.inputsDisabled = this.inputFormState.showHelp
-      // this.showHelp = value
     },
     windowResized() {
       this.$nextTick(() => {
@@ -1220,16 +1007,10 @@ export default {
 
 <style scoped>
 .inputcategoriescontainer {
-  /* height temp till layout */
-  /* height: 300px; */
   position: relative;
 }
 .page-flex-container {
   display: flex;
-  /* flex-wrap: wrap; */
-  /* justify-content: flex-start; */
-  /* align-items: center; */
-  /* align-content: space-around; */
   height: 100vh;
 
   /* only needed in mobile portrait mode - workaround scrollbars */
@@ -1254,46 +1035,21 @@ export default {
 }
 
 .grid-container {
-  /* background-color: lightpink; */
-  /* border: 1px solid black; */
   grid-template-columns: min-content minmax(320px, 1fr);
   grid-template-rows: min-content minmax(0, 1fr);
-  /* height: 100%; */
   height: calc(100% - var(--gridheightsubtract));
-
-  /* overflow-y: hidden; */
 }
 
 .grid-container-nocategories {
-  /* background-color: lightpink; */
-  /* border: 1px solid black; */
   grid-template-columns: var(--gridwidthnocategories);
   grid-template-rows: min-content minmax(0, 1fr);
-  /* height: 100%; */
   height: calc(100% - var(--gridheightsubtract));
-
-  /* overflow-y: hidden; */
 }
 
 .grid-container-base.mobile {
-  /* background-color: lightpink; */
-  /* border: 1px solid black; */
   grid-template-columns: var(--gridwidthnocategories);
   grid-template-rows: var(--gridmobileheight);
-  /* grid-template-rows: minmax(0, 1fr); */
-  /* height: 100%; */
-
-  /* overflow-x: hidden; */
-
-  /* overflow-y: hidden; */
 }
-
-/* .grid-item-graph, */
-/* .grid-item-maininfo, */
-/* .grid-item-categories { */
-/* background-color: cadetblue; */
-/* border: 1px solid black; */
-/* } */
 
 .grid-item-graph {
   grid-column: 1 / 2;

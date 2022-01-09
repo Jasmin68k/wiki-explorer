@@ -49,9 +49,6 @@ import CircleButton from './CircleButton.vue'
 export default {
   name: 'Outgraph',
   components: { TitleButton, CircleButton },
-  // avoid vue bug https://github.com/vuejs/vue-next/issues/2540 [just console warning]
-  // should not be needed, when fixed
-  // interestingly, this component doesn't show bug, even when this is omitted
   emits: ['circleButtonClicked'],
 
   props: {
@@ -155,9 +152,6 @@ export default {
       this.drawLines()
     })
   }
-  // beforeUnMount() {
-  //   this.clearCanvas()
-  // }
 }
 </script>
 <style scoped>
