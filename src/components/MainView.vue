@@ -11,6 +11,7 @@
       :page-number="pageNumber"
       :index-start="indexStart"
       :index-end="indexEnd"
+      v-model:scalingFactor="inputFormState.scalingFactor"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
@@ -26,7 +27,6 @@
       @update:resultsRedirectsEnabled="resultsRedirectsChanged"
       @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
-      @scalingFactorChanged="scalingFactorChanged"
       @circleButtonRadiusChanged="circleButtonRadiusChanged"
       @categoriesHoverClickChanged="categoriesHoverClickChanged"
       @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
@@ -110,7 +110,7 @@
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
-        :scaling-factor="scalingFactor"
+        :scaling-factor="inputFormState.scalingFactor"
         :circle-button-radius="circleButtonRadius"
         :categories-on-hover="inputFormState.categoriesOnHover"
         :redirects-done="redirectsDone"
@@ -175,7 +175,8 @@ export default {
       resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
       categoriesOnHover: true,
-      sizePerPage: 16
+      sizePerPage: 16,
+      scalingFactor: 1.0
     })
     return { inputFormState }
   },
@@ -201,7 +202,7 @@ export default {
         'Api-User-Agent': 'WikiExplorer/0.1',
         'User-Agent': 'WikiExplorer/0.1'
       }),
-      scalingFactor: 1.0,
+      // scalingFactor: 1.0,
       circleButtonRadius: 260,
       // categoriesOnHover: true,
       gridWidthNocategories: 1520,
@@ -1145,9 +1146,6 @@ export default {
     languageSwitched(value) {
       this.$i18n.locale = value
       this.inputFormState.language = value
-    },
-    scalingFactorChanged(value) {
-      this.scalingFactor = parseFloat(value)
     },
     circleButtonRadiusChanged(value) {
       this.circleButtonRadius = parseInt(value)

@@ -543,7 +543,7 @@
         min="0.33"
         max="1.0"
         step="0.01"
-        v-model="scalingFactor"
+        :value="scalingFactor"
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
@@ -553,7 +553,7 @@
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
-        @input="scalingFactorChanged"
+        @input="scalingFactorChanged($event.target.value)"
       />
       <div
         v-if="!mobileMode"
@@ -607,9 +607,9 @@ export default {
     'update:resultsCategoriesEnabled',
     'update:checkboxFilterEnabled',
     'update:sizePerPage',
-
+    'update:scalingFactor',
     'languageSwitched',
-    'scalingFactorChanged',
+
     'categories-hover-click-changed',
     'circle-button-radius-changed',
     'grid-width-nocategories-changed',
@@ -624,7 +624,7 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
-
+    scalingFactor: { required: true, default: 1.0, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     // resultsCategoriesAllArrayUnfiltered: {
     //   required: true,
@@ -698,7 +698,7 @@ export default {
       // pageNumber: 0,
       // sizePerPage: 16,
       // checkedCategories: new Set(),
-      scalingFactor: 1.0,
+      // scalingFactor: 1.0,
       circleButtonRadius: 260,
       scalingFactorSaved: 1.0,
       circleButtonRadiusSaved: 260,
@@ -788,9 +788,6 @@ export default {
 
       this.$emit('categories-hover-click-changed', value)
     },
-    scalingFactorChanged() {
-      this.$emit('scalingFactorChanged', this.scalingFactor)
-    },
     circleButtonRadiusChanged() {
       this.$emit('circle-button-radius-changed', this.circleButtonRadius)
     },
@@ -800,7 +797,7 @@ export default {
         this.circleButtonRadiusSaved = this.circleButtonRadius
         this.circleButtonRadius = 260
       } else {
-        this.scalingFactor = this.scalingFactorSaved
+        this.scalingFactorChanged(this.scalingFactorSaved)
         this.circleButtonRadius = this.circleButtonRadiusSaved
       }
       // only emit radius, scalingFactor is recalculated in windowResized, called in MainView ONLY on switch TO mobile mode
@@ -823,6 +820,10 @@ export default {
     sizePerPageChanged(value) {
       this.$emit('update:sizePerPage', parseInt(value))
     },
+    scalingFactorChanged(value) {
+      this.$emit('update:scalingFactor', parseFloat(value))
+    },
+
     windowResized() {
       this.$nextTick(() => {
         let vw
@@ -876,9 +877,7 @@ export default {
           // also generally restricting to min 0.33
           sf = Math.max(0.33, sf)
 
-          this.scalingFactor = sf
-
-          this.$emit('scalingFactorChanged', this.scalingFactor)
+          this.scalingFactorChanged(sf)
         }
       })
     }
