@@ -332,8 +332,8 @@
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
             "
-            v-model="resultsRedirectsEnabled"
-            @change="resultsRedirectsChanged"
+            :checked="resultsRedirectsEnabled"
+            @change="resultsRedirectsChanged($event.target.checked)"
           />
           <label
             class="checkboxlabel"
@@ -600,8 +600,7 @@ export default {
   // should not be needed, when fixed
   emits: [
     'update:title',
-
-    'resultsRedirectsChanged',
+    'update:resultsRedirectsEnabled',
     'update:filter',
     'update:filterCategories',
     'update:showHelp',
@@ -638,7 +637,8 @@ export default {
     showHelp: { required: true, default: false, type: Boolean },
     mobileDisplay: { required: true, default: 'outgraph', type: String },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
-    checkboxFilterEnabled: { required: true, default: true, type: Boolean }
+    checkboxFilterEnabled: { required: true, default: true, type: Boolean },
+    resultsRedirectsEnabled: { required: true, default: false, type: Boolean }
   },
   watch: {
     indexStart() {
@@ -686,7 +686,7 @@ export default {
       // title: '',
       // filter: '',
       // resultsCategoriesEnabled: true,
-      resultsRedirectsEnabled: false,
+      // resultsRedirectsEnabled: false,
       // checkboxFilterEnabled: true,
       // filterCategories: '',
       pageNumber: 0,
@@ -721,8 +721,8 @@ export default {
       this.resetPageNumber()
       this.$emit('update:resultsCategoriesEnabled', value)
     },
-    resultsRedirectsChanged() {
-      this.$emit('resultsRedirectsChanged', this.resultsRedirectsEnabled)
+    resultsRedirectsChanged(value) {
+      this.$emit('update:resultsRedirectsEnabled', value)
     },
     filterChanged(value) {
       this.$emit('update:filter', value)
@@ -911,7 +911,7 @@ export default {
      * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
-     * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to this.resultsRedirectsEnabled)
+     * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to prop resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover (this.categoriesOnHoverOrClick)
      * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (this.sizePerPage)
      * @param {String} search - Wikipedia page to search for (prop title)
@@ -997,13 +997,11 @@ export default {
     if (redirects === 'on' || redirects === 'off') {
       switch (redirects) {
         case 'on':
-          this.resultsRedirectsEnabled = true
+          this.resultsRedirectsChanged(true)
           break
         case 'off':
-          this.resultsRedirectsEnabled = false
-          break
+          this.resultsRedirectsChanged(false)
       }
-      this.resultsRedirectsChanged()
     }
 
     if (categoriesmode === 'click' || categoriesmode === 'hover') {

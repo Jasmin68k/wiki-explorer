@@ -13,10 +13,11 @@
       v-model:showHelp="inputFormState.showHelp"
       v-model:resultsCategoriesEnabled="inputFormState.resultsCategoriesEnabled"
       v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
+      v-model:resultsRedirectsEnabled="inputFormState.resultsRedirectsEnabled"
       @update:title="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
       @update:resultsCategoriesEnabled="resultsCategoriesChanged"
-      @resultsRedirectsChanged="resultsRedirectsChanged"
+      @update:resultsRedirectsEnabled="resultsRedirectsChanged"
       @indexStartChanged="indexStartChanged"
       @indexEndChanged="indexEndChanged"
       @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
@@ -97,7 +98,7 @@
         :inputs-disabled="inputsDisabled"
         :title="titlePage.title"
         :url="titlePage.url"
-        :results-redirects-enabled="resultsRedirectsEnabled"
+        :results-redirects-enabled="inputFormState.resultsRedirectsEnabled"
         :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
@@ -167,6 +168,7 @@ export default {
       language: 'en',
       mobileDisplay: 'outgraph',
       resultsCategoriesEnabled: true,
+      resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true
     })
     return { inputFormState }
@@ -183,7 +185,7 @@ export default {
       // checkboxFilterEnabled: true,
       // resultsCategoriesEnabled: true,
       resultsCategoriesDone: true,
-      resultsRedirectsEnabled: false,
+      // resultsRedirectsEnabled: false,
       resultsRedirectsDone: true,
       inputsDisabled: false,
 
@@ -498,7 +500,7 @@ export default {
 
       this.resultsRedirectsDone = false
 
-      if (this.resultsRedirectsEnabled) {
+      if (this.inputFormState.resultsRedirectsEnabled) {
         this.getResultsRedirects()
       }
 
@@ -1049,10 +1051,13 @@ export default {
         )
       }
     },
-    resultsRedirectsChanged(value) {
-      this.resultsRedirectsEnabled = value
+    resultsRedirectsChanged() {
+      // this.resultsRedirectsEnabled = value
 
-      if (this.resultsRedirectsEnabled && !this.resultsRedirectsDone) {
+      if (
+        this.inputFormState.resultsRedirectsEnabled &&
+        !this.resultsRedirectsDone
+      ) {
         this.getResultsRedirects()
       }
     },
