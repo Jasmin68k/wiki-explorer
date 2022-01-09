@@ -7,6 +7,7 @@
       :filtered-results-array-length="filteredResultsArray.length"
       :mobile-mode="inputFormState.mobileMode"
       :mobile-display="inputFormState.mobileDisplay"
+      :number-of-pages="numberOfPages"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
@@ -233,6 +234,12 @@ export default {
   // },
 
   computed: {
+    numberOfPages() {
+      return Math.ceil(
+        this.filteredResultsArray.length / this.inputFormState.sizePerPage
+      )
+    },
+
     // scrollboxContainerHeight() {
     //   return this.$refs.inputcategoriescontainer.getBoundingClientRect().height
     // },

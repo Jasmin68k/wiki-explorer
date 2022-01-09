@@ -640,7 +640,8 @@ export default {
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
     resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
-    sizePerPage: { required: true, default: 16, type: Number }
+    sizePerPage: { required: true, default: 16, type: Number },
+    numberOfPages: { required: true, default: 0, type: Number }
   },
   watch: {
     indexStart() {
@@ -657,9 +658,9 @@ export default {
   },
 
   computed: {
-    numberOfPages() {
-      return Math.ceil(this.filteredResultsArrayLength / this.sizePerPage)
-    },
+    // numberOfPages() {
+    //   return Math.ceil(this.filteredResultsArrayLength / this.sizePerPage)
+    // },
     indexStart() {
       let indexStart = this.pageNumber * this.sizePerPage
       if (indexStart > this.filteredResultsArrayLength - 1) {
