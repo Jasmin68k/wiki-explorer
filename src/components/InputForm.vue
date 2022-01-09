@@ -820,7 +820,7 @@ export default {
       this.$emit('update:showHelp', value)
     },
     sizePerPageChanged(value) {
-      this.$emit('update:sizePerPage', value)
+      this.$emit('update:sizePerPage', parseInt(value))
     },
     windowResized() {
       this.$nextTick(() => {
