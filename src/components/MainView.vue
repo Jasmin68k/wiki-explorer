@@ -9,6 +9,8 @@
       :mobile-display="inputFormState.mobileDisplay"
       :number-of-pages="numberOfPages"
       :page-number="pageNumber"
+      :index-start="indexStart"
+      :index-end="indexEnd"
       v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
@@ -22,8 +24,6 @@
       @update:showHelp="showHelpSwitched"
       @update:resultsCategoriesEnabled="resultsCategoriesChanged"
       @update:resultsRedirectsEnabled="resultsRedirectsChanged"
-      @indexStartChanged="indexStartChanged"
-      @indexEndChanged="indexEndChanged"
       @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
       @scalingFactorChanged="scalingFactorChanged"
@@ -182,8 +182,8 @@ export default {
   data() {
     return {
       // language: 'en',
-      indexStart: 0,
-      indexEnd: 0,
+      // indexStart: 0,
+      // indexEnd: 0,
       // title: '',
       // filter: '',
       // filterCategories: '',
@@ -237,6 +237,27 @@ export default {
   // },
 
   computed: {
+    indexStart() {
+      let indexStart = this.pageNumber * this.inputFormState.sizePerPage
+      if (indexStart > this.filteredResultsArray.length - 1) {
+        indexStart = this.filteredResultsArray.length - 1
+      }
+
+      return indexStart
+    },
+    indexEnd() {
+      let indexEnd = (this.pageNumber + 1) * this.inputFormState.sizePerPage - 1
+
+      if (indexEnd > this.filteredResultsArray.length - 1) {
+        indexEnd = this.filteredResultsArray.length - 1
+      }
+
+      if (indexEnd < 0) {
+        indexEnd = 0
+      }
+
+      return indexEnd
+    },
     numberOfPages() {
       return Math.ceil(
         this.filteredResultsArray.length / this.inputFormState.sizePerPage
@@ -1080,12 +1101,12 @@ export default {
     // filterCategoriesChanged(value) {
     //   this.filterCategories = value
     // },
-    indexStartChanged(value) {
-      this.indexStart = value
-    },
-    indexEndChanged(value) {
-      this.indexEnd = value
-    },
+    // indexStartChanged(value) {
+    //   this.indexStart = value
+    // },
+    // indexEndChanged(value) {
+    //   this.indexEnd = value
+    // },
     pageNumberChanged(value) {
       this.pageNumber = value
     },

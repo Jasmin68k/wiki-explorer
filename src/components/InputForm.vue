@@ -607,8 +607,7 @@ export default {
     'update:resultsCategoriesEnabled',
     'update:checkboxFilterEnabled',
     'update:sizePerPage',
-    'indexStartChanged',
-    'indexEndChanged',
+
     'languageSwitched',
     'scalingFactorChanged',
     'categories-hover-click-changed',
@@ -643,48 +642,50 @@ export default {
     resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     sizePerPage: { required: true, default: 16, type: Number },
     numberOfPages: { required: true, default: 0, type: Number },
-    pageNumber: { required: true, default: 0, type: Number }
+    pageNumber: { required: true, default: 0, type: Number },
+    indexStart: { required: true, default: 0, type: Number },
+    indexEnd: { required: true, default: 0, type: Number }
   },
-  watch: {
-    indexStart() {
-      this.$emit('indexStartChanged', this.indexStart)
-    },
-    indexEnd() {
-      this.$emit('indexEndChanged', this.indexEnd)
-    }
-    // parentTitle() {
-    //   if (this.parentTitle) {
-    //     this.title = this.parentTitle
-    //   }
-    // }
-  },
+  // watch: {
+  //   indexStart() {
+  //     this.$emit('indexStartChanged', this.indexStart)
+  //   },
+  //   indexEnd() {
+  //     this.$emit('indexEndChanged', this.indexEnd)
+  //   }
+  //   // parentTitle() {
+  //   //   if (this.parentTitle) {
+  //   //     this.title = this.parentTitle
+  //   //   }
+  //   // }
+  // },
 
-  computed: {
-    // numberOfPages() {
-    //   return Math.ceil(this.filteredResultsArrayLength / this.sizePerPage)
-    // },
-    indexStart() {
-      let indexStart = this.pageNumber * this.sizePerPage
-      if (indexStart > this.filteredResultsArrayLength - 1) {
-        indexStart = this.filteredResultsArrayLength - 1
-      }
+  // computed: {
+  // numberOfPages() {
+  //   return Math.ceil(this.filteredResultsArrayLength / this.sizePerPage)
+  // },
+  // indexStart() {
+  //   let indexStart = this.pageNumber * this.sizePerPage
+  //   if (indexStart > this.filteredResultsArrayLength - 1) {
+  //     indexStart = this.filteredResultsArrayLength - 1
+  //   }
 
-      return indexStart
-    },
-    indexEnd() {
-      let indexEnd = (this.pageNumber + 1) * this.sizePerPage - 1
+  //   return indexStart
+  // },
+  // indexEnd() {
+  //   let indexEnd = (this.pageNumber + 1) * this.sizePerPage - 1
 
-      if (indexEnd > this.filteredResultsArrayLength - 1) {
-        indexEnd = this.filteredResultsArrayLength - 1
-      }
+  //   if (indexEnd > this.filteredResultsArrayLength - 1) {
+  //     indexEnd = this.filteredResultsArrayLength - 1
+  //   }
 
-      if (indexEnd < 0) {
-        indexEnd = 0
-      }
+  //   if (indexEnd < 0) {
+  //     indexEnd = 0
+  //   }
 
-      return indexEnd
-    }
-  },
+  //   return indexEnd
+  // }
+  // },
   data() {
     return {
       // language: 'en',
