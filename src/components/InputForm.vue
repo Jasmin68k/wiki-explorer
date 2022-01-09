@@ -612,6 +612,7 @@ export default {
     'languageSwitched',
     'categories-hover-click-changed',
     'update:circleButtonRadius',
+    'update:circleButtonRadiusSaved',
     'grid-width-nocategories-changed',
     'grid-height-changed',
     'mode-switched',
@@ -627,6 +628,7 @@ export default {
     scalingFactor: { required: true, default: 1.0, type: Number },
     scalingFactorSaved: { required: true, default: 1.0, type: Number },
     circleButtonRadius: { required: true, default: 260, type: Number },
+    circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     // resultsCategoriesAllArrayUnfiltered: {
     //   required: true,
@@ -703,7 +705,7 @@ export default {
       // scalingFactor: 1.0,
       // circleButtonRadius: 260,
       // scalingFactorSaved: 1.0,
-      circleButtonRadiusSaved: 260,
+      // circleButtonRadiusSaved: 260,
       // categoriesOnHoverOrClick: 'catshover',
       // mode: 'desktop',
       // mobileDisplay: 'outgraph',
@@ -796,7 +798,7 @@ export default {
     modeSwitched(value) {
       if (value === 'mobile') {
         this.$emit('update:scalingFactorSaved', this.scalingFactor)
-        this.circleButtonRadiusSaved = this.circleButtonRadius
+        this.$emit('update:circleButtonRadiusSaved', this.circleButtonRadius)
         this.circleButtonRadiusChanged(260)
       } else {
         this.scalingFactorChanged(this.scalingFactorSaved)

@@ -22,6 +22,7 @@
       v-model:sizePerPage="inputFormState.sizePerPage"
       v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
+      v-model:circleButtonRadiusSaved="inputFormState.circleButtonRadiusSaved"
       @pageNumberChanged="pageNumberChanged"
       @update:title="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
@@ -179,7 +180,8 @@ export default {
       sizePerPage: 16,
       scalingFactor: 1.0,
       scalingFactorSaved: 1.0,
-      circleButtonRadius: 260
+      circleButtonRadius: 260,
+      circleButtonRadiusSaved: 260
     })
     return { inputFormState }
   },
