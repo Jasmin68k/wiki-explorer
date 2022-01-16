@@ -12,6 +12,8 @@ export default defineConfig({
     vue(), // you need to install `@vitejs/plugin-vue`
     vueI18n({
       compositionOnly: false,
+      // needed for vue-i18n production build
+      runtimeOnly: false,
 
       // you need to set i18n resource including paths !
       include: path.resolve(__dirname, './locales/**')
