@@ -719,7 +719,7 @@ export default {
       this.$emit('categories-hover-click-changed', value)
     },
     circleButtonRadiusChanged(value) {
-      this.$emit('update:circleButtonRadius', parseInt(value))
+      this.$emit('update:circleButtonRadius', parseInt(value, 10))
     },
     modeSwitched(value) {
       if (value === 'mobile') {
@@ -741,7 +741,7 @@ export default {
       this.$emit('update:showHelp', value)
     },
     sizePerPageChanged(value) {
-      this.$emit('update:sizePerPage', parseInt(value))
+      this.$emit('update:sizePerPage', parseInt(value, 10))
     },
     scalingFactorChanged(value) {
       this.$emit('update:scalingFactor', parseFloat(value))
