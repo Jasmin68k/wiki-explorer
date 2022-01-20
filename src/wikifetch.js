@@ -2,6 +2,9 @@ import { NetworkError, DataError } from './customerrors.js'
 import { Page, TitlePage } from './datamodels.js'
 
 let jsonDataFullQueryPart = {}
+
+// Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
+// User-Agent might not be possible to set in every browser
 let fetchHeaders = new Headers({
   'Api-User-Agent': 'WikiExplorer/0.1',
   'User-Agent': 'WikiExplorer/0.1'

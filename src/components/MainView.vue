@@ -197,13 +197,6 @@ export default {
       resultsCategoriesDone: true,
       resultsRedirectsDone: true,
       inputsDisabled: false,
-
-      // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
-      // User-Agent might not be possible to set in every browser
-      fetchHeaders: new Headers({
-        'Api-User-Agent': 'WikiExplorer/0.1',
-        'User-Agent': 'WikiExplorer/0.1'
-      }),
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
