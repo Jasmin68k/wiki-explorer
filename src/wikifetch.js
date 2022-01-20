@@ -20,8 +20,6 @@ let noCategoryPrefix = {
 export async function wikiFetchPages(title, language) {
   let pages = new Map()
 
-  let redirectTarget = await getRedirectTarget(title, language)
-
   do {
     try {
       let pageUrl =
@@ -59,9 +57,7 @@ export async function wikiFetchPages(title, language) {
 
       for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
         // ignore (sometimes) appearing title page in results
-        if (
-          !(jsonDataFullQueryPart.query.pages[pageId].title === redirectTarget)
-        ) {
+        if (!(jsonDataFullQueryPart.query.pages[pageId].title === title)) {
           if (jsonDataFullQueryPart.query.pages[pageId].missing !== '') {
             pages.set(
               pageId,
@@ -148,7 +144,6 @@ export async function wikiFetchTitlePage(title, language) {
 }
 
 export async function wikiFetchAddCategoriesToPages(title, language, pages) {
-  let redirectTarget = await getRedirectTarget(title, language)
   do {
     try {
       // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
@@ -190,7 +185,7 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
         const page = jsonDataFullQueryPart.query.pages[pageId]
 
         // ignore possibly non existing (ignored before) title page in results
-        if (!(page.title === redirectTarget)) {
+        if (!(page.title === title)) {
           const resultPage = pages.get(pageId)
           if (page.categories) {
             page.categories.forEach((category) =>
@@ -320,8 +315,6 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
 }
 
 export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
-  let redirectTarget = await getRedirectTarget(title, language)
-
   page.redirects = []
   let redirectsQueryPart = {}
 
@@ -331,7 +324,7 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
         'https://' +
         language +
         '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
-        redirectTarget +
+        title +
         '&origin=*'
       if (redirectsQueryPart.continue) {
         for (const continueToken of Object.keys(redirectsQueryPart.continue)) {
@@ -461,7 +454,7 @@ async function fetchRetry(url, options, retries, throttle) {
   }
 }
 
-async function getRedirectTarget(title, language) {
+export async function getRedirectTarget(title, language) {
   let redirectTarget = ''
   try {
     let redirectTargetUrl =
