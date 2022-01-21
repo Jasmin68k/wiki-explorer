@@ -162,6 +162,7 @@ let resultsMap = new Map()
 
 export default {
   name: 'MainView',
+  inject: ['global'],
   components: {
     InputForm,
     MainTitleInfo,
@@ -463,6 +464,10 @@ export default {
       this.getJson()
     },
     async fetchDataClicked(value) {
+      console.log(this.global.state.count)
+      this.global.incrementCount()
+      console.log(this.global.state.count)
+
       if (value) {
         this.inputFormState.title = await wikiFetchGetRedirectTarget(
           this.inputFormState.title,
