@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { reactive, inject } from 'vue'
 import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
@@ -162,7 +162,6 @@ let resultsMap = new Map()
 
 export default {
   name: 'MainView',
-  inject: ['global'],
   components: {
     InputForm,
     MainTitleInfo,
@@ -171,6 +170,8 @@ export default {
     Help
   },
   setup() {
+    const global = inject('global')
+
     // state of inputForm in composition API style
     const inputFormState = reactive({
       filter: '',
@@ -190,7 +191,7 @@ export default {
       circleButtonRadius: 260,
       circleButtonRadiusSaved: 260
     })
-    return { inputFormState }
+    return { inputFormState, global }
   },
   data() {
     return {

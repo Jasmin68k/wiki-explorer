@@ -3,14 +3,17 @@
 </template>
 
 <script>
+import { provide } from 'vue'
 import MainView from './components/MainView.vue'
 import global from './global.js'
 
 export default {
   name: 'App',
-  provide: { global: global },
   components: {
     MainView
+  },
+  setup() {
+    provide('global', global)
   }
 }
 </script>
