@@ -13,7 +13,7 @@
             id="showHelp"
             class="checkbox"
             type="checkbox"
-            :checked="showHelp"
+            :checked="global.state.showHelp"
             @change="showHelpClicked($event.target.checked)"
           />
           <label class="checkboxlabel" for="showHelp">
@@ -28,7 +28,7 @@
           value="desktop"
           :checked="!mobileMode"
           :disabled="
-            !showHelp &&
+            !global.state.showHelp &&
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
@@ -38,7 +38,7 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              !showHelp &&
+              !global.state.showHelp &&
               (inputsDisabled ||
                 (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
@@ -53,7 +53,7 @@
           value="mobile"
           :checked="mobileMode"
           :disabled="
-            !showHelp &&
+            !global.state.showHelp &&
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
@@ -64,7 +64,7 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              !showHelp &&
+              !global.state.showHelp &&
               (inputsDisabled ||
                 (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
@@ -80,7 +80,7 @@
           id="en"
           value="en"
           :disabled="
-            !showHelp &&
+            !global.state.showHelp &&
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
@@ -91,7 +91,7 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              !showHelp &&
+              !global.state.showHelp &&
               (inputsDisabled ||
                 (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
@@ -104,7 +104,7 @@
           id="de"
           value="de"
           :disabled="
-            !showHelp &&
+            !global.state.showHelp &&
             (inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone))
           "
@@ -115,7 +115,7 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              !showHelp &&
+              !global.state.showHelp &&
               (inputsDisabled ||
                 (resultsCategoriesEnabled && !resultsCategoriesDone))
           }"
@@ -217,7 +217,7 @@
         <input
           class="radiobutton"
           type="radio"
-          :disabled="showHelp"
+          :disabled="global.state.showHelp"
           id="outgraph"
           value="outgraph"
           :checked="mobileDisplay === 'outgraph'"
@@ -226,13 +226,13 @@
         <label
           class="radiolabel"
           for="outgraph"
-          :class="{ itemdisabled: showHelp }"
+          :class="{ itemdisabled: global.state.showHelp }"
           ><img class="graphicon" src="../assets/images/analytics-graph.svg"
         /></label>
         <input
           class="radiobutton"
           type="radio"
-          :disabled="showHelp"
+          :disabled="global.state.showHelp"
           id="maininfo"
           value="maininfo"
           :checked="mobileDisplay === 'maininfo'"
@@ -241,13 +241,15 @@
         <label
           class="radiolabel"
           for="maininfo"
-          :class="{ itemdisabled: showHelp }"
+          :class="{ itemdisabled: global.state.showHelp }"
           ><img class="titleicon" src="../assets/images/text-tool.svg"
         /></label>
         <input
           class="radiobutton"
           type="radio"
-          :disabled="showHelp || (mobileMode && !resultsCategoriesEnabled)"
+          :disabled="
+            global.state.showHelp || (mobileMode && !resultsCategoriesEnabled)
+          "
           id="categories"
           value="categories"
           :checked="mobileDisplay === 'categories'"
@@ -257,7 +259,8 @@
           class="radiolabel"
           for="categories"
           :class="{
-            itemdisabled: showHelp || (mobileMode && !resultsCategoriesEnabled)
+            itemdisabled:
+              global.state.showHelp || (mobileMode && !resultsCategoriesEnabled)
           }"
         >
           <img
@@ -600,7 +603,7 @@ export default {
   emits: [
     'fetchDataClicked',
     'update:resultsRedirectsEnabled',
-    'update:showHelp',
+    'showHelpClicked',
     'update:resultsCategoriesEnabled',
     'update:checkboxFilterEnabled',
     'update:sizePerPage',
@@ -627,7 +630,6 @@ export default {
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     mobileMode: { required: true, default: false, type: Boolean },
-    showHelp: { required: true, default: false, type: Boolean },
     mobileDisplay: { required: true, default: 'outgraph', type: String },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
@@ -737,9 +739,10 @@ export default {
       this.$emit('mobile-display-switched', value)
     },
     showHelpClicked(value) {
+      this.global.setShowHelp(value)
       // resize needed here, not after emit in MainView
       this.windowResized()
-      this.$emit('update:showHelp', value)
+      this.$emit('showHelpClicked', value)
     },
     sizePerPageChanged(value) {
       this.$emit('update:sizePerPage', parseInt(value, 10))
@@ -766,7 +769,7 @@ export default {
           this.checkboxFilterEnabled &&
           this.resultsCategoriesEnabled &&
           !this.mobileMode &&
-          !this.showHelp
+          !this.global.state.showHelp
         ) {
           vw -= 320
         }
@@ -791,7 +794,7 @@ export default {
 
         this.$emit('grid-height-changed', vh)
 
-        if (!this.showHelp) {
+        if (!this.global.state.showHelp) {
           let sf = vw / (this.circleButtonRadius * 1.25 * 2 + 220)
 
           sf = Math.min(1.0, sf)

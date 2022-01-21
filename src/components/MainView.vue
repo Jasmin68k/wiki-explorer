@@ -12,7 +12,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
-      v-model:showHelp="inputFormState.showHelp"
       v-model:resultsCategoriesEnabled="inputFormState.resultsCategoriesEnabled"
       v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
       v-model:resultsRedirectsEnabled="inputFormState.resultsRedirectsEnabled"
@@ -22,7 +21,7 @@
       v-model:circleButtonRadiusSaved="inputFormState.circleButtonRadiusSaved"
       @pageNumberChanged="pageNumberChanged"
       @fetchDataClicked="fetchDataClicked"
-      @update:showHelp="showHelpSwitched"
+      @showHelpClicked="showHelpSwitched"
       @update:resultsCategoriesEnabled="resultsCategoriesChanged"
       @update:resultsRedirectsEnabled="resultsRedirectsChanged"
       @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
@@ -36,7 +35,7 @@
     ></input-form>
 
     <div
-      v-if="!inputFormState.showHelp"
+      v-if="!global.state.showHelp"
       class="grid-container-base"
       :class="{
         mobile: inputFormState.mobileMode,
@@ -131,7 +130,7 @@
       ></main-title-info>
     </div>
 
-    <div v-if="inputFormState.showHelp" class="help-container">
+    <div v-if="global.state.showHelp" class="help-container">
       <help></help>
     </div>
   </div>
@@ -171,7 +170,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      showHelp: false,
       mobileMode: false,
       language: 'en',
       mobileDisplay: 'outgraph',
@@ -561,7 +559,7 @@ export default {
       this.windowResized()
     },
     showHelpSwitched() {
-      this.inputsDisabled = this.inputFormState.showHelp
+      this.inputsDisabled = this.global.state.showHelp
     },
     windowResized() {
       this.$nextTick(() => {
