@@ -155,7 +155,7 @@ import {
   wikiFetchAddRedirectsToPages,
   wikiFetchTitlePage,
   wikiFetchPages,
-  getRedirectTarget
+  wikiFetchGetRedirectTarget
 } from '../wikifetch.js'
 
 let resultsMap = new Map()
@@ -454,7 +454,7 @@ export default {
 
     async circleButtonClicked(index) {
       this.inputFormState.title = this.displayResultsArray[index].title
-      this.inputFormState.title = await getRedirectTarget(
+      this.inputFormState.title = await wikiFetchGetRedirectTarget(
         this.inputFormState.title,
         this.inputFormState.language
       )
@@ -464,7 +464,7 @@ export default {
     },
     async fetchDataClicked(value) {
       if (value) {
-        this.inputFormState.title = await getRedirectTarget(
+        this.inputFormState.title = await wikiFetchGetRedirectTarget(
           this.inputFormState.title,
           this.inputFormState.language
         )

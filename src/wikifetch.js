@@ -457,7 +457,7 @@ async function fetchRetry(url, options, retries, throttle) {
   }
 }
 
-export async function getRedirectTarget(title, language) {
+export async function wikiFetchGetRedirectTarget(title, language) {
   let redirectTarget = ''
   try {
     let redirectTargetUrl =
