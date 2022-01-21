@@ -439,7 +439,6 @@ async function fetchRetry(url, options, retries, throttle) {
       return response
     }
     // in case fetch does not throw (usually does not for regular 4xx 5xx errors, but wiki cross origin blocked with 429), but !response.ok
-    // console.log('FETCH FAILED WITHOUT THROW')
     throw new NetworkError()
   } catch (error) {
     if (retries <= 1) {
