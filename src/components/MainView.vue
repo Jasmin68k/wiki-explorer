@@ -12,7 +12,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
-      v-model:title="inputFormState.title"
       v-model:showHelp="inputFormState.showHelp"
       v-model:resultsCategoriesEnabled="inputFormState.resultsCategoriesEnabled"
       v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
@@ -22,7 +21,7 @@
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
       v-model:circleButtonRadiusSaved="inputFormState.circleButtonRadiusSaved"
       @pageNumberChanged="pageNumberChanged"
-      @update:title="fetchDataClicked"
+      @fetchDataClicked="fetchDataClicked"
       @update:showHelp="showHelpSwitched"
       @update:resultsCategoriesEnabled="resultsCategoriesChanged"
       @update:resultsRedirectsEnabled="resultsRedirectsChanged"
@@ -172,7 +171,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      title: '',
       showHelp: false,
       mobileMode: false,
       language: 'en',
@@ -368,7 +366,7 @@ export default {
 
       resultsMap.clear()
       resultsMap = await wikiFetchPages(
-        this.inputFormState.title,
+        this.global.state.title,
         this.inputFormState.language
       )
 
@@ -395,7 +393,7 @@ export default {
       // skip fetch when no results
       if (resultsMap.size > 0) {
         resultsMap = await wikiFetchAddCategoriesToPages(
-          this.inputFormState.title,
+          this.global.state.title,
           this.inputFormState.language,
           resultsMap
         )
@@ -410,7 +408,7 @@ export default {
       // skip fetch when no results
       if (resultsMap.size > 0) {
         resultsMap = await wikiFetchAddRedirectsToPages(
-          this.inputFormState.title,
+          this.global.state.title,
           this.inputFormState.language,
           resultsMap
         )
@@ -421,7 +419,7 @@ export default {
 
     async getMainInfo() {
       this.titlePage = await wikiFetchTitlePage(
-        this.inputFormState.title,
+        this.global.state.title,
         this.inputFormState.language
       )
 
@@ -434,7 +432,7 @@ export default {
     },
     async getCategories() {
       this.titlePage = await wikiFetchAddCategoriesToTitlePage(
-        this.inputFormState.title,
+        this.global.state.title,
         this.inputFormState.language,
         this.titlePage
       )
@@ -442,7 +440,7 @@ export default {
 
     async getRedirects() {
       this.titlePage = await wikiFetchAddRedirectsToTitlePage(
-        this.inputFormState.title,
+        this.global.state.title,
         this.inputFormState.language,
         this.titlePage
       )
@@ -451,10 +449,11 @@ export default {
     },
 
     async circleButtonClicked(index) {
-      this.inputFormState.title = this.displayResultsArray[index].title
-      this.inputFormState.title = await wikiFetchGetRedirectTarget(
-        this.inputFormState.title,
-        this.inputFormState.language
+      this.global.setTitle(
+        await wikiFetchGetRedirectTarget(
+          this.displayResultsArray[index].title,
+          this.inputFormState.language
+        )
       )
 
       this.getMainInfo()
@@ -462,9 +461,8 @@ export default {
     },
     async fetchDataClicked(value) {
       if (value) {
-        this.inputFormState.title = await wikiFetchGetRedirectTarget(
-          this.inputFormState.title,
-          this.inputFormState.language
+        this.global.setTitle(
+          await wikiFetchGetRedirectTarget(value, this.inputFormState.language)
         )
 
         this.getMainInfo()

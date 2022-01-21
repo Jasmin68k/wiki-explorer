@@ -130,7 +130,7 @@
           id="title"
           class="searchinputarea"
           :placeholder="$t('search-on-wikipedia')"
-          :value="title"
+          :value="global.state.title"
           :disabled="
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone)
@@ -598,7 +598,7 @@ import { inject } from 'vue'
 export default {
   name: 'InputForm',
   emits: [
-    'update:title',
+    'fetchDataClicked',
     'update:resultsRedirectsEnabled',
     'update:showHelp',
     'update:resultsCategoriesEnabled',
@@ -627,7 +627,6 @@ export default {
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     mobileMode: { required: true, default: false, type: Boolean },
-    title: { required: true, default: '', type: String },
     showHelp: { required: true, default: false, type: Boolean },
     mobileDisplay: { required: true, default: 'outgraph', type: String },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
@@ -651,7 +650,7 @@ export default {
   },
 
   methods: {
-    // can this be done more elegantly? Sticking to v-model would still require variable on instance.
+    // can this be done more elegantly?
     fetchData(submitEvent) {
       let value = ''
       for (let element of submitEvent.target.elements) {
@@ -660,7 +659,7 @@ export default {
           break
         }
       }
-      this.$emit('update:title', value)
+      this.$emit('fetchDataClicked', value)
     },
     resultsCategoriesChanged(value) {
       this.windowResized()
@@ -841,7 +840,7 @@ export default {
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to prop resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
      * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (prop sizePerPage)
-     * @param {String} search - Wikipedia page to search for (prop title)
+     * @param {String} search - Wikipedia page to search for (global.state.title)
      */
 
     const urlParameters = new URLSearchParams(window.location.search)
@@ -946,7 +945,7 @@ export default {
 
     // do search last after evaluating all other parameters
     if (search && search.length > 0) {
-      this.$emit('update:title', search)
+      this.$emit('fetchDataClicked', search)
     }
   },
   beforeUnMount() {
