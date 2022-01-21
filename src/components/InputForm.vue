@@ -191,7 +191,7 @@
           id="filterCategories"
           class="categoriesinputarea"
           :placeholder="$t('filter-results-categories')"
-          :value="filterCategories"
+          :value="global.state.filterCategories"
           @input="
             resetPageNumber(), filterCategoriesChanged($event.target.value)
           "
@@ -600,7 +600,6 @@ export default {
   emits: [
     'update:title',
     'update:resultsRedirectsEnabled',
-    'update:filterCategories',
     'update:showHelp',
     'update:resultsCategoriesEnabled',
     'update:checkboxFilterEnabled',
@@ -628,7 +627,6 @@ export default {
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     mobileMode: { required: true, default: false, type: Boolean },
-    filterCategories: { required: true, default: '', type: String },
     title: { required: true, default: '', type: String },
     showHelp: { required: true, default: false, type: Boolean },
     mobileDisplay: { required: true, default: 'outgraph', type: String },
@@ -676,7 +674,7 @@ export default {
       this.global.setFilter(value)
     },
     filterCategoriesChanged(value) {
-      this.$emit('update:filterCategories', value)
+      this.global.setFilterCategories(value)
     },
     resetPageNumber() {
       this.$emit('page-number-changed', 0)
@@ -837,7 +835,7 @@ export default {
      * @param {String} lang - UI and Wikipedia language, en or de valid
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to prop resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (global.state.filter)
-     * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
+     * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to prop resultsRedirectsEnabled)

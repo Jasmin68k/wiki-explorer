@@ -12,7 +12,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
-      v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
       v-model:showHelp="inputFormState.showHelp"
       v-model:resultsCategoriesEnabled="inputFormState.resultsCategoriesEnabled"
@@ -173,7 +172,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      filterCategories: '',
       title: '',
       showHelp: false,
       mobileMode: false,
@@ -247,18 +245,18 @@ export default {
       )
 
       // good - maybe rewrite without ternary
-      // needs to check this.inputFormState.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
+      // needs to check this.global.state.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
       if (
         this.inputFormState.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
-        this.inputFormState.filterCategories
+        this.global.state.filterCategories
       ) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
             ? page.categories.find((item) =>
                 item
                   .toLowerCase()
-                  .includes(this.inputFormState.filterCategories.toLowerCase())
+                  .includes(this.global.state.filterCategories.toLowerCase())
               )
             : null
         )
@@ -318,7 +316,7 @@ export default {
             // no duplicate check needed in Set
             category
               .toLowerCase()
-              .includes(this.inputFormState.filterCategories.toLowerCase())
+              .includes(this.global.state.filterCategories.toLowerCase())
               ? allCategoriesSet.add(category)
               : null
           )
