@@ -3,8 +3,8 @@
     <div
       class="inputform-flex-item-1"
       :style="{
-        'margin-left': portraitMode && mobileMode ? '5px' : '',
-        'margin-top': portraitMode && mobileMode ? '5px' : ''
+        'margin-left': portraitMode && global.state.mobileMode ? '5px' : '',
+        'margin-top': portraitMode && global.state.mobileMode ? '5px' : ''
       }"
     >
       <form>
@@ -26,7 +26,7 @@
           type="radio"
           id="desktop"
           value="desktop"
-          :checked="!mobileMode"
+          :checked="!global.state.mobileMode"
           :disabled="
             !global.state.showHelp &&
             (inputsDisabled ||
@@ -51,7 +51,7 @@
           type="radio"
           id="mobile"
           value="mobile"
-          :checked="mobileMode"
+          :checked="global.state.mobileMode"
           :disabled="
             !global.state.showHelp &&
             (inputsDisabled ||
@@ -136,7 +136,7 @@
             (resultsCategoriesEnabled && !resultsCategoriesDone)
           "
           :style="{
-            width: portraitMode && mobileMode ? '108px' : ''
+            width: portraitMode && global.state.mobileMode ? '108px' : ''
           }"
         />
         <button
@@ -171,10 +171,11 @@
           :value="global.state.filter"
           @input="resetPageNumber(), filterChanged($event.target.value)"
           :disabled="
-            inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
+            inputsDisabled ||
+            (global.state.mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '120px' : ''
+            width: portraitMode && global.state.mobileMode ? '120px' : ''
           }"
         />
       </form>
@@ -199,10 +200,10 @@
             inputsDisabled ||
             !resultsCategoriesDone ||
             !resultsCategoriesEnabled ||
-            (mobileMode && mobileDisplay === 'maininfo')
+            (global.state.mobileMode && mobileDisplay === 'maininfo')
           "
           :style="{
-            width: portraitMode && mobileMode ? '120px' : ''
+            width: portraitMode && global.state.mobileMode ? '120px' : ''
           }"
         />
       </form>
@@ -210,10 +211,10 @@
     <div
       class="inputform-flex-item-2"
       :style="{
-        'margin-top': portraitMode && mobileMode ? '5px' : ''
+        'margin-top': portraitMode && global.state.mobileMode ? '5px' : ''
       }"
     >
-      <div v-if="mobileMode">
+      <div v-if="global.state.mobileMode">
         <input
           class="radiobutton"
           type="radio"
@@ -248,7 +249,8 @@
           class="radiobutton"
           type="radio"
           :disabled="
-            global.state.showHelp || (mobileMode && !resultsCategoriesEnabled)
+            global.state.showHelp ||
+            (global.state.mobileMode && !resultsCategoriesEnabled)
           "
           id="categories"
           value="categories"
@@ -260,7 +262,8 @@
           for="categories"
           :class="{
             itemdisabled:
-              global.state.showHelp || (mobileMode && !resultsCategoriesEnabled)
+              global.state.showHelp ||
+              (global.state.mobileMode && !resultsCategoriesEnabled)
           }"
         >
           <img
@@ -279,7 +282,7 @@
             :checked="resultsCategoriesEnabled"
             :disabled="
               inputsDisabled ||
-              (mobileMode &&
+              (global.state.mobileMode &&
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
             "
@@ -290,7 +293,7 @@
             :class="{
               itemdisabled:
                 inputsDisabled ||
-                (mobileMode &&
+                (global.state.mobileMode &&
                   (mobileDisplay === 'maininfo' ||
                     mobileDisplay === 'categories'))
             }"
@@ -299,7 +302,7 @@
             <img class="categoriesicon" src="../assets/images/document.svg" />
           </label>
         </span>
-        <span v-if="!mobileMode">
+        <span v-if="!global.state.mobileMode">
           <input
             id="checkboxFilter"
             class="checkbox"
@@ -331,7 +334,7 @@
             type="checkbox"
             :disabled="
               inputsDisabled ||
-              (mobileMode &&
+              (global.state.mobileMode &&
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
             "
@@ -343,7 +346,7 @@
             :class="{
               itemdisabled:
                 inputsDisabled ||
-                (mobileMode &&
+                (global.state.mobileMode &&
                   (mobileDisplay === 'maininfo' ||
                     mobileDisplay === 'categories'))
             }"
@@ -369,7 +372,7 @@
           :disabled="
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone) ||
-            (mobileMode &&
+            (global.state.mobileMode &&
               (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
           ref="catsClick"
@@ -381,7 +384,7 @@
             itemdisabled:
               inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone) ||
-              (mobileMode &&
+              (global.state.mobileMode &&
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
           }"
@@ -396,7 +399,7 @@
           :disabled="
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone) ||
-            (mobileMode &&
+            (global.state.mobileMode &&
               (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
           "
           ref="catsHover"
@@ -408,7 +411,7 @@
             itemdisabled:
               inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone) ||
-              (mobileMode &&
+              (global.state.mobileMode &&
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
           }"
@@ -461,7 +464,7 @@
               inputsDisabled ||
               filteredResultsArrayLength === 0 ||
               pageNumber === 0 ||
-              (mobileMode &&
+              (global.state.mobileMode &&
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
           }"
@@ -481,7 +484,7 @@
               inputsDisabled ||
               filteredResultsArrayLength === 0 ||
               pageNumber + 1 === numberOfPages ||
-              (mobileMode &&
+              (global.state.mobileMode &&
                 (mobileDisplay === 'maininfo' ||
                   mobileDisplay === 'categories'))
           }"
@@ -492,12 +495,12 @@
     <div
       class="inputform-flex-item-3"
       :class="{
-        positionrelative: mobileMode && portraitMode,
-        inputformflexitem3fixedwidth: mobileMode && portraitMode
+        positionrelative: global.state.mobileMode && portraitMode,
+        inputformflexitem3fixedwidth: global.state.mobileMode && portraitMode
       }"
       :style="{
-        'margin-right': portraitMode && mobileMode ? '10px' : '',
-        'margin-top': portraitMode && mobileMode ? '5px' : ''
+        'margin-right': portraitMode && global.state.mobileMode ? '10px' : '',
+        'margin-top': portraitMode && global.state.mobileMode ? '5px' : ''
       }"
     >
       <input
@@ -509,10 +512,10 @@
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
-          (mobileMode &&
+          (global.state.mobileMode &&
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
-        :class="{ slidervertical: portraitMode && mobileMode }"
+        :class="{ slidervertical: portraitMode && global.state.mobileMode }"
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden',
           '--height': flexContainerHeight * 0.75 + 'px'
@@ -520,7 +523,7 @@
         @input="resetPageNumber(), sizePerPageChanged($event.target.value)"
       />
       <div
-        v-show="!mobileMode"
+        v-show="!global.state.mobileMode"
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
@@ -528,7 +531,7 @@
         {{ $t('max-results-per-page') }}{{ sizePerPage }}
       </div>
       <div
-        v-show="mobileMode"
+        v-show="global.state.mobileMode"
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
@@ -541,7 +544,7 @@
       </div>
 
       <input
-        v-if="!mobileMode"
+        v-if="!global.state.mobileMode"
         type="range"
         min="0.33"
         max="1.0"
@@ -550,7 +553,7 @@
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
-          (mobileMode &&
+          (global.state.mobileMode &&
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
         :style="{
@@ -559,7 +562,7 @@
         @input="scalingFactorChanged($event.target.value)"
       />
       <div
-        v-if="!mobileMode"
+        v-if="!global.state.mobileMode"
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
@@ -567,7 +570,7 @@
         {{ $t('scale-graph') }}
       </div>
       <input
-        v-if="!mobileMode"
+        v-if="!global.state.mobileMode"
         type="range"
         min="200"
         max="650"
@@ -576,7 +579,7 @@
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
-          (mobileMode &&
+          (global.state.mobileMode &&
             (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
         "
         :style="{
@@ -585,7 +588,7 @@
         @input="circleButtonRadiusChanged($event.target.value)"
       />
       <div
-        v-if="!mobileMode"
+        v-if="!global.state.mobileMode"
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
@@ -629,7 +632,6 @@ export default {
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    mobileMode: { required: true, default: false, type: Boolean },
     mobileDisplay: { required: true, default: 'outgraph', type: String },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
@@ -726,10 +728,12 @@ export default {
     },
     modeSwitched(value) {
       if (value === 'mobile') {
+        this.global.setMobileMode(true)
         this.$emit('update:scalingFactorSaved', this.scalingFactor)
         this.$emit('update:circleButtonRadiusSaved', this.circleButtonRadius)
         this.circleButtonRadiusChanged(260)
       } else {
+        this.global.setMobileMode(false)
         this.scalingFactorChanged(this.scalingFactorSaved)
         this.circleButtonRadiusChanged(this.circleButtonRadiusSaved)
       }
@@ -768,7 +772,7 @@ export default {
         if (
           this.checkboxFilterEnabled &&
           this.resultsCategoriesEnabled &&
-          !this.mobileMode &&
+          !this.global.state.mobileMode &&
           !this.global.state.showHelp
         ) {
           vw -= 320
@@ -833,7 +837,7 @@ export default {
     // handle parameters from URL
     /**
      * URL Parameters
-     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> prop mobileMode true/false)
+     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> gloabl.state.mobileMode true/false)
      * @param {String} lang - UI and Wikipedia language, en or de valid
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to prop resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (global.state.filter)
@@ -895,7 +899,7 @@ export default {
     }
 
     if (
-      this.mobileMode &&
+      this.global.state.mobileMode &&
       (mobileview === 'graph' ||
         mobileview === 'extract' ||
         mobileview === 'categories')
@@ -904,7 +908,7 @@ export default {
     }
 
     if (
-      !this.mobileMode &&
+      !this.global.state.mobileMode &&
       (checkboxfilter === 'on' || checkboxfilter === 'off')
     ) {
       switch (checkboxfilter) {

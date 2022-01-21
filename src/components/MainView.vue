@@ -5,7 +5,6 @@
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array-length="filteredResultsArray.length"
-      :mobile-mode="inputFormState.mobileMode"
       :mobile-display="inputFormState.mobileDisplay"
       :number-of-pages="numberOfPages"
       :page-number="pageNumber"
@@ -38,15 +37,15 @@
       v-if="!global.state.showHelp"
       class="grid-container-base"
       :class="{
-        mobile: inputFormState.mobileMode,
+        mobile: global.state.mobileMode,
         'grid-container':
           inputFormState.checkboxFilterEnabled &&
           inputFormState.resultsCategoriesEnabled &&
-          !inputFormState.mobileMode,
+          !global.state.mobileMode,
         'grid-container-nocategories':
           (!inputFormState.checkboxFilterEnabled ||
             !inputFormState.resultsCategoriesEnabled) &&
-          !inputFormState.mobileMode
+          !global.state.mobileMode
       }"
       :style="{
         '--gridwidthnocategories': gridWidthNocategories + 'px',
@@ -57,14 +56,13 @@
     >
       <div
         v-if="
-          (!inputFormState.mobileMode &&
-            inputFormState.checkboxFilterEnabled) ||
-          (inputFormState.mobileMode &&
+          (!global.state.mobileMode && inputFormState.checkboxFilterEnabled) ||
+          (global.state.mobileMode &&
             inputFormState.mobileDisplay === 'categories')
         "
         class="inputcategoriescontainer grid-item-categories"
         :class="{
-          mobile: inputFormState.mobileMode
+          mobile: global.state.mobileMode
         }"
         :style="{
           '--categoriesmobileheight': scrollboxContainerHeight + 'px'
@@ -73,9 +71,9 @@
       >
         <categories-checkbox-filter
           v-if="
-            ((!inputFormState.mobileMode &&
+            ((!global.state.mobileMode &&
               inputFormState.resultsCategoriesEnabled) ||
-              (inputFormState.mobileMode &&
+              (global.state.mobileMode &&
                 inputFormState.mobileDisplay === 'categories')) &&
             resultsCategoriesAllArray.length > 0 &&
             resultsCategoriesDone
@@ -91,8 +89,8 @@
 
       <outgraph
         v-if="
-          !inputFormState.mobileMode ||
-          (inputFormState.mobileMode &&
+          !global.state.mobileMode ||
+          (global.state.mobileMode &&
             inputFormState.mobileDisplay === 'outgraph')
         "
         class="grid-item-graph"
@@ -117,13 +115,13 @@
 
       <main-title-info
         v-if="
-          !inputFormState.mobileMode ||
-          (inputFormState.mobileMode &&
+          !global.state.mobileMode ||
+          (global.state.mobileMode &&
             inputFormState.mobileDisplay === 'maininfo')
         "
         class="grid-item-maininfo"
         :class="{
-          mobile: inputFormState.mobileMode
+          mobile: global.state.mobileMode
         }"
         :extract="titlePage.extract"
         :image="titlePage.image"
@@ -170,7 +168,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      mobileMode: false,
       language: 'en',
       mobileDisplay: 'outgraph',
       resultsCategoriesEnabled: true,
@@ -261,9 +258,9 @@ export default {
       if (
         this.inputFormState.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
-        ((!this.inputFormState.mobileMode &&
+        ((!this.global.state.mobileMode &&
           this.inputFormState.checkboxFilterEnabled) ||
-          this.inputFormState.mobileMode)
+          this.global.state.mobileMode)
       ) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
@@ -291,9 +288,9 @@ export default {
         !(
           this.resultsCategoriesDone &&
           this.inputFormState.resultsCategoriesEnabled &&
-          ((!this.inputFormState.mobileMode &&
+          ((!this.global.state.mobileMode &&
             this.inputFormState.checkboxFilterEnabled) ||
-            this.inputFormState.mobileMode)
+            this.global.state.mobileMode)
         )
       ) {
         return []
@@ -540,18 +537,13 @@ export default {
     gridHeightChanged(value) {
       this.gridHeightSubtract = value
       // needed for init, first display, otherwise --gridmobileheight wrong
-      if (this.inputFormState.mobileMode) {
+      if (this.global.state.mobileMode) {
         this.scrollboxContainerHeight =
           this.$refs.flexcontainer.getBoundingClientRect().height -
           this.gridHeightSubtract
       }
     },
-    modeSwitched(value) {
-      if (value === 'mobile') {
-        this.inputFormState.mobileMode = true
-      } else {
-        this.inputFormState.mobileMode = false
-      }
+    modeSwitched() {
       this.windowResized()
     },
     mobileDisplaySwitched(value) {
@@ -563,7 +555,7 @@ export default {
     },
     windowResized() {
       this.$nextTick(() => {
-        if (!this.inputFormState.mobileMode) {
+        if (!this.global.state.mobileMode) {
           if (this.$refs.inputcategoriescontainer) {
             this.scrollboxContainerHeight =
               this.$refs.inputcategoriescontainer.getBoundingClientRect().height
