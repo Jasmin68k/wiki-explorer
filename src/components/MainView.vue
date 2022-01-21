@@ -168,7 +168,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      language: 'en',
       mobileDisplay: 'outgraph',
       resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
@@ -362,7 +361,7 @@ export default {
       resultsMap.clear()
       resultsMap = await wikiFetchPages(
         this.global.state.title,
-        this.inputFormState.language
+        this.global.state.language
       )
 
       this.resultsCategoriesDone = false
@@ -389,7 +388,7 @@ export default {
       if (resultsMap.size > 0) {
         resultsMap = await wikiFetchAddCategoriesToPages(
           this.global.state.title,
-          this.inputFormState.language,
+          this.global.state.language,
           resultsMap
         )
       }
@@ -404,7 +403,7 @@ export default {
       if (resultsMap.size > 0) {
         resultsMap = await wikiFetchAddRedirectsToPages(
           this.global.state.title,
-          this.inputFormState.language,
+          this.global.state.language,
           resultsMap
         )
       }
@@ -415,7 +414,7 @@ export default {
     async getMainInfo() {
       this.titlePage = await wikiFetchTitlePage(
         this.global.state.title,
-        this.inputFormState.language
+        this.global.state.language
       )
 
       this.redirectsDone = false
@@ -428,7 +427,7 @@ export default {
     async getCategories() {
       this.titlePage = await wikiFetchAddCategoriesToTitlePage(
         this.global.state.title,
-        this.inputFormState.language,
+        this.global.state.language,
         this.titlePage
       )
     },
@@ -436,7 +435,7 @@ export default {
     async getRedirects() {
       this.titlePage = await wikiFetchAddRedirectsToTitlePage(
         this.global.state.title,
-        this.inputFormState.language,
+        this.global.state.language,
         this.titlePage
       )
 
@@ -447,7 +446,7 @@ export default {
       this.global.setTitle(
         await wikiFetchGetRedirectTarget(
           this.displayResultsArray[index].title,
-          this.inputFormState.language
+          this.global.state.language
         )
       )
 
@@ -457,7 +456,7 @@ export default {
     async fetchDataClicked(value) {
       if (value) {
         this.global.setTitle(
-          await wikiFetchGetRedirectTarget(value, this.inputFormState.language)
+          await wikiFetchGetRedirectTarget(value, this.global.state.language)
         )
 
         this.getMainInfo()
@@ -522,7 +521,7 @@ export default {
     },
     languageSwitched(value) {
       this.$i18n.locale = value
-      this.inputFormState.language = value
+      this.global.setLanguage(value)
     },
     categoriesHoverClickChanged(value) {
       if (value === 'catshover') {

@@ -838,7 +838,7 @@ export default {
     /**
      * URL Parameters
      * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> gloabl.state.mobileMode true/false)
-     * @param {String} lang - UI and Wikipedia language, en or de valid
+     * @param {String} lang - UI and Wikipedia language, en or de valid (-> global.state.language)
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to prop resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (global.state.filter)
      * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
