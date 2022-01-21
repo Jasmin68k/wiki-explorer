@@ -30,7 +30,7 @@
           :disabled="
             !global.state.showHelp &&
             (inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="modeSwitched($event.target.value)"
         />
@@ -40,7 +40,8 @@
             itemdisabled:
               !global.state.showHelp &&
               (inputsDisabled ||
-                (resultsCategoriesEnabled && !resultsCategoriesDone))
+                (global.state.resultsCategoriesEnabled &&
+                  !resultsCategoriesDone))
           }"
           for="desktop"
         >
@@ -55,7 +56,7 @@
           :disabled="
             !global.state.showHelp &&
             (inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="modeSwitched($event.target.value)"
         />
@@ -66,7 +67,8 @@
             itemdisabled:
               !global.state.showHelp &&
               (inputsDisabled ||
-                (resultsCategoriesEnabled && !resultsCategoriesDone))
+                (global.state.resultsCategoriesEnabled &&
+                  !resultsCategoriesDone))
           }"
           for="mobile"
           ><img class="mobileicon" src="../assets/images/smartphone.svg" />
@@ -82,7 +84,7 @@
           :disabled="
             !global.state.showHelp &&
             (inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
           ref="langEn"
@@ -93,7 +95,8 @@
             itemdisabled:
               !global.state.showHelp &&
               (inputsDisabled ||
-                (resultsCategoriesEnabled && !resultsCategoriesDone))
+                (global.state.resultsCategoriesEnabled &&
+                  !resultsCategoriesDone))
           }"
           for="en"
           ><img class="flagicon" src="../assets/images/us-flag.svg"
@@ -106,7 +109,7 @@
           :disabled="
             !global.state.showHelp &&
             (inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
           ref="langDe"
@@ -117,7 +120,8 @@
             itemdisabled:
               !global.state.showHelp &&
               (inputsDisabled ||
-                (resultsCategoriesEnabled && !resultsCategoriesDone))
+                (global.state.resultsCategoriesEnabled &&
+                  !resultsCategoriesDone))
           }"
           for="de"
           ><img class="flagicon" src="../assets/images/de-flag.svg"
@@ -133,7 +137,7 @@
           :value="global.state.title"
           :disabled="
             inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone)
           "
           :style="{
             width: portraitMode && global.state.mobileMode ? '108px' : ''
@@ -144,7 +148,7 @@
           type="submit"
           :disabled="
             inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone)
+            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone)
           "
         >
           <img
@@ -152,7 +156,8 @@
             :class="{
               itemdisabled:
                 inputsDisabled ||
-                (resultsCategoriesEnabled && !resultsCategoriesDone)
+                (global.state.resultsCategoriesEnabled &&
+                  !resultsCategoriesDone)
             }"
             src="../assets/images/search.svg"
           />
@@ -200,7 +205,7 @@
           :disabled="
             inputsDisabled ||
             !resultsCategoriesDone ||
-            !resultsCategoriesEnabled ||
+            !global.state.resultsCategoriesEnabled ||
             (global.state.mobileMode &&
               global.state.mobileDisplay === 'maininfo')
           "
@@ -252,7 +257,7 @@
           type="radio"
           :disabled="
             global.state.showHelp ||
-            (global.state.mobileMode && !resultsCategoriesEnabled)
+            (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
           "
           id="categories"
           value="categories"
@@ -265,7 +270,8 @@
           :class="{
             itemdisabled:
               global.state.showHelp ||
-              (global.state.mobileMode && !resultsCategoriesEnabled)
+              (global.state.mobileMode &&
+                !global.state.resultsCategoriesEnabled)
           }"
         >
           <img
@@ -281,7 +287,7 @@
             id="resultsCategories"
             class="checkbox"
             type="checkbox"
-            :checked="resultsCategoriesEnabled"
+            :checked="global.state.resultsCategoriesEnabled"
             :disabled="
               inputsDisabled ||
               (global.state.mobileMode &&
@@ -310,20 +316,22 @@
             class="checkbox"
             type="checkbox"
             :checked="checkboxFilterEnabled"
-            :disabled="inputsDisabled || !resultsCategoriesEnabled"
+            :disabled="inputsDisabled || !global.state.resultsCategoriesEnabled"
             @change="checkboxFilterEnabledChange($event.target.checked)"
           />
           <label
             class="checkboxlabel"
             :class="{
-              itemdisabled: inputsDisabled || !resultsCategoriesEnabled
+              itemdisabled:
+                inputsDisabled || !global.state.resultsCategoriesEnabled
             }"
             for="checkboxFilter"
           >
             <img
               class="checkboxfiltericon"
               :class="{
-                itemdisabled: inputsDisabled || !resultsCategoriesEnabled
+                itemdisabled:
+                  inputsDisabled || !global.state.resultsCategoriesEnabled
               }"
               src="../assets/images/document2.svg"
             />
@@ -373,7 +381,7 @@
           value="catsclick"
           :disabled="
             inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
                 global.state.mobileDisplay === 'categories'))
@@ -386,7 +394,8 @@
           :class="{
             itemdisabled:
               inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+              (global.state.resultsCategoriesEnabled &&
+                !resultsCategoriesDone) ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -401,7 +410,7 @@
           value="catshover"
           :disabled="
             inputsDisabled ||
-            (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
                 global.state.mobileDisplay === 'categories'))
@@ -414,7 +423,8 @@
           :class="{
             itemdisabled:
               inputsDisabled ||
-              (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+              (global.state.resultsCategoriesEnabled &&
+                !resultsCategoriesDone) ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -424,7 +434,10 @@
         /></label>
       </form>
       <div>
-        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+        <span
+          v-show="
+            global.state.resultsCategoriesEnabled && !resultsCategoriesDone
+          "
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
         <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
@@ -440,7 +453,10 @@
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
-        <span v-show="resultsCategoriesEnabled && !resultsCategoriesDone"
+        <span
+          v-show="
+            global.state.resultsCategoriesEnabled && !resultsCategoriesDone
+          "
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
       </div>
@@ -614,7 +630,7 @@ export default {
     'fetchDataClicked',
     'update:resultsRedirectsEnabled',
     'showHelpClicked',
-    'update:resultsCategoriesEnabled',
+    'resultsCategoriesChanged',
     'update:checkboxFilterEnabled',
     'update:sizePerPage',
     'update:scalingFactor',
@@ -639,7 +655,7 @@ export default {
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
+
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
     resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     sizePerPage: { required: true, default: 16, type: Number },
@@ -672,9 +688,11 @@ export default {
       this.$emit('fetchDataClicked', value)
     },
     resultsCategoriesChanged(value) {
+      this.global.setResultsCategoriesEnabled(value)
+
       this.windowResized()
       this.resetPageNumber()
-      this.$emit('update:resultsCategoriesEnabled', value)
+      this.$emit('resultsCategoriesChanged', value)
     },
     resultsRedirectsChanged(value) {
       this.$emit('update:resultsRedirectsEnabled', value)
@@ -778,7 +796,7 @@ export default {
         //min width categories checkbox filter
         if (
           this.checkboxFilterEnabled &&
-          this.resultsCategoriesEnabled &&
+          this.global.state.resultsCategoriesEnabled &&
           !this.global.state.mobileMode &&
           !this.global.state.showHelp
         ) {
@@ -846,7 +864,7 @@ export default {
      * URL Parameters
      * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> gloabl.state.mobileMode true/false)
      * @param {String} lang - UI and Wikipedia language, en or de valid (-> global.state.language)
-     * @param {String} categories - Enable/disable results categories, on or off valid (boolean to prop resultsCategoriesEnabled)
+     * @param {String} categories - Enable/disable results categories, on or off valid (boolean to global.state.resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (global.state.filter)
      * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
@@ -899,7 +917,7 @@ export default {
     if (
       categoriesfilter &&
       categoriesfilter.length > 0 &&
-      this.resultsCategoriesEnabled
+      this.global.state.resultsCategoriesEnabled
     ) {
       this.resetPageNumber()
       this.filterCategoriesChanged(categoriesfilter)
@@ -920,7 +938,7 @@ export default {
     ) {
       switch (checkboxfilter) {
         case 'on':
-          if (this.resultsCategoriesEnabled) {
+          if (this.global.state.resultsCategoriesEnabled) {
             this.checkboxFilterEnabledChange(true)
           }
           break

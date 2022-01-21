@@ -10,7 +10,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
-      v-model:resultsCategoriesEnabled="inputFormState.resultsCategoriesEnabled"
       v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
       v-model:resultsRedirectsEnabled="inputFormState.resultsRedirectsEnabled"
       v-model:sizePerPage="inputFormState.sizePerPage"
@@ -20,7 +19,7 @@
       @pageNumberChanged="pageNumberChanged"
       @fetchDataClicked="fetchDataClicked"
       @showHelpClicked="showHelpSwitched"
-      @update:resultsCategoriesEnabled="resultsCategoriesChanged"
+      @resultsCategoriesChanged="resultsCategoriesChanged"
       @update:resultsRedirectsEnabled="resultsRedirectsChanged"
       @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
@@ -39,11 +38,11 @@
         mobile: global.state.mobileMode,
         'grid-container':
           inputFormState.checkboxFilterEnabled &&
-          inputFormState.resultsCategoriesEnabled &&
+          global.state.resultsCategoriesEnabled &&
           !global.state.mobileMode,
         'grid-container-nocategories':
           (!inputFormState.checkboxFilterEnabled ||
-            !inputFormState.resultsCategoriesEnabled) &&
+            !global.state.resultsCategoriesEnabled) &&
           !global.state.mobileMode
       }"
       :style="{
@@ -71,7 +70,7 @@
         <categories-checkbox-filter
           v-if="
             ((!global.state.mobileMode &&
-              inputFormState.resultsCategoriesEnabled) ||
+              global.state.resultsCategoriesEnabled) ||
               (global.state.mobileMode &&
                 global.state.mobileDisplay === 'categories')) &&
             resultsCategoriesAllArray.length > 0 &&
@@ -100,7 +99,6 @@
         :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
-        :results-categories-enabled="inputFormState.resultsCategoriesEnabled"
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
@@ -165,7 +163,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
       categoriesOnHover: true,
@@ -235,7 +232,7 @@ export default {
       // good - maybe rewrite without ternary
       // needs to check this.global.state.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
       if (
-        this.inputFormState.resultsCategoriesEnabled &&
+        this.global.state.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
         this.global.state.filterCategories
       ) {
@@ -251,7 +248,7 @@ export default {
       }
 
       if (
-        this.inputFormState.resultsCategoriesEnabled &&
+        this.global.state.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
         ((!this.global.state.mobileMode &&
           this.inputFormState.checkboxFilterEnabled) ||
@@ -282,7 +279,7 @@ export default {
       if (
         !(
           this.resultsCategoriesDone &&
-          this.inputFormState.resultsCategoriesEnabled &&
+          this.global.state.resultsCategoriesEnabled &&
           ((!this.global.state.mobileMode &&
             this.inputFormState.checkboxFilterEnabled) ||
             this.global.state.mobileMode)
@@ -323,7 +320,7 @@ export default {
       if (
         !(
           this.resultsCategoriesDone &&
-          this.inputFormState.resultsCategoriesEnabled
+          this.global.state.resultsCategoriesEnabled
         )
       ) {
         return []
@@ -362,7 +359,7 @@ export default {
 
       this.resultsCategoriesDone = false
 
-      if (this.inputFormState.resultsCategoriesEnabled) {
+      if (this.global.state.resultsCategoriesEnabled) {
         this.getResultsCategories()
       }
 
@@ -461,13 +458,13 @@ export default {
     },
     resultsCategoriesChanged() {
       if (
-        this.inputFormState.resultsCategoriesEnabled &&
+        this.global.state.resultsCategoriesEnabled &&
         !this.resultsCategoriesDone
       ) {
         this.getResultsCategories()
       }
       if (
-        this.inputFormState.resultsCategoriesEnabled &&
+        this.global.state.resultsCategoriesEnabled &&
         this.resultsCategoriesDone
       ) {
         this.checkedCategories = new Set(

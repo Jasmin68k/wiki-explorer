@@ -76,9 +76,9 @@
           missing: displayResultsArray[index].missing,
           circlebuttonactualhover:
             (!inputsDisabled &&
-              resultsCategoriesEnabled &&
+              global.state.resultsCategoriesEnabled &&
               resultsCategoriesDone) ||
-            (!inputsDisabled && !resultsCategoriesEnabled)
+            (!inputsDisabled && !global.state.resultsCategoriesEnabled)
         }"
         class="circlebuttonactual"
         :style="{
@@ -87,7 +87,7 @@
         }"
         :disabled="
           displayResultsArray[index].missing ||
-          (resultsCategoriesEnabled && !resultsCategoriesDone) ||
+          (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
           (resultsRedirectsEnabled && !resultsRedirectsDone)
         "
         @click.prevent="circleButton(index)"
@@ -99,10 +99,11 @@
         <span
           v-if="!displayResultsArray[index].missing"
           :class="{
-            icongriditem1start: resultsCategoriesEnabled && !categoriesOnHover,
+            icongriditem1start:
+              global.state.resultsCategoriesEnabled && !categoriesOnHover,
             icongriditem1center:
-              !resultsCategoriesEnabled ||
-              (resultsCategoriesEnabled && categoriesOnHover)
+              !global.state.resultsCategoriesEnabled ||
+              (global.state.resultsCategoriesEnabled && categoriesOnHover)
           }"
           :style="{ 'line-height': 100 * scalingFactor + '%' }"
         >
@@ -111,7 +112,7 @@
               class="icon"
               :class="{
                 iconverticalalignmiddle:
-                  categoriesOnHover || !resultsCategoriesEnabled,
+                  categoriesOnHover || !global.state.resultsCategoriesEnabled,
                 iconverticalaligntop: !categoriesOnHover
               }"
               :style="{ height: 0.67 * scalingFactor + 0.33 + 'rem' }"
@@ -122,7 +123,7 @@
         <span
           v-if="
             !displayResultsArray[index].missing &&
-            resultsCategoriesEnabled &&
+            global.state.resultsCategoriesEnabled &&
             !categoriesOnHover
           "
           class="icongriditem2"
@@ -165,7 +166,7 @@
     v-if="
       !inputsDisabled &&
       displayResultsArray.length > 0 &&
-      resultsCategoriesEnabled &&
+      global.state.resultsCategoriesEnabled &&
       resultsCategoriesDone &&
       displayResultsArray[index].categories
     "
@@ -192,8 +193,13 @@
   </div>
 </template>
 <script>
+import { inject } from 'vue'
 export default {
   name: 'CircleButton',
+  setup() {
+    const global = inject('global')
+    return { global }
+  },
   data() {
     return {
       hoverRight: 0,
@@ -210,7 +216,6 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     displayResultsArray: { required: true, default: () => [], type: Array },
-    resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} },
@@ -278,7 +283,7 @@ ul li {
 }
 .circlebuttonactual {
   border: none;
-  padding: 0px;
+  padding: 0;
   background-color: lightgoldenrodyellow;
   overflow-wrap: anywhere;
 }

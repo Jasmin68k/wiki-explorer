@@ -28,7 +28,6 @@
         :index="index"
         :inputs-disabled="inputsDisabled"
         :display-results-array="displayResultsArray"
-        :results-categories-enabled="resultsCategoriesEnabled"
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :results-redirects-enabled="resultsRedirectsEnabled"
@@ -59,7 +58,7 @@ export default {
     redirects: { required: true, default: () => [], type: Array },
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
-    resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
+
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     titleMissing: { required: true, default: true, type: Boolean },
