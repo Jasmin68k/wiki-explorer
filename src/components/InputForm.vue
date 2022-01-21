@@ -172,7 +172,8 @@
           @input="resetPageNumber(), filterChanged($event.target.value)"
           :disabled="
             inputsDisabled ||
-            (global.state.mobileMode && mobileDisplay === 'maininfo')
+            (global.state.mobileMode &&
+              global.state.mobileDisplay === 'maininfo')
           "
           :style="{
             width: portraitMode && global.state.mobileMode ? '120px' : ''
@@ -200,7 +201,8 @@
             inputsDisabled ||
             !resultsCategoriesDone ||
             !resultsCategoriesEnabled ||
-            (global.state.mobileMode && mobileDisplay === 'maininfo')
+            (global.state.mobileMode &&
+              global.state.mobileDisplay === 'maininfo')
           "
           :style="{
             width: portraitMode && global.state.mobileMode ? '120px' : ''
@@ -221,7 +223,7 @@
           :disabled="global.state.showHelp"
           id="outgraph"
           value="outgraph"
-          :checked="mobileDisplay === 'outgraph'"
+          :checked="global.state.mobileDisplay === 'outgraph'"
           @change="mobileDisplaySwitched($event.target.value)"
         />
         <label
@@ -236,7 +238,7 @@
           :disabled="global.state.showHelp"
           id="maininfo"
           value="maininfo"
-          :checked="mobileDisplay === 'maininfo'"
+          :checked="global.state.mobileDisplay === 'maininfo'"
           @change="mobileDisplaySwitched($event.target.value)"
         />
         <label
@@ -254,7 +256,7 @@
           "
           id="categories"
           value="categories"
-          :checked="mobileDisplay === 'categories'"
+          :checked="global.state.mobileDisplay === 'categories'"
           @change="mobileDisplaySwitched($event.target.value)"
         />
         <label
@@ -283,8 +285,8 @@
             :disabled="
               inputsDisabled ||
               (global.state.mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
+                (global.state.mobileDisplay === 'maininfo' ||
+                  global.state.mobileDisplay === 'categories'))
             "
             @change="resultsCategoriesChanged($event.target.checked)"
           />
@@ -294,8 +296,8 @@
               itemdisabled:
                 inputsDisabled ||
                 (global.state.mobileMode &&
-                  (mobileDisplay === 'maininfo' ||
-                    mobileDisplay === 'categories'))
+                  (global.state.mobileDisplay === 'maininfo' ||
+                    global.state.mobileDisplay === 'categories'))
             }"
             for="resultsCategories"
           >
@@ -335,8 +337,8 @@
             :disabled="
               inputsDisabled ||
               (global.state.mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
+                (global.state.mobileDisplay === 'maininfo' ||
+                  global.state.mobileDisplay === 'categories'))
             "
             :checked="resultsRedirectsEnabled"
             @change="resultsRedirectsChanged($event.target.checked)"
@@ -347,8 +349,8 @@
               itemdisabled:
                 inputsDisabled ||
                 (global.state.mobileMode &&
-                  (mobileDisplay === 'maininfo' ||
-                    mobileDisplay === 'categories'))
+                  (global.state.mobileDisplay === 'maininfo' ||
+                    global.state.mobileDisplay === 'categories'))
             }"
             for="resultsRedirects"
           >
@@ -373,7 +375,8 @@
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone) ||
             (global.state.mobileMode &&
-              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+              (global.state.mobileDisplay === 'maininfo' ||
+                global.state.mobileDisplay === 'categories'))
           "
           ref="catsClick"
           @change="categoriesOnHoverOrClickChanged($event.target.value)"
@@ -385,8 +388,8 @@
               inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone) ||
               (global.state.mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
+                (global.state.mobileDisplay === 'maininfo' ||
+                  global.state.mobileDisplay === 'categories'))
           }"
           for="catsclick"
           ><img class="clickicon" src="../assets/images/mouse-click.svg"
@@ -400,7 +403,8 @@
             inputsDisabled ||
             (resultsCategoriesEnabled && !resultsCategoriesDone) ||
             (global.state.mobileMode &&
-              (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+              (global.state.mobileDisplay === 'maininfo' ||
+                global.state.mobileDisplay === 'categories'))
           "
           ref="catsHover"
           @change="categoriesOnHoverOrClickChanged($event.target.value)"
@@ -412,8 +416,8 @@
               inputsDisabled ||
               (resultsCategoriesEnabled && !resultsCategoriesDone) ||
               (global.state.mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
+                (global.state.mobileDisplay === 'maininfo' ||
+                  global.state.mobileDisplay === 'categories'))
           }"
           for="catshover"
           ><img class="hovericon" src="../assets/images/mouse-hover.svg"
@@ -465,8 +469,8 @@
               filteredResultsArrayLength === 0 ||
               pageNumber === 0 ||
               (global.state.mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
+                (global.state.mobileDisplay === 'maininfo' ||
+                  global.state.mobileDisplay === 'categories'))
           }"
         />
 
@@ -485,8 +489,8 @@
               filteredResultsArrayLength === 0 ||
               pageNumber + 1 === numberOfPages ||
               (global.state.mobileMode &&
-                (mobileDisplay === 'maininfo' ||
-                  mobileDisplay === 'categories'))
+                (global.state.mobileDisplay === 'maininfo' ||
+                  global.state.mobileDisplay === 'categories'))
           }"
         />
       </span>
@@ -513,7 +517,8 @@
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
           (global.state.mobileMode &&
-            (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+            (global.state.mobileDisplay === 'maininfo' ||
+              global.state.mobileDisplay === 'categories'))
         "
         :class="{ slidervertical: portraitMode && global.state.mobileMode }"
         :style="{
@@ -554,7 +559,8 @@
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
           (global.state.mobileMode &&
-            (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+            (global.state.mobileDisplay === 'maininfo' ||
+              global.state.mobileDisplay === 'categories'))
         "
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
@@ -580,7 +586,8 @@
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
           (global.state.mobileMode &&
-            (mobileDisplay === 'maininfo' || mobileDisplay === 'categories'))
+            (global.state.mobileDisplay === 'maininfo' ||
+              global.state.mobileDisplay === 'categories'))
         "
         :style="{
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
@@ -632,7 +639,6 @@ export default {
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    mobileDisplay: { required: true, default: 'outgraph', type: String },
     resultsCategoriesEnabled: { required: true, default: true, type: Boolean },
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
     resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
@@ -740,6 +746,7 @@ export default {
       this.$emit('mode-switched', value)
     },
     mobileDisplaySwitched(value) {
+      this.global.setMobileDisplay(value)
       this.$emit('mobile-display-switched', value)
     },
     showHelpClicked(value) {
@@ -842,7 +849,7 @@ export default {
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to prop resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (global.state.filter)
      * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
-     * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
+     * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to prop resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover

@@ -5,7 +5,6 @@
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array-length="filteredResultsArray.length"
-      :mobile-display="inputFormState.mobileDisplay"
       :number-of-pages="numberOfPages"
       :page-number="pageNumber"
       :index-start="indexStart"
@@ -58,7 +57,7 @@
         v-if="
           (!global.state.mobileMode && inputFormState.checkboxFilterEnabled) ||
           (global.state.mobileMode &&
-            inputFormState.mobileDisplay === 'categories')
+            global.state.mobileDisplay === 'categories')
         "
         class="inputcategoriescontainer grid-item-categories"
         :class="{
@@ -74,7 +73,7 @@
             ((!global.state.mobileMode &&
               inputFormState.resultsCategoriesEnabled) ||
               (global.state.mobileMode &&
-                inputFormState.mobileDisplay === 'categories')) &&
+                global.state.mobileDisplay === 'categories')) &&
             resultsCategoriesAllArray.length > 0 &&
             resultsCategoriesDone
           "
@@ -90,8 +89,7 @@
       <outgraph
         v-if="
           !global.state.mobileMode ||
-          (global.state.mobileMode &&
-            inputFormState.mobileDisplay === 'outgraph')
+          (global.state.mobileMode && global.state.mobileDisplay === 'outgraph')
         "
         class="grid-item-graph"
         ref="outgraph"
@@ -116,8 +114,7 @@
       <main-title-info
         v-if="
           !global.state.mobileMode ||
-          (global.state.mobileMode &&
-            inputFormState.mobileDisplay === 'maininfo')
+          (global.state.mobileMode && global.state.mobileDisplay === 'maininfo')
         "
         class="grid-item-maininfo"
         :class="{
@@ -168,7 +165,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      mobileDisplay: 'outgraph',
       resultsCategoriesEnabled: true,
       resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
@@ -545,8 +541,7 @@ export default {
     modeSwitched() {
       this.windowResized()
     },
-    mobileDisplaySwitched(value) {
-      this.inputFormState.mobileDisplay = value
+    mobileDisplaySwitched() {
       this.windowResized()
     },
     showHelpSwitched() {
