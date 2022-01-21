@@ -12,7 +12,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
-      v-model:filter="inputFormState.filter"
       v-model:filterCategories="inputFormState.filterCategories"
       v-model:title="inputFormState.title"
       v-model:showHelp="inputFormState.showHelp"
@@ -174,7 +173,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      filter: '',
       filterCategories: '',
       title: '',
       showHelp: false,
@@ -245,7 +243,7 @@ export default {
       filteredArray = filteredArray.filter((page) =>
         page.title
           .toLowerCase()
-          .includes(this.inputFormState.filter.toLowerCase())
+          .includes(this.global.state.filter.toLowerCase())
       )
 
       // good - maybe rewrite without ternary
@@ -314,7 +312,7 @@ export default {
           resultPage.categories &&
           resultPage.title
             .toLowerCase()
-            .includes(this.inputFormState.filter.toLowerCase())
+            .includes(this.global.state.filter.toLowerCase())
         ) {
           resultPage.categories.forEach((category) =>
             // no duplicate check needed in Set
@@ -465,10 +463,6 @@ export default {
       this.getJson()
     },
     async fetchDataClicked(value) {
-      console.log(this.global.state.count)
-      this.global.incrementCount()
-      console.log(this.global.state.count)
-
       if (value) {
         this.inputFormState.title = await wikiFetchGetRedirectTarget(
           this.inputFormState.title,

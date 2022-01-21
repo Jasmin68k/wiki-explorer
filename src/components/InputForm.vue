@@ -168,7 +168,7 @@
           id="filter"
           class="titleinputarea"
           :placeholder="$t('filter-results-titles')"
-          :value="filter"
+          :value="global.state.filter"
           @input="resetPageNumber(), filterChanged($event.target.value)"
           :disabled="
             inputsDisabled || (mobileMode && mobileDisplay === 'maininfo')
@@ -593,12 +593,13 @@
   </div>
 </template>
 <script>
+import { inject } from 'vue'
+
 export default {
   name: 'InputForm',
   emits: [
     'update:title',
     'update:resultsRedirectsEnabled',
-    'update:filter',
     'update:filterCategories',
     'update:showHelp',
     'update:resultsCategoriesEnabled',
@@ -627,7 +628,6 @@ export default {
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     mobileMode: { required: true, default: false, type: Boolean },
-    filter: { required: true, default: '', type: String },
     filterCategories: { required: true, default: '', type: String },
     title: { required: true, default: '', type: String },
     showHelp: { required: true, default: false, type: Boolean },
@@ -640,6 +640,10 @@ export default {
     pageNumber: { required: true, default: 0, type: Number },
     indexStart: { required: true, default: 0, type: Number },
     indexEnd: { required: true, default: 0, type: Number }
+  },
+  setup() {
+    const global = inject('global')
+    return { global }
   },
   data() {
     return {
@@ -669,7 +673,7 @@ export default {
       this.$emit('update:resultsRedirectsEnabled', value)
     },
     filterChanged(value) {
-      this.$emit('update:filter', value)
+      this.global.setFilter(value)
     },
     filterCategoriesChanged(value) {
       this.$emit('update:filterCategories', value)
@@ -832,7 +836,7 @@ export default {
      * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> prop mobileMode true/false)
      * @param {String} lang - UI and Wikipedia language, en or de valid
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to prop resultsCategoriesEnabled)
-     * @param {String} titlefilter - String to filter results titles with (prop filter)
+     * @param {String} titlefilter - String to filter results titles with (global.state.filter)
      * @param {String} categoriesfilter - String to filter results categories with (prop filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> prop mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
