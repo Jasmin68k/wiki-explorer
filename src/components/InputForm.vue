@@ -315,9 +315,9 @@
             id="checkboxFilter"
             class="checkbox"
             type="checkbox"
-            :checked="checkboxFilterEnabled"
+            :checked="global.state.checkboxFilterEnabled"
             :disabled="inputsDisabled || !global.state.resultsCategoriesEnabled"
-            @change="checkboxFilterEnabledChange($event.target.checked)"
+            @change="checkboxFilterEnabledChanged($event.target.checked)"
           />
           <label
             class="checkboxlabel"
@@ -633,7 +633,7 @@ export default {
     'resultsRedirectsChanged',
     'showHelpClicked',
     'resultsCategoriesChanged',
-    'update:checkboxFilterEnabled',
+    'checkboxFilterEnabledChanged',
     'update:sizePerPage',
     'update:scalingFactor',
     'update:scalingFactorSaved',
@@ -657,7 +657,6 @@ export default {
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    checkboxFilterEnabled: { required: true, default: true, type: Boolean },
     sizePerPage: { required: true, default: 16, type: Number },
     numberOfPages: { required: true, default: 0, type: Number },
     pageNumber: { required: true, default: 0, type: Number },
@@ -719,11 +718,12 @@ export default {
         this.$emit('page-number-changed', this.pageNumber - 1)
       }
     },
-    checkboxFilterEnabledChange(value) {
+    checkboxFilterEnabledChanged(value) {
+      this.global.setCheckboxFilterEnabled(value)
       this.windowResized()
       this.resetPageNumber()
 
-      this.$emit('update:checkboxFilterEnabled', value)
+      this.$emit('checkboxFilterEnabledChanged', value)
     },
     languageSwitched(value) {
       if (value === 'en') {
@@ -795,7 +795,7 @@ export default {
 
         //min width categories checkbox filter
         if (
-          this.checkboxFilterEnabled &&
+          this.global.state.checkboxFilterEnabled &&
           this.global.state.resultsCategoriesEnabled &&
           !this.global.state.mobileMode &&
           !this.global.state.showHelp
@@ -868,7 +868,7 @@ export default {
      * @param {String} titlefilter - String to filter results titles with (global.state.filter)
      * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
-     * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
+     * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
      * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (prop sizePerPage)
@@ -939,11 +939,11 @@ export default {
       switch (checkboxfilter) {
         case 'on':
           if (this.global.state.resultsCategoriesEnabled) {
-            this.checkboxFilterEnabledChange(true)
+            this.checkboxFilterEnabledChanged(true)
           }
           break
         case 'off':
-          this.checkboxFilterEnabledChange(false)
+          this.checkboxFilterEnabledChanged(false)
           break
       }
     }

@@ -10,7 +10,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
-      v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
       v-model:sizePerPage="inputFormState.sizePerPage"
       v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
@@ -20,7 +19,7 @@
       @showHelpClicked="showHelpSwitched"
       @resultsCategoriesChanged="resultsCategoriesChanged"
       @resultsRedirectsChanged="resultsRedirectsChanged"
-      @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
+      @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
       @categoriesHoverClickChanged="categoriesHoverClickChanged"
       @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
@@ -36,11 +35,11 @@
       :class="{
         mobile: global.state.mobileMode,
         'grid-container':
-          inputFormState.checkboxFilterEnabled &&
+          global.state.checkboxFilterEnabled &&
           global.state.resultsCategoriesEnabled &&
           !global.state.mobileMode,
         'grid-container-nocategories':
-          (!inputFormState.checkboxFilterEnabled ||
+          (!global.state.checkboxFilterEnabled ||
             !global.state.resultsCategoriesEnabled) &&
           !global.state.mobileMode
       }"
@@ -53,7 +52,7 @@
     >
       <div
         v-if="
-          (!global.state.mobileMode && inputFormState.checkboxFilterEnabled) ||
+          (!global.state.mobileMode && global.state.checkboxFilterEnabled) ||
           (global.state.mobileMode &&
             global.state.mobileDisplay === 'categories')
         "
@@ -161,7 +160,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      checkboxFilterEnabled: true,
       categoriesOnHover: true,
       sizePerPage: 16,
       scalingFactor: 1.0,
@@ -248,7 +246,7 @@ export default {
         this.global.state.resultsCategoriesEnabled &&
         this.resultsCategoriesDone &&
         ((!this.global.state.mobileMode &&
-          this.inputFormState.checkboxFilterEnabled) ||
+          this.global.state.checkboxFilterEnabled) ||
           this.global.state.mobileMode)
       ) {
         filteredArray = filteredArray.filter((page) =>
@@ -278,7 +276,7 @@ export default {
           this.resultsCategoriesDone &&
           this.global.state.resultsCategoriesEnabled &&
           ((!this.global.state.mobileMode &&
-            this.inputFormState.checkboxFilterEnabled) ||
+            this.global.state.checkboxFilterEnabled) ||
             this.global.state.mobileMode)
         )
       ) {
@@ -483,9 +481,9 @@ export default {
     resultsCategoriesCheckboxChanged(value) {
       this.pageNumber = 0
 
-      if (!this.inputFormState.checkboxFilterEnabled) {
+      if (!this.global.state.checkboxFilterEnabled) {
         // enable in desktop when changed in mobile
-        this.inputFormState.checkboxFilterEnabled = true
+        this.global.setCheckboxFilterEnabled(true)
       }
 
       this.checkedCategories = value
@@ -497,13 +495,13 @@ export default {
     },
     checkboxFilterEnabledChanged() {
       // for switch from desktop to mobile
-      if (!this.inputFormState.checkboxFilterEnabled) {
+      if (!this.global.state.checkboxFilterEnabled) {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
 
-      if (this.inputFormState.checkboxFilterEnabled) {
+      if (this.global.state.checkboxFilterEnabled) {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
