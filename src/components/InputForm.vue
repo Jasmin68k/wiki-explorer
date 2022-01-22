@@ -348,7 +348,7 @@
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
             "
-            :checked="resultsRedirectsEnabled"
+            :checked="global.state.resultsRedirectsEnabled"
             @change="resultsRedirectsChanged($event.target.checked)"
           />
           <label
@@ -440,7 +440,8 @@
           "
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
-        <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
+        <span
+          v-show="global.state.resultsRedirectsEnabled && !resultsRedirectsDone"
           ><img
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
@@ -448,7 +449,8 @@
         <span class="fontsize90"
           >{{ $t('results') }}{{ filteredResultsArrayLength }}</span
         >
-        <span v-show="resultsRedirectsEnabled && !resultsRedirectsDone"
+        <span
+          v-show="global.state.resultsRedirectsEnabled && !resultsRedirectsDone"
           ><img
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
@@ -628,7 +630,7 @@ export default {
   name: 'InputForm',
   emits: [
     'fetchDataClicked',
-    'update:resultsRedirectsEnabled',
+    'resultsRedirectsChanged',
     'showHelpClicked',
     'resultsCategoriesChanged',
     'update:checkboxFilterEnabled',
@@ -655,9 +657,7 @@ export default {
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-
     checkboxFilterEnabled: { required: true, default: true, type: Boolean },
-    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     sizePerPage: { required: true, default: 16, type: Number },
     numberOfPages: { required: true, default: 0, type: Number },
     pageNumber: { required: true, default: 0, type: Number },
@@ -689,13 +689,13 @@ export default {
     },
     resultsCategoriesChanged(value) {
       this.global.setResultsCategoriesEnabled(value)
-
       this.windowResized()
       this.resetPageNumber()
       this.$emit('resultsCategoriesChanged', value)
     },
     resultsRedirectsChanged(value) {
-      this.$emit('update:resultsRedirectsEnabled', value)
+      this.global.setResultsRedirectsEnabled(value)
+      this.$emit('resultsRedirectsChanged', value)
     },
     filterChanged(value) {
       this.global.setFilter(value)
@@ -869,7 +869,7 @@ export default {
      * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
      * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to prop checkboxFilterEnabled)
-     * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to prop resultsRedirectsEnabled)
+     * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
      * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (prop sizePerPage)
      * @param {String} search - Wikipedia page to search for (global.state.title)

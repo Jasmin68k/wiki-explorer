@@ -11,7 +11,6 @@
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
       v-model:checkboxFilterEnabled="inputFormState.checkboxFilterEnabled"
-      v-model:resultsRedirectsEnabled="inputFormState.resultsRedirectsEnabled"
       v-model:sizePerPage="inputFormState.sizePerPage"
       v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
@@ -20,7 +19,7 @@
       @fetchDataClicked="fetchDataClicked"
       @showHelpClicked="showHelpSwitched"
       @resultsCategoriesChanged="resultsCategoriesChanged"
-      @update:resultsRedirectsEnabled="resultsRedirectsChanged"
+      @resultsRedirectsChanged="resultsRedirectsChanged"
       @update:checkboxFilterEnabled="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
       @categoriesHoverClickChanged="categoriesHoverClickChanged"
@@ -95,7 +94,6 @@
         :inputs-disabled="inputsDisabled"
         :title="titlePage.title"
         :url="titlePage.url"
-        :results-redirects-enabled="inputFormState.resultsRedirectsEnabled"
         :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
@@ -163,7 +161,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      resultsRedirectsEnabled: false,
       checkboxFilterEnabled: true,
       categoriesOnHover: true,
       sizePerPage: 16,
@@ -365,7 +362,7 @@ export default {
 
       this.resultsRedirectsDone = false
 
-      if (this.inputFormState.resultsRedirectsEnabled) {
+      if (this.global.state.resultsRedirectsEnabled) {
         this.getResultsRedirects()
       }
 
@@ -474,7 +471,7 @@ export default {
     },
     resultsRedirectsChanged() {
       if (
-        this.inputFormState.resultsRedirectsEnabled &&
+        this.global.state.resultsRedirectsEnabled &&
         !this.resultsRedirectsDone
       ) {
         this.getResultsRedirects()

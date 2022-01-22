@@ -12,7 +12,6 @@
       :inputs-disabled="inputsDisabled"
       :title="title"
       :title-missing="titleMissing"
-      :results-redirects-enabled="resultsRedirectsEnabled"
       :redirects="redirects"
       :categories-array="categoriesArray"
       :url="url"
@@ -30,7 +29,6 @@
         :display-results-array="displayResultsArray"
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
-        :results-redirects-enabled="resultsRedirectsEnabled"
         :outgraphcanvasref="outgraphcanvasref"
         :circle-button-radius="circleButtonRadius"
         :scalingFactor="scalingFactor"
@@ -54,11 +52,9 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
     url: { required: true, default: '', type: String },
-    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     redirects: { required: true, default: () => [], type: Array },
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
-
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     titleMissing: { required: true, default: true, type: Boolean },

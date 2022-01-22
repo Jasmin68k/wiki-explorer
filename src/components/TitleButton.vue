@@ -7,7 +7,7 @@
       'max-width': 200 * scalingFactor + 'px'
     }"
     v-show="
-      resultsRedirectsEnabled
+      global.state.resultsRedirectsEnabled
         ? !inputsDisabled && title && !titleMissing && redirectsDone
         : !inputsDisabled && title && !titleMissing
     "
@@ -74,7 +74,7 @@
 
     <div
       class="redirects"
-      v-if="resultsRedirectsEnabled && redirectsDone"
+      v-if="global.state.resultsRedirectsEnabled && redirectsDone"
       :style="{
         'font-size': 70 * scalingFactor + '%',
         '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
@@ -143,7 +143,7 @@ export default {
     watchEffect(
       async () =>
         await nextTick().then(
-          initHoverButtonTitleCoords(props.resultsRedirectsEnabled)
+          initHoverButtonTitleCoords(global.state.resultsRedirectsEnabled)
         )
     )
     watchEffect(
@@ -168,7 +168,6 @@ export default {
   props: {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
-    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     redirects: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },

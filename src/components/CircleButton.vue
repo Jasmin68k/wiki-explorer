@@ -88,7 +88,7 @@
         :disabled="
           displayResultsArray[index].missing ||
           (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
-          (resultsRedirectsEnabled && !resultsRedirectsDone)
+          (global.state.resultsRedirectsEnabled && !resultsRedirectsDone)
         "
         @click.prevent="circleButton(index)"
       >
@@ -145,7 +145,7 @@
 
     <div
       class="redirects"
-      v-if="resultsRedirectsEnabled && resultsRedirectsDone"
+      v-if="global.state.resultsRedirectsEnabled && resultsRedirectsDone"
       :style="{
         'font-size': 70 * scalingFactor + '%',
         '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
@@ -225,7 +225,7 @@ export default {
     watchEffect(
       async () =>
         await nextTick().then(
-          initHoverButtonCircleCoords(props.resultsRedirectsEnabled)
+          initHoverButtonCircleCoords(global.state.resultsRedirectsEnabled)
         )
     )
     watchEffect(
@@ -258,7 +258,6 @@ export default {
   props: {
     index: { required: true, default: -1, type: Number },
     inputsDisabled: { required: true, default: false, type: Boolean },
-    resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
     displayResultsArray: { required: true, default: () => [], type: Array },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
