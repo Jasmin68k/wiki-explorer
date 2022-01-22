@@ -110,21 +110,58 @@
   </div>
 </template>
 <script>
+import { inject, ref, watchEffect, nextTick } from 'vue'
 export default {
   name: 'TitleButton',
   data() {
     return {
-      hoverRightTitle: 0,
-      hoverBottomTitle: 0,
-      hoverButtonTitle: false,
       titleButtonHoverOverride: false
+    }
+  },
+  setup(props) {
+    const global = inject('global')
+
+    // template ref
+    const titlebutton = ref(null)
+
+    // instance data
+    const hoverRightTitle = ref(0)
+    const hoverBottomTitle = ref(0)
+
+    function initHoverButtonTitleCoords() {
+      hoverRightTitle.value =
+        titlebutton.value.getBoundingClientRect().left -
+        props.outgraphcanvasref.getBoundingClientRect().left
+      hoverBottomTitle.value =
+        titlebutton.value.getBoundingClientRect().bottom -
+        props.outgraphcanvasref.getBoundingClientRect().top
+    }
+
+    async function initHoverButtonTitleCoordsNextTick() {
+      await nextTick()
+      initHoverButtonTitleCoords()
+    }
+
+    watchEffect(() =>
+      initHoverButtonTitleCoordsNextTick(props.resultsRedirectsEnabled)
+    )
+    watchEffect(() => initHoverButtonTitleCoordsNextTick(props.scalingFactor))
+    watchEffect(() =>
+      initHoverButtonTitleCoordsNextTick(props.circleButtonRadius)
+    )
+
+    return {
+      global,
+      titlebutton,
+      hoverRightTitle,
+      hoverBottomTitle,
+      initHoverButtonTitleCoords
     }
   },
   props: {
     inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
     resultsRedirectsEnabled: { required: true, default: false, type: Boolean },
-
     redirects: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },
@@ -142,29 +179,12 @@ export default {
     },
     inputsDisabled() {
       this.titleButtonHoverOverride = false
-    },
-    scalingFactor() {
-      this.$nextTick(() => this.initHoverButtonTitleCoords())
-    },
-    circleButtonRadius() {
-      this.$nextTick(() => this.initHoverButtonTitleCoords())
-    },
-    resultsRedirectsEnabled() {
-      this.$nextTick(() => this.initHoverButtonTitleCoords())
     }
   },
   methods: {
     titleButton() {
       // window.location = this.url
       window.open(this.url, '_blank')
-    },
-    initHoverButtonTitleCoords() {
-      this.hoverRightTitle =
-        this.$refs['titlebutton'].getBoundingClientRect().left -
-        this.outgraphcanvasref.getBoundingClientRect().left
-      this.hoverBottomTitle =
-        this.$refs['titlebutton'].getBoundingClientRect().bottom -
-        this.outgraphcanvasref.getBoundingClientRect().top
     },
     catsClick() {
       if (!this.titleButtonHoverOverride) {
@@ -199,7 +219,7 @@ ul li {
 }
 .titlebuttonactual {
   border: none;
-  padding: 0px;
+  padding: 0;
   background-color: lightgoldenrodyellow;
   overflow-wrap: anywhere;
 }

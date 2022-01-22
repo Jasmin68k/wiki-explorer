@@ -57,7 +57,7 @@
               1.0) +
         'px'
     }"
-    :ref="`circlebutton${index}`"
+    ref="circlebutton"
     v-on="{ mouseenter: () => initHoverButtonCircleCoords(index) }"
   >
     <div
@@ -193,20 +193,54 @@
   </div>
 </template>
 <script>
-import { inject } from 'vue'
+import { inject, ref, watchEffect, nextTick } from 'vue'
 export default {
   name: 'CircleButton',
-  setup() {
-    const global = inject('global')
-    return { global }
-  },
   data() {
     return {
-      hoverRight: 0,
-      hoverBottom: 0,
-      hoverButton: false,
-
       circleButtonHoverOverride: false
+    }
+  },
+  setup(props) {
+    const global = inject('global')
+
+    // template ref
+    const circlebutton = ref(null)
+
+    // instance data
+    const hoverRight = ref(0)
+    const hoverBottom = ref(0)
+
+    function initHoverButtonCircleCoords() {
+      hoverRight.value =
+        circlebutton.value.getBoundingClientRect().left -
+        props.outgraphcanvasref.getBoundingClientRect().left
+      hoverBottom.value =
+        circlebutton.value.getBoundingClientRect().bottom -
+        props.outgraphcanvasref.getBoundingClientRect().top
+    }
+    async function initHoverButtonCircleCoordsNextTick() {
+      await nextTick()
+      initHoverButtonCircleCoords()
+    }
+
+    watchEffect(() =>
+      initHoverButtonCircleCoordsNextTick(props.resultsRedirectsEnabled)
+    )
+    watchEffect(() => initHoverButtonCircleCoordsNextTick(props.scalingFactor))
+    watchEffect(() =>
+      initHoverButtonCircleCoordsNextTick(props.circleButtonRadius)
+    )
+    watchEffect(() =>
+      initHoverButtonCircleCoordsNextTick(props.resultsRedirectsDone)
+    )
+
+    return {
+      global,
+      circlebutton,
+      hoverRight,
+      hoverBottom,
+      initHoverButtonCircleCoords
     }
   },
 
@@ -223,35 +257,16 @@ export default {
     scalingFactor: { required: true, default: 1.0, type: Number },
     categoriesOnHover: { required: true, default: true, type: Boolean }
   },
+
   watch: {
     displayResultsArray() {
       this.circleButtonHoverOverride = false
     },
     categoriesOnHover() {
       this.circleButtonHoverOverride = false
-    },
-    scalingFactor() {
-      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
-    },
-    circleButtonRadius() {
-      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
-    },
-    resultsRedirectsEnabled() {
-      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
-    },
-    resultsRedirectsDone() {
-      this.$nextTick(() => this.initHoverButtonCircleCoords(this.index))
     }
   },
   methods: {
-    initHoverButtonCircleCoords(index) {
-      this.hoverRight =
-        this.$refs[`circlebutton${index}`].getBoundingClientRect().left -
-        this.outgraphcanvasref.getBoundingClientRect().left
-      this.hoverBottom =
-        this.$refs[`circlebutton${index}`].getBoundingClientRect().bottom -
-        this.outgraphcanvasref.getBoundingClientRect().top
-    },
     circleButton(index) {
       this.$emit('circleButtonClicked', index)
     },
