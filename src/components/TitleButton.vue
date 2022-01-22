@@ -111,6 +111,7 @@
 </template>
 <script>
 import { inject, ref, watchEffect, nextTick } from 'vue'
+
 export default {
   name: 'TitleButton',
   data() {
@@ -129,25 +130,31 @@ export default {
     const hoverBottomTitle = ref(0)
 
     function initHoverButtonTitleCoords() {
-      hoverRightTitle.value =
-        titlebutton.value.getBoundingClientRect().left -
-        props.outgraphcanvasref.getBoundingClientRect().left
-      hoverBottomTitle.value =
-        titlebutton.value.getBoundingClientRect().bottom -
-        props.outgraphcanvasref.getBoundingClientRect().top
+      if (titlebutton.value && props.outgraphcanvasref.getBoundingClientRect) {
+        hoverRightTitle.value =
+          titlebutton.value.getBoundingClientRect().left -
+          props.outgraphcanvasref.getBoundingClientRect().left
+        hoverBottomTitle.value =
+          titlebutton.value.getBoundingClientRect().bottom -
+          props.outgraphcanvasref.getBoundingClientRect().top
+      }
     }
 
-    async function initHoverButtonTitleCoordsNextTick() {
-      await nextTick()
-      initHoverButtonTitleCoords()
-    }
-
-    watchEffect(() =>
-      initHoverButtonTitleCoordsNextTick(props.resultsRedirectsEnabled)
+    watchEffect(
+      async () =>
+        await nextTick().then(
+          initHoverButtonTitleCoords(props.resultsRedirectsEnabled)
+        )
     )
-    watchEffect(() => initHoverButtonTitleCoordsNextTick(props.scalingFactor))
-    watchEffect(() =>
-      initHoverButtonTitleCoordsNextTick(props.circleButtonRadius)
+    watchEffect(
+      async () =>
+        await nextTick().then(initHoverButtonTitleCoords(props.scalingFactor))
+    )
+    watchEffect(
+      async () =>
+        await nextTick().then(
+          initHoverButtonTitleCoords(props.circleButtonRadius)
+        )
     )
 
     return {

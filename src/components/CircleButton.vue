@@ -212,27 +212,37 @@ export default {
     const hoverBottom = ref(0)
 
     function initHoverButtonCircleCoords() {
-      hoverRight.value =
-        circlebutton.value.getBoundingClientRect().left -
-        props.outgraphcanvasref.getBoundingClientRect().left
-      hoverBottom.value =
-        circlebutton.value.getBoundingClientRect().bottom -
-        props.outgraphcanvasref.getBoundingClientRect().top
-    }
-    async function initHoverButtonCircleCoordsNextTick() {
-      await nextTick()
-      initHoverButtonCircleCoords()
+      if (circlebutton.value && props.outgraphcanvasref.getBoundingClientRect) {
+        hoverRight.value =
+          circlebutton.value.getBoundingClientRect().left -
+          props.outgraphcanvasref.getBoundingClientRect().left
+        hoverBottom.value =
+          circlebutton.value.getBoundingClientRect().bottom -
+          props.outgraphcanvasref.getBoundingClientRect().top
+      }
     }
 
-    watchEffect(() =>
-      initHoverButtonCircleCoordsNextTick(props.resultsRedirectsEnabled)
+    watchEffect(
+      async () =>
+        await nextTick().then(
+          initHoverButtonCircleCoords(props.resultsRedirectsEnabled)
+        )
     )
-    watchEffect(() => initHoverButtonCircleCoordsNextTick(props.scalingFactor))
-    watchEffect(() =>
-      initHoverButtonCircleCoordsNextTick(props.circleButtonRadius)
+    watchEffect(
+      async () =>
+        await nextTick().then(initHoverButtonCircleCoords(props.scalingFactor))
     )
-    watchEffect(() =>
-      initHoverButtonCircleCoordsNextTick(props.resultsRedirectsDone)
+    watchEffect(
+      async () =>
+        await nextTick().then(
+          initHoverButtonCircleCoords(props.circleButtonRadius)
+        )
+    )
+    watchEffect(
+      async () =>
+        await nextTick().then(
+          initHoverButtonCircleCoords(props.resultsRedirectsDone)
+        )
     )
 
     return {
