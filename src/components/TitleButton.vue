@@ -11,7 +11,7 @@
         ? !global.state.inputsDisabled &&
           title &&
           !titleMissing &&
-          redirectsDone
+          global.state.redirectsDone
         : !global.state.inputsDisabled && title && !titleMissing
     "
     ref="titlebutton"
@@ -78,7 +78,7 @@
 
     <div
       class="redirects"
-      v-if="global.state.resultsRedirectsEnabled && redirectsDone"
+      v-if="global.state.resultsRedirectsEnabled && global.state.redirectsDone"
       :style="{
         'font-size': 70 * global.state.scalingFactor + '%',
         '--maxheight':
@@ -193,8 +193,7 @@ export default {
     categoriesArray: { required: true, default: () => [], type: Array },
     titleMissing: { required: true, default: true, type: Boolean },
     url: { required: true, default: '', type: String },
-    outgraphcanvasref: { required: true, default: {} },
-    redirectsDone: { required: true, default: false, type: Boolean }
+    outgraphcanvasref: { required: true, default: {} }
   },
   methods: {
     titleButton() {

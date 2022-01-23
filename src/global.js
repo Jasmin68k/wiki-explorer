@@ -18,7 +18,8 @@ const state = reactive({
   inputsDisabled: false,
   resultsCategoriesDone: true,
   resultsRedirectsDone: true,
-  pageNumber: 0
+  pageNumber: 0,
+  redirectsDone: false
 })
 
 const setFilter = (value) => {
@@ -75,6 +76,9 @@ const setResultsRedirectsDone = (value) => {
 const setPageNumber = (value) => {
   state.pageNumber = value
 }
+const setRedirectsDone = (value) => {
+  state.redirectsDone = value
+}
 
 export default {
   state: readonly(state),
@@ -95,5 +99,6 @@ export default {
   setInputsDisabled,
   setResultsCategoriesDone,
   setResultsRedirectsDone,
-  setPageNumber
+  setPageNumber,
+  setRedirectsDone
 }

@@ -84,7 +84,6 @@
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
         :title-missing="titlePage.missing"
-        :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
       ></outgraph>
 
@@ -148,8 +147,7 @@ export default {
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
-      titlePage: new TitlePage(),
-      redirectsDone: false
+      titlePage: new TitlePage()
     }
   },
   computed: {
@@ -371,7 +369,7 @@ export default {
         this.global.state.language
       )
 
-      this.redirectsDone = false
+      this.global.setRedirectsDone(false)
 
       if (!this.titlePage.missing) {
         this.getCategories()
@@ -393,7 +391,7 @@ export default {
         this.titlePage
       )
 
-      this.redirectsDone = true
+      this.global.setRedirectsDone(true)
     },
 
     async circleButtonClicked(index) {

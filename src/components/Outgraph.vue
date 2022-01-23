@@ -21,7 +21,6 @@
       :categories-array="categoriesArray"
       :url="url"
       :outgraphcanvasref="outgraphcanvasref"
-      :redirects-done="redirectsDone"
     ></title-button>
 
     <div v-for="(page, index) in displayResultsArray" :key="index">
@@ -128,8 +127,7 @@ export default {
     redirects: { required: true, default: () => [], type: Array },
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
-    titleMissing: { required: true, default: true, type: Boolean },
-    redirectsDone: { required: true, default: false, type: Boolean }
+    titleMissing: { required: true, default: true, type: Boolean }
   },
   methods: {
     circleButtonClicked(index) {
