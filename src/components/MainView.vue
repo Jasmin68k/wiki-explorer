@@ -21,7 +21,6 @@
       @resultsRedirectsChanged="resultsRedirectsChanged"
       @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
       @languageSwitched="languageSwitched"
-      @categoriesHoverClickChanged="categoriesHoverClickChanged"
       @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
       @gridHeightChanged="gridHeightChanged"
       @modeSwitched="modeSwitched"
@@ -101,7 +100,6 @@
         :title-missing="titlePage.missing"
         :scaling-factor="inputFormState.scalingFactor"
         :circle-button-radius="inputFormState.circleButtonRadius"
-        :categories-on-hover="inputFormState.categoriesOnHover"
         :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
       ></outgraph>
@@ -160,7 +158,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      categoriesOnHover: true,
       sizePerPage: 16,
       scalingFactor: 1.0,
       scalingFactorSaved: 1.0,
@@ -510,13 +507,6 @@ export default {
     languageSwitched(value) {
       this.$i18n.locale = value
       this.global.setLanguage(value)
-    },
-    categoriesHoverClickChanged(value) {
-      if (value === 'catshover') {
-        this.inputFormState.categoriesOnHover = true
-      } else {
-        this.inputFormState.categoriesOnHover = false
-      }
     },
     gridWidthNocategoriesChanged(value) {
       this.gridWidthNocategories = value

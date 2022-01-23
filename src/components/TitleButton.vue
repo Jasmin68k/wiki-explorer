@@ -1,7 +1,7 @@
 <template>
   <div
     class="titlebutton"
-    :class="{ hoverdisabled: !categoriesOnHover }"
+    :class="{ hoverdisabled: !global.state.categoriesOnHover }"
     :style="{
       'line-height': 100 * scalingFactor + '%',
       'max-width': 200 * scalingFactor + 'px'
@@ -34,8 +34,8 @@
       <div class="icongridcontainer">
         <span
           :class="{
-            icongriditem1start: !categoriesOnHover,
-            icongriditem1center: categoriesOnHover
+            icongriditem1start: !global.state.categoriesOnHover,
+            icongriditem1center: global.state.categoriesOnHover
           }"
           :style="{ 'line-height': 100 * scalingFactor + '%' }"
         >
@@ -43,8 +43,8 @@
             ><img
               class="icon"
               :class="{
-                iconverticalalignmiddle: categoriesOnHover,
-                iconverticalaligntop: !categoriesOnHover
+                iconverticalalignmiddle: global.state.categoriesOnHover,
+                iconverticalaligntop: !global.state.categoriesOnHover
               }"
               :style="{
                 height: 0.67 * scalingFactor + 0.33 + 'rem'
@@ -54,7 +54,7 @@
           /></a>
         </span>
         <span
-          v-if="!categoriesOnHover"
+          v-if="!global.state.categoriesOnHover"
           class="icongriditem2"
           :style="{ 'line-height': 100 * scalingFactor + '%' }"
         >
@@ -93,7 +93,7 @@
     class="titlebuttonhover"
     :class="{
       titlebuttonhoverdisplayoverride: titleButtonHoverOverride,
-      hoverdisabled: !categoriesOnHover
+      hoverdisabled: !global.state.categoriesOnHover
     }"
     :style="{
       '--poslefttitle': hoverRightTitle + 'px',
@@ -114,11 +114,6 @@ import { inject, ref, watchEffect, nextTick } from 'vue'
 
 export default {
   name: 'TitleButton',
-  data() {
-    return {
-      titleButtonHoverOverride: false
-    }
-  },
   setup(props) {
     const global = inject('global')
 
@@ -128,6 +123,7 @@ export default {
     // instance data
     const hoverRightTitle = ref(0)
     const hoverBottomTitle = ref(0)
+    const titleButtonHoverOverride = ref(false)
 
     function initHoverButtonTitleCoords() {
       if (titlebutton.value && props.outgraphcanvasref.getBoundingClientRect) {
@@ -138,6 +134,15 @@ export default {
           titlebutton.value.getBoundingClientRect().bottom -
           props.outgraphcanvasref.getBoundingClientRect().top
       }
+    }
+    function titleButtonHoverOverrideOff() {
+      titleButtonHoverOverride.value = false
+    }
+    function catsClick() {
+      if (!titleButtonHoverOverride.value) {
+        initHoverButtonTitleCoords()
+        titleButtonHoverOverride.value = true
+      } else titleButtonHoverOverride.value = false
     }
 
     watchEffect(
@@ -156,13 +161,19 @@ export default {
           initHoverButtonTitleCoords(props.circleButtonRadius)
         )
     )
+    watchEffect(() =>
+      titleButtonHoverOverrideOff(global.state.categoriesOnHover)
+    )
+    watchEffect(() => titleButtonHoverOverrideOff(props.inputsDisabled))
 
     return {
       global,
       titlebutton,
       hoverRightTitle,
       hoverBottomTitle,
-      initHoverButtonTitleCoords
+      titleButtonHoverOverride,
+      initHoverButtonTitleCoords,
+      catsClick
     }
   },
   props: {
@@ -175,28 +186,12 @@ export default {
     outgraphcanvasref: { required: true, default: {} },
     circleButtonRadius: { required: true, default: 250, type: Number },
     scalingFactor: { required: true, default: 1.0, type: Number },
-    categoriesOnHover: { required: true, default: true, type: Boolean },
     redirectsDone: { required: true, default: false, type: Boolean }
-  },
-
-  watch: {
-    categoriesOnHover() {
-      this.titleButtonHoverOverride = false
-    },
-    inputsDisabled() {
-      this.titleButtonHoverOverride = false
-    }
   },
   methods: {
     titleButton() {
       // window.location = this.url
       window.open(this.url, '_blank')
-    },
-    catsClick() {
-      if (!this.titleButtonHoverOverride) {
-        this.initHoverButtonTitleCoords()
-        this.titleButtonHoverOverride = true
-      } else this.titleButtonHoverOverride = false
     }
   }
 }

@@ -18,7 +18,6 @@
       :outgraphcanvasref="outgraphcanvasref"
       :circle-button-radius="circleButtonRadius"
       :scalingFactor="scalingFactor"
-      :categoriesOnHover="categoriesOnHover"
       :redirects-done="redirectsDone"
     ></title-button>
 
@@ -32,7 +31,6 @@
         :outgraphcanvasref="outgraphcanvasref"
         :circle-button-radius="circleButtonRadius"
         :scalingFactor="scalingFactor"
-        :categoriesOnHover="categoriesOnHover"
         @circleButtonClicked="circleButtonClicked"
       >
       </circle-button>
@@ -60,7 +58,6 @@ export default {
     titleMissing: { required: true, default: true, type: Boolean },
     scalingFactor: { required: true, default: 1.0, type: Number },
     circleButtonRadius: { required: true, default: 260, type: Number },
-    categoriesOnHover: { required: true, default: true, type: Boolean },
     redirectsDone: { required: true, default: false, type: Boolean }
   },
   data() {

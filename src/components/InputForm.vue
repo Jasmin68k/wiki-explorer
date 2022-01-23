@@ -638,7 +638,6 @@ export default {
     'update:scalingFactor',
     'update:scalingFactorSaved',
     'languageSwitched',
-    'categories-hover-click-changed',
     'update:circleButtonRadius',
     'update:circleButtonRadiusSaved',
     'grid-width-nocategories-changed',
@@ -745,7 +744,11 @@ export default {
         this.$refs.catsClick.checked = true
       }
 
-      this.$emit('categories-hover-click-changed', value)
+      if (value === 'catshover') {
+        this.global.setCategoriesOnHover(true)
+      } else {
+        this.global.setCategoriesOnHover(false)
+      }
     },
     circleButtonRadiusChanged(value) {
       this.$emit('update:circleButtonRadius', parseInt(value, 10))

@@ -2,7 +2,7 @@
   <div
     v-show="!inputsDisabled"
     class="circlebutton"
-    :class="{ hoverdisabled: !categoriesOnHover }"
+    :class="{ hoverdisabled: !global.state.categoriesOnHover }"
     :style="{
       '--angle':
         270 +
@@ -100,10 +100,12 @@
           v-if="!displayResultsArray[index].missing"
           :class="{
             icongriditem1start:
-              global.state.resultsCategoriesEnabled && !categoriesOnHover,
+              global.state.resultsCategoriesEnabled &&
+              !global.state.categoriesOnHover,
             icongriditem1center:
               !global.state.resultsCategoriesEnabled ||
-              (global.state.resultsCategoriesEnabled && categoriesOnHover)
+              (global.state.resultsCategoriesEnabled &&
+                global.state.categoriesOnHover)
           }"
           :style="{ 'line-height': 100 * scalingFactor + '%' }"
         >
@@ -112,8 +114,9 @@
               class="icon"
               :class="{
                 iconverticalalignmiddle:
-                  categoriesOnHover || !global.state.resultsCategoriesEnabled,
-                iconverticalaligntop: !categoriesOnHover
+                  global.state.categoriesOnHover ||
+                  !global.state.resultsCategoriesEnabled,
+                iconverticalaligntop: !global.state.categoriesOnHover
               }"
               :style="{ height: 0.67 * scalingFactor + 0.33 + 'rem' }"
               alt="Wiki"
@@ -124,13 +127,13 @@
           v-if="
             !displayResultsArray[index].missing &&
             global.state.resultsCategoriesEnabled &&
-            !categoriesOnHover
+            !global.state.categoriesOnHover
           "
           class="icongriditem2"
           :style="{ 'line-height': 100 * scalingFactor + '%' }"
         >
           <img
-            @click="catsClick(index)"
+            @click="catsClick"
             :class="{ icon: resultsCategoriesDone }"
             :style="{
               height: 0.67 * scalingFactor + 0.33 + 'rem',
@@ -173,7 +176,7 @@
     class="circlebuttonhover"
     :class="{
       circlebuttonhoverdisplayoverride: circleButtonHoverOverride,
-      hoverdisabled: !categoriesOnHover
+      hoverdisabled: !global.state.categoriesOnHover
     }"
     :style="{
       '--posleft': hoverRight + 'px',
@@ -196,11 +199,6 @@
 import { inject, ref, watchEffect, nextTick } from 'vue'
 export default {
   name: 'CircleButton',
-  data() {
-    return {
-      circleButtonHoverOverride: false
-    }
-  },
   setup(props) {
     const global = inject('global')
 
@@ -210,6 +208,7 @@ export default {
     // instance data
     const hoverRight = ref(0)
     const hoverBottom = ref(0)
+    const circleButtonHoverOverride = ref(false)
 
     function initHoverButtonCircleCoords() {
       if (circlebutton.value && props.outgraphcanvasref.getBoundingClientRect) {
@@ -219,6 +218,17 @@ export default {
         hoverBottom.value =
           circlebutton.value.getBoundingClientRect().bottom -
           props.outgraphcanvasref.getBoundingClientRect().top
+      }
+    }
+    function circleButtonHoverOverrideOff() {
+      circleButtonHoverOverride.value = false
+    }
+    function catsClick() {
+      if (props.resultsCategoriesDone) {
+        if (!circleButtonHoverOverride.value) {
+          initHoverButtonCircleCoords()
+          circleButtonHoverOverride.value = true
+        } else circleButtonHoverOverride.value = false
       }
     }
 
@@ -244,13 +254,19 @@ export default {
           initHoverButtonCircleCoords(props.resultsRedirectsDone)
         )
     )
+    watchEffect(() =>
+      circleButtonHoverOverrideOff(global.state.categoriesOnHover)
+    )
+    watchEffect(() => circleButtonHoverOverrideOff(props.displayResultsArray))
 
     return {
       global,
       circlebutton,
       hoverRight,
       hoverBottom,
-      initHoverButtonCircleCoords
+      circleButtonHoverOverride,
+      initHoverButtonCircleCoords,
+      catsClick
     }
   },
 
@@ -263,29 +279,11 @@ export default {
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} },
     circleButtonRadius: { required: true, default: 250, type: Number },
-    scalingFactor: { required: true, default: 1.0, type: Number },
-    categoriesOnHover: { required: true, default: true, type: Boolean }
-  },
-
-  watch: {
-    displayResultsArray() {
-      this.circleButtonHoverOverride = false
-    },
-    categoriesOnHover() {
-      this.circleButtonHoverOverride = false
-    }
+    scalingFactor: { required: true, default: 1.0, type: Number }
   },
   methods: {
     circleButton(index) {
       this.$emit('circleButtonClicked', index)
-    },
-    catsClick(index) {
-      if (this.resultsCategoriesDone) {
-        if (!this.circleButtonHoverOverride) {
-          this.initHoverButtonCircleCoords(index)
-          this.circleButtonHoverOverride = true
-        } else this.circleButtonHoverOverride = false
-      }
     }
   }
 }
