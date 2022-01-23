@@ -436,7 +436,7 @@ export default {
     resultsRedirectsChanged() {
       if (
         this.global.state.resultsRedirectsEnabled &&
-        !this.resultsRedirectsDone
+        !this.global.state.resultsRedirectsDone
       ) {
         this.getResultsRedirects()
       }
