@@ -10,7 +10,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
-      v-model:circleButtonRadiusSaved="inputFormState.circleButtonRadiusSaved"
       @pageNumberChanged="pageNumberChanged"
       @fetchDataClicked="fetchDataClicked"
       @showHelpClicked="showHelpSwitched"
@@ -154,8 +153,7 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      circleButtonRadius: 260,
-      circleButtonRadiusSaved: 260
+      circleButtonRadius: 260
     })
     return { inputFormState, global }
   },
