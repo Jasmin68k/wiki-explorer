@@ -9,7 +9,6 @@
       :page-number="pageNumber"
       :index-start="indexStart"
       :index-end="indexEnd"
-      v-model:circleButtonRadius="inputFormState.circleButtonRadius"
       @pageNumberChanged="pageNumberChanged"
       @fetchDataClicked="fetchDataClicked"
       @showHelpClicked="showHelpSwitched"
@@ -94,7 +93,6 @@
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
-        :circle-button-radius="inputFormState.circleButtonRadius"
         :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
       ></outgraph>
@@ -120,7 +118,7 @@
 </template>
 
 <script>
-import { reactive, inject } from 'vue'
+import { inject } from 'vue'
 import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
@@ -150,12 +148,7 @@ export default {
   },
   setup() {
     const global = inject('global')
-
-    // state of inputForm in composition API style
-    const inputFormState = reactive({
-      circleButtonRadius: 260
-    })
-    return { inputFormState, global }
+    return { global }
   },
   data() {
     return {

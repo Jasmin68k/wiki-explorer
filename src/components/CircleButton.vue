@@ -10,7 +10,7 @@
         'deg',
       '--radius':
         index % 2 === 0
-          ? circleButtonRadius *
+          ? global.state.circleButtonRadius *
               global.state.scalingFactor *
               (1 +
                 Math.abs(
@@ -23,7 +23,7 @@
                 ) *
                   0.25) +
             'px'
-          : (circleButtonRadius / 1.5) *
+          : (global.state.circleButtonRadius / 1.5) *
               global.state.scalingFactor *
               (1 +
                 Math.abs(
@@ -154,7 +154,8 @@
       :style="{
         'font-size': 70 * global.state.scalingFactor + '%',
         '--maxheight':
-          circleButtonRadius * global.state.scalingFactor * 0.3 + 'px'
+          global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
+          'px'
       }"
     >
       <ul>
@@ -186,7 +187,8 @@
       '--postop': hoverBottom - 1 + 'px',
       'font-size': 70 * global.state.scalingFactor + '%',
       '--maxheight':
-        circleButtonRadius * global.state.scalingFactor * 0.3 + 'px'
+        global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
+        'px'
     }"
   >
     <ul>
@@ -275,8 +277,7 @@ export default {
     displayResultsArray: { required: true, default: () => [], type: Array },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
-    outgraphcanvasref: { required: true, default: {} },
-    circleButtonRadius: { required: true, default: 250, type: Number }
+    outgraphcanvasref: { required: true, default: {} }
   },
   methods: {
     circleButton(index) {

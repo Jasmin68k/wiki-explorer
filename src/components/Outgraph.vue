@@ -3,9 +3,13 @@
     class="outgraph"
     :style="{
       width:
-        (circleButtonRadius * 1.25 * 2 + 220) * global.state.scalingFactor +
+        (global.state.circleButtonRadius * 1.25 * 2 + 220) *
+          global.state.scalingFactor +
         'px',
-      height: (circleButtonRadius * 2 + 100) * global.state.scalingFactor + 'px'
+      height:
+        (global.state.circleButtonRadius * 2 + 100) *
+          global.state.scalingFactor +
+        'px'
     }"
   >
     <canvas class="outgraphcanvas" ref="outgraphcanvasref"></canvas>
@@ -18,7 +22,6 @@
       :categories-array="categoriesArray"
       :url="url"
       :outgraphcanvasref="outgraphcanvasref"
-      :circle-button-radius="circleButtonRadius"
       :redirects-done="redirectsDone"
     ></title-button>
 
@@ -30,7 +33,6 @@
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :outgraphcanvasref="outgraphcanvasref"
-        :circle-button-radius="circleButtonRadius"
         @circleButtonClicked="circleButtonClicked"
       >
       </circle-button>
@@ -87,10 +89,10 @@ export default {
             180
           const length =
             i % 2 === 0
-              ? props.circleButtonRadius *
+              ? global.state.circleButtonRadius *
                 global.state.scalingFactor *
                 (1 + Math.abs(Math.sin(angle2)) * 0.25)
-              : (props.circleButtonRadius / 1.5) *
+              : (global.state.circleButtonRadius / 1.5) *
                 global.state.scalingFactor *
                 (1 + Math.abs(Math.sin(angle2)) * 0.25)
           ctx.lineTo(
@@ -113,7 +115,7 @@ export default {
       } else clearCanvas()
     }
     watchEffect(() => clearCanvasAndDrawLines(global.state.scalingFactor))
-    watchEffect(() => clearCanvasAndDrawLines(props.circleButtonRadius))
+    watchEffect(() => clearCanvasAndDrawLines(global.state.circleButtonRadius))
     watchEffect(() => displayResultsArrayWatch(props.displayResultsArray))
 
     return { global, outgraphcanvasref }
@@ -131,7 +133,6 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     titleMissing: { required: true, default: true, type: Boolean },
-    circleButtonRadius: { required: true, default: 260, type: Number },
     redirectsDone: { required: true, default: false, type: Boolean }
   },
   methods: {

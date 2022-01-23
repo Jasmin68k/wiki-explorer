@@ -599,7 +599,7 @@
         min="200"
         max="650"
         step="1"
-        :value="circleButtonRadius"
+        :value="global.state.circleButtonRadius"
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
@@ -635,7 +635,6 @@ export default {
     'resultsCategoriesChanged',
     'checkboxFilterEnabledChanged',
     'languageSwitched',
-    'update:circleButtonRadius',
     'grid-width-nocategories-changed',
     'grid-height-changed',
     'mode-switched',
@@ -647,7 +646,6 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
-    circleButtonRadius: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     numberOfPages: { required: true, default: 0, type: Number },
     pageNumber: { required: true, default: 0, type: Number },
@@ -745,13 +743,13 @@ export default {
       }
     },
     circleButtonRadiusChanged(value) {
-      this.$emit('update:circleButtonRadius', parseInt(value, 10))
+      this.global.setCircleButtonRadius(parseInt(value, 10))
     },
     modeSwitched(value) {
       if (value === 'mobile') {
         this.global.setMobileMode(true)
         this.scalingFactorSaved = this.global.state.scalingFactor
-        this.circleButtonRadiusSaved = this.circleButtonRadius
+        this.circleButtonRadiusSaved = this.global.state.circleButtonRadius
         this.circleButtonRadiusChanged(260)
       } else {
         this.global.setMobileMode(false)
@@ -821,7 +819,7 @@ export default {
         this.$emit('grid-height-changed', vh)
 
         if (!this.global.state.showHelp) {
-          let sf = vw / (this.circleButtonRadius * 1.25 * 2 + 220)
+          let sf = vw / (this.global.state.circleButtonRadius * 1.25 * 2 + 220)
 
           sf = Math.min(1.0, sf)
           // documentElement.clientWidth can be unreliable, 0 or wrong values...simple safety measure here

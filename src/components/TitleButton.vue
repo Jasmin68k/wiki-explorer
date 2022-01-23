@@ -79,7 +79,8 @@
       :style="{
         'font-size': 70 * global.state.scalingFactor + '%',
         '--maxheight':
-          circleButtonRadius * global.state.scalingFactor * 0.3 + 'px'
+          global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
+          'px'
       }"
     >
       <ul>
@@ -102,7 +103,8 @@
       '--postoptitle': hoverBottomTitle - 1 + 'px',
       'font-size': 70 * global.state.scalingFactor + '%',
       '--maxheight':
-        circleButtonRadius * global.state.scalingFactor * 0.3 + 'px'
+        global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
+        'px'
     }"
   >
     <ul>
@@ -165,7 +167,7 @@ export default {
       initHoverButtonTitleCoordsNextTick(global.state.scalingFactor)
     )
     watchEffect(() =>
-      initHoverButtonTitleCoordsNextTick(props.circleButtonRadius)
+      initHoverButtonTitleCoordsNextTick(global.state.circleButtonRadius)
     )
     watchEffect(() =>
       titleButtonHoverOverrideOff(global.state.categoriesOnHover)
@@ -190,7 +192,6 @@ export default {
     titleMissing: { required: true, default: true, type: Boolean },
     url: { required: true, default: '', type: String },
     outgraphcanvasref: { required: true, default: {} },
-    circleButtonRadius: { required: true, default: 250, type: Number },
     redirectsDone: { required: true, default: false, type: Boolean }
   },
   methods: {
