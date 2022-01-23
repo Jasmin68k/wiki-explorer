@@ -2,10 +2,8 @@
   <div class="page-flex-container" ref="flexcontainer">
     <input-form
       :filtered-results-array-length="filteredResultsArray.length"
-      :page-number="pageNumber"
       :index-start="indexStart"
       :index-end="indexEnd"
-      @pageNumberChanged="pageNumberChanged"
       @fetchDataClicked="fetchDataClicked"
       @showHelpClicked="showHelpSwitched"
       @resultsCategoriesChanged="resultsCategoriesChanged"
@@ -151,13 +149,13 @@ export default {
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
       titlePage: new TitlePage(),
-      redirectsDone: false,
-      pageNumber: 0
+      redirectsDone: false
     }
   },
   computed: {
     indexStart() {
-      let indexStart = this.pageNumber * this.global.state.sizePerPage
+      let indexStart =
+        this.global.state.pageNumber * this.global.state.sizePerPage
       if (indexStart > this.filteredResultsArray.length - 1) {
         indexStart = this.filteredResultsArray.length - 1
       }
@@ -165,7 +163,8 @@ export default {
       return indexStart
     },
     indexEnd() {
-      let indexEnd = (this.pageNumber + 1) * this.global.state.sizePerPage - 1
+      let indexEnd =
+        (this.global.state.pageNumber + 1) * this.global.state.sizePerPage - 1
 
       if (indexEnd > this.filteredResultsArray.length - 1) {
         indexEnd = this.filteredResultsArray.length - 1
@@ -331,7 +330,7 @@ export default {
         this.getResultsRedirects()
       }
 
-      this.pageNumber = 0
+      this.global.setPageNumber(0)
 
       this.global.setInputsDisabled(false)
     },
@@ -442,11 +441,8 @@ export default {
         this.getResultsRedirects()
       }
     },
-    pageNumberChanged(value) {
-      this.pageNumber = value
-    },
     resultsCategoriesCheckboxChanged(value) {
-      this.pageNumber = 0
+      this.global.setPageNumber(0)
 
       if (!this.global.state.checkboxFilterEnabled) {
         // enable in desktop when changed in mobile
@@ -456,7 +452,7 @@ export default {
       this.checkedCategories = value
     },
     categoriesAll(value) {
-      this.pageNumber = 0
+      this.global.setPageNumber(0)
 
       this.checkedCategories = value
     },

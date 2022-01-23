@@ -506,7 +506,7 @@
             itemdisabled:
               global.state.inputsDisabled ||
               filteredResultsArrayLength === 0 ||
-              pageNumber === 0 ||
+              global.state.pageNumber === 0 ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -514,7 +514,7 @@
         />
 
         <span class="pageinfotext fontsize90">
-          {{ $t('page') }}{{ pageNumber + 1 }}{{ $t('of')
+          {{ $t('page') }}{{ global.state.pageNumber + 1 }}{{ $t('of')
           }}{{ numberOfPages }}</span
         >
 
@@ -526,7 +526,7 @@
             itemdisabled:
               global.state.inputsDisabled ||
               filteredResultsArrayLength === 0 ||
-              pageNumber + 1 === numberOfPages ||
+              global.state.pageNumber + 1 === numberOfPages ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -659,13 +659,11 @@ export default {
     'grid-width-nocategories-changed',
     'grid-height-changed',
     'mode-switched',
-    'mobile-display-switched',
-    'page-number-changed'
+    'mobile-display-switched'
   ],
 
   props: {
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    pageNumber: { required: true, default: 0, type: Number },
     indexStart: { required: true, default: 0, type: Number },
     indexEnd: { required: true, default: 0, type: Number }
   },
@@ -716,19 +714,19 @@ export default {
       this.global.setFilterCategories(value)
     },
     resetPageNumber() {
-      this.$emit('page-number-changed', 0)
+      this.global.setPageNumber(0)
     },
     nextPage() {
       if (
-        this.pageNumber + 1 <
+        this.global.state.pageNumber + 1 <
         this.filteredResultsArrayLength / this.global.state.sizePerPage
       ) {
-        this.$emit('page-number-changed', this.pageNumber + 1)
+        this.global.setPageNumber(this.global.state.pageNumber + 1)
       }
     },
     prevPage() {
-      if (this.pageNumber > 0) {
-        this.$emit('page-number-changed', this.pageNumber - 1)
+      if (this.global.state.pageNumber > 0) {
+        this.global.setPageNumber(this.global.state.pageNumber - 1)
       }
     },
     checkboxFilterEnabledChanged(value) {

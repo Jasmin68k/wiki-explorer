@@ -17,7 +17,8 @@ const state = reactive({
   circleButtonRadius: 260,
   inputsDisabled: false,
   resultsCategoriesDone: true,
-  resultsRedirectsDone: true
+  resultsRedirectsDone: true,
+  pageNumber: 0
 })
 
 const setFilter = (value) => {
@@ -71,6 +72,9 @@ const setResultsCategoriesDone = (value) => {
 const setResultsRedirectsDone = (value) => {
   state.resultsRedirectsDone = value
 }
+const setPageNumber = (value) => {
+  state.pageNumber = value
+}
 
 export default {
   state: readonly(state),
@@ -90,5 +94,6 @@ export default {
   setCircleButtonRadius,
   setInputsDisabled,
   setResultsCategoriesDone,
-  setResultsRedirectsDone
+  setResultsRedirectsDone,
+  setPageNumber
 }
