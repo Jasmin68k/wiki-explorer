@@ -572,7 +572,7 @@
         min="0.33"
         max="1.0"
         step="0.01"
-        :value="scalingFactor"
+        :value="global.state.scalingFactor"
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
@@ -634,7 +634,6 @@ export default {
     'showHelpClicked',
     'resultsCategoriesChanged',
     'checkboxFilterEnabledChanged',
-    'update:scalingFactor',
     'update:scalingFactorSaved',
     'languageSwitched',
     'update:circleButtonRadius',
@@ -650,7 +649,6 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
-    scalingFactor: { required: true, default: 1.0, type: Number },
     scalingFactorSaved: { required: true, default: 1.0, type: Number },
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
@@ -754,7 +752,7 @@ export default {
     modeSwitched(value) {
       if (value === 'mobile') {
         this.global.setMobileMode(true)
-        this.$emit('update:scalingFactorSaved', this.scalingFactor)
+        this.$emit('update:scalingFactorSaved', this.global.state.scalingFactor)
         this.$emit('update:circleButtonRadiusSaved', this.circleButtonRadius)
         this.circleButtonRadiusChanged(260)
       } else {
@@ -778,7 +776,7 @@ export default {
       this.global.setSizePerPage(parseInt(value, 10))
     },
     scalingFactorChanged(value) {
-      this.$emit('update:scalingFactor', parseFloat(value))
+      this.global.setScalingFactor(parseFloat(value))
     },
 
     windowResized() {

@@ -11,7 +11,7 @@
       '--radius':
         index % 2 === 0
           ? circleButtonRadius *
-              scalingFactor *
+              global.state.scalingFactor *
               (1 +
                 Math.abs(
                   Math.sin(
@@ -24,7 +24,7 @@
                   0.25) +
             'px'
           : (circleButtonRadius / 1.5) *
-              scalingFactor *
+              global.state.scalingFactor *
               (1 +
                 Math.abs(
                   Math.sin(
@@ -41,10 +41,10 @@
           (270 +
             (360 / (Math.round(displayResultsArray.length / 2) * 2)) * index) +
         'deg',
-      'line-height': 100 * scalingFactor + '%',
+      'line-height': 100 * global.state.scalingFactor + '%',
       'max-width':
         100 *
-          scalingFactor *
+          global.state.scalingFactor *
           (1 +
             Math.abs(
               Math.sin(
@@ -66,7 +66,7 @@
         !displayResultsArray[index].missing
           ? {
               'grid-template-columns':
-                'auto ' + (0.67 * scalingFactor + 0.33) + 'rem'
+                'auto ' + (0.67 * global.state.scalingFactor + 0.33) + 'rem'
             }
           : { 'grid-template-columns': 'auto ' }
       ]"
@@ -82,8 +82,8 @@
         }"
         class="circlebuttonactual"
         :style="{
-          'font-size': 83.4 * scalingFactor + '%',
-          'min-width': 50 * scalingFactor + 'px'
+          'font-size': 83.4 * global.state.scalingFactor + '%',
+          'min-width': 50 * global.state.scalingFactor + 'px'
         }"
         :disabled="
           displayResultsArray[index].missing ||
@@ -107,7 +107,7 @@
               (global.state.resultsCategoriesEnabled &&
                 global.state.categoriesOnHover)
           }"
-          :style="{ 'line-height': 100 * scalingFactor + '%' }"
+          :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
         >
           <a :href="displayResultsArray[index].url" target="_blank"
             ><img
@@ -118,7 +118,9 @@
                   !global.state.resultsCategoriesEnabled,
                 iconverticalaligntop: !global.state.categoriesOnHover
               }"
-              :style="{ height: 0.67 * scalingFactor + 0.33 + 'rem' }"
+              :style="{
+                height: 0.67 * global.state.scalingFactor + 0.33 + 'rem'
+              }"
               alt="Wiki"
               src="../assets/images/wikipedia.svg"
           /></a>
@@ -130,13 +132,13 @@
             !global.state.categoriesOnHover
           "
           class="icongriditem2"
-          :style="{ 'line-height': 100 * scalingFactor + '%' }"
+          :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
         >
           <img
             @click="catsClick"
             :class="{ icon: resultsCategoriesDone }"
             :style="{
-              height: 0.67 * scalingFactor + 0.33 + 'rem',
+              height: 0.67 * global.state.scalingFactor + 0.33 + 'rem',
               'vertical-align': 'top'
             }"
             alt="Cats"
@@ -150,8 +152,9 @@
       class="redirects"
       v-if="global.state.resultsRedirectsEnabled && resultsRedirectsDone"
       :style="{
-        'font-size': 70 * scalingFactor + '%',
-        '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
+        'font-size': 70 * global.state.scalingFactor + '%',
+        '--maxheight':
+          circleButtonRadius * global.state.scalingFactor * 0.3 + 'px'
       }"
     >
       <ul>
@@ -181,8 +184,9 @@
     :style="{
       '--posleft': hoverRight + 'px',
       '--postop': hoverBottom - 1 + 'px',
-      'font-size': 70 * scalingFactor + '%',
-      '--maxheight': circleButtonRadius * scalingFactor * 0.3 + 'px'
+      'font-size': 70 * global.state.scalingFactor + '%',
+      '--maxheight':
+        circleButtonRadius * global.state.scalingFactor * 0.3 + 'px'
     }"
   >
     <ul>
@@ -220,6 +224,10 @@ export default {
           props.outgraphcanvasref.getBoundingClientRect().top
       }
     }
+    async function initHoverButtonCircleCoordsNextTick() {
+      await nextTick()
+      initHoverButtonCircleCoords()
+    }
     function circleButtonHoverOverrideOff() {
       circleButtonHoverOverride.value = false
     }
@@ -232,27 +240,17 @@ export default {
       }
     }
 
-    watchEffect(
-      async () =>
-        await nextTick().then(
-          initHoverButtonCircleCoords(global.state.resultsRedirectsEnabled)
-        )
+    watchEffect(() =>
+      initHoverButtonCircleCoordsNextTick(global.state.resultsRedirectsEnabled)
     )
-    watchEffect(
-      async () =>
-        await nextTick().then(initHoverButtonCircleCoords(props.scalingFactor))
+    watchEffect(() =>
+      initHoverButtonCircleCoordsNextTick(global.state.scalingFactor)
     )
-    watchEffect(
-      async () =>
-        await nextTick().then(
-          initHoverButtonCircleCoords(props.circleButtonRadius)
-        )
+    watchEffect(() =>
+      initHoverButtonCircleCoordsNextTick(props.circleButtonRadius)
     )
-    watchEffect(
-      async () =>
-        await nextTick().then(
-          initHoverButtonCircleCoords(props.resultsRedirectsDone)
-        )
+    watchEffect(() =>
+      initHoverButtonCircleCoordsNextTick(props.resultsRedirectsDone)
     )
     watchEffect(() =>
       circleButtonHoverOverrideOff(global.state.categoriesOnHover)
@@ -278,8 +276,7 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} },
-    circleButtonRadius: { required: true, default: 250, type: Number },
-    scalingFactor: { required: true, default: 1.0, type: Number }
+    circleButtonRadius: { required: true, default: 250, type: Number }
   },
   methods: {
     circleButton(index) {

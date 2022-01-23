@@ -9,7 +9,6 @@
       :page-number="pageNumber"
       :index-start="indexStart"
       :index-end="indexEnd"
-      v-model:scalingFactor="inputFormState.scalingFactor"
       v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
       v-model:circleButtonRadiusSaved="inputFormState.circleButtonRadiusSaved"
@@ -97,7 +96,6 @@
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
-        :scaling-factor="inputFormState.scalingFactor"
         :circle-button-radius="inputFormState.circleButtonRadius"
         :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
@@ -157,7 +155,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      scalingFactor: 1.0,
       scalingFactorSaved: 1.0,
       circleButtonRadius: 260,
       circleButtonRadiusSaved: 260
