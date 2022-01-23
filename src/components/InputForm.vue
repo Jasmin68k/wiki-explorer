@@ -634,7 +634,6 @@ export default {
     'showHelpClicked',
     'resultsCategoriesChanged',
     'checkboxFilterEnabledChanged',
-    'update:scalingFactorSaved',
     'languageSwitched',
     'update:circleButtonRadius',
     'update:circleButtonRadiusSaved',
@@ -649,7 +648,6 @@ export default {
     inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
-    scalingFactorSaved: { required: true, default: 1.0, type: Number },
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
@@ -665,7 +663,8 @@ export default {
   data() {
     return {
       portraitMode: false,
-      flexContainerHeight: 0
+      flexContainerHeight: 0,
+      scalingFactorSaved: 1.0
     }
   },
 
@@ -752,7 +751,7 @@ export default {
     modeSwitched(value) {
       if (value === 'mobile') {
         this.global.setMobileMode(true)
-        this.$emit('update:scalingFactorSaved', this.global.state.scalingFactor)
+        this.scalingFactorSaved = this.global.state.scalingFactor
         this.$emit('update:circleButtonRadiusSaved', this.circleButtonRadius)
         this.circleButtonRadiusChanged(260)
       } else {

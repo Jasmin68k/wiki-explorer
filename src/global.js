@@ -14,7 +14,6 @@ const state = reactive({
   categoriesOnHover: true,
   sizePerPage: 16,
   scalingFactor: 1.0,
-  scalingFactorSaved: 1.0,
   circleButtonRadius: 260,
   circleButtonRadiusSaved: 260
 })
@@ -58,9 +57,6 @@ const setSizePerPage = (value) => {
 const setScalingFactor = (value) => {
   state.scalingFactor = value
 }
-const setScalingFactorSaved = (value) => {
-  state.scalingFactorSaved = value
-}
 const setCircleButtonRadius = (value) => {
   state.circleButtonRadius = value
 }
@@ -83,7 +79,6 @@ export default {
   setCategoriesOnHover,
   setSizePerPage,
   setScalingFactor,
-  setScalingFactorSaved,
   setCircleButtonRadius,
   setCircleButtonRadiusSaved
 }

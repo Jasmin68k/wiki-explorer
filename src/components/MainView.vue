@@ -9,7 +9,6 @@
       :page-number="pageNumber"
       :index-start="indexStart"
       :index-end="indexEnd"
-      v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
       v-model:circleButtonRadiusSaved="inputFormState.circleButtonRadiusSaved"
       @pageNumberChanged="pageNumberChanged"
@@ -155,7 +154,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      scalingFactorSaved: 1.0,
       circleButtonRadius: 260,
       circleButtonRadiusSaved: 260
     })
