@@ -10,7 +10,6 @@
       :index-start="indexStart"
       :index-end="indexEnd"
       v-model:scalingFactor="inputFormState.scalingFactor"
-      v-model:sizePerPage="inputFormState.sizePerPage"
       v-model:scalingFactorSaved="inputFormState.scalingFactorSaved"
       v-model:circleButtonRadius="inputFormState.circleButtonRadius"
       v-model:circleButtonRadiusSaved="inputFormState.circleButtonRadiusSaved"
@@ -158,7 +157,6 @@ export default {
 
     // state of inputForm in composition API style
     const inputFormState = reactive({
-      sizePerPage: 16,
       scalingFactor: 1.0,
       scalingFactorSaved: 1.0,
       circleButtonRadius: 260,
@@ -182,7 +180,7 @@ export default {
   },
   computed: {
     indexStart() {
-      let indexStart = this.pageNumber * this.inputFormState.sizePerPage
+      let indexStart = this.pageNumber * this.global.state.sizePerPage
       if (indexStart > this.filteredResultsArray.length - 1) {
         indexStart = this.filteredResultsArray.length - 1
       }
@@ -190,7 +188,7 @@ export default {
       return indexStart
     },
     indexEnd() {
-      let indexEnd = (this.pageNumber + 1) * this.inputFormState.sizePerPage - 1
+      let indexEnd = (this.pageNumber + 1) * this.global.state.sizePerPage - 1
 
       if (indexEnd > this.filteredResultsArray.length - 1) {
         indexEnd = this.filteredResultsArray.length - 1
@@ -204,7 +202,7 @@ export default {
     },
     numberOfPages() {
       return Math.ceil(
-        this.filteredResultsArray.length / this.inputFormState.sizePerPage
+        this.filteredResultsArray.length / this.global.state.sizePerPage
       )
     },
     filteredResultsArray() {

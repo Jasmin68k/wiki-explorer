@@ -530,7 +530,7 @@
         min="2"
         step="2"
         :max="40"
-        :value="sizePerPage"
+        :value="global.state.sizePerPage"
         :disabled="
           inputsDisabled ||
           filteredResultsArrayLength === 0 ||
@@ -551,7 +551,7 @@
           visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
         }"
       >
-        {{ $t('max-results-per-page') }}{{ sizePerPage }}
+        {{ $t('max-results-per-page') }}{{ global.state.sizePerPage }}
       </div>
       <div
         v-show="global.state.mobileMode"
@@ -656,7 +656,6 @@ export default {
     circleButtonRadius: { required: true, default: 260, type: Number },
     circleButtonRadiusSaved: { required: true, default: 260, type: Number },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    sizePerPage: { required: true, default: 16, type: Number },
     numberOfPages: { required: true, default: 0, type: Number },
     pageNumber: { required: true, default: 0, type: Number },
     indexStart: { required: true, default: 0, type: Number },
@@ -707,7 +706,7 @@ export default {
     nextPage() {
       if (
         this.pageNumber + 1 <
-        this.filteredResultsArrayLength / this.sizePerPage
+        this.filteredResultsArrayLength / this.global.state.sizePerPage
       ) {
         this.$emit('page-number-changed', this.pageNumber + 1)
       }
@@ -777,7 +776,7 @@ export default {
       this.$emit('showHelpClicked', value)
     },
     sizePerPageChanged(value) {
-      this.$emit('update:sizePerPage', parseInt(value, 10))
+      this.global.setSizePerPage(parseInt(value, 10))
     },
     scalingFactorChanged(value) {
       this.$emit('update:scalingFactor', parseFloat(value))
@@ -874,7 +873,7 @@ export default {
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
-     * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (prop sizePerPage)
+     * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (global.state.sizePerPage)
      * @param {String} search - Wikipedia page to search for (global.state.title)
      */
 
@@ -974,7 +973,7 @@ export default {
 
     if (!isNaN(resultsperpage)) {
       resultsperpage = Math.max(2, Math.min(40, resultsperpage))
-      this.$emit('update:sizePerPage', resultsperpage)
+      this.sizePerPageChanged(resultsperpage)
       this.resetPageNumber()
     }
 
