@@ -647,6 +647,9 @@
 <script>
 import { inject, computed } from 'vue'
 
+let circleButtonRadiusSaved = 260
+let scalingFactorSaved = 1.0
+
 export default {
   name: 'InputForm',
   emits: [
@@ -679,9 +682,7 @@ export default {
   data() {
     return {
       portraitMode: false,
-      flexContainerHeight: 0,
-      scalingFactorSaved: 1.0,
-      circleButtonRadiusSaved: 260
+      flexContainerHeight: 0
     }
   },
 
@@ -768,13 +769,13 @@ export default {
     modeSwitched(value) {
       if (value === 'mobile') {
         this.global.setMobileMode(true)
-        this.scalingFactorSaved = this.global.state.scalingFactor
-        this.circleButtonRadiusSaved = this.global.state.circleButtonRadius
+        scalingFactorSaved = this.global.state.scalingFactor
+        circleButtonRadiusSaved = this.global.state.circleButtonRadius
         this.circleButtonRadiusChanged(260)
       } else {
         this.global.setMobileMode(false)
-        this.scalingFactorChanged(this.scalingFactorSaved)
-        this.circleButtonRadiusChanged(this.circleButtonRadiusSaved)
+        this.scalingFactorChanged(scalingFactorSaved)
+        this.circleButtonRadiusChanged(circleButtonRadiusSaved)
       }
       this.$emit('mode-switched', value)
     },
