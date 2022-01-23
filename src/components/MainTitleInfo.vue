@@ -1,27 +1,34 @@
 <template>
   <div>
-    <div v-show="extract && image">
+    <div
+      v-show="global.state.titlePage.extract && global.state.titlePage.image"
+    >
       <div>
-        <img class="image" :src="image" />
+        <img class="image" :src="global.state.titlePage.image" />
       </div>
-      <div class="extract" v-html="extract"></div>
+      <div class="extract" v-html="global.state.titlePage.extract"></div>
     </div>
-    <div v-show="extract && !image">
-      <div class="extract" v-html="extract"></div>
+    <div
+      v-show="global.state.titlePage.extract && !global.state.titlePage.image"
+    >
+      <div class="extract" v-html="global.state.titlePage.extract"></div>
     </div>
-    <div v-show="!extract && image">
+    <div
+      v-show="!global.state.titlePage.extract && global.state.titlePage.image"
+    >
       <div>
-        <img class="imageonly" :src="image" />
+        <img class="imageonly" :src="global.state.titlePage.image" />
       </div>
     </div>
   </div>
 </template>
 <script>
+import { inject } from 'vue'
 export default {
   name: 'MainTitleInfo',
-  props: {
-    extract: { required: false, default: '', type: String },
-    image: { required: false, default: '', type: String }
+  setup() {
+    const global = inject('global')
+    return { global }
   }
 }
 </script>

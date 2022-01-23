@@ -78,12 +78,7 @@
         "
         class="grid-item-graph"
         ref="outgraph"
-        :title="titlePage.title"
-        :url="titlePage.url"
-        :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
-        :categories-array="titlePage.categories"
-        :title-missing="titlePage.missing"
         @circleButtonClicked="circleButtonClicked"
       ></outgraph>
 
@@ -96,8 +91,6 @@
         :class="{
           mobile: global.state.mobileMode
         }"
-        :extract="titlePage.extract"
-        :image="titlePage.image"
       ></main-title-info>
     </div>
 
@@ -138,6 +131,7 @@ export default {
   },
   setup() {
     const global = inject('global')
+
     return { global }
   },
   data() {
@@ -146,8 +140,7 @@ export default {
 
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
-      scrollboxContainerHeight: 300,
-      titlePage: new TitlePage()
+      scrollboxContainerHeight: 300
     }
   },
   computed: {
@@ -364,33 +357,42 @@ export default {
     },
 
     async getMainInfo() {
-      this.titlePage = await wikiFetchTitlePage(
+      // temp to keep wikifetch api generic and modifying values directly as well as global titlePage readonly
+      let titleTemp = new TitlePage()
+      titleTemp = await wikiFetchTitlePage(
         this.global.state.title,
         this.global.state.language
       )
+      this.global.setTitlePage(titleTemp)
 
       this.global.setRedirectsDone(false)
 
-      if (!this.titlePage.missing) {
-        this.getCategories()
-        this.getRedirects()
+      if (!this.global.state.titlePage.missing) {
+        // needs await, otherwise one will overwrite the other
+        await this.getCategories()
+        await this.getRedirects()
       }
     },
     async getCategories() {
-      this.titlePage = await wikiFetchAddCategoriesToTitlePage(
+      // temp to keep wikifetch api generic and modifying values directly as well as global titlePage readonly
+      let titleTemp = { ...this.global.state.titlePage }
+      titleTemp = await wikiFetchAddCategoriesToTitlePage(
         this.global.state.title,
         this.global.state.language,
-        this.titlePage
+        titleTemp
       )
+      this.global.setTitlePage(titleTemp)
     },
 
     async getRedirects() {
-      this.titlePage = await wikiFetchAddRedirectsToTitlePage(
+      // temp to keep wikifetch api generic and modifying values directly as well as global titlePage readonly
+      let titleTemp = { ...this.global.state.titlePage }
+      titleTemp = await wikiFetchAddRedirectsToTitlePage(
         this.global.state.title,
         this.global.state.language,
-        this.titlePage
+        titleTemp
       )
-
+      this.global.setTitlePage(titleTemp)
       this.global.setRedirectsDone(true)
     },
 

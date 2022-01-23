@@ -14,14 +14,7 @@
   >
     <canvas class="outgraphcanvas" ref="outgraphcanvasref"></canvas>
 
-    <title-button
-      :title="title"
-      :title-missing="titleMissing"
-      :redirects="redirects"
-      :categories-array="categoriesArray"
-      :url="url"
-      :outgraphcanvasref="outgraphcanvasref"
-    ></title-button>
+    <title-button :outgraphcanvasref="outgraphcanvasref"></title-button>
 
     <div v-for="(page, index) in displayResultsArray" :key="index">
       <circle-button
@@ -122,12 +115,7 @@ export default {
   emits: ['circleButtonClicked'],
 
   props: {
-    title: { required: true, default: '', type: String },
-    url: { required: true, default: '', type: String },
-    redirects: { required: true, default: () => [], type: Array },
-    displayResultsArray: { required: true, default: () => [], type: Array },
-    categoriesArray: { required: true, default: () => [], type: Array },
-    titleMissing: { required: true, default: true, type: Boolean }
+    displayResultsArray: { required: true, default: () => [], type: Array }
   },
   methods: {
     circleButtonClicked(index) {

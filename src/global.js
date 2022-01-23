@@ -1,4 +1,5 @@
 import { reactive, readonly } from 'vue'
+import { TitlePage } from './datamodels.js'
 
 const state = reactive({
   filter: '',
@@ -19,7 +20,8 @@ const state = reactive({
   resultsCategoriesDone: true,
   resultsRedirectsDone: true,
   pageNumber: 0,
-  redirectsDone: false
+  redirectsDone: false,
+  titlePage: new TitlePage()
 })
 
 const setFilter = (value) => {
@@ -79,6 +81,9 @@ const setPageNumber = (value) => {
 const setRedirectsDone = (value) => {
   state.redirectsDone = value
 }
+const setTitlePage = (value) => {
+  state.titlePage = value
+}
 
 export default {
   state: readonly(state),
@@ -100,5 +105,6 @@ export default {
   setResultsCategoriesDone,
   setResultsRedirectsDone,
   setPageNumber,
-  setRedirectsDone
+  setRedirectsDone,
+  setTitlePage
 }

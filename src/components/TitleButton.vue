@@ -9,10 +9,12 @@
     v-show="
       global.state.resultsRedirectsEnabled
         ? !global.state.inputsDisabled &&
-          title &&
-          !titleMissing &&
+          global.state.titlePage.title &&
+          !global.state.titlePage.missing &&
           global.state.redirectsDone
-        : !global.state.inputsDisabled && title && !titleMissing
+        : !global.state.inputsDisabled &&
+          global.state.titlePage.title &&
+          !global.state.titlePage.missing
     "
     ref="titlebutton"
     v-on="{ mouseenter: initHoverButtonTitleCoords }"
@@ -30,9 +32,9 @@
           'font-size': 83.4 * global.state.scalingFactor + '%',
           'min-width': 50 * global.state.scalingFactor + 'px'
         }"
-        @click.prevent="titleButton(), hoverButtonTitleOff()"
+        @click.prevent="titleButton()"
       >
-        {{ title }}
+        {{ global.state.titlePage.title }}
       </button>
 
       <div class="icongridcontainer">
@@ -43,7 +45,7 @@
           }"
           :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
         >
-          <a :href="url" target="_blank"
+          <a :href="global.state.titlePage.url" target="_blank"
             ><img
               class="icon"
               :class="{
@@ -87,7 +89,10 @@
       }"
     >
       <ul>
-        <li v-for="(redirect, index) in redirects" :key="index">
+        <li
+          v-for="(redirect, index) in global.state.titlePage.redirects"
+          :key="index"
+        >
           {{ redirect }}
         </li>
       </ul>
@@ -95,7 +100,10 @@
   </div>
 
   <div
-    v-if="!global.state.inputsDisabled && categoriesArray.length > 0"
+    v-if="
+      !global.state.inputsDisabled &&
+      global.state.titlePage.categories.length > 0
+    "
     class="titlebuttonhover"
     :class="{
       titlebuttonhoverdisplayoverride: titleButtonHoverOverride,
@@ -111,7 +119,7 @@
     }"
   >
     <ul>
-      <li v-for="category in categoriesArray" :key="category">
+      <li v-for="category in global.state.titlePage.categories" :key="category">
         {{ category }}
       </li>
     </ul>
@@ -188,17 +196,12 @@ export default {
     }
   },
   props: {
-    title: { required: true, default: '', type: String },
-    redirects: { required: true, default: () => [], type: Array },
-    categoriesArray: { required: true, default: () => [], type: Array },
-    titleMissing: { required: true, default: true, type: Boolean },
-    url: { required: true, default: '', type: String },
     outgraphcanvasref: { required: true, default: {} }
   },
   methods: {
     titleButton() {
-      // window.location = this.url
-      window.open(this.url, '_blank')
+      // window.location = this.global.state.titlePage.url
+      window.open(this.global.state.titlePage.url, '_blank')
     }
   }
 }
