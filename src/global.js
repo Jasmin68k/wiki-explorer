@@ -15,7 +15,8 @@ const state = reactive({
   sizePerPage: 16,
   scalingFactor: 1.0,
   circleButtonRadius: 260,
-  inputsDisabled: false
+  inputsDisabled: false,
+  resultsCategoriesDone: true
 })
 
 const setFilter = (value) => {
@@ -63,6 +64,9 @@ const setCircleButtonRadius = (value) => {
 const setInputsDisabled = (value) => {
   state.inputsDisabled = value
 }
+const setResultsCategoriesDone = (value) => {
+  state.resultsCategoriesDone = value
+}
 
 export default {
   state: readonly(state),
@@ -80,5 +84,6 @@ export default {
   setSizePerPage,
   setScalingFactor,
   setCircleButtonRadius,
-  setInputsDisabled
+  setInputsDisabled,
+  setResultsCategoriesDone
 }

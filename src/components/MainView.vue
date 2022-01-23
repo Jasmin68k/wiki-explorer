@@ -1,7 +1,6 @@
 <template>
   <div class="page-flex-container" ref="flexcontainer">
     <input-form
-      :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array-length="filteredResultsArray.length"
       :page-number="pageNumber"
@@ -64,7 +63,7 @@
               (global.state.mobileMode &&
                 global.state.mobileDisplay === 'categories')) &&
             resultsCategoriesAllArray.length > 0 &&
-            resultsCategoriesDone
+            global.state.resultsCategoriesDone
           "
           :items="resultsCategoriesAllArray"
           :root-height="scrollboxContainerHeight"
@@ -87,7 +86,6 @@
         :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
-        :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
         :redirects-done="redirectsDone"
@@ -150,7 +148,6 @@ export default {
   data() {
     return {
       checkedCategories: new Set(),
-      resultsCategoriesDone: true,
       resultsRedirectsDone: true,
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
@@ -200,7 +197,7 @@ export default {
       // needs to check this.global.state.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
       if (
         this.global.state.resultsCategoriesEnabled &&
-        this.resultsCategoriesDone &&
+        this.global.state.resultsCategoriesDone &&
         this.global.state.filterCategories
       ) {
         filteredArray = filteredArray.filter((page) =>
@@ -216,7 +213,7 @@ export default {
 
       if (
         this.global.state.resultsCategoriesEnabled &&
-        this.resultsCategoriesDone &&
+        this.global.state.resultsCategoriesDone &&
         ((!this.global.state.mobileMode &&
           this.global.state.checkboxFilterEnabled) ||
           this.global.state.mobileMode)
@@ -245,7 +242,7 @@ export default {
     resultsCategoriesAllArray() {
       if (
         !(
-          this.resultsCategoriesDone &&
+          this.global.state.resultsCategoriesDone &&
           this.global.state.resultsCategoriesEnabled &&
           ((!this.global.state.mobileMode &&
             this.global.state.checkboxFilterEnabled) ||
@@ -286,7 +283,7 @@ export default {
     resultsCategoriesAllArrayUnfiltered() {
       if (
         !(
-          this.resultsCategoriesDone &&
+          this.global.state.resultsCategoriesDone &&
           this.global.state.resultsCategoriesEnabled
         )
       ) {
@@ -324,7 +321,7 @@ export default {
         this.global.state.language
       )
 
-      this.resultsCategoriesDone = false
+      this.global.setResultsCategoriesDone(false)
 
       if (this.global.state.resultsCategoriesEnabled) {
         this.getResultsCategories()
@@ -353,7 +350,7 @@ export default {
         )
       }
 
-      this.resultsCategoriesDone = true
+      this.global.setResultsCategoriesDone(true)
 
       this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
     },
@@ -426,13 +423,13 @@ export default {
     resultsCategoriesChanged() {
       if (
         this.global.state.resultsCategoriesEnabled &&
-        !this.resultsCategoriesDone
+        !this.global.state.resultsCategoriesDone
       ) {
         this.getResultsCategories()
       }
       if (
         this.global.state.resultsCategoriesEnabled &&
-        this.resultsCategoriesDone
+        this.global.state.resultsCategoriesDone
       ) {
         this.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered

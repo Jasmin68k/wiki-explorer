@@ -30,7 +30,8 @@
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone))
           "
           @change="modeSwitched($event.target.value)"
         />
@@ -41,7 +42,7 @@
               !global.state.showHelp &&
               (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
-                  !resultsCategoriesDone))
+                  !global.state.resultsCategoriesDone))
           }"
           for="desktop"
         >
@@ -56,7 +57,8 @@
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone))
           "
           @change="modeSwitched($event.target.value)"
         />
@@ -68,7 +70,7 @@
               !global.state.showHelp &&
               (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
-                  !resultsCategoriesDone))
+                  !global.state.resultsCategoriesDone))
           }"
           for="mobile"
           ><img class="mobileicon" src="../assets/images/smartphone.svg" />
@@ -84,7 +86,8 @@
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
           ref="langEn"
@@ -96,7 +99,7 @@
               !global.state.showHelp &&
               (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
-                  !resultsCategoriesDone))
+                  !global.state.resultsCategoriesDone))
           }"
           for="en"
           ><img class="flagicon" src="../assets/images/us-flag.svg"
@@ -109,7 +112,8 @@
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
           ref="langDe"
@@ -121,7 +125,7 @@
               !global.state.showHelp &&
               (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
-                  !resultsCategoriesDone))
+                  !global.state.resultsCategoriesDone))
           }"
           for="de"
           ><img class="flagicon" src="../assets/images/de-flag.svg"
@@ -137,7 +141,8 @@
           :value="global.state.title"
           :disabled="
             global.state.inputsDisabled ||
-            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone)
+            (global.state.resultsCategoriesEnabled &&
+              !global.state.resultsCategoriesDone)
           "
           :style="{
             width: portraitMode && global.state.mobileMode ? '108px' : ''
@@ -148,7 +153,8 @@
           type="submit"
           :disabled="
             global.state.inputsDisabled ||
-            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone)
+            (global.state.resultsCategoriesEnabled &&
+              !global.state.resultsCategoriesDone)
           "
         >
           <img
@@ -157,7 +163,7 @@
               itemdisabled:
                 global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
-                  !resultsCategoriesDone)
+                  !global.state.resultsCategoriesDone)
             }"
             src="../assets/images/search.svg"
           />
@@ -204,7 +210,7 @@
           "
           :disabled="
             global.state.inputsDisabled ||
-            !resultsCategoriesDone ||
+            !global.state.resultsCategoriesDone ||
             !global.state.resultsCategoriesEnabled ||
             (global.state.mobileMode &&
               global.state.mobileDisplay === 'maininfo')
@@ -386,7 +392,8 @@
           value="catsclick"
           :disabled="
             global.state.inputsDisabled ||
-            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
+            (global.state.resultsCategoriesEnabled &&
+              !global.state.resultsCategoriesDone) ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
                 global.state.mobileDisplay === 'categories'))
@@ -400,7 +407,7 @@
             itemdisabled:
               global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled &&
-                !resultsCategoriesDone) ||
+                !global.state.resultsCategoriesDone) ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -415,7 +422,8 @@
           value="catshover"
           :disabled="
             global.state.inputsDisabled ||
-            (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
+            (global.state.resultsCategoriesEnabled &&
+              !global.state.resultsCategoriesDone) ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
                 global.state.mobileDisplay === 'categories'))
@@ -429,7 +437,7 @@
             itemdisabled:
               global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled &&
-                !resultsCategoriesDone) ||
+                !global.state.resultsCategoriesDone) ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -441,7 +449,8 @@
       <div>
         <span
           v-show="
-            global.state.resultsCategoriesEnabled && !resultsCategoriesDone
+            global.state.resultsCategoriesEnabled &&
+            !global.state.resultsCategoriesDone
           "
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
@@ -462,7 +471,8 @@
         /></span>
         <span
           v-show="
-            global.state.resultsCategoriesEnabled && !resultsCategoriesDone
+            global.state.resultsCategoriesEnabled &&
+            !global.state.resultsCategoriesDone
           "
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
@@ -648,7 +658,6 @@ export default {
   ],
 
   props: {
-    resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     pageNumber: { required: true, default: 0, type: Number },

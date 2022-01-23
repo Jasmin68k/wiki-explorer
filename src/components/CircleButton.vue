@@ -77,7 +77,7 @@
           circlebuttonactualhover:
             (!global.state.inputsDisabled &&
               global.state.resultsCategoriesEnabled &&
-              resultsCategoriesDone) ||
+              global.state.resultsCategoriesDone) ||
             (!global.state.inputsDisabled &&
               !global.state.resultsCategoriesEnabled)
         }"
@@ -88,7 +88,8 @@
         }"
         :disabled="
           displayResultsArray[index].missing ||
-          (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
+          (global.state.resultsCategoriesEnabled &&
+            !global.state.resultsCategoriesDone) ||
           (global.state.resultsRedirectsEnabled && !resultsRedirectsDone)
         "
         @click.prevent="circleButton(index)"
@@ -137,7 +138,7 @@
         >
           <img
             @click="catsClick"
-            :class="{ icon: resultsCategoriesDone }"
+            :class="{ icon: global.state.resultsCategoriesDone }"
             :style="{
               height: 0.67 * global.state.scalingFactor + 0.33 + 'rem',
               'vertical-align': 'top'
@@ -175,7 +176,7 @@
       !global.state.inputsDisabled &&
       displayResultsArray.length > 0 &&
       global.state.resultsCategoriesEnabled &&
-      resultsCategoriesDone &&
+      global.state.resultsCategoriesDone &&
       displayResultsArray[index].categories
     "
     class="circlebuttonhover"
@@ -235,7 +236,7 @@ export default {
       circleButtonHoverOverride.value = false
     }
     function catsClick() {
-      if (props.resultsCategoriesDone) {
+      if (global.state.resultsCategoriesDone) {
         if (!circleButtonHoverOverride.value) {
           initHoverButtonCircleCoords()
           circleButtonHoverOverride.value = true
@@ -275,7 +276,6 @@ export default {
   props: {
     index: { required: true, default: -1, type: Number },
     displayResultsArray: { required: true, default: () => [], type: Array },
-    resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} }
   },
