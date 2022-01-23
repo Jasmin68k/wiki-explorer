@@ -5,7 +5,6 @@
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array-length="filteredResultsArray.length"
-      :number-of-pages="numberOfPages"
       :page-number="pageNumber"
       :index-start="indexStart"
       :index-end="indexEnd"
@@ -185,11 +184,6 @@ export default {
       }
 
       return indexEnd
-    },
-    numberOfPages() {
-      return Math.ceil(
-        this.filteredResultsArray.length / this.global.state.sizePerPage
-      )
     },
     filteredResultsArray() {
       if (this.inputsDisabled) {

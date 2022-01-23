@@ -624,7 +624,7 @@
   </div>
 </template>
 <script>
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 
 export default {
   name: 'InputForm',
@@ -647,14 +647,18 @@ export default {
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
-    numberOfPages: { required: true, default: 0, type: Number },
     pageNumber: { required: true, default: 0, type: Number },
     indexStart: { required: true, default: 0, type: Number },
     indexEnd: { required: true, default: 0, type: Number }
   },
-  setup() {
+  setup(props) {
     const global = inject('global')
-    return { global }
+
+    const numberOfPages = computed(() =>
+      Math.ceil(props.filteredResultsArrayLength / global.state.sizePerPage)
+    )
+
+    return { global, numberOfPages }
   },
   data() {
     return {
