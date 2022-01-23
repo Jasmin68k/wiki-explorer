@@ -634,7 +634,6 @@ export default {
     'showHelpClicked',
     'resultsCategoriesChanged',
     'checkboxFilterEnabledChanged',
-    'update:sizePerPage',
     'update:scalingFactor',
     'update:scalingFactorSaved',
     'languageSwitched',
