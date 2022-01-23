@@ -452,7 +452,7 @@ async function fetchRetry(url, options, retries, throttle) {
       throw new NetworkError(message)
     }
     await new Promise((resolve) => setTimeout(resolve, throttle * 2))
-    return await this.fetchRetry(url, options, retries - 1, throttle * 2)
+    return await fetchRetry(url, options, retries - 1, throttle * 2)
   }
 }
 
