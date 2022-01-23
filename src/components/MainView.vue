@@ -1,7 +1,6 @@
 <template>
   <div class="page-flex-container" ref="flexcontainer">
     <input-form
-      :inputs-disabled="inputsDisabled"
       :results-categories-done="resultsCategoriesDone"
       :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array-length="filteredResultsArray.length"
@@ -83,7 +82,6 @@
         "
         class="grid-item-graph"
         ref="outgraph"
-        :inputs-disabled="inputsDisabled"
         :title="titlePage.title"
         :url="titlePage.url"
         :redirects="titlePage.redirects"
@@ -154,7 +152,6 @@ export default {
       checkedCategories: new Set(),
       resultsCategoriesDone: true,
       resultsRedirectsDone: true,
-      inputsDisabled: false,
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
@@ -186,7 +183,7 @@ export default {
       return indexEnd
     },
     filteredResultsArray() {
-      if (this.inputsDisabled) {
+      if (this.global.state.inputsDisabled) {
         return []
       }
 
@@ -240,7 +237,7 @@ export default {
     },
 
     displayResultsArray() {
-      if (this.inputsDisabled) {
+      if (this.global.state.inputsDisabled) {
         return []
       }
       return this.filteredResultsArray.slice(this.indexStart, this.indexEnd + 1)
@@ -319,7 +316,7 @@ export default {
 
   methods: {
     async getJson() {
-      this.inputsDisabled = true
+      this.global.setInputsDisabled(true)
 
       resultsMap.clear()
       resultsMap = await wikiFetchPages(
@@ -341,7 +338,7 @@ export default {
 
       this.pageNumber = 0
 
-      this.inputsDisabled = false
+      this.global.setInputsDisabled(false)
     },
 
     async getResultsCategories() {
@@ -505,7 +502,7 @@ export default {
       this.windowResized()
     },
     showHelpSwitched() {
-      this.inputsDisabled = this.global.state.showHelp
+      this.global.setInputsDisabled(this.global.state.showHelp)
     },
     windowResized() {
       this.$nextTick(() => {

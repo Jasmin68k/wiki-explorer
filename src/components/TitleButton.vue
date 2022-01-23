@@ -8,8 +8,11 @@
     }"
     v-show="
       global.state.resultsRedirectsEnabled
-        ? !inputsDisabled && title && !titleMissing && redirectsDone
-        : !inputsDisabled && title && !titleMissing
+        ? !global.state.inputsDisabled &&
+          title &&
+          !titleMissing &&
+          redirectsDone
+        : !global.state.inputsDisabled && title && !titleMissing
     "
     ref="titlebutton"
     v-on="{ mouseenter: initHoverButtonTitleCoords }"
@@ -92,7 +95,7 @@
   </div>
 
   <div
-    v-if="!inputsDisabled && categoriesArray.length > 0"
+    v-if="!global.state.inputsDisabled && categoriesArray.length > 0"
     class="titlebuttonhover"
     :class="{
       titlebuttonhoverdisplayoverride: titleButtonHoverOverride,
@@ -172,7 +175,7 @@ export default {
     watchEffect(() =>
       titleButtonHoverOverrideOff(global.state.categoriesOnHover)
     )
-    watchEffect(() => titleButtonHoverOverrideOff(props.inputsDisabled))
+    watchEffect(() => titleButtonHoverOverrideOff(global.state.inputsDisabled))
 
     return {
       global,
@@ -185,7 +188,6 @@ export default {
     }
   },
   props: {
-    inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
     redirects: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },

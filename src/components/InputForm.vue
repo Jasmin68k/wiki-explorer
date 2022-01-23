@@ -29,7 +29,7 @@
           :checked="!global.state.mobileMode"
           :disabled="
             !global.state.showHelp &&
-            (inputsDisabled ||
+            (global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="modeSwitched($event.target.value)"
@@ -39,7 +39,7 @@
           :class="{
             itemdisabled:
               !global.state.showHelp &&
-              (inputsDisabled ||
+              (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
                   !resultsCategoriesDone))
           }"
@@ -55,7 +55,7 @@
           :checked="global.state.mobileMode"
           :disabled="
             !global.state.showHelp &&
-            (inputsDisabled ||
+            (global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="modeSwitched($event.target.value)"
@@ -66,7 +66,7 @@
           :class="{
             itemdisabled:
               !global.state.showHelp &&
-              (inputsDisabled ||
+              (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
                   !resultsCategoriesDone))
           }"
@@ -83,7 +83,7 @@
           value="en"
           :disabled="
             !global.state.showHelp &&
-            (inputsDisabled ||
+            (global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
@@ -94,7 +94,7 @@
           :class="{
             itemdisabled:
               !global.state.showHelp &&
-              (inputsDisabled ||
+              (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
                   !resultsCategoriesDone))
           }"
@@ -108,7 +108,7 @@
           value="de"
           :disabled="
             !global.state.showHelp &&
-            (inputsDisabled ||
+            (global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled && !resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
@@ -119,7 +119,7 @@
           :class="{
             itemdisabled:
               !global.state.showHelp &&
-              (inputsDisabled ||
+              (global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
                   !resultsCategoriesDone))
           }"
@@ -136,7 +136,7 @@
           :placeholder="$t('search-on-wikipedia')"
           :value="global.state.title"
           :disabled="
-            inputsDisabled ||
+            global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled && !resultsCategoriesDone)
           "
           :style="{
@@ -147,7 +147,7 @@
           class="searchbutton"
           type="submit"
           :disabled="
-            inputsDisabled ||
+            global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled && !resultsCategoriesDone)
           "
         >
@@ -155,7 +155,7 @@
             class="searchiconsmall"
             :class="{
               itemdisabled:
-                inputsDisabled ||
+                global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
                   !resultsCategoriesDone)
             }"
@@ -176,7 +176,7 @@
           :value="global.state.filter"
           @input="resetPageNumber(), filterChanged($event.target.value)"
           :disabled="
-            inputsDisabled ||
+            global.state.inputsDisabled ||
             (global.state.mobileMode &&
               global.state.mobileDisplay === 'maininfo')
           "
@@ -203,7 +203,7 @@
             resetPageNumber(), filterCategoriesChanged($event.target.value)
           "
           :disabled="
-            inputsDisabled ||
+            global.state.inputsDisabled ||
             !resultsCategoriesDone ||
             !global.state.resultsCategoriesEnabled ||
             (global.state.mobileMode &&
@@ -289,7 +289,7 @@
             type="checkbox"
             :checked="global.state.resultsCategoriesEnabled"
             :disabled="
-              inputsDisabled ||
+              global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -300,7 +300,7 @@
             class="checkboxlabel"
             :class="{
               itemdisabled:
-                inputsDisabled ||
+                global.state.inputsDisabled ||
                 (global.state.mobileMode &&
                   (global.state.mobileDisplay === 'maininfo' ||
                     global.state.mobileDisplay === 'categories'))
@@ -316,14 +316,18 @@
             class="checkbox"
             type="checkbox"
             :checked="global.state.checkboxFilterEnabled"
-            :disabled="inputsDisabled || !global.state.resultsCategoriesEnabled"
+            :disabled="
+              global.state.inputsDisabled ||
+              !global.state.resultsCategoriesEnabled
+            "
             @change="checkboxFilterEnabledChanged($event.target.checked)"
           />
           <label
             class="checkboxlabel"
             :class="{
               itemdisabled:
-                inputsDisabled || !global.state.resultsCategoriesEnabled
+                global.state.inputsDisabled ||
+                !global.state.resultsCategoriesEnabled
             }"
             for="checkboxFilter"
           >
@@ -331,7 +335,8 @@
               class="checkboxfiltericon"
               :class="{
                 itemdisabled:
-                  inputsDisabled || !global.state.resultsCategoriesEnabled
+                  global.state.inputsDisabled ||
+                  !global.state.resultsCategoriesEnabled
               }"
               src="../assets/images/document2.svg"
             />
@@ -343,7 +348,7 @@
             class="checkbox"
             type="checkbox"
             :disabled="
-              inputsDisabled ||
+              global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
@@ -355,7 +360,7 @@
             class="checkboxlabel"
             :class="{
               itemdisabled:
-                inputsDisabled ||
+                global.state.inputsDisabled ||
                 (global.state.mobileMode &&
                   (global.state.mobileDisplay === 'maininfo' ||
                     global.state.mobileDisplay === 'categories'))
@@ -380,7 +385,7 @@
           id="catsclick"
           value="catsclick"
           :disabled="
-            inputsDisabled ||
+            global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
@@ -393,7 +398,7 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              inputsDisabled ||
+              global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled &&
                 !resultsCategoriesDone) ||
               (global.state.mobileMode &&
@@ -409,7 +414,7 @@
           id="catshover"
           value="catshover"
           :disabled="
-            inputsDisabled ||
+            global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled && !resultsCategoriesDone) ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
@@ -422,7 +427,7 @@
           class="radiolabel"
           :class="{
             itemdisabled:
-              inputsDisabled ||
+              global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled &&
                 !resultsCategoriesDone) ||
               (global.state.mobileMode &&
@@ -483,7 +488,7 @@
           class="leftarrow"
           :class="{
             itemdisabled:
-              inputsDisabled ||
+              global.state.inputsDisabled ||
               filteredResultsArrayLength === 0 ||
               pageNumber === 0 ||
               (global.state.mobileMode &&
@@ -503,7 +508,7 @@
           class="rightarrow"
           :class="{
             itemdisabled:
-              inputsDisabled ||
+              global.state.inputsDisabled ||
               filteredResultsArrayLength === 0 ||
               pageNumber + 1 === numberOfPages ||
               (global.state.mobileMode &&
@@ -532,7 +537,7 @@
         :max="40"
         :value="global.state.sizePerPage"
         :disabled="
-          inputsDisabled ||
+          global.state.inputsDisabled ||
           filteredResultsArrayLength === 0 ||
           (global.state.mobileMode &&
             (global.state.mobileDisplay === 'maininfo' ||
@@ -574,7 +579,7 @@
         step="0.01"
         :value="global.state.scalingFactor"
         :disabled="
-          inputsDisabled ||
+          global.state.inputsDisabled ||
           filteredResultsArrayLength === 0 ||
           (global.state.mobileMode &&
             (global.state.mobileDisplay === 'maininfo' ||
@@ -601,7 +606,7 @@
         step="1"
         :value="global.state.circleButtonRadius"
         :disabled="
-          inputsDisabled ||
+          global.state.inputsDisabled ||
           filteredResultsArrayLength === 0 ||
           (global.state.mobileMode &&
             (global.state.mobileDisplay === 'maininfo' ||
@@ -643,7 +648,6 @@ export default {
   ],
 
   props: {
-    inputsDisabled: { required: true, default: false, type: Boolean },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },

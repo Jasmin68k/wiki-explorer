@@ -15,7 +15,6 @@
     <canvas class="outgraphcanvas" ref="outgraphcanvasref"></canvas>
 
     <title-button
-      :inputs-disabled="inputsDisabled"
       :title="title"
       :title-missing="titleMissing"
       :redirects="redirects"
@@ -28,7 +27,6 @@
     <div v-for="(page, index) in displayResultsArray" :key="index">
       <circle-button
         :index="index"
-        :inputs-disabled="inputsDisabled"
         :display-results-array="displayResultsArray"
         :results-categories-done="resultsCategoriesDone"
         :results-redirects-done="resultsRedirectsDone"
@@ -110,7 +108,10 @@ export default {
     }
 
     function displayResultsArrayWatch() {
-      if (props.displayResultsArray.length > 0 && !props.inputsDisabled) {
+      if (
+        props.displayResultsArray.length > 0 &&
+        !global.state.inputsDisabled
+      ) {
         drawLines()
       } else clearCanvas()
     }
@@ -124,7 +125,6 @@ export default {
   emits: ['circleButtonClicked'],
 
   props: {
-    inputsDisabled: { required: true, default: false, type: Boolean },
     title: { required: true, default: '', type: String },
     url: { required: true, default: '', type: String },
     redirects: { required: true, default: () => [], type: Array },

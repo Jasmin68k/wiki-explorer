@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="!inputsDisabled"
+    v-show="!global.state.inputsDisabled"
     class="circlebutton"
     :class="{ hoverdisabled: !global.state.categoriesOnHover }"
     :style="{
@@ -75,10 +75,11 @@
         :class="{
           missing: displayResultsArray[index].missing,
           circlebuttonactualhover:
-            (!inputsDisabled &&
+            (!global.state.inputsDisabled &&
               global.state.resultsCategoriesEnabled &&
               resultsCategoriesDone) ||
-            (!inputsDisabled && !global.state.resultsCategoriesEnabled)
+            (!global.state.inputsDisabled &&
+              !global.state.resultsCategoriesEnabled)
         }"
         class="circlebuttonactual"
         :style="{
@@ -171,7 +172,7 @@
 
   <div
     v-if="
-      !inputsDisabled &&
+      !global.state.inputsDisabled &&
       displayResultsArray.length > 0 &&
       global.state.resultsCategoriesEnabled &&
       resultsCategoriesDone &&
@@ -273,7 +274,6 @@ export default {
   emits: ['circleButtonClicked'],
   props: {
     index: { required: true, default: -1, type: Number },
-    inputsDisabled: { required: true, default: false, type: Boolean },
     displayResultsArray: { required: true, default: () => [], type: Array },
     resultsCategoriesDone: { required: true, default: true, type: Boolean },
     resultsRedirectsDone: { required: true, default: true, type: Boolean },

@@ -14,7 +14,8 @@ const state = reactive({
   categoriesOnHover: true,
   sizePerPage: 16,
   scalingFactor: 1.0,
-  circleButtonRadius: 260
+  circleButtonRadius: 260,
+  inputsDisabled: false
 })
 
 const setFilter = (value) => {
@@ -59,6 +60,9 @@ const setScalingFactor = (value) => {
 const setCircleButtonRadius = (value) => {
   state.circleButtonRadius = value
 }
+const setInputsDisabled = (value) => {
+  state.inputsDisabled = value
+}
 
 export default {
   state: readonly(state),
@@ -75,5 +79,6 @@ export default {
   setCategoriesOnHover,
   setSizePerPage,
   setScalingFactor,
-  setCircleButtonRadius
+  setCircleButtonRadius,
+  setInputsDisabled
 }
