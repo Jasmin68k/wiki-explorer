@@ -90,7 +90,8 @@
           displayResultsArray[index].missing ||
           (global.state.resultsCategoriesEnabled &&
             !global.state.resultsCategoriesDone) ||
-          (global.state.resultsRedirectsEnabled && !resultsRedirectsDone)
+          (global.state.resultsRedirectsEnabled &&
+            !global.state.resultsRedirectsDone)
         "
         @click.prevent="circleButton(index)"
       >
@@ -152,7 +153,10 @@
 
     <div
       class="redirects"
-      v-if="global.state.resultsRedirectsEnabled && resultsRedirectsDone"
+      v-if="
+        global.state.resultsRedirectsEnabled &&
+        global.state.resultsRedirectsDone
+      "
       :style="{
         'font-size': 70 * global.state.scalingFactor + '%',
         '--maxheight':
@@ -254,7 +258,7 @@ export default {
       initHoverButtonCircleCoordsNextTick(props.circleButtonRadius)
     )
     watchEffect(() =>
-      initHoverButtonCircleCoordsNextTick(props.resultsRedirectsDone)
+      initHoverButtonCircleCoordsNextTick(global.state.resultsRedirectsDone)
     )
     watchEffect(() =>
       circleButtonHoverOverrideOff(global.state.categoriesOnHover)
@@ -276,7 +280,6 @@ export default {
   props: {
     index: { required: true, default: -1, type: Number },
     displayResultsArray: { required: true, default: () => [], type: Array },
-    resultsRedirectsDone: { required: true, default: true, type: Boolean },
     outgraphcanvasref: { required: true, default: {} }
   },
   methods: {

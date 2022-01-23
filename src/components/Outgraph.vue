@@ -28,7 +28,6 @@
       <circle-button
         :index="index"
         :display-results-array="displayResultsArray"
-        :results-redirects-done="resultsRedirectsDone"
         :outgraphcanvasref="outgraphcanvasref"
         @circleButtonClicked="circleButtonClicked"
       >
@@ -129,7 +128,6 @@ export default {
     redirects: { required: true, default: () => [], type: Array },
     displayResultsArray: { required: true, default: () => [], type: Array },
     categoriesArray: { required: true, default: () => [], type: Array },
-    resultsRedirectsDone: { required: true, default: true, type: Boolean },
     titleMissing: { required: true, default: true, type: Boolean },
     redirectsDone: { required: true, default: false, type: Boolean }
   },

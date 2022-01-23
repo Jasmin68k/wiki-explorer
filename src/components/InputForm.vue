@@ -455,7 +455,10 @@
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
         <span
-          v-show="global.state.resultsRedirectsEnabled && !resultsRedirectsDone"
+          v-show="
+            global.state.resultsRedirectsEnabled &&
+            !global.state.resultsRedirectsDone
+          "
           ><img
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
@@ -464,7 +467,10 @@
           >{{ $t('results') }}{{ filteredResultsArrayLength }}</span
         >
         <span
-          v-show="global.state.resultsRedirectsEnabled && !resultsRedirectsDone"
+          v-show="
+            global.state.resultsRedirectsEnabled &&
+            !global.state.resultsRedirectsDone
+          "
           ><img
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
@@ -658,7 +664,6 @@ export default {
   ],
 
   props: {
-    resultsRedirectsDone: { required: true, default: true, type: Boolean },
     filteredResultsArrayLength: { required: true, default: 0, type: Number },
     pageNumber: { required: true, default: 0, type: Number },
     indexStart: { required: true, default: 0, type: Number },

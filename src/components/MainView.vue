@@ -1,7 +1,6 @@
 <template>
   <div class="page-flex-container" ref="flexcontainer">
     <input-form
-      :results-redirects-done="resultsRedirectsDone"
       :filtered-results-array-length="filteredResultsArray.length"
       :page-number="pageNumber"
       :index-start="indexStart"
@@ -86,7 +85,6 @@
         :redirects="titlePage.redirects"
         :display-results-array="displayResultsArray"
         :categories-array="titlePage.categories"
-        :results-redirects-done="resultsRedirectsDone"
         :title-missing="titlePage.missing"
         :redirects-done="redirectsDone"
         @circleButtonClicked="circleButtonClicked"
@@ -148,7 +146,7 @@ export default {
   data() {
     return {
       checkedCategories: new Set(),
-      resultsRedirectsDone: true,
+
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300,
@@ -327,7 +325,7 @@ export default {
         this.getResultsCategories()
       }
 
-      this.resultsRedirectsDone = false
+      this.global.setResultsRedirectsDone(false)
 
       if (this.global.state.resultsRedirectsEnabled) {
         this.getResultsRedirects()
@@ -365,7 +363,7 @@ export default {
         )
       }
 
-      this.resultsRedirectsDone = true
+      this.global.setResultsRedirectsDone(true)
     },
 
     async getMainInfo() {
