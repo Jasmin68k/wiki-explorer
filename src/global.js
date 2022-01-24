@@ -24,7 +24,8 @@ const state = reactive({
 })
 const statefull = reactive({
   titlePage: new TitlePage(),
-  resultsMap: new Map()
+  resultsMap: new Map(),
+  checkedCategories: new Set()
 })
 
 const setFilter = (value) => {

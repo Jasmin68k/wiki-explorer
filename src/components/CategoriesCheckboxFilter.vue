@@ -7,7 +7,7 @@
             type="checkbox"
             :id="item"
             :value="item"
-            v-model="checkedCategories"
+            v-model="global.statefull.checkedCategories"
             @change="resultsCategoriesCheckboxChanged"
           />
           <label :for="item">{{ item }}</label>
@@ -26,18 +26,17 @@
 // https://stackoverflow.com/questions/60924305/how-to-make-virtual-scroll
 // https://codepen.io/zupkode/pen/oNgaqLv
 
+import { inject } from 'vue'
 export default {
   name: 'CategoriesCheckboxFilter',
-  emits: [
-    'resultsCategoriesCheckboxChanged',
-    'categoriesAll',
-    'categoriesNone'
-  ],
+  setup() {
+    const global = inject('global')
 
+    return { global }
+  },
   props: {
     items: { required: true, default: () => [], type: Array },
-    rootHeight: { required: true, default: 300, type: Number },
-    checkedInit: { required: true, default: () => new Set(), type: Set }
+    rootHeight: { required: true, default: 300, type: Number }
   },
   data() {
     return {
@@ -47,8 +46,7 @@ export default {
       scrollTop: 0,
       // Extra padding at the top and bottom so that the items transition smoothly
       // Think of it as extra items just before the viewport starts and just after the viewport ends
-      nodePadding: 20,
-      checkedCategories: new Set()
+      nodePadding: 20
     }
   },
 
@@ -117,8 +115,8 @@ export default {
       let checkedCategoriesTemp = new Set()
       // no duplicate check needed in Set
       this.items.forEach((item) => checkedCategoriesTemp.add(item))
-      this.checkedCategories = checkedCategoriesTemp
-      this.$emit('categoriesAll', this.checkedCategories)
+      this.global.statefull.checkedCategories = checkedCategoriesTemp
+      this.global.setPageNumber(0)
     },
     categoriesNone() {
       // https://stackoverflow.com/a/44204227
@@ -126,12 +124,16 @@ export default {
       // Since the lookup complexity for the V8 engine browsers use these days is O(1), the time complexity of the whole algorithm is O(n)
       const toRemove = new Set(this.items)
 
-      let tempArray = Array.from(this.checkedCategories)
+      let tempArray = Array.from(this.global.statefull.checkedCategories)
       tempArray = tempArray.filter((x) => !toRemove.has(x))
 
-      this.checkedCategories = new Set(tempArray)
+      this.global.statefull.checkedCategories = new Set(tempArray)
 
-      this.$emit('categoriesNone', this.checkedCategories)
+      this.global.setPageNumber(0)
+      if (!this.global.state.checkboxFilterEnabled) {
+        // enable in desktop when changed in mobile
+        this.global.setCheckboxFilterEnabled(true)
+      }
     },
 
     handleScroll() {
@@ -149,16 +151,11 @@ export default {
         }
       }
       return largestHeight
-    },
-    resultsCategoriesCheckboxChanged() {
-      this.$emit('resultsCategoriesCheckboxChanged', this.checkedCategories)
     }
   },
   mounted() {
     // emit did not work for whatever reason
     this.$parent.windowResized()
-
-    this.checkedCategories = new Set(this.checkedInit)
 
     this.$refs.root.addEventListener('scroll', this.handleScroll, {
       passive: true

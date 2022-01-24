@@ -64,10 +64,6 @@
           "
           :items="resultsCategoriesAllArray"
           :root-height="scrollboxContainerHeight"
-          :checked-init="checkedCategories"
-          @resultsCategoriesCheckboxChanged="resultsCategoriesCheckboxChanged"
-          @categoriesAll="categoriesAll"
-          @categoriesNone="resultsCategoriesCheckboxChanged"
         ></categories-checkbox-filter>
       </div>
 
@@ -133,8 +129,6 @@ export default {
   },
   data() {
     return {
-      checkedCategories: new Set(),
-
       gridWidthNocategories: 1520,
       gridHeightSubtract: 0,
       scrollboxContainerHeight: 300
@@ -205,7 +199,9 @@ export default {
       ) {
         filteredArray = filteredArray.filter((page) =>
           page.categories
-            ? page.categories.find((item) => this.checkedCategories.has(item))
+            ? page.categories.find((item) =>
+                this.global.statefull.checkedCategories.has(item)
+              )
             : null
         )
       }
@@ -334,7 +330,9 @@ export default {
 
       this.global.setResultsCategoriesDone(true)
 
-      this.checkedCategories = new Set(this.resultsCategoriesAllArrayUnfiltered)
+      this.global.statefull.checkedCategories = new Set(
+        this.resultsCategoriesAllArrayUnfiltered
+      )
     },
 
     async getResultsRedirects() {
@@ -414,7 +412,7 @@ export default {
         this.global.state.resultsCategoriesEnabled &&
         this.global.state.resultsCategoriesDone
       ) {
-        this.checkedCategories = new Set(
+        this.global.statefull.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
@@ -427,31 +425,16 @@ export default {
         await this.getResultsRedirects()
       }
     },
-    resultsCategoriesCheckboxChanged(value) {
-      this.global.setPageNumber(0)
-
-      if (!this.global.state.checkboxFilterEnabled) {
-        // enable in desktop when changed in mobile
-        this.global.setCheckboxFilterEnabled(true)
-      }
-
-      this.checkedCategories = value
-    },
-    categoriesAll(value) {
-      this.global.setPageNumber(0)
-
-      this.checkedCategories = value
-    },
     checkboxFilterEnabledChanged() {
       // for switch from desktop to mobile
       if (!this.global.state.checkboxFilterEnabled) {
-        this.checkedCategories = new Set(
+        this.global.statefull.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
 
       if (this.global.state.checkboxFilterEnabled) {
-        this.checkedCategories = new Set(
+        this.global.statefull.checkedCategories = new Set(
           this.resultsCategoriesAllArrayUnfiltered
         )
       }
