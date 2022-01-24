@@ -16,10 +16,9 @@
 
     <title-button :outgraphcanvasref="outgraphcanvasref"></title-button>
 
-    <div v-for="(page, index) in displayResultsArray" :key="index">
+    <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
       <circle-button
         :index="index"
-        :display-results-array="displayResultsArray"
         :outgraphcanvasref="outgraphcanvasref"
         @circleButtonClicked="circleButtonClicked"
       >
@@ -34,7 +33,7 @@ import CircleButton from './CircleButton.vue'
 
 export default {
   name: 'Outgraph',
-  setup(props) {
+  setup() {
     const global = inject('global')
 
     const outgraphcanvasref = ref(null)
@@ -61,17 +60,19 @@ export default {
         canvas.height = height
         const middleX = width / 2
         const middleY = height / 2
-        for (let i = 0; i < props.displayResultsArray.length; i++) {
+        for (let i = 0; i < global.state.displayResultsArray.length; i++) {
           ctx.beginPath()
           ctx.moveTo(middleX, middleY)
           const angle =
             ((270 +
-              (360 / (Math.round(props.displayResultsArray.length / 2) * 2)) *
+              (360 /
+                (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
                 i) *
               Math.PI) /
             180
           const angle2 =
-            ((360 / (Math.round(props.displayResultsArray.length / 2) * 2)) *
+            ((360 /
+              (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
               i *
               Math.PI) /
             180
@@ -99,7 +100,7 @@ export default {
 
     function displayResultsArrayWatch() {
       if (
-        props.displayResultsArray.length > 0 &&
+        global.state.displayResultsArray.length > 0 &&
         !global.state.inputsDisabled
       ) {
         drawLines()
@@ -107,16 +108,15 @@ export default {
     }
     watchEffect(() => clearCanvasAndDrawLines(global.state.scalingFactor))
     watchEffect(() => clearCanvasAndDrawLines(global.state.circleButtonRadius))
-    watchEffect(() => displayResultsArrayWatch(props.displayResultsArray))
+    watchEffect(() =>
+      displayResultsArrayWatch(global.state.displayResultsArray)
+    )
 
     return { global, outgraphcanvasref }
   },
   components: { TitleButton, CircleButton },
   emits: ['circleButtonClicked'],
 
-  props: {
-    displayResultsArray: { required: true, default: () => [], type: Array }
-  },
   methods: {
     circleButtonClicked(index) {
       this.$emit('circleButtonClicked', index)

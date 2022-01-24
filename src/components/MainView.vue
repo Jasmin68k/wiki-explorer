@@ -71,7 +71,6 @@
         "
         class="grid-item-graph"
         ref="outgraph"
-        :display-results-array="displayResultsArray"
         @circleButtonClicked="circleButtonClicked"
       ></outgraph>
 
@@ -132,15 +131,6 @@ export default {
     }
   },
   computed: {
-    displayResultsArray() {
-      if (this.global.state.inputsDisabled) {
-        return []
-      }
-      return this.global.state.filteredResultsArray.slice(
-        this.global.state.indexStart,
-        this.global.state.indexEnd + 1
-      )
-    },
     resultsCategoriesAllArray() {
       if (
         !(
@@ -304,7 +294,7 @@ export default {
     async circleButtonClicked(index) {
       this.global.setTitle(
         await wikiFetchGetRedirectTarget(
-          this.displayResultsArray[index].title,
+          this.global.state.displayResultsArray[index].title,
           this.global.state.language
         )
       )

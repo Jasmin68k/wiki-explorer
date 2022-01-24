@@ -70,6 +70,15 @@ const state = reactive({
 
     return filteredArray
   }),
+  displayResultsArray: computed(function () {
+    if (state.inputsDisabled) {
+      return []
+    }
+    return state.filteredResultsArray.slice(
+      state.indexStart,
+      state.indexEnd + 1
+    )
+  }),
   indexStart: computed(function () {
     let indexStart = state.pageNumber * state.sizePerPage
     if (indexStart > state.filteredResultsArray.length - 1) {

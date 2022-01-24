@@ -6,7 +6,8 @@
     :style="{
       '--angle':
         270 +
-        (360 / (Math.round(displayResultsArray.length / 2) * 2)) * index +
+        (360 / (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
+          index +
         'deg',
       '--radius':
         index % 2 === 0
@@ -15,7 +16,9 @@
               (1 +
                 Math.abs(
                   Math.sin(
-                    ((360 / (Math.round(displayResultsArray.length / 2) * 2)) *
+                    ((360 /
+                      (Math.round(global.state.displayResultsArray.length / 2) *
+                        2)) *
                       index *
                       Math.PI) /
                       180
@@ -28,7 +31,9 @@
               (1 +
                 Math.abs(
                   Math.sin(
-                    ((360 / (Math.round(displayResultsArray.length / 2) * 2)) *
+                    ((360 /
+                      (Math.round(global.state.displayResultsArray.length / 2) *
+                        2)) *
                       index *
                       Math.PI) /
                       180
@@ -39,7 +44,9 @@
       '--minusangle':
         -1 *
           (270 +
-            (360 / (Math.round(displayResultsArray.length / 2) * 2)) * index) +
+            (360 /
+              (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
+              index) +
         'deg',
       'line-height': 100 * global.state.scalingFactor + '%',
       'max-width':
@@ -48,7 +55,9 @@
           (1 +
             Math.abs(
               Math.sin(
-                ((360 / (Math.round(displayResultsArray.length / 2) * 2)) *
+                ((360 /
+                  (Math.round(global.state.displayResultsArray.length / 2) *
+                    2)) *
                   index *
                   Math.PI) /
                   180
@@ -63,7 +72,7 @@
     <div
       class="buttonicongridcontainer"
       :style="[
-        !displayResultsArray[index].missing
+        !global.state.displayResultsArray[index].missing
           ? {
               'grid-template-columns':
                 'auto ' + (0.67 * global.state.scalingFactor + 0.33) + 'rem'
@@ -73,7 +82,7 @@
     >
       <button
         :class="{
-          missing: displayResultsArray[index].missing,
+          missing: global.state.displayResultsArray[index].missing,
           circlebuttonactualhover:
             (!global.state.inputsDisabled &&
               global.state.resultsCategoriesEnabled &&
@@ -87,7 +96,7 @@
           'min-width': 50 * global.state.scalingFactor + 'px'
         }"
         :disabled="
-          displayResultsArray[index].missing ||
+          global.state.displayResultsArray[index].missing ||
           (global.state.resultsCategoriesEnabled &&
             !global.state.resultsCategoriesDone) ||
           (global.state.resultsRedirectsEnabled &&
@@ -95,12 +104,12 @@
         "
         @click.prevent="circleButton(index)"
       >
-        {{ displayResultsArray[index].title }}
+        {{ global.state.displayResultsArray[index].title }}
       </button>
 
       <div class="icongridcontainer">
         <span
-          v-if="!displayResultsArray[index].missing"
+          v-if="!global.state.displayResultsArray[index].missing"
           :class="{
             icongriditem1start:
               global.state.resultsCategoriesEnabled &&
@@ -112,7 +121,7 @@
           }"
           :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
         >
-          <a :href="displayResultsArray[index].url" target="_blank"
+          <a :href="global.state.displayResultsArray[index].url" target="_blank"
             ><img
               class="icon"
               :class="{
@@ -130,7 +139,7 @@
         </span>
         <span
           v-if="
-            !displayResultsArray[index].missing &&
+            !global.state.displayResultsArray[index].missing &&
             global.state.resultsCategoriesEnabled &&
             !global.state.categoriesOnHover
           "
@@ -166,7 +175,8 @@
     >
       <ul>
         <li
-          v-for="(redirect, index) in displayResultsArray[index].redirects"
+          v-for="(redirect, index) in global.state.displayResultsArray[index]
+            .redirects"
           :key="index"
         >
           {{ redirect }}
@@ -178,10 +188,10 @@
   <div
     v-if="
       !global.state.inputsDisabled &&
-      displayResultsArray.length > 0 &&
+      global.state.displayResultsArray.length > 0 &&
       global.state.resultsCategoriesEnabled &&
       global.state.resultsCategoriesDone &&
-      displayResultsArray[index].categories
+      global.state.displayResultsArray[index].categories
     "
     class="circlebuttonhover"
     :class="{
@@ -199,7 +209,7 @@
   >
     <ul>
       <li
-        v-for="category in displayResultsArray[index].categories"
+        v-for="category in global.state.displayResultsArray[index].categories"
         :key="category"
       >
         {{ category }}
@@ -263,7 +273,9 @@ export default {
     watchEffect(() =>
       circleButtonHoverOverrideOff(global.state.categoriesOnHover)
     )
-    watchEffect(() => circleButtonHoverOverrideOff(props.displayResultsArray))
+    watchEffect(() =>
+      circleButtonHoverOverrideOff(global.state.displayResultsArray)
+    )
 
     return {
       global,
@@ -279,7 +291,7 @@ export default {
   emits: ['circleButtonClicked'],
   props: {
     index: { required: true, default: -1, type: Number },
-    displayResultsArray: { required: true, default: () => [], type: Array },
+
     outgraphcanvasref: { required: true, default: {} }
   },
   methods: {
