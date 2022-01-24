@@ -491,8 +491,8 @@
             global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
-        }}{{ indexEnd + 1 }}
+        {{ $t('showing') }}{{ $t('from') }}{{ global.state.indexStart + 1
+        }}{{ $t('to') }}{{ global.state.indexEnd + 1 }}
       </div>
       <span
         :style="{
@@ -675,10 +675,6 @@ export default {
     'mobile-display-switched'
   ],
 
-  props: {
-    indexStart: { required: true, default: 0, type: Number },
-    indexEnd: { required: true, default: 0, type: Number }
-  },
   setup() {
     const global = inject('global')
 

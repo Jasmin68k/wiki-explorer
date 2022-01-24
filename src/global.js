@@ -69,6 +69,27 @@ const state = reactive({
     })
 
     return filteredArray
+  }),
+  indexStart: computed(function () {
+    let indexStart = state.pageNumber * state.sizePerPage
+    if (indexStart > state.filteredResultsArray.length - 1) {
+      indexStart = state.filteredResultsArray.length - 1
+    }
+
+    return indexStart
+  }),
+  indexEnd: computed(function () {
+    let indexEnd = (state.pageNumber + 1) * state.sizePerPage - 1
+
+    if (indexEnd > state.filteredResultsArray.length - 1) {
+      indexEnd = state.filteredResultsArray.length - 1
+    }
+
+    if (indexEnd < 0) {
+      indexEnd = 0
+    }
+
+    return indexEnd
   })
 })
 const statefull = reactive({

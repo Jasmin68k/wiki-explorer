@@ -1,8 +1,6 @@
 <template>
   <div class="page-flex-container" ref="flexcontainer">
     <input-form
-      :index-start="indexStart"
-      :index-end="indexEnd"
       @fetchDataClicked="fetchDataClicked"
       @showHelpClicked="showHelpSwitched"
       @resultsCategoriesChanged="resultsCategoriesChanged"
@@ -134,37 +132,13 @@ export default {
     }
   },
   computed: {
-    indexStart() {
-      let indexStart =
-        this.global.state.pageNumber * this.global.state.sizePerPage
-      if (indexStart > this.global.state.filteredResultsArray.length - 1) {
-        indexStart = this.global.state.filteredResultsArray.length - 1
-      }
-
-      return indexStart
-    },
-    indexEnd() {
-      let indexEnd =
-        (this.global.state.pageNumber + 1) * this.global.state.sizePerPage - 1
-
-      if (indexEnd > this.global.state.filteredResultsArray.length - 1) {
-        indexEnd = this.global.state.filteredResultsArray.length - 1
-      }
-
-      if (indexEnd < 0) {
-        indexEnd = 0
-      }
-
-      return indexEnd
-    },
-
     displayResultsArray() {
       if (this.global.state.inputsDisabled) {
         return []
       }
       return this.global.state.filteredResultsArray.slice(
-        this.indexStart,
-        this.indexEnd + 1
+        this.global.state.indexStart,
+        this.global.state.indexEnd + 1
       )
     },
     resultsCategoriesAllArray() {
