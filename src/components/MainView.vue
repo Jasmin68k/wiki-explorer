@@ -118,8 +118,6 @@ import {
   wikiFetchGetRedirectTarget
 } from '../wikifetch.js'
 
-let resultsMap = new Map()
-
 export default {
   name: 'MainView',
   components: {
@@ -172,7 +170,7 @@ export default {
         return []
       }
 
-      let filteredArray = Array.from(resultsMap.values())
+      let filteredArray = Array.from(this.global.state.resultsMap.values())
 
       // apply titles filter
       filteredArray = filteredArray.filter((page) =>
@@ -241,8 +239,8 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId of resultsMap.keys()) {
-        const resultPage = resultsMap.get(pageId)
+      for (const pageId of this.global.state.resultsMap.keys()) {
+        const resultPage = this.global.state.resultsMap.get(pageId)
         if (
           resultPage.categories &&
           resultPage.title
@@ -279,8 +277,8 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId of resultsMap.keys()) {
-        const resultPage = resultsMap.get(pageId)
+      for (const pageId of this.global.state.resultsMap.keys()) {
+        const resultPage = this.global.state.resultsMap.get(pageId)
         if (resultPage.categories) {
           // Set doesn't allow duplicate values, so no check needed
           resultPage.categories.forEach((category) =>
@@ -303,39 +301,50 @@ export default {
     async getJson() {
       this.global.setInputsDisabled(true)
 
-      resultsMap.clear()
-      resultsMap = await wikiFetchPages(
+      // temp to keep wikifetch api generic and modifying values directly as well as global resultsMap readonly
+      let mapTemp = new Map()
+      mapTemp = await wikiFetchPages(
         this.global.state.title,
         this.global.state.language
       )
+      this.global.setResultsMap(mapTemp)
+
+      this.global.setPageNumber(0)
+      this.global.setInputsDisabled(false)
 
       this.global.setResultsCategoriesDone(false)
 
       if (this.global.state.resultsCategoriesEnabled) {
-        this.getResultsCategories()
+        await this.getResultsCategories()
       }
 
       this.global.setResultsRedirectsDone(false)
 
       if (this.global.state.resultsRedirectsEnabled) {
-        this.getResultsRedirects()
+        await this.getResultsRedirects()
       }
 
-      this.global.setPageNumber(0)
-
-      this.global.setInputsDisabled(false)
+      // this.global.setPageNumber(0)
+      // this.global.setInputsDisabled(false)
     },
 
     async getResultsCategories() {
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
 
       // skip fetch when no results
-      if (resultsMap.size > 0) {
-        resultsMap = await wikiFetchAddCategoriesToPages(
+      if (this.global.state.resultsMap.size > 0) {
+        // temp to keep wikifetch api generic and modifying values directly as well as global resultsMap readonly
+        // needs deep copy
+        let mapTemp = new Map(
+          JSON.parse(JSON.stringify([...this.global.state.resultsMap]))
+        )
+
+        mapTemp = await wikiFetchAddCategoriesToPages(
           this.global.state.title,
           this.global.state.language,
-          resultsMap
+          mapTemp
         )
+        this.global.setResultsMap(mapTemp)
       }
 
       this.global.setResultsCategoriesDone(true)
@@ -345,12 +354,19 @@ export default {
 
     async getResultsRedirects() {
       // skip fetch when no results
-      if (resultsMap.size > 0) {
-        resultsMap = await wikiFetchAddRedirectsToPages(
+      if (this.global.state.resultsMap.size > 0) {
+        // temp to keep wikifetch api generic and modifying values directly as well as global resultsMap readonly
+        // needs deep copy
+        let mapTemp = new Map(
+          JSON.parse(JSON.stringify([...this.global.state.resultsMap]))
+        )
+
+        mapTemp = await wikiFetchAddRedirectsToPages(
           this.global.state.title,
           this.global.state.language,
-          resultsMap
+          mapTemp
         )
+        this.global.setResultsMap(mapTemp)
       }
 
       this.global.setResultsRedirectsDone(true)
@@ -417,12 +433,12 @@ export default {
         this.getJson()
       }
     },
-    resultsCategoriesChanged() {
+    async resultsCategoriesChanged() {
       if (
         this.global.state.resultsCategoriesEnabled &&
         !this.global.state.resultsCategoriesDone
       ) {
-        this.getResultsCategories()
+        await this.getResultsCategories()
       }
       if (
         this.global.state.resultsCategoriesEnabled &&
@@ -433,12 +449,12 @@ export default {
         )
       }
     },
-    resultsRedirectsChanged() {
+    async resultsRedirectsChanged() {
       if (
         this.global.state.resultsRedirectsEnabled &&
         !this.global.state.resultsRedirectsDone
       ) {
-        this.getResultsRedirects()
+        await this.getResultsRedirects()
       }
     },
     resultsCategoriesCheckboxChanged(value) {

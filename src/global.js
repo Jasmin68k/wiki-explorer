@@ -21,7 +21,8 @@ const state = reactive({
   resultsRedirectsDone: true,
   pageNumber: 0,
   redirectsDone: false,
-  titlePage: new TitlePage()
+  titlePage: new TitlePage(),
+  resultsMap: new Map()
 })
 
 const setFilter = (value) => {
@@ -84,6 +85,9 @@ const setRedirectsDone = (value) => {
 const setTitlePage = (value) => {
   state.titlePage = value
 }
+const setResultsMap = (value) => {
+  state.resultsMap = value
+}
 
 export default {
   state: readonly(state),
@@ -106,5 +110,6 @@ export default {
   setResultsRedirectsDone,
   setPageNumber,
   setRedirectsDone,
-  setTitlePage
+  setTitlePage,
+  setResultsMap
 }
