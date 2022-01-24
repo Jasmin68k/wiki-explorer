@@ -464,7 +464,8 @@
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
         <span class="fontsize90"
-          >{{ $t('results') }}{{ filteredResultsArrayLength }}</span
+          >{{ $t('results')
+          }}{{ global.state.filteredResultsArray.length }}</span
         >
         <span
           v-show="
@@ -486,7 +487,8 @@
       <div
         class="fontsize90"
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('showing') }}{{ $t('from') }}{{ indexStart + 1 }}{{ $t('to')
@@ -494,7 +496,8 @@
       </div>
       <span
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
         class="pagecount"
       >
@@ -505,7 +508,7 @@
           :class="{
             itemdisabled:
               global.state.inputsDisabled ||
-              filteredResultsArrayLength === 0 ||
+              global.state.filteredResultsArray.length === 0 ||
               global.state.pageNumber === 0 ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
@@ -525,7 +528,7 @@
           :class="{
             itemdisabled:
               global.state.inputsDisabled ||
-              filteredResultsArrayLength === 0 ||
+              global.state.filteredResultsArray.length === 0 ||
               global.state.pageNumber + 1 === numberOfPages ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
@@ -554,14 +557,15 @@
         :value="global.state.sizePerPage"
         :disabled="
           global.state.inputsDisabled ||
-          filteredResultsArrayLength === 0 ||
+          global.state.filteredResultsArray.length === 0 ||
           (global.state.mobileMode &&
             (global.state.mobileDisplay === 'maininfo' ||
               global.state.mobileDisplay === 'categories'))
         "
         :class="{ slidervertical: portraitMode && global.state.mobileMode }"
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden',
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden',
           '--height': flexContainerHeight * 0.75 + 'px'
         }"
         @input="resetPageNumber(), sizePerPageChanged($event.target.value)"
@@ -569,7 +573,8 @@
       <div
         v-show="!global.state.mobileMode"
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('max-results-per-page') }}{{ global.state.sizePerPage }}
@@ -577,7 +582,8 @@
       <div
         v-show="global.state.mobileMode"
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
         :class="{ absolutebottomcenter: portraitMode }"
       >
@@ -596,20 +602,22 @@
         :value="global.state.scalingFactor"
         :disabled="
           global.state.inputsDisabled ||
-          filteredResultsArrayLength === 0 ||
+          global.state.filteredResultsArray.length === 0 ||
           (global.state.mobileMode &&
             (global.state.mobileDisplay === 'maininfo' ||
               global.state.mobileDisplay === 'categories'))
         "
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
         @input="scalingFactorChanged($event.target.value)"
       />
       <div
         v-if="!global.state.mobileMode"
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('scale-graph') }}
@@ -623,20 +631,22 @@
         :value="global.state.circleButtonRadius"
         :disabled="
           global.state.inputsDisabled ||
-          filteredResultsArrayLength === 0 ||
+          global.state.filteredResultsArray.length === 0 ||
           (global.state.mobileMode &&
             (global.state.mobileDisplay === 'maininfo' ||
               global.state.mobileDisplay === 'categories'))
         "
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
         @input="circleButtonRadiusChanged($event.target.value)"
       />
       <div
         v-if="!global.state.mobileMode"
         :style="{
-          visibility: filteredResultsArrayLength > 0 ? 'visible' : 'hidden'
+          visibility:
+            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
         {{ $t('graph-radius') }}
@@ -666,15 +676,16 @@ export default {
   ],
 
   props: {
-    filteredResultsArrayLength: { required: true, default: 0, type: Number },
     indexStart: { required: true, default: 0, type: Number },
     indexEnd: { required: true, default: 0, type: Number }
   },
-  setup(props) {
+  setup() {
     const global = inject('global')
 
     const numberOfPages = computed(() =>
-      Math.ceil(props.filteredResultsArrayLength / global.state.sizePerPage)
+      Math.ceil(
+        global.state.filteredResultsArray.length / global.state.sizePerPage
+      )
     )
 
     return { global, numberOfPages }
@@ -720,7 +731,8 @@ export default {
     nextPage() {
       if (
         this.global.state.pageNumber + 1 <
-        this.filteredResultsArrayLength / this.global.state.sizePerPage
+        this.global.state.filteredResultsArray.length /
+          this.global.state.sizePerPage
       ) {
         this.global.setPageNumber(this.global.state.pageNumber + 1)
       }

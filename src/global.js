@@ -1,4 +1,4 @@
-import { reactive, readonly } from 'vue'
+import { reactive, computed, readonly } from 'vue'
 import { TitlePage } from './datamodels.js'
 
 const state = reactive({
@@ -20,7 +20,56 @@ const state = reactive({
   resultsCategoriesDone: true,
   resultsRedirectsDone: true,
   pageNumber: 0,
-  redirectsDone: false
+  redirectsDone: false,
+  filteredResultsArray: computed(function () {
+    if (state.inputsDisabled) {
+      return []
+    }
+
+    let filteredArray = Array.from(statefull.resultsMap.values())
+
+    // apply titles filter
+    filteredArray = filteredArray.filter((page) =>
+      page.title.toLowerCase().includes(state.filter.toLowerCase())
+    )
+
+    // good - maybe rewrite without ternary
+    // needs to check state.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
+    if (
+      state.resultsCategoriesEnabled &&
+      state.resultsCategoriesDone &&
+      state.filterCategories
+    ) {
+      filteredArray = filteredArray.filter((page) =>
+        page.categories
+          ? page.categories.find((item) =>
+              item.toLowerCase().includes(state.filterCategories.toLowerCase())
+            )
+          : null
+      )
+    }
+
+    if (
+      state.resultsCategoriesEnabled &&
+      state.resultsCategoriesDone &&
+      ((!state.mobileMode && state.checkboxFilterEnabled) || state.mobileMode)
+    ) {
+      filteredArray = filteredArray.filter((page) =>
+        page.categories
+          ? page.categories.find((item) =>
+              statefull.checkedCategories.has(item)
+            )
+          : null
+      )
+    }
+
+    // sort
+    filteredArray = filteredArray.sort((a, b) => {
+      return a.title.localeCompare(b.title)
+    })
+
+    return filteredArray
+  })
 })
 const statefull = reactive({
   titlePage: new TitlePage(),

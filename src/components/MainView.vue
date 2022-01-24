@@ -1,7 +1,6 @@
 <template>
   <div class="page-flex-container" ref="flexcontainer">
     <input-form
-      :filtered-results-array-length="filteredResultsArray.length"
       :index-start="indexStart"
       :index-end="indexEnd"
       @fetchDataClicked="fetchDataClicked"
@@ -138,8 +137,8 @@ export default {
     indexStart() {
       let indexStart =
         this.global.state.pageNumber * this.global.state.sizePerPage
-      if (indexStart > this.filteredResultsArray.length - 1) {
-        indexStart = this.filteredResultsArray.length - 1
+      if (indexStart > this.global.state.filteredResultsArray.length - 1) {
+        indexStart = this.global.state.filteredResultsArray.length - 1
       }
 
       return indexStart
@@ -148,8 +147,8 @@ export default {
       let indexEnd =
         (this.global.state.pageNumber + 1) * this.global.state.sizePerPage - 1
 
-      if (indexEnd > this.filteredResultsArray.length - 1) {
-        indexEnd = this.filteredResultsArray.length - 1
+      if (indexEnd > this.global.state.filteredResultsArray.length - 1) {
+        indexEnd = this.global.state.filteredResultsArray.length - 1
       }
 
       if (indexEnd < 0) {
@@ -158,67 +157,15 @@ export default {
 
       return indexEnd
     },
-    filteredResultsArray() {
-      if (this.global.state.inputsDisabled) {
-        return []
-      }
-
-      let filteredArray = Array.from(this.global.statefull.resultsMap.values())
-
-      // apply titles filter
-      filteredArray = filteredArray.filter((page) =>
-        page.title
-          .toLowerCase()
-          .includes(this.global.state.filter.toLowerCase())
-      )
-
-      // good - maybe rewrite without ternary
-      // needs to check this.global.state.filterCategories, otherwise -> when categoryfilter = '' this only shows pages, which have at least one non empty category!! and thereby ALSO excludes missing!
-      if (
-        this.global.state.resultsCategoriesEnabled &&
-        this.global.state.resultsCategoriesDone &&
-        this.global.state.filterCategories
-      ) {
-        filteredArray = filteredArray.filter((page) =>
-          page.categories
-            ? page.categories.find((item) =>
-                item
-                  .toLowerCase()
-                  .includes(this.global.state.filterCategories.toLowerCase())
-              )
-            : null
-        )
-      }
-
-      if (
-        this.global.state.resultsCategoriesEnabled &&
-        this.global.state.resultsCategoriesDone &&
-        ((!this.global.state.mobileMode &&
-          this.global.state.checkboxFilterEnabled) ||
-          this.global.state.mobileMode)
-      ) {
-        filteredArray = filteredArray.filter((page) =>
-          page.categories
-            ? page.categories.find((item) =>
-                this.global.statefull.checkedCategories.has(item)
-              )
-            : null
-        )
-      }
-
-      // sort
-      filteredArray = filteredArray.sort((a, b) => {
-        return a.title.localeCompare(b.title)
-      })
-
-      return filteredArray
-    },
 
     displayResultsArray() {
       if (this.global.state.inputsDisabled) {
         return []
       }
-      return this.filteredResultsArray.slice(this.indexStart, this.indexEnd + 1)
+      return this.global.state.filteredResultsArray.slice(
+        this.indexStart,
+        this.indexEnd + 1
+      )
     },
     resultsCategoriesAllArray() {
       if (
