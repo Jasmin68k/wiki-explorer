@@ -107,7 +107,6 @@ import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 import Help from './Help.vue'
-import { TitlePage } from '../datamodels.js'
 import {
   wikiFetchAddCategoriesToTitlePage,
   wikiFetchAddCategoriesToPages,
@@ -170,7 +169,7 @@ export default {
         return []
       }
 
-      let filteredArray = Array.from(this.global.state.resultsMap.values())
+      let filteredArray = Array.from(this.global.statefull.resultsMap.values())
 
       // apply titles filter
       filteredArray = filteredArray.filter((page) =>
@@ -239,8 +238,8 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId of this.global.state.resultsMap.keys()) {
-        const resultPage = this.global.state.resultsMap.get(pageId)
+      for (const pageId of this.global.statefull.resultsMap.keys()) {
+        const resultPage = this.global.statefull.resultsMap.get(pageId)
         if (
           resultPage.categories &&
           resultPage.title
@@ -277,8 +276,8 @@ export default {
       }
       let allCategoriesSet = new Set()
 
-      for (const pageId of this.global.state.resultsMap.keys()) {
-        const resultPage = this.global.state.resultsMap.get(pageId)
+      for (const pageId of this.global.statefull.resultsMap.keys()) {
+        const resultPage = this.global.statefull.resultsMap.get(pageId)
         if (resultPage.categories) {
           // Set doesn't allow duplicate values, so no check needed
           resultPage.categories.forEach((category) =>
@@ -300,51 +299,37 @@ export default {
   methods: {
     async getJson() {
       this.global.setInputsDisabled(true)
-
-      // temp to keep wikifetch api generic and modifying values directly as well as global resultsMap readonly
-      let mapTemp = new Map()
-      mapTemp = await wikiFetchPages(
+      this.global.statefull.resultsMap = await wikiFetchPages(
         this.global.state.title,
         this.global.state.language
       )
-      this.global.setResultsMap(mapTemp)
-
-      this.global.setPageNumber(0)
-      this.global.setInputsDisabled(false)
 
       this.global.setResultsCategoriesDone(false)
 
       if (this.global.state.resultsCategoriesEnabled) {
-        await this.getResultsCategories()
+        this.getResultsCategories()
       }
 
       this.global.setResultsRedirectsDone(false)
 
       if (this.global.state.resultsRedirectsEnabled) {
-        await this.getResultsRedirects()
+        this.getResultsRedirects()
       }
 
-      // this.global.setPageNumber(0)
-      // this.global.setInputsDisabled(false)
+      this.global.setPageNumber(0)
+      this.global.setInputsDisabled(false)
     },
 
     async getResultsCategories() {
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
 
       // skip fetch when no results
-      if (this.global.state.resultsMap.size > 0) {
-        // temp to keep wikifetch api generic and modifying values directly as well as global resultsMap readonly
-        // needs deep copy
-        let mapTemp = new Map(
-          JSON.parse(JSON.stringify([...this.global.state.resultsMap]))
-        )
-
-        mapTemp = await wikiFetchAddCategoriesToPages(
+      if (this.global.statefull.resultsMap.size > 0) {
+        this.global.statefull.resultsMap = await wikiFetchAddCategoriesToPages(
           this.global.state.title,
           this.global.state.language,
-          mapTemp
+          this.global.statefull.resultsMap
         )
-        this.global.setResultsMap(mapTemp)
       }
 
       this.global.setResultsCategoriesDone(true)
@@ -354,61 +339,46 @@ export default {
 
     async getResultsRedirects() {
       // skip fetch when no results
-      if (this.global.state.resultsMap.size > 0) {
-        // temp to keep wikifetch api generic and modifying values directly as well as global resultsMap readonly
-        // needs deep copy
-        let mapTemp = new Map(
-          JSON.parse(JSON.stringify([...this.global.state.resultsMap]))
-        )
-
-        mapTemp = await wikiFetchAddRedirectsToPages(
+      if (this.global.statefull.resultsMap.size > 0) {
+        this.global.statefull.resultsMap = await wikiFetchAddRedirectsToPages(
           this.global.state.title,
           this.global.state.language,
-          mapTemp
+          this.global.statefull.resultsMap
         )
-        this.global.setResultsMap(mapTemp)
       }
 
       this.global.setResultsRedirectsDone(true)
     },
 
     async getMainInfo() {
-      // temp to keep wikifetch api generic and modifying values directly as well as global titlePage readonly
-      let titleTemp = new TitlePage()
-      titleTemp = await wikiFetchTitlePage(
+      this.global.statefull.titlePage = await wikiFetchTitlePage(
         this.global.state.title,
         this.global.state.language
       )
-      this.global.setTitlePage(titleTemp)
 
       this.global.setRedirectsDone(false)
 
-      if (!this.global.state.titlePage.missing) {
+      if (!this.global.statefull.titlePage.missing) {
         // needs await, otherwise one will overwrite the other
         await this.getCategories()
         await this.getRedirects()
       }
     },
     async getCategories() {
-      // temp to keep wikifetch api generic and modifying values directly as well as global titlePage readonly
-      let titleTemp = { ...this.global.state.titlePage }
-      titleTemp = await wikiFetchAddCategoriesToTitlePage(
+      this.global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
         this.global.state.title,
         this.global.state.language,
-        titleTemp
+        this.global.statefull.titlePage
       )
-      this.global.setTitlePage(titleTemp)
     },
 
     async getRedirects() {
-      // temp to keep wikifetch api generic and modifying values directly as well as global titlePage readonly
-      let titleTemp = { ...this.global.state.titlePage }
-      titleTemp = await wikiFetchAddRedirectsToTitlePage(
+      this.global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
         this.global.state.title,
         this.global.state.language,
-        titleTemp
+        this.global.statefull.titlePage
       )
-      this.global.setTitlePage(titleTemp)
+
       this.global.setRedirectsDone(true)
     },
 
@@ -438,7 +408,7 @@ export default {
         this.global.state.resultsCategoriesEnabled &&
         !this.global.state.resultsCategoriesDone
       ) {
-        await this.getResultsCategories()
+        this.getResultsCategories()
       }
       if (
         this.global.state.resultsCategoriesEnabled &&

@@ -1,23 +1,29 @@
 <template>
   <div>
     <div
-      v-show="global.state.titlePage.extract && global.state.titlePage.image"
+      v-show="
+        global.statefull.titlePage.extract && global.statefull.titlePage.image
+      "
     >
       <div>
-        <img class="image" :src="global.state.titlePage.image" />
+        <img class="image" :src="global.statefull.titlePage.image" />
       </div>
-      <div class="extract" v-html="global.state.titlePage.extract"></div>
+      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
     </div>
     <div
-      v-show="global.state.titlePage.extract && !global.state.titlePage.image"
+      v-show="
+        global.statefull.titlePage.extract && !global.statefull.titlePage.image
+      "
     >
-      <div class="extract" v-html="global.state.titlePage.extract"></div>
+      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
     </div>
     <div
-      v-show="!global.state.titlePage.extract && global.state.titlePage.image"
+      v-show="
+        !global.statefull.titlePage.extract && global.statefull.titlePage.image
+      "
     >
       <div>
-        <img class="imageonly" :src="global.state.titlePage.image" />
+        <img class="imageonly" :src="global.statefull.titlePage.image" />
       </div>
     </div>
   </div>

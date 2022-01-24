@@ -9,12 +9,12 @@
     v-show="
       global.state.resultsRedirectsEnabled
         ? !global.state.inputsDisabled &&
-          global.state.titlePage.title &&
-          !global.state.titlePage.missing &&
+          global.statefull.titlePage.title &&
+          !global.statefull.titlePage.missing &&
           global.state.redirectsDone
         : !global.state.inputsDisabled &&
-          global.state.titlePage.title &&
-          !global.state.titlePage.missing
+          global.statefull.titlePage.title &&
+          !global.statefull.titlePage.missing
     "
     ref="titlebutton"
     v-on="{ mouseenter: initHoverButtonTitleCoords }"
@@ -34,7 +34,7 @@
         }"
         @click.prevent="titleButton()"
       >
-        {{ global.state.titlePage.title }}
+        {{ global.statefull.titlePage.title }}
       </button>
 
       <div class="icongridcontainer">
@@ -45,7 +45,7 @@
           }"
           :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
         >
-          <a :href="global.state.titlePage.url" target="_blank"
+          <a :href="global.statefull.titlePage.url" target="_blank"
             ><img
               class="icon"
               :class="{
@@ -90,7 +90,7 @@
     >
       <ul>
         <li
-          v-for="(redirect, index) in global.state.titlePage.redirects"
+          v-for="(redirect, index) in global.statefull.titlePage.redirects"
           :key="index"
         >
           {{ redirect }}
@@ -102,7 +102,7 @@
   <div
     v-if="
       !global.state.inputsDisabled &&
-      global.state.titlePage.categories.length > 0
+      global.statefull.titlePage.categories.length > 0
     "
     class="titlebuttonhover"
     :class="{
@@ -119,7 +119,10 @@
     }"
   >
     <ul>
-      <li v-for="category in global.state.titlePage.categories" :key="category">
+      <li
+        v-for="category in global.statefull.titlePage.categories"
+        :key="category"
+      >
         {{ category }}
       </li>
     </ul>
@@ -200,8 +203,8 @@ export default {
   },
   methods: {
     titleButton() {
-      // window.location = this.global.state.titlePage.url
-      window.open(this.global.state.titlePage.url, '_blank')
+      // window.location = this.global.statefull.titlePage.url
+      window.open(this.global.statefull.titlePage.url, '_blank')
     }
   }
 }
