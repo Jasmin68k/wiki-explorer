@@ -265,7 +265,7 @@ export default {
       initHoverButtonCircleCoordsNextTick(global.state.scalingFactor)
     )
     watchEffect(() =>
-      initHoverButtonCircleCoordsNextTick(props.circleButtonRadius)
+      initHoverButtonCircleCoordsNextTick(global.state.circleButtonRadius)
     )
     watchEffect(() =>
       initHoverButtonCircleCoordsNextTick(global.state.resultsRedirectsDone)
@@ -291,7 +291,6 @@ export default {
   emits: ['circleButtonClicked'],
   props: {
     index: { required: true, default: -1, type: Number },
-
     outgraphcanvasref: { required: true, default: {} }
   },
   methods: {
