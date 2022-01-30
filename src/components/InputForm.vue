@@ -180,7 +180,7 @@
           class="titleinputarea"
           :placeholder="$t('filter-results-titles')"
           :value="global.state.filter"
-          @input="resetPageNumber(), filterChanged($event.target.value)"
+          @input="resetFirstItem(), filterChanged($event.target.value)"
           :disabled="
             global.state.inputsDisabled ||
             (global.state.mobileMode &&
@@ -206,7 +206,7 @@
           :placeholder="$t('filter-results-categories')"
           :value="global.state.filterCategories"
           @input="
-            resetPageNumber(), filterCategoriesChanged($event.target.value)
+            resetFirstItem(), filterCategoriesChanged($event.target.value)
           "
           :disabled="
             global.state.inputsDisabled ||
@@ -494,48 +494,6 @@
         {{ $t('showing') }}{{ $t('from') }}{{ global.state.indexStart + 1
         }}{{ $t('to') }}{{ global.state.indexEnd + 1 }}
       </div>
-      <span
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        class="pagecount"
-      >
-        <img
-          src="../assets/images/left-arrow.svg"
-          @click="prevPage"
-          class="leftarrow"
-          :class="{
-            itemdisabled:
-              global.state.inputsDisabled ||
-              global.state.filteredResultsArray.length === 0 ||
-              global.state.pageNumber === 0 ||
-              (global.state.mobileMode &&
-                (global.state.mobileDisplay === 'maininfo' ||
-                  global.state.mobileDisplay === 'categories'))
-          }"
-        />
-
-        <span class="pageinfotext fontsize90">
-          {{ $t('page') }}{{ global.state.pageNumber + 1 }}{{ $t('of')
-          }}{{ numberOfPages }}</span
-        >
-
-        <img
-          src="../assets/images/right-arrow.svg"
-          @click="nextPage"
-          class="rightarrow"
-          :class="{
-            itemdisabled:
-              global.state.inputsDisabled ||
-              global.state.filteredResultsArray.length === 0 ||
-              global.state.pageNumber + 1 === numberOfPages ||
-              (global.state.mobileMode &&
-                (global.state.mobileDisplay === 'maininfo' ||
-                  global.state.mobileDisplay === 'categories'))
-          }"
-        />
-      </span>
     </div>
 
     <div
@@ -568,7 +526,7 @@
             global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden',
           '--height': flexContainerHeight * 0.75 + 'px'
         }"
-        @input="resetPageNumber(), sizePerPageChanged($event.target.value)"
+        @input="resetFirstItem(), sizePerPageChanged($event.target.value)"
       />
       <div
         v-show="!global.state.mobileMode"
@@ -708,7 +666,7 @@ export default {
     resultsCategoriesChanged(value) {
       this.global.setResultsCategoriesEnabled(value)
       this.windowResized()
-      this.resetPageNumber()
+      this.resetFirstItem()
       this.$emit('resultsCategoriesChanged', value)
     },
     resultsRedirectsChanged(value) {
@@ -721,27 +679,13 @@ export default {
     filterCategoriesChanged(value) {
       this.global.setFilterCategories(value)
     },
-    resetPageNumber() {
-      this.global.setPageNumber(0)
-    },
-    nextPage() {
-      if (
-        this.global.state.pageNumber + 1 <
-        this.global.state.filteredResultsArray.length /
-          this.global.state.sizePerPage
-      ) {
-        this.global.setPageNumber(this.global.state.pageNumber + 1)
-      }
-    },
-    prevPage() {
-      if (this.global.state.pageNumber > 0) {
-        this.global.setPageNumber(this.global.state.pageNumber - 1)
-      }
+    resetFirstItem() {
+      this.global.setGraphFirstItem(1)
     },
     checkboxFilterEnabledChanged(value) {
       this.global.setCheckboxFilterEnabled(value)
       this.windowResized()
-      this.resetPageNumber()
+      this.resetFirstItem()
 
       this.$emit('checkboxFilterEnabledChanged', value)
     },
@@ -934,7 +878,7 @@ export default {
     }
 
     if (titlefilter && titlefilter.length > 0) {
-      this.resetPageNumber()
+      this.resetFirstItem()
       this.filterChanged(titlefilter)
     }
 
@@ -943,7 +887,7 @@ export default {
       categoriesfilter.length > 0 &&
       this.global.state.resultsCategoriesEnabled
     ) {
-      this.resetPageNumber()
+      this.resetFirstItem()
       this.filterCategoriesChanged(categoriesfilter)
     }
 
@@ -996,7 +940,7 @@ export default {
     if (!isNaN(resultsperpage)) {
       resultsperpage = Math.max(2, Math.min(40, resultsperpage))
       this.sizePerPageChanged(resultsperpage)
-      this.resetPageNumber()
+      this.resetFirstItem()
     }
 
     // do search last after evaluating all other parameters
@@ -1056,21 +1000,6 @@ export default {
   flex: 0 1 auto;
   font-size: 90%;
 }
-.leftarrow {
-  height: 1.75em;
-  float: left;
-  margin-left: 5px;
-}
-.rightarrow {
-  height: 1.75em;
-  float: right;
-  margin-right: 5px;
-}
-
-.leftarrow:hover,
-.rightarrow:hover {
-  filter: invert(0.5);
-}
 .itemdisabled {
   filter: invert(0.75);
 }
@@ -1078,10 +1007,6 @@ export default {
 .pagecount {
   display: inline-block;
   width: 180px;
-}
-
-.pageinfotext {
-  vertical-align: middle;
 }
 
 .searchicon:hover {

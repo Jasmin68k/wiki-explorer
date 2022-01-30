@@ -24,12 +24,15 @@
       >
       </circle-button>
     </div>
+
+    <pie-navigation></pie-navigation>
   </div>
 </template>
 <script>
 import { inject, watchEffect, nextTick, ref, onMounted } from 'vue'
 import TitleButton from './TitleButton.vue'
 import CircleButton from './CircleButton.vue'
+import PieNavigation from './PieNavigation.vue'
 
 export default {
   name: 'Outgraph',
@@ -114,7 +117,7 @@ export default {
 
     return { global, outgraphcanvasref }
   },
-  components: { TitleButton, CircleButton },
+  components: { TitleButton, CircleButton, PieNavigation },
   emits: ['circleButtonClicked'],
 
   methods: {

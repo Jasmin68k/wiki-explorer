@@ -19,8 +19,8 @@ const state = reactive({
   inputsDisabled: false,
   resultsCategoriesDone: true,
   resultsRedirectsDone: true,
-  pageNumber: 0,
   redirectsDone: false,
+  graphFirstItem: 1,
   filteredResultsArray: computed(function () {
     if (state.inputsDisabled) {
       return []
@@ -80,24 +80,15 @@ const state = reactive({
     )
   }),
   indexStart: computed(function () {
-    let indexStart = state.pageNumber * state.sizePerPage
-    if (indexStart > state.filteredResultsArray.length - 1) {
-      indexStart = state.filteredResultsArray.length - 1
-    }
+    let indexStart = state.graphFirstItem - 1
 
     return indexStart
   }),
   indexEnd: computed(function () {
-    let indexEnd = (state.pageNumber + 1) * state.sizePerPage - 1
-
+    let indexEnd = state.graphFirstItem - 1 + state.sizePerPage - 1
     if (indexEnd > state.filteredResultsArray.length - 1) {
       indexEnd = state.filteredResultsArray.length - 1
     }
-
-    if (indexEnd < 0) {
-      indexEnd = 0
-    }
-
     return indexEnd
   })
 })
@@ -158,11 +149,11 @@ const setResultsCategoriesDone = (value) => {
 const setResultsRedirectsDone = (value) => {
   state.resultsRedirectsDone = value
 }
-const setPageNumber = (value) => {
-  state.pageNumber = value
-}
 const setRedirectsDone = (value) => {
   state.redirectsDone = value
+}
+const setGraphFirstItem = (value) => {
+  state.graphFirstItem = value
 }
 
 export default {
@@ -185,6 +176,6 @@ export default {
   setInputsDisabled,
   setResultsCategoriesDone,
   setResultsRedirectsDone,
-  setPageNumber,
-  setRedirectsDone
+  setRedirectsDone,
+  setGraphFirstItem
 }

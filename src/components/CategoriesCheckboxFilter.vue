@@ -116,7 +116,7 @@ export default {
       // no duplicate check needed in Set
       this.items.forEach((item) => checkedCategoriesTemp.add(item))
       this.global.statefull.checkedCategories = checkedCategoriesTemp
-      this.global.setPageNumber(0)
+      this.global.setGraphFirstItem(1)
     },
     categoriesNone() {
       // https://stackoverflow.com/a/44204227
@@ -129,7 +129,7 @@ export default {
 
       this.global.statefull.checkedCategories = new Set(tempArray)
 
-      this.global.setPageNumber(0)
+      this.global.setGraphFirstItem(1)
       if (!this.global.state.checkboxFilterEnabled) {
         // enable in desktop when changed in mobile
         this.global.setCheckboxFilterEnabled(true)

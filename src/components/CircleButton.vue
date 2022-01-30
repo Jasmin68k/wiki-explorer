@@ -331,7 +331,7 @@ ul li {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 1;
+  z-index: 2;
 
   /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
   /* transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))

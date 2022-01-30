@@ -223,7 +223,7 @@ export default {
         this.getResultsRedirects()
       }
 
-      this.global.setPageNumber(0)
+      this.global.setGraphFirstItem(1)
       this.global.setInputsDisabled(false)
     },
 

@@ -229,7 +229,7 @@ ul li {
   top: 50%;
   /* move pixel position to center of button */
   transform: translate(-50%, -50%);
-  z-index: 1;
+  z-index: 2;
 }
 .titlebuttonactual {
   border: none;
