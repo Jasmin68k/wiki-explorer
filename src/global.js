@@ -71,13 +71,28 @@ const state = reactive({
     return filteredArray
   }),
   displayResultsArray: computed(function () {
+    let array = []
     if (state.inputsDisabled) {
-      return []
+      return array
     }
-    return state.filteredResultsArray.slice(
-      state.indexStart,
-      state.indexEnd + 1
-    )
+
+    if (!(state.indexEnd + 1 > state.filteredResultsArray.length)) {
+      array = state.filteredResultsArray.slice(
+        state.indexStart,
+        state.indexEnd + 1
+      )
+    } else {
+      array = state.filteredResultsArray
+        .slice(state.indexStart)
+        .concat(
+          state.filteredResultsArray.slice(
+            0,
+            state.indexEnd - state.filteredResultsArray.length + 1
+          )
+        )
+    }
+
+    return array
   }),
   indexStart: computed(function () {
     let indexStart = state.graphFirstItem - 1
@@ -85,10 +100,9 @@ const state = reactive({
     return indexStart
   }),
   indexEnd: computed(function () {
+    // this can be higher than last index, wrap around is done in displayResultsArray
     let indexEnd = state.graphFirstItem - 1 + state.sizePerPage - 1
-    if (indexEnd > state.filteredResultsArray.length - 1) {
-      indexEnd = state.filteredResultsArray.length - 1
-    }
+
     return indexEnd
   })
 })

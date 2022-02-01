@@ -53,26 +53,20 @@ export default {
       angle += 90
       angle %= 360
       if (mousedown) {
-        // map angle range to number/index of results / snap at 0 from both sides
+        // map angle range to number/index [+1] of results
+        let resultStart = parseInt(
+          Math.max(
+            1,
+            Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
+          ),
+          10
+        )
 
-        let resultStart =
-          parseInt((global.state.filteredResultsArray.length / 360) * angle) +
-          1 -
-          parseInt(global.state.sizePerPage / 2, 10)
-
+        // map mouse to middle of pie slice - not always precise, depending on odd/even sizePerPage, maybe
+        // use precise version with proper angle calc later
+        resultStart -= parseInt(global.state.sizePerPage / 2, 10)
         if (resultStart < 1) {
-          resultStart = 1
-        }
-        if (
-          resultStart >
-          global.state.filteredResultsArray.length -
-            global.state.sizePerPage +
-            1
-        ) {
-          resultStart =
-            global.state.filteredResultsArray.length -
-            global.state.sizePerPage +
-            1
+          resultStart += global.state.filteredResultsArray.length
         }
 
         global.setGraphFirstItem(resultStart)
