@@ -492,7 +492,14 @@
         }"
       >
         {{ $t('showing') }}{{ $t('from') }}{{ global.state.indexStart + 1
-        }}{{ $t('to') }}{{ global.state.indexEnd + 1 }}
+        }}{{ $t('to')
+        }}{{
+          global.state.indexEnd + 1 > global.state.filteredResultsArray.length
+            ? global.state.indexEnd +
+              1 -
+              global.state.filteredResultsArray.length
+            : global.state.indexEnd + 1
+        }}
       </div>
     </div>
 
