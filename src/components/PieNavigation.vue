@@ -14,6 +14,7 @@
     @mousemove="pieNavigationClicked($event)"
     @mousedown="mouseDown($event)"
     @mouseup="mouseUp"
+    @wheel="wheelSpin($event)"
   ></div>
 </template>
 <script>
@@ -25,6 +26,30 @@ export default {
     const global = inject('global')
 
     let mousedown = false
+
+    function wheelSpin(event) {
+      const delta = event.wheelDeltaY
+
+      if (delta !== 0) {
+        let item = global.state.graphFirstItem
+
+        switch (true) {
+          case delta < 0:
+            item += 1
+            if (item > global.state.filteredResultsArray.length) {
+              item -= global.state.filteredResultsArray.length
+            }
+            break
+          case delta > 0:
+            item -= 1
+            if (item < 1) {
+              item += global.state.filteredResultsArray.length
+            }
+            break
+        }
+        global.setGraphFirstItem(item)
+      }
+    }
 
     function mouseDown(event) {
       mousedown = true
@@ -77,7 +102,8 @@ export default {
       global,
       pieNavigationClicked,
       mouseDown,
-      mouseUp
+      mouseUp,
+      wheelSpin
     }
   }
 }
