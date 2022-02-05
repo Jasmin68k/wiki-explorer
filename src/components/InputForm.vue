@@ -820,13 +820,11 @@ export default {
 
     if (window.matchMedia('(orientation: landscape)').matches) {
       if (window.innerWidth < 860) {
-        this.$emit('categories-hover-click-changed', 'catsclick')
         this.modeSwitched('mobile')
         this.categoriesOnHoverOrClickChanged('catsclick')
       }
     } else {
       if (window.innerWidth < 610) {
-        this.$emit('categories-hover-click-changed', 'catsclick')
         this.modeSwitched('mobile')
         this.categoriesOnHoverOrClickChanged('catsclick')
       }
