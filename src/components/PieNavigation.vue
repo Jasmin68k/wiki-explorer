@@ -106,25 +106,21 @@ export default {
         // clean up over-/undershoot
         angle %= 360
 
-        if (mousedown) {
-          // map angle range to number/index [+1] of results
-          let resultStart = parseInt(
-            Math.max(
-              1,
-              Math.ceil(
-                (global.state.filteredResultsArray.length / 360) * angle
-              )
-            ),
-            10
-          )
-          if (resultStart < 1) {
-            resultStart += global.state.filteredResultsArray.length
-          }
-
-          drawSlice()
-
-          global.setGraphFirstItem(resultStart)
+        // map angle range to number/index [+1] of results
+        let resultStart = parseInt(
+          Math.max(
+            1,
+            Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
+          ),
+          10
+        )
+        if (resultStart < 1) {
+          resultStart += global.state.filteredResultsArray.length
         }
+
+        drawSlice()
+
+        global.setGraphFirstItem(resultStart)
       }
     }
 
