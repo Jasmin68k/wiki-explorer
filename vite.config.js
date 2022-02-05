@@ -8,6 +8,10 @@ export default defineConfig({
   // build: {
   //   minify: false
   // },
+  // expose server on all ip addresses for local testing on other devices
+  server: {
+    host: true
+  },
   plugins: [
     vue(), // you need to install `@vitejs/plugin-vue`
     vueI18n({
