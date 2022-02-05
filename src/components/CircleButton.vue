@@ -331,7 +331,7 @@ ul li {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 2;
+  z-index: 3;
 
   /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
   /* transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
@@ -341,7 +341,7 @@ ul li {
     rotate(var(--minusangle));
 }
 .circlebutton:hover {
-  z-index: 3;
+  z-index: 4;
 }
 .circlebuttonhover {
   background-color: honeydew;
@@ -360,7 +360,7 @@ ul li {
 }
 
 .circlebutton:hover {
-  z-index: 3;
+  z-index: 4;
 }
 
 .circlebutton:not(.hoverdisabled):hover

@@ -229,7 +229,7 @@ ul li {
   top: 50%;
   /* move pixel position to center of button */
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: 3;
 }
 .titlebuttonactual {
   border: none;
@@ -258,7 +258,7 @@ ul li {
 }
 
 .titlebutton:hover {
-  z-index: 3;
+  z-index: 4;
 }
 
 .titlebutton:not(.hoverdisabled):hover + .titlebuttonhover:not(.hoverdisabled) {

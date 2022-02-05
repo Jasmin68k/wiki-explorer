@@ -135,7 +135,9 @@ export default {
         this.global.setCheckboxFilterEnabled(true)
       }
     },
-
+    resultsCategoriesCheckboxChanged() {
+      this.global.setGraphFirstItem(1)
+    },
     handleScroll() {
       this.scrollTop = this.$refs.root.scrollTop
     },
