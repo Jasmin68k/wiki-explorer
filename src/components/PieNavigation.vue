@@ -175,7 +175,7 @@ export default {
         const largeArc =
           anglePerResult * global.state.sizePerPage > 180 ? '1' : '0'
 
-        slice.value = `M ${startX} ${startY} A 1 1 0 ${largeArc} 1 ${endX} ${endY} L 0 0 L ${startX} ${startY}`
+        slice.value = `M 0 0 L ${startX} ${startY} A 1 1 0 ${largeArc} 1 ${endX} ${endY} L 0 0`
       }
     }
 
