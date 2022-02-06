@@ -33,7 +33,10 @@
         global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
     }"
   >
-    <path class="pieslice" vector-effect="non-scaling-stroke" :d="slice" />
+    <clipPath id="piesliceclip">
+      <circle cx="0" cy="0" r="1" />
+    </clipPath>
+    <path id="pieslice" vector-effect="non-scaling-stroke" :d="slice" />
   </svg>
 </template>
 <script>
@@ -204,7 +207,10 @@ export default {
 .piebackground {
   border-radius: 50%;
   background-color: cornflowerblue;
-  /* border: 1px solid black; */
+  /* border and outline half of pieslice stroke width, since half of the stroke on arc is clipped - could maybe remove arc,
+  but might come in handy later for other designs */
+  outline: 1px solid black;
+  border: 1px solid black;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -221,9 +227,10 @@ export default {
   pointer-events: none;
   transform: translate(-50%, -50%) rotate(-90deg);
 }
-.pieslice {
-  /* stroke: black;
-  stroke-width: 1px; */
+#pieslice {
+  stroke: black;
+  stroke-width: 2px;
   fill: lightblue;
+  clip-path: url(#piesliceclip);
 }
 </style>
