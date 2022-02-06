@@ -4,7 +4,7 @@
     :class="{ hoverdisabled: !global.state.categoriesOnHover }"
     :style="{
       'line-height': 100 * global.state.scalingFactor + '%',
-      'max-width': 200 * global.state.scalingFactor + 'px'
+      'max-width': 125 * global.state.scalingFactor + 'px'
     }"
     v-show="
       global.state.resultsRedirectsEnabled

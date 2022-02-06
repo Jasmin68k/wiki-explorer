@@ -3,16 +3,18 @@
     class="piebackground"
     :style="{
       width:
-        global.state.circleButtonRadius * 0.9 * global.state.scalingFactor +
+        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
         'px',
       height:
-        global.state.circleButtonRadius * 0.9 * global.state.scalingFactor +
+        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
         'px',
       visibility:
         global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
     }"
-    @mousemove="pieNavigationClicked($event)"
+    @mousemove="pieNavigationMouse($event)"
+    @touchmove="pieNavigationTouch($event)"
     @mousedown="mouseDown($event)"
+    @touchstart="pieNavigationTouch($event)"
     @mouseup="mouseUp"
     @wheel="wheelSpin($event)"
   ></div>
@@ -22,10 +24,10 @@
     viewBox="-1 -1 2 2"
     :style="{
       width:
-        global.state.circleButtonRadius * 0.9 * global.state.scalingFactor +
+        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
         'px',
       height:
-        global.state.circleButtonRadius * 0.9 * global.state.scalingFactor +
+        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
         'px',
       visibility:
         global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
@@ -76,13 +78,13 @@ export default {
     function mouseDown(event) {
       mousedown = true
       //for init on click before move
-      pieNavigationClicked(event)
+      pieNavigationMouse(event)
     }
     function mouseUp() {
       mousedown = false
     }
 
-    function pieNavigationClicked(event) {
+    function pieNavigationMouse(event) {
       if (mousedown) {
         // normalize coordinates to unit circle
         const xRaw =
@@ -95,33 +97,57 @@ export default {
         const x = xRaw / length
         const y = yRaw / length
 
-        angle = calcAngle(x, y)
-
-        // map to 0 degrees on top of circle
-        angle += 90
-        // map mouse pointer to middle of slice
-        angle -=
-          (360 / global.state.filteredResultsArray.length) *
-          (global.state.sizePerPage / 2)
-        // clean up over-/undershoot
-        angle %= 360
-
-        // map angle range to number/index [+1] of results
-        let resultStart = parseInt(
-          Math.max(
-            1,
-            Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
-          ),
-          10
-        )
-        if (resultStart < 1) {
-          resultStart += global.state.filteredResultsArray.length
-        }
-
-        drawSlice()
-
-        global.setGraphFirstItem(resultStart)
+        doNavigation(x, y)
       }
+    }
+
+    function pieNavigationTouch(event) {
+      // reconstruct offsetX from touch event
+      const rect = event.target.getBoundingClientRect()
+      const offsetX = event.touches[0].clientX - window.scrollX - rect.left
+      const offsetY = event.touches[0].clientY - window.scrollY - rect.top
+
+      // normalize coordinates to unit circle
+      const xRaw =
+        (offsetX - event.target.offsetWidth / 2) /
+        (event.target.offsetWidth / 2)
+      const yRaw =
+        (offsetY - event.target.offsetHeight / 2) /
+        (event.target.offsetHeight / 2)
+      const length = Math.sqrt(xRaw * xRaw + yRaw * yRaw)
+      const x = xRaw / length
+      const y = yRaw / length
+
+      doNavigation(x, y)
+    }
+
+    function doNavigation(x, y) {
+      angle = calcAngle(x, y)
+
+      // map to 0 degrees on top of circle
+      angle += 90
+      // map mouse pointer to middle of slice
+      angle -=
+        (360 / global.state.filteredResultsArray.length) *
+        (global.state.sizePerPage / 2)
+      // clean up over-/undershoot
+      angle %= 360
+
+      // map angle range to number/index [+1] of results
+      let resultStart = parseInt(
+        Math.max(
+          1,
+          Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
+        ),
+        10
+      )
+      if (resultStart < 1) {
+        resultStart += global.state.filteredResultsArray.length
+      }
+
+      drawSlice()
+
+      global.setGraphFirstItem(resultStart)
     }
 
     function calcAngle(x, y) {
@@ -164,7 +190,8 @@ export default {
 
     return {
       global,
-      pieNavigationClicked,
+      pieNavigationMouse,
+      pieNavigationTouch,
       mouseDown,
       mouseUp,
       wheelSpin,
@@ -184,6 +211,7 @@ export default {
   /* move pixel position to center of button */
   transform: translate(-50%, -50%);
   z-index: 1;
+  touch-action: none;
 }
 .pieslicecontainer {
   position: absolute;
@@ -194,8 +222,8 @@ export default {
   transform: translate(-50%, -50%) rotate(-90deg);
 }
 .pieslice {
-  fill: lightblue;
   /* stroke: black;
   stroke-width: 1px; */
+  fill: lightblue;
 }
 </style>
