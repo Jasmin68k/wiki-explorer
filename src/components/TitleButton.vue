@@ -230,6 +230,7 @@ ul li {
   /* move pixel position to center of button */
   transform: translate(-50%, -50%);
   z-index: 3;
+  touch-action: none;
 }
 .titlebuttonactual {
   border: none;
