@@ -207,8 +207,10 @@ export default {
 .piebackground {
   border-radius: 50%;
   background-color: cornflowerblue;
-  /* border and outline half of pieslice stroke width, since half of the stroke on arc is clipped - could maybe remove arc,
-  but might come in handy later for other designs */
+  /* border and outline half of pieslice stroke width, since half of the stroke on arc is clipped - could also remove arc (using border/outline),
+  but might come in handy later for other designs
+  could also draw lines and arc in separate paths with lines half stroke width of arc, making 1 px lines possible (arc using 2px,
+  half of them clipped), then no outline/border combo needed here */
   outline: 1px solid black;
   border: 1px solid black;
   position: absolute;
