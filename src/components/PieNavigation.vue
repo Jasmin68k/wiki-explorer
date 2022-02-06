@@ -12,9 +12,9 @@
         global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
     }"
     @mousemove="pieNavigationMouse($event)"
-    @touchmove="pieNavigationTouch($event)"
+    @touchmove.prevent="pieNavigationTouch($event)"
     @mousedown="mouseDown($event)"
-    @touchstart="pieNavigationTouch($event)"
+    @touchstart.prevent="pieNavigationTouch($event)"
     @mouseup="mouseUp"
     @wheel="wheelSpin($event)"
   ></div>
