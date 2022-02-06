@@ -238,10 +238,11 @@ ul li {
   background-color: lightgoldenrodyellow;
   overflow-wrap: anywhere;
 }
-.titlebuttonactual:hover {
-  background-color: palegoldenrod;
+@media (hover: hover) and (pointer: fine) {
+  .titlebuttonactual:hover {
+    background-color: palegoldenrod;
+  }
 }
-
 .titlebuttonhover {
   background-color: honeydew;
   border: 1px solid black;
@@ -257,19 +258,22 @@ ul li {
 .titlebuttonhoverdisplayoverride {
   display: block;
 }
-
-.titlebutton:hover {
-  z-index: 4;
+@media (hover: hover) and (pointer: fine) {
+  .titlebutton:hover {
+    z-index: 4;
+  }
 }
-
-.titlebutton:not(.hoverdisabled):hover + .titlebuttonhover:not(.hoverdisabled) {
-  display: block;
+@media (hover: hover) and (pointer: fine) {
+  .titlebutton:not(.hoverdisabled):hover
+    + .titlebuttonhover:not(.hoverdisabled) {
+    display: block;
+  }
 }
-
-.titlebuttonhover:hover {
-  display: block;
+@media (hover: hover) and (pointer: fine) {
+  .titlebuttonhover:hover {
+    display: block;
+  }
 }
-
 .redirects {
   background-color: lavender;
   max-height: var(--maxheight);
@@ -278,8 +282,10 @@ ul li {
 .buttonicongridcontainer {
   display: grid;
 }
-.icon:hover {
-  filter: invert(1);
+@media (hover: hover) and (pointer: fine) {
+  .icon:hover {
+    filter: invert(1);
+  }
 }
 .icongridcontainer {
   display: inline-grid;

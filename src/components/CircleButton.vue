@@ -321,10 +321,11 @@ ul li {
   background-color: lightgoldenrodyellow;
   overflow-wrap: anywhere;
 }
-.circlebuttonactualhover:hover {
-  background-color: palegoldenrod;
+@media (hover: hover) and (pointer: fine) {
+  .circlebuttonactualhover:hover {
+    background-color: palegoldenrod;
+  }
 }
-
 .circlebutton {
   background-color: lightgrey;
   border: 1px solid black;
@@ -340,8 +341,11 @@ ul li {
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
     rotate(var(--minusangle));
 }
-.circlebutton:hover {
-  z-index: 4;
+
+@media (hover: hover) and (pointer: fine) {
+  .circlebutton:hover {
+    z-index: 4;
+  }
 }
 .circlebuttonhover {
   background-color: honeydew;
@@ -358,22 +362,26 @@ ul li {
 .circlebuttonhoverdisplayoverride {
   display: block;
 }
-
-.circlebutton:hover {
-  z-index: 4;
+@media (hover: hover) and (pointer: fine) {
+  .circlebutton:hover {
+    z-index: 4;
+  }
 }
-
-.circlebutton:not(.hoverdisabled):hover
-  + .circlebuttonhover:not(.hoverdisabled) {
-  display: block;
+@media (hover: hover) and (pointer: fine) {
+  .circlebutton:not(.hoverdisabled):hover
+    + .circlebuttonhover:not(.hoverdisabled) {
+    display: block;
+  }
 }
-
-.circlebuttonhover:hover {
-  display: block;
+@media (hover: hover) and (pointer: fine) {
+  .circlebuttonhover:hover {
+    display: block;
+  }
 }
-
-.icon:hover {
-  filter: invert(1);
+@media (hover: hover) and (pointer: fine) {
+  .icon:hover {
+    filter: invert(1);
+  }
 }
 .icongridcontainer {
   display: inline-grid;

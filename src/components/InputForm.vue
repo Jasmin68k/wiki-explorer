@@ -987,12 +987,12 @@ export default {
   font-size: 85%;
   margin: 3px;
 }
-
-.radiobutton:hover + label,
-.checkbox:hover + label {
-  filter: invert(0.25);
+@media (hover: hover) and (pointer: fine) {
+  .radiobutton:hover + label,
+  .checkbox:hover + label {
+    filter: invert(0.25);
+  }
 }
-
 .inputform-flex-container {
   display: flex;
   justify-content: space-around;
@@ -1013,11 +1013,11 @@ export default {
   display: inline-block;
   width: 180px;
 }
-
-.searchicon:hover {
-  filter: invert(0.5);
+@media (hover: hover) and (pointer: fine) {
+  .searchicon:hover {
+    filter: invert(0.5);
+  }
 }
-
 .searchbutton {
   border: none;
   background-color: transparent;
