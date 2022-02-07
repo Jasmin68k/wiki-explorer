@@ -139,6 +139,7 @@
           class="searchinputarea"
           :placeholder="$t('search-on-wikipedia')"
           :value="global.state.title"
+          @input="titleChanged($event.target.value)"
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled &&
@@ -679,6 +680,9 @@ export default {
     resultsRedirectsChanged(value) {
       this.global.setResultsRedirectsEnabled(value)
       this.$emit('resultsRedirectsChanged', value)
+    },
+    titleChanged(value) {
+      this.global.setTitle(value)
     },
     filterChanged(value) {
       this.global.setFilter(value)
