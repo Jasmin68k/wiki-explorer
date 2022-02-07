@@ -11,11 +11,9 @@
       visibility:
         global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
     }"
-    @mousemove="pieNavigationMouse($event)"
-    @touchmove.prevent="pieNavigationTouch($event)"
-    @mousedown="mouseDown($event)"
-    @touchstart.prevent="pieNavigationTouch($event)"
-    @mouseup="mouseUp"
+    @pointermove="pieNavigation($event)"
+    @pointerdown="mouseDown($event)"
+    @pointerup="mouseUp"
     @wheel="wheelSpin($event)"
   ></div>
 
@@ -81,13 +79,13 @@ export default {
     function mouseDown(event) {
       mousedown = true
       //for init on click before move
-      pieNavigationMouse(event)
+      pieNavigation(event)
     }
     function mouseUp() {
       mousedown = false
     }
 
-    function pieNavigationMouse(event) {
+    function pieNavigation(event) {
       if (mousedown) {
         // normalize coordinates to unit circle
         const xRaw =
@@ -102,26 +100,6 @@ export default {
 
         doNavigation(x, y)
       }
-    }
-
-    function pieNavigationTouch(event) {
-      // reconstruct offsetX from touch event
-      const rect = event.target.getBoundingClientRect()
-      const offsetX = event.touches[0].clientX - window.scrollX - rect.left
-      const offsetY = event.touches[0].clientY - window.scrollY - rect.top
-
-      // normalize coordinates to unit circle
-      const xRaw =
-        (offsetX - event.target.offsetWidth / 2) /
-        (event.target.offsetWidth / 2)
-      const yRaw =
-        (offsetY - event.target.offsetHeight / 2) /
-        (event.target.offsetHeight / 2)
-      const length = Math.sqrt(xRaw * xRaw + yRaw * yRaw)
-      const x = xRaw / length
-      const y = yRaw / length
-
-      doNavigation(x, y)
     }
 
     function doNavigation(x, y) {
@@ -193,8 +171,7 @@ export default {
 
     return {
       global,
-      pieNavigationMouse,
-      pieNavigationTouch,
+      pieNavigation,
       mouseDown,
       mouseUp,
       wheelSpin,
