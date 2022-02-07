@@ -14,6 +14,7 @@
     @pointermove="pieNavigation($event)"
     @pointerdown="mouseDown($event)"
     @pointerup="mouseUp"
+    @pointerleave="mouseUp"
     @wheel="wheelSpin($event)"
   ></div>
 
