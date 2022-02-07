@@ -101,7 +101,15 @@ const state = reactive({
   }),
   indexEnd: computed(function () {
     // this can be higher than last index, wrap around is done in displayResultsArray
-    let indexEnd = state.graphFirstItem - 1 + state.sizePerPage - 1
+    let indexEnd
+
+    // handle less results than max possible
+    if (!(state.sizePerPage > state.filteredResultsArray.length)) {
+      indexEnd = state.graphFirstItem - 1 + state.sizePerPage - 1
+    } else {
+      indexEnd =
+        state.graphFirstItem - 1 + state.filteredResultsArray.length - 1
+    }
 
     return indexEnd
   })
