@@ -36,6 +36,57 @@
     </clipPath>
     <path id="pieslice" vector-effect="non-scaling-stroke" :d="slice" />
   </svg>
+
+  <span
+    :style="{
+      visibility:
+        global.state.filteredResultsArray.length > 0 && global.state.mobileMode
+          ? 'visible'
+          : 'hidden'
+    }"
+    class="pagecount"
+  >
+    <img
+      src="../assets/images/left-arrow.svg"
+      @click="prevItem"
+      class="leftarrow"
+      :style="{
+        height:
+          global.state.circleButtonRadius * 0.01 * global.state.scalingFactor +
+          'em',
+        top: 32 - global.state.circleButtonRadius / 200 + '%',
+        left: 40 - global.state.circleButtonRadius * 0.007 + '%'
+      }"
+      :class="{
+        itemdisabled:
+          global.state.inputsDisabled ||
+          global.state.filteredResultsArray.length === 0 ||
+          (global.state.mobileMode &&
+            (global.state.mobileDisplay === 'maininfo' ||
+              global.state.mobileDisplay === 'categories'))
+      }"
+    />
+    <img
+      src="../assets/images/right-arrow.svg"
+      @click="nextItem"
+      class="rightarrow"
+      :style="{
+        height:
+          global.state.circleButtonRadius * 0.01 * global.state.scalingFactor +
+          'em',
+        top: 32 - global.state.circleButtonRadius / 200 + '%',
+        left: 60 + global.state.circleButtonRadius * 0.007 + '%'
+      }"
+      :class="{
+        itemdisabled:
+          global.state.inputsDisabled ||
+          global.state.filteredResultsArray.length === 0 ||
+          (global.state.mobileMode &&
+            (global.state.mobileDisplay === 'maininfo' ||
+              global.state.mobileDisplay === 'categories'))
+      }"
+    />
+  </span>
 </template>
 <script>
 import { inject, watchEffect, ref } from 'vue'
@@ -48,6 +99,30 @@ export default {
     let slice = ref('')
     let mousedown = false
     let angle = 0
+
+    function nextItem() {
+      let item = global.state.graphFirstItem
+
+      item += 1
+      if (item > global.state.filteredResultsArray.length) {
+        item -= global.state.filteredResultsArray.length
+      }
+      angle += 360 / global.state.filteredResultsArray.length
+
+      global.setGraphFirstItem(item)
+      drawSlice()
+    }
+
+    function prevItem() {
+      let item = global.state.graphFirstItem
+      item -= 1
+      if (item < 1) {
+        item += global.state.filteredResultsArray.length
+      }
+      angle -= 360 / global.state.filteredResultsArray.length
+      global.setGraphFirstItem(item)
+      drawSlice()
+    }
 
     function wheelSpin(event) {
       const delta = event.wheelDeltaY
@@ -175,6 +250,8 @@ export default {
       mouseDown,
       mouseUp,
       wheelSpin,
+      prevItem,
+      nextItem,
       slice
     }
   }
@@ -211,5 +288,26 @@ export default {
   stroke-width: 2px;
   fill: lightblue;
   clip-path: url(#piesliceclip);
+}
+
+.leftarrow {
+  position: absolute;
+  /* left: 37.5%; */
+  /* top: 31%; */
+
+  transform: translate(-50%, -50%);
+}
+.rightarrow {
+  position: absolute;
+  /* left: 62.5%; */
+  /* top: 31%; */
+
+  transform: translate(-50%, -50%);
+}
+@media (hover: hover) and (pointer: fine) {
+  .leftarrow:hover,
+  .rightarrow:hover {
+    filter: invert(0.5);
+  }
 }
 </style>
