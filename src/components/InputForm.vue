@@ -171,7 +171,7 @@
         </button>
       </form>
 
-      <form>
+      <form @submit.prevent="">
         <label for="filter"
           ><img class="titleiconsmall" src="../assets/images/text-tool.svg"
         /></label>
@@ -193,7 +193,7 @@
         />
       </form>
 
-      <form>
+      <form @submit.prevent="">
         <label for="filterCategories">
           <img
             class="categoriesiconsmall"
