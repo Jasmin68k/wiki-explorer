@@ -191,7 +191,7 @@ export default {
       angle %= 360
 
       // map angle range to number/index [+1] of results
-      let resultStart = parseInt(
+      let resultStart = Math.floor(
         Math.max(
           1,
           Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
