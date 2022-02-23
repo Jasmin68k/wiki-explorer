@@ -4,50 +4,8 @@
     class="circlebutton"
     :class="{ hoverdisabled: !global.state.categoriesOnHover }"
     :style="{
-      '--angle':
-        270 +
-        (360 / (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
-          index +
-        'deg',
-      '--radius':
-        index % 2 === 0
-          ? global.state.circleButtonRadius *
-              global.state.scalingFactor *
-              (1 +
-                Math.abs(
-                  Math.sin(
-                    ((360 /
-                      (Math.round(global.state.displayResultsArray.length / 2) *
-                        2)) *
-                      index *
-                      Math.PI) /
-                      180
-                  )
-                ) *
-                  0.25) +
-            'px'
-          : (global.state.circleButtonRadius / 1.5) *
-              global.state.scalingFactor *
-              (1 +
-                Math.abs(
-                  Math.sin(
-                    ((360 /
-                      (Math.round(global.state.displayResultsArray.length / 2) *
-                        2)) *
-                      index *
-                      Math.PI) /
-                      180
-                  )
-                ) *
-                  0.25) +
-            'px',
-      '--minusangle':
-        -1 *
-          (270 +
-            (360 /
-              (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
-              index) +
-        'deg',
+      left: coordinates.x + 'px',
+      top: coordinates.y + 'px',
       'line-height': 100 * global.state.scalingFactor + '%',
       'max-width':
         100 *
@@ -291,7 +249,8 @@ export default {
   emits: ['circleButtonClicked'],
   props: {
     index: { required: true, default: -1, type: Number },
-    outgraphcanvasref: { required: true, default: {} }
+    outgraphcanvasref: { required: true, default: {} },
+    coordinates: { required: true, default: () => {}, type: Object }
   },
   methods: {
     circleButton(index) {
@@ -330,16 +289,9 @@ ul li {
   background-color: lightgrey;
   border: 1px solid black;
   position: absolute;
-  left: 50%;
-  top: 50%;
   z-index: 3;
-
-  /* move pixel position to center of button and arrange in circle - translate(...px) still fix, calc later */
-  /* transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
-    rotate(calc(-1 * var(--angle))); */
-  /* using minusangle as extra var as workaround, since calc() in css seems not to work with deg unit in older firefox */
-  transform: translate(-50%, -50%) rotate(var(--angle)) translate(var(--radius))
-    rotate(var(--minusangle));
+  /* move pixel position to center of button */
+  transform: translate(-50%, -50%);
 }
 
 @media (hover: hover) and (pointer: fine) {
