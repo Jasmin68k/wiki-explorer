@@ -119,13 +119,13 @@ export default {
 
     function calcCoordinates() {
       for (let i = 0; i < global.state.displayResultsArray.length; i++) {
-        let angle =
+        const angle =
           270 +
           (360 /
             (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
             i
 
-        let radius =
+        const radius =
           i % 2 === 0
             ? global.state.circleButtonRadius *
               global.state.scalingFactor *
