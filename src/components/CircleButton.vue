@@ -191,13 +191,13 @@ export default {
     const circleButtonHoverOverride = ref(false)
 
     function initHoverButtonCircleCoords() {
-      if (circlebutton.value && props.outgraphcanvasref.getBoundingClientRect) {
+      if (circlebutton.value && props.outgraphref.getBoundingClientRect) {
         hoverRight.value =
           circlebutton.value.getBoundingClientRect().left -
-          props.outgraphcanvasref.getBoundingClientRect().left
+          props.outgraphref.getBoundingClientRect().left
         hoverBottom.value =
           circlebutton.value.getBoundingClientRect().bottom -
-          props.outgraphcanvasref.getBoundingClientRect().top
+          props.outgraphref.getBoundingClientRect().top
       }
     }
     async function initHoverButtonCircleCoordsNextTick() {
@@ -249,7 +249,7 @@ export default {
   emits: ['circleButtonClicked'],
   props: {
     index: { required: true, default: -1, type: Number },
-    outgraphcanvasref: { required: true, default: {} },
+    outgraphref: { required: true, default: {} },
     coordinates: { required: true, default: () => {}, type: Object }
   },
   methods: {

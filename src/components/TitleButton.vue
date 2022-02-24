@@ -145,17 +145,14 @@ export default {
     const titleButtonHoverOverride = ref(false)
 
     function initHoverButtonTitleCoords() {
-      if (props.outgraphcanvasref) {
-        if (
-          titlebutton.value &&
-          props.outgraphcanvasref.getBoundingClientRect
-        ) {
+      if (props.outgraphref) {
+        if (titlebutton.value && props.outgraphref.getBoundingClientRect) {
           hoverRightTitle.value =
             titlebutton.value.getBoundingClientRect().left -
-            props.outgraphcanvasref.getBoundingClientRect().left
+            props.outgraphref.getBoundingClientRect().left
           hoverBottomTitle.value =
             titlebutton.value.getBoundingClientRect().bottom -
-            props.outgraphcanvasref.getBoundingClientRect().top
+            props.outgraphref.getBoundingClientRect().top
         }
       }
     }
@@ -199,7 +196,7 @@ export default {
     }
   },
   props: {
-    outgraphcanvasref: { required: true, default: {} }
+    outgraphref: { required: true, default: {} }
   },
   methods: {
     titleButton() {

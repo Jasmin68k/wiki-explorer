@@ -1,6 +1,7 @@
 <template>
   <div
     class="outgraph"
+    ref="outgraphref"
     :style="{
       width:
         (global.state.circleButtonRadius * 1.25 * 2 + 220) *
@@ -12,14 +13,12 @@
         'px'
     }"
   >
-    <canvas class="outgraphcanvas" ref="outgraphcanvasref"></canvas>
-
-    <title-button :outgraphcanvasref="outgraphcanvasref"></title-button>
+    <title-button :outgraphref="outgraphref"></title-button>
 
     <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
       <circle-button
         :index="index"
-        :outgraphcanvasref="outgraphcanvasref"
+        :outgraphref="outgraphref"
         :coordinates="circleButtonCoordinates[index]"
         @circleButtonClicked="circleButtonClicked"
       >
@@ -30,7 +29,7 @@
   </div>
 </template>
 <script>
-import { inject, watchEffect, nextTick, ref, onMounted } from 'vue'
+import { inject, watchEffect, ref, onMounted } from 'vue'
 import TitleButton from './TitleButton.vue'
 import CircleButton from './CircleButton.vue'
 import PieNavigation from './PieNavigation.vue'
@@ -40,82 +39,12 @@ export default {
   setup() {
     const global = inject('global')
 
-    const outgraphcanvasref = ref(null)
+    const outgraphref = ref(null)
     let circleButtonCoordinates = []
 
     onMounted(() => {
-      clearCanvasAndDrawLines()
-    })
-
-    function clearCanvas() {
-      if (outgraphcanvasref.value) {
-        const canvas = outgraphcanvasref.value
-        const ctx = canvas.getContext('2d')
-        const width = canvas.offsetWidth
-        const height = canvas.offsetHeight
-        canvas.width = width
-        canvas.height = height
-        ctx.clearRect(0, 0, width, height)
-      }
-    }
-    function drawLines() {
-      if (outgraphcanvasref.value) {
-        const canvas = outgraphcanvasref.value
-        const ctx = canvas.getContext('2d')
-        const width = canvas.offsetWidth
-        const height = canvas.offsetHeight
-        canvas.width = width
-        canvas.height = height
-        const middleX = width / 2
-        const middleY = height / 2
-        for (let i = 0; i < global.state.displayResultsArray.length; i++) {
-          ctx.beginPath()
-          ctx.moveTo(middleX, middleY)
-          const angle =
-            ((270 +
-              (360 /
-                (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
-                i) *
-              Math.PI) /
-            180
-          const angle2 =
-            ((360 /
-              (Math.round(global.state.displayResultsArray.length / 2) * 2)) *
-              i *
-              Math.PI) /
-            180
-          const length =
-            i % 2 === 0
-              ? global.state.circleButtonRadius *
-                global.state.scalingFactor *
-                (1 + Math.abs(Math.sin(angle2)) * 0.25)
-              : (global.state.circleButtonRadius / 1.5) *
-                global.state.scalingFactor *
-                (1 + Math.abs(Math.sin(angle2)) * 0.25)
-          ctx.lineTo(
-            length * Math.cos(angle) + middleX,
-            length * Math.sin(angle) + middleY
-          )
-          ctx.stroke()
-        }
-      }
-    }
-    async function clearCanvasAndDrawLines() {
-      await nextTick()
-      clearCanvas()
-      drawLines()
       calcCoordinates()
-    }
-
-    function displayResultsArrayWatch() {
-      if (
-        global.state.displayResultsArray.length > 0 &&
-        !global.state.inputsDisabled
-      ) {
-        drawLines()
-        calcCoordinates()
-      } else clearCanvas()
-    }
+    })
 
     function calcCoordinates() {
       for (let i = 0; i < global.state.displayResultsArray.length; i++) {
@@ -171,15 +100,13 @@ export default {
       }
     }
 
-    watchEffect(() => clearCanvasAndDrawLines(global.state.scalingFactor))
-    watchEffect(() => clearCanvasAndDrawLines(global.state.circleButtonRadius))
-    watchEffect(() =>
-      displayResultsArrayWatch(global.state.displayResultsArray)
-    )
+    watchEffect(() => calcCoordinates(global.state.scalingFactor))
+    watchEffect(() => calcCoordinates(global.state.circleButtonRadius))
+    watchEffect(() => calcCoordinates(global.state.displayResultsArray))
 
     return {
       global,
-      outgraphcanvasref,
+      outgraphref,
       circleButtonCoordinates
     }
   },
@@ -197,9 +124,5 @@ export default {
 .outgraph {
   margin: auto;
   position: relative;
-}
-.outgraphcanvas {
-  width: 100%;
-  height: 100%;
 }
 </style>
