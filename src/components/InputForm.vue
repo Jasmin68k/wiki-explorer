@@ -503,128 +503,10 @@
         }}
       </div>
     </div>
-
-    <div
-      class="inputform-flex-item-3"
-      :class="{
-        positionrelative: global.state.mobileMode && portraitMode,
-        inputformflexitem3fixedwidth: global.state.mobileMode && portraitMode
-      }"
-      :style="{
-        'margin-right': portraitMode && global.state.mobileMode ? '10px' : '',
-        'margin-top': portraitMode && global.state.mobileMode ? '5px' : ''
-      }"
-    >
-      <input
-        type="range"
-        min="2"
-        step="2"
-        :max="40"
-        :value="global.state.sizePerPage"
-        :disabled="
-          global.state.inputsDisabled ||
-          global.state.filteredResultsArray.length === 0 ||
-          (global.state.mobileMode &&
-            (global.state.mobileDisplay === 'maininfo' ||
-              global.state.mobileDisplay === 'categories'))
-        "
-        :class="{ slidervertical: portraitMode && global.state.mobileMode }"
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden',
-          '--height': flexContainerHeight * 0.75 + 'px'
-        }"
-        @input="resetFirstItem(), sizePerPageChanged($event.target.value)"
-      />
-      <div
-        v-show="!global.state.mobileMode"
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('max-results-per-page') }}{{ global.state.sizePerPage }}
-      </div>
-      <div
-        v-show="global.state.mobileMode"
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        :class="{ absolutebottomcenter: portraitMode }"
-      >
-        <img
-          class="numberresultsicon"
-          src="../assets/images/analytics-graph.svg"
-        />
-      </div>
-
-      <input
-        v-if="!global.state.mobileMode"
-        type="range"
-        min="0.33"
-        max="1.0"
-        step="0.01"
-        :value="global.state.scalingFactor"
-        :disabled="
-          global.state.inputsDisabled ||
-          global.state.filteredResultsArray.length === 0 ||
-          (global.state.mobileMode &&
-            (global.state.mobileDisplay === 'maininfo' ||
-              global.state.mobileDisplay === 'categories'))
-        "
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        @input="scalingFactorChanged($event.target.value)"
-      />
-      <div
-        v-if="!global.state.mobileMode"
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('scale-graph') }}
-      </div>
-      <input
-        v-if="!global.state.mobileMode"
-        type="range"
-        min="200"
-        max="650"
-        step="1"
-        :value="global.state.circleButtonRadius"
-        :disabled="
-          global.state.inputsDisabled ||
-          global.state.filteredResultsArray.length === 0 ||
-          (global.state.mobileMode &&
-            (global.state.mobileDisplay === 'maininfo' ||
-              global.state.mobileDisplay === 'categories'))
-        "
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-        @input="circleButtonRadiusChanged($event.target.value)"
-      />
-      <div
-        v-if="!global.state.mobileMode"
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('graph-radius') }}
-      </div>
-    </div>
   </div>
 </template>
 <script>
 import { inject, computed } from 'vue'
-
-let circleButtonRadiusSaved = 260
-let scalingFactorSaved = 1.0
 
 export default {
   name: 'InputForm',
@@ -726,19 +608,11 @@ export default {
         this.global.setCategoriesOnHover(false)
       }
     },
-    circleButtonRadiusChanged(value) {
-      this.global.setCircleButtonRadius(parseInt(value, 10))
-    },
     modeSwitched(value) {
       if (value === 'mobile') {
         this.global.setMobileMode(true)
-        scalingFactorSaved = this.global.state.scalingFactor
-        circleButtonRadiusSaved = this.global.state.circleButtonRadius
-        this.circleButtonRadiusChanged(260)
       } else {
         this.global.setMobileMode(false)
-        this.scalingFactorChanged(scalingFactorSaved)
-        this.circleButtonRadiusChanged(circleButtonRadiusSaved)
       }
       this.$emit('mode-switched', value)
     },
@@ -752,13 +626,6 @@ export default {
       this.windowResized()
       this.$emit('showHelpClicked', value)
     },
-    sizePerPageChanged(value) {
-      this.global.setSizePerPage(parseInt(value, 10))
-    },
-    scalingFactorChanged(value) {
-      this.global.setScalingFactor(parseFloat(value))
-    },
-
     windowResized() {
       this.$nextTick(() => {
         let vw
@@ -801,17 +668,6 @@ export default {
         this.flexContainerHeight = vh
 
         this.$emit('grid-height-changed', vh)
-
-        if (!this.global.state.showHelp) {
-          let sf = vw / (this.global.state.circleButtonRadius * 1.25 * 2 + 220)
-
-          sf = Math.min(1.0, sf)
-          // documentElement.clientWidth can be unreliable, 0 or wrong values...simple safety measure here
-          // also generally restricting to min 0.33
-          sf = Math.max(0.33, sf)
-
-          this.scalingFactorChanged(sf)
-        }
       })
     }
   },
@@ -848,7 +704,6 @@ export default {
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
-     * @param {String} resultsperpage - parse to int, range 2-40, number of results per page (global.state.sizePerPage)
      * @param {String} search - Wikipedia page to search for (global.state.title)
      */
 
@@ -863,7 +718,6 @@ export default {
     const checkboxfilter = urlParameters.get('checkboxfilter')
     const redirects = urlParameters.get('redirects')
     const categoriesmode = urlParameters.get('categoriesmode')
-    let resultsperpage = parseInt(urlParameters.get('resultsperpage'), 10)
     const search = urlParameters.get('search')
 
     if (mode === 'desktop' || mode === 'mobile') {
@@ -946,12 +800,6 @@ export default {
       }
     }
 
-    if (!isNaN(resultsperpage)) {
-      resultsperpage = Math.max(2, Math.min(40, resultsperpage))
-      this.sizePerPageChanged(resultsperpage)
-      this.resetFirstItem()
-    }
-
     // do search last after evaluating all other parameters
     if (search && search.length > 0) {
       this.$emit('fetchDataClicked', search)
@@ -1004,8 +852,7 @@ export default {
 }
 
 .inputform-flex-item-1,
-.inputform-flex-item-2,
-.inputform-flex-item-3 {
+.inputform-flex-item-2 {
   flex: 0 1 auto;
   font-size: 90%;
 }

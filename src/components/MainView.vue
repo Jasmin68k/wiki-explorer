@@ -19,6 +19,9 @@
       class="grid-container-base"
       :class="{
         mobile: global.state.mobileMode,
+        flex:
+          global.state.mobileMode &&
+          !(global.state.mobileDisplay === 'maininfo'),
         'grid-container':
           global.state.checkboxFilterEnabled &&
           global.state.resultsCategoriesEnabled &&
@@ -427,25 +430,27 @@ export default {
 }
 
 .grid-container-base {
-  flex: 1 0 auto;
   display: grid;
 }
 
 .grid-container {
-  grid-template-columns: min-content minmax(320px, 1fr);
-  grid-template-rows: min-content minmax(0, 1fr);
+  grid-template-columns: 3fr minmax(320px, 1fr);
+  grid-template-rows: 3fr 1fr;
   height: calc(100% - var(--gridheightsubtract));
 }
 
 .grid-container-nocategories {
-  grid-template-columns: var(--gridwidthnocategories);
-  grid-template-rows: min-content minmax(0, 1fr);
+  grid-template-columns: 1fr;
+  grid-template-rows: 2fr 1fr;
   height: calc(100% - var(--gridheightsubtract));
 }
 
 .grid-container-base.mobile {
-  grid-template-columns: var(--gridwidthnocategories);
+  grid-template-columns: 1fr;
   grid-template-rows: var(--gridmobileheight);
+}
+.grid-container-base.flex {
+  flex: 1 0 auto;
 }
 
 .grid-item-graph {

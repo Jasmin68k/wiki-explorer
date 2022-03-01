@@ -3,8 +3,8 @@
     class="titlebutton"
     :class="{ hoverdisabled: !global.state.categoriesOnHover }"
     :style="{
-      'line-height': 100 * global.state.scalingFactor + '%',
-      'max-width': 125 * global.state.scalingFactor + 'px'
+      'line-height': 100 + '%',
+      width: global.state.mobileMode ? 125 * 0.66 + 'px' : 125 + 'px'
     }"
     v-show="
       global.state.resultsRedirectsEnabled
@@ -22,15 +22,14 @@
     <div
       class="buttonicongridcontainer"
       :style="{
-        'grid-template-columns':
-          'auto ' + (0.67 * global.state.scalingFactor + 0.33) + 'rem'
+        'grid-template-columns': 'auto ' + (0.67 + 0.33) + 'rem'
       }"
     >
       <button
         class="titlebuttonactual"
         :style="{
-          'font-size': 83.4 * global.state.scalingFactor + '%',
-          'min-width': 50 * global.state.scalingFactor + 'px'
+          'font-size': global.state.mobileMode ? 83.4 * 0.66 + '%' : 83.4 + '%',
+          'min-width': 50 + 'px'
         }"
         @click.prevent="titleButton()"
       >
@@ -43,7 +42,7 @@
             icongriditem1start: !global.state.categoriesOnHover,
             icongriditem1center: global.state.categoriesOnHover
           }"
-          :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
+          :style="{ 'line-height': 100 + '%' }"
         >
           <a :href="global.statefull.titlePage.url" target="_blank"
             ><img
@@ -53,7 +52,7 @@
                 iconverticalaligntop: !global.state.categoriesOnHover
               }"
               :style="{
-                height: 0.67 * global.state.scalingFactor + 0.33 + 'rem'
+                height: 0.67 + 0.33 + 'rem'
               }"
               alt="Wiki"
               src="../assets/images/wikipedia.svg"
@@ -62,13 +61,13 @@
         <span
           v-if="!global.state.categoriesOnHover"
           class="icongriditem2"
-          :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
+          :style="{ 'line-height': 100 + '%' }"
         >
           <img
             @click="catsClick()"
             class="icon"
             :style="{
-              height: 0.67 * global.state.scalingFactor + 0.33 + 'rem',
+              height: 0.67 + 0.33 + 'rem',
               'vertical-align': 'top'
             }"
             alt="Cats"
@@ -82,10 +81,8 @@
       class="redirects"
       v-if="global.state.resultsRedirectsEnabled && global.state.redirectsDone"
       :style="{
-        'font-size': 70 * global.state.scalingFactor + '%',
-        '--maxheight':
-          global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
-          'px'
+        'font-size': 70 + '%',
+        '--maxheight': 260 * 0.3 + 'px'
       }"
     >
       <ul>
@@ -112,10 +109,8 @@
     :style="{
       '--poslefttitle': hoverRightTitle + 'px',
       '--postoptitle': hoverBottomTitle - 1 + 'px',
-      'font-size': 70 * global.state.scalingFactor + '%',
-      '--maxheight':
-        global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
-        'px'
+      'font-size': 70 + '%',
+      '--maxheight': 260 * 0.3 + 'px'
     }"
   >
     <ul>
@@ -173,12 +168,6 @@ export default {
 
     watchEffect(() =>
       initHoverButtonTitleCoordsNextTick(global.state.resultsRedirectsEnabled)
-    )
-    watchEffect(() =>
-      initHoverButtonTitleCoordsNextTick(global.state.scalingFactor)
-    )
-    watchEffect(() =>
-      initHoverButtonTitleCoordsNextTick(global.state.circleButtonRadius)
     )
     watchEffect(() =>
       titleButtonHoverOverrideOff(global.state.categoriesOnHover)

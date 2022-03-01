@@ -14,8 +14,6 @@ const state = reactive({
   checkboxFilterEnabled: true,
   categoriesOnHover: true,
   sizePerPage: 16,
-  scalingFactor: 1.0,
-  circleButtonRadius: 260,
   inputsDisabled: false,
   resultsCategoriesDone: true,
   resultsRedirectsDone: true,
@@ -156,12 +154,6 @@ const setCategoriesOnHover = (value) => {
 const setSizePerPage = (value) => {
   state.sizePerPage = value
 }
-const setScalingFactor = (value) => {
-  state.scalingFactor = value
-}
-const setCircleButtonRadius = (value) => {
-  state.circleButtonRadius = value
-}
 const setInputsDisabled = (value) => {
   state.inputsDisabled = value
 }
@@ -193,8 +185,6 @@ export default {
   setCheckboxFilterEnabled,
   setCategoriesOnHover,
   setSizePerPage,
-  setScalingFactor,
-  setCircleButtonRadius,
   setInputsDisabled,
   setResultsCategoriesDone,
   setResultsRedirectsDone,

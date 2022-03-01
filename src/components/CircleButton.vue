@@ -6,23 +6,8 @@
     :style="{
       left: coordinates.x + 'px',
       top: coordinates.y + 'px',
-      'line-height': 100 * global.state.scalingFactor + '%',
-      'max-width':
-        100 *
-          global.state.scalingFactor *
-          (1 +
-            Math.abs(
-              Math.sin(
-                ((360 /
-                  (Math.round(global.state.displayResultsArray.length / 2) *
-                    2)) *
-                  index *
-                  Math.PI) /
-                  180
-              )
-            ) *
-              1.0) +
-        'px'
+      'line-height': 100 + '%',
+      width: global.state.mobileMode ? 125 * 0.66 + 'px' : 125 + 'px'
     }"
     ref="circlebutton"
     v-on="{ mouseenter: () => initHoverButtonCircleCoords(index) }"
@@ -32,8 +17,7 @@
       :style="[
         !global.state.displayResultsArray[index].missing
           ? {
-              'grid-template-columns':
-                'auto ' + (0.67 * global.state.scalingFactor + 0.33) + 'rem'
+              'grid-template-columns': 'auto ' + (0.67 + 0.33) + 'rem'
             }
           : { 'grid-template-columns': 'auto ' }
       ]"
@@ -50,8 +34,8 @@
         }"
         class="circlebuttonactual"
         :style="{
-          'font-size': 83.4 * global.state.scalingFactor + '%',
-          'min-width': 50 * global.state.scalingFactor + 'px'
+          'font-size': global.state.mobileMode ? 83.4 * 0.66 + '%' : 83.4 + '%',
+          'min-width': 50 + 'px'
         }"
         :disabled="
           global.state.displayResultsArray[index].missing ||
@@ -77,7 +61,7 @@
               (global.state.resultsCategoriesEnabled &&
                 global.state.categoriesOnHover)
           }"
-          :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
+          :style="{ 'line-height': 100 + '%' }"
         >
           <a :href="global.state.displayResultsArray[index].url" target="_blank"
             ><img
@@ -89,7 +73,7 @@
                 iconverticalaligntop: !global.state.categoriesOnHover
               }"
               :style="{
-                height: 0.67 * global.state.scalingFactor + 0.33 + 'rem'
+                height: 0.67 + 0.33 + 'rem'
               }"
               alt="Wiki"
               src="../assets/images/wikipedia.svg"
@@ -102,13 +86,13 @@
             !global.state.categoriesOnHover
           "
           class="icongriditem2"
-          :style="{ 'line-height': 100 * global.state.scalingFactor + '%' }"
+          :style="{ 'line-height': 100 + '%' }"
         >
           <img
             @click="catsClick"
             :class="{ icon: global.state.resultsCategoriesDone }"
             :style="{
-              height: 0.67 * global.state.scalingFactor + 0.33 + 'rem',
+              height: 0.67 + 0.33 + 'rem',
               'vertical-align': 'top'
             }"
             alt="Cats"
@@ -125,10 +109,8 @@
         global.state.resultsRedirectsDone
       "
       :style="{
-        'font-size': 70 * global.state.scalingFactor + '%',
-        '--maxheight':
-          global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
-          'px'
+        'font-size': 70 + '%',
+        '--maxheight': 260 * 0.3 + 'px'
       }"
     >
       <ul>
@@ -159,10 +141,8 @@
     :style="{
       '--posleft': hoverRight + 'px',
       '--postop': hoverBottom - 1 + 'px',
-      'font-size': 70 * global.state.scalingFactor + '%',
-      '--maxheight':
-        global.state.circleButtonRadius * global.state.scalingFactor * 0.3 +
-        'px'
+      'font-size': 70 + '%',
+      '--maxheight': 260 * 0.3 + 'px'
     }"
   >
     <ul>
@@ -220,12 +200,6 @@ export default {
       initHoverButtonCircleCoordsNextTick(global.state.resultsRedirectsEnabled)
     )
     watchEffect(() =>
-      initHoverButtonCircleCoordsNextTick(global.state.scalingFactor)
-    )
-    watchEffect(() =>
-      initHoverButtonCircleCoordsNextTick(global.state.circleButtonRadius)
-    )
-    watchEffect(() =>
       initHoverButtonCircleCoordsNextTick(global.state.resultsRedirectsDone)
     )
     watchEffect(() =>
@@ -250,7 +224,16 @@ export default {
   props: {
     index: { required: true, default: -1, type: Number },
     outgraphref: { required: true, default: {} },
-    coordinates: { required: true, default: () => {}, type: Object }
+    coordinates: {
+      required: true,
+      default: () => {
+        return {
+          x: -5000,
+          y: -5000
+        }
+      },
+      type: Object
+    }
   },
   methods: {
     circleButton(index) {

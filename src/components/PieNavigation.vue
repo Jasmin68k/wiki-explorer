@@ -2,12 +2,9 @@
   <div
     class="piebackground"
     :style="{
-      width:
-        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
-        'px',
-      height:
-        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
-        'px',
+      width: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
+
+      height: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
       visibility:
         global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
     }"
@@ -22,12 +19,8 @@
     class="pieslicecontainer"
     viewBox="-1 -1 2 2"
     :style="{
-      width:
-        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
-        'px',
-      height:
-        global.state.circleButtonRadius * 1.0 * global.state.scalingFactor +
-        'px',
+      width: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
+      height: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
       visibility:
         global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
     }"
@@ -51,13 +44,6 @@
       src="../assets/images/left-arrow.svg"
       @click="prevItem"
       class="leftarrow"
-      :style="{
-        height:
-          global.state.circleButtonRadius * 0.01 * global.state.scalingFactor +
-          'em',
-        top: 32 - global.state.circleButtonRadius / 200 + '%',
-        left: 40 - global.state.circleButtonRadius * 0.007 + '%'
-      }"
       :class="{
         itemdisabled:
           global.state.inputsDisabled ||
@@ -71,13 +57,6 @@
       src="../assets/images/right-arrow.svg"
       @click="nextItem"
       class="rightarrow"
-      :style="{
-        height:
-          global.state.circleButtonRadius * 0.01 * global.state.scalingFactor +
-          'em',
-        top: 32 - global.state.circleButtonRadius / 200 + '%',
-        left: 60 + global.state.circleButtonRadius * 0.007 + '%'
-      }"
       :class="{
         itemdisabled:
           global.state.inputsDisabled ||
@@ -94,6 +73,10 @@ import { inject, watchEffect, ref } from 'vue'
 
 export default {
   name: 'PieNavigation',
+  props: {
+    radius: { required: true, default: 250, type: Number }
+  },
+
   setup() {
     const global = inject('global')
 
@@ -244,6 +227,7 @@ export default {
       }
     }
     watchEffect(() => resetSlice(global.state.indexStart))
+    watchEffect(() => drawSlice(global.state.sizePerPage))
 
     return {
       global,
@@ -293,16 +277,16 @@ export default {
 
 .leftarrow {
   position: absolute;
-  /* left: 37.5%; */
-  /* top: 31%; */
-
+  height: 1.75em;
+  left: calc(50% - 75px);
+  top: calc(50% - 75px);
   transform: translate(-50%, -50%);
 }
 .rightarrow {
   position: absolute;
-  /* left: 62.5%; */
-  /* top: 31%; */
-
+  height: 1.75em;
+  left: calc(50% + 75px);
+  top: calc(50% - 75px);
   transform: translate(-50%, -50%);
 }
 @media (hover: hover) and (pointer: fine) {
