@@ -69,7 +69,7 @@
   </span>
 </template>
 <script>
-import { inject, watchEffect, ref } from 'vue'
+import { inject, watchEffect, ref, onUnmounted } from 'vue'
 
 export default {
   name: 'PieNavigation',
@@ -82,7 +82,7 @@ export default {
 
     let slice = ref('')
     let mousedown = false
-    let angle = 0
+    let angle = global.state.pieAngleSaved
 
     function nextItem() {
       let item = global.state.graphFirstItem
@@ -228,6 +228,10 @@ export default {
     }
     watchEffect(() => resetSlice(global.state.indexStart))
     watchEffect(() => drawSlice(global.state.sizePerPage))
+
+    onUnmounted(() => {
+      global.setPieAngleSaved(angle)
+    })
 
     return {
       global,
