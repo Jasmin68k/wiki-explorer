@@ -26,7 +26,7 @@
   "help-categoriesclickhover-switch1": "Show results categories on click (",
   "help-categoriesclickhover-switch2": " ) or hover.",
 
-  "help-intro1": "Search for a Wikipedia page and explore all linked Wikipedia pages with pie navigation. Click on any outer result's title to make it the new search target. The Wikipedia icon opens the corresponding Wikipedia page in a new tab/window. Hovering over a title or clicking on the categories icon (only visible, when click mode is enabled, see below) on a title will show its categories.",
+  "help-intro1": "Search for a Wikipedia page and explore all linked Wikipedia pages with pie navigation (click, touch, drag, mousewheel). Click on any outer result's title to make it the new search target. The Wikipedia icon opens the corresponding Wikipedia page in a new tab/window. Hovering over a title or clicking on the categories icon (only visible, when click mode is enabled, see below) on a title will show its categories.",
   "help-intro2": "Results can be filtered by titles and/or categories, just start typing in the corresponding text input fields. Categories can also be filtered with a checkbox filter containing a list of all categories of all results. Missing pages (which are linked to on Wikipedia, but have not yet been created) are marked in red. An extract with image is also available.",
   "help-intro3": "You can also enable showing all of Wikipedia's redirects (alternative search terms) leading to each result.",
   "help-arrows": "Previous/next result (only visible in mobile mode)",
