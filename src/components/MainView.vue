@@ -434,6 +434,7 @@ export default {
 }
 
 .grid-container {
+  width: 100%;
   grid-template-columns: 3fr minmax(320px, 1fr);
   grid-template-rows: 3fr 1fr;
   height: calc(100% - var(--gridheightsubtract));
