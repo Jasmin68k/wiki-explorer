@@ -142,14 +142,6 @@
     </div>
     <div>
       <div>
-        <img class="icon-help2" src="../assets/images/analytics-graph.svg" />
-      </div>
-    </div>
-    <div class="help-text">
-      {{ $t('help-mobile-maxresults') }}
-    </div>
-    <div>
-      <div>
         <img
           class="icon-help-small-left3"
           src="../assets/images/left-arrow.svg"
@@ -205,8 +197,7 @@
         {{ $t('help-outro13g') }}<br />
         {{ $t('help-outro13h') }}<br />
         {{ $t('help-outro13i') }}<br />
-        {{ $t('help-outro13j') }}<br />
-        {{ $t('help-outro13k') }}
+        {{ $t('help-outro13j') }}
       </p>
     </div>
   </div>
@@ -243,11 +234,6 @@ export default {
 .icon-help {
   width: 2.66em;
   height: 1.4em;
-  vertical-align: middle;
-}
-.icon-help2 {
-  height: 1em;
-  font-size: 90%;
   vertical-align: middle;
 }
 .icon-help3 {

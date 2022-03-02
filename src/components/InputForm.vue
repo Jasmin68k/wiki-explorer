@@ -700,7 +700,7 @@ export default {
      * @param {String} categories - Enable/disable results categories, on or off valid (boolean to global.state.resultsCategoriesEnabled)
      * @param {String} titlefilter - String to filter results titles with (global.state.filter)
      * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
-     * @param {String} mobileview - Mobile mode only: Switch view mode, valid graph, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
+     * @param {String} mobileview - Mobile mode only: Switch view mode, valid results, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
@@ -756,11 +756,21 @@ export default {
 
     if (
       this.global.state.mobileMode &&
-      (mobileview === 'graph' ||
+      (mobileview === 'results' ||
         mobileview === 'extract' ||
         mobileview === 'categories')
     ) {
-      this.mobileDisplaySwitched(mobileview)
+      switch (mobileview) {
+        case 'results':
+          this.mobileDisplaySwitched('outgraph')
+          break
+        case 'extract':
+          this.mobileDisplaySwitched('maininfo')
+          break
+        case 'categories':
+          this.mobileDisplaySwitched('categories')
+          break
+      }
     }
 
     if (
