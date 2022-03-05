@@ -1,5 +1,5 @@
 <template>
-  <div class="inputform-flex-container" ref="inputformflexcontainer">
+  <div class="inputform-flex-container">
     <div
       class="inputform-flex-item-1"
       :style="{

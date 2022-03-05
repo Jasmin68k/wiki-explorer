@@ -48,7 +48,6 @@
       :class="{
         mobile: global.state.mobileMode
       }"
-      ref="inputcategoriescontainer"
     >
       <categories-checkbox-filter
         v-if="
@@ -72,7 +71,6 @@
           global.state.mobileDisplay === 'outgraph')
       "
       class="grid-item-graph"
-      ref="outgraph"
       @circleButtonClicked="circleButtonClicked"
     ></outgraph>
 

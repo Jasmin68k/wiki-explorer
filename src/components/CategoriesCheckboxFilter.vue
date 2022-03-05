@@ -1,6 +1,6 @@
 <template>
   <div class="root" ref="root" :style="rootStyle">
-    <div class="viewport" ref="viewport" :style="viewportStyle">
+    <div class="viewport" :style="viewportStyle">
       <ul class="spacer" ref="spacer" :style="spacerStyle">
         <li v-for="item in visibleItems" :key="item">
           <input
