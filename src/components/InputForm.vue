@@ -536,8 +536,7 @@ export default {
   },
   data() {
     return {
-      portraitMode: false,
-      flexContainerHeight: 0
+      portraitMode: false
     }
   },
 
@@ -664,8 +663,6 @@ export default {
           vh = 0
           this.portraitMode = false
         }
-
-        this.flexContainerHeight = vh
 
         this.$emit('grid-height-changed', vh)
       })
