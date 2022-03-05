@@ -16,7 +16,15 @@
   </div>
 </template>
 <script>
-import { inject, watchEffect, ref, onMounted, nextTick, reactive } from 'vue'
+import {
+  inject,
+  watchEffect,
+  ref,
+  onMounted,
+  nextTick,
+  reactive,
+  onUnmounted
+} from 'vue'
 import TitleButton from './TitleButton.vue'
 import CircleButton from './CircleButton.vue'
 import PieNavigation from './PieNavigation.vue'
@@ -95,6 +103,10 @@ export default {
 
     watchEffect(() => calcCoordinates(global.state.displayResultsArray))
     watchEffect(() => calcCoordinates(global.state.mobileMode))
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', calcCoordinates)
+    })
 
     return {
       global,

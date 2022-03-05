@@ -1,95 +1,101 @@
 <template>
-  <div class="page-flex-container" ref="flexcontainer">
-    <input-form
-      @fetchDataClicked="fetchDataClicked"
-      @showHelpClicked="showHelpSwitched"
-      @resultsCategoriesChanged="resultsCategoriesChanged"
-      @resultsRedirectsChanged="resultsRedirectsChanged"
-      @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
-      @languageSwitched="languageSwitched"
-      @gridWidthNocategoriesChanged="gridWidthNocategoriesChanged"
-      @gridHeightChanged="gridHeightChanged"
-      @modeSwitched="modeSwitched"
-      @mobileDisplaySwitched="mobileDisplaySwitched"
-      ref="inputForm"
-    ></input-form>
-
+  <div
+    class="grid-container-base"
+    :class="{
+      mobile: global.state.mobileMode,
+      'grid-container':
+        global.state.checkboxFilterEnabled &&
+        global.state.resultsCategoriesEnabled &&
+        !global.state.mobileMode,
+      'grid-container-nocategories':
+        (!global.state.checkboxFilterEnabled ||
+          !global.state.resultsCategoriesEnabled) &&
+        !global.state.mobileMode
+    }"
+    :style="{
+      '--gridmobileheight': scrollboxContainerHeight + 'px'
+    }"
+    ref="gridcontainer"
+  >
     <div
-      v-if="!global.state.showHelp"
-      class="grid-container-base"
+      class="grid-item-input"
       :class="{
-        mobile: global.state.mobileMode,
-        flex:
-          global.state.mobileMode &&
-          !(global.state.mobileDisplay === 'maininfo'),
-        'grid-container':
-          global.state.checkboxFilterEnabled &&
-          global.state.resultsCategoriesEnabled &&
-          !global.state.mobileMode,
-        'grid-container-nocategories':
-          (!global.state.checkboxFilterEnabled ||
-            !global.state.resultsCategoriesEnabled) &&
-          !global.state.mobileMode
+        mobile: global.state.mobileMode
       }"
-      :style="{
-        '--gridwidthnocategories': gridWidthNocategories + 'px',
-        '--gridheightsubtract': gridHeightSubtract + 'px',
-        '--gridmobileheight': scrollboxContainerHeight + 'px'
-      }"
-      ref="gridcontainer"
+      ref="inputarea"
     >
-      <div
+      <input-form
+        @fetchDataClicked="fetchDataClicked"
+        @showHelpClicked="showHelpSwitched"
+        @resultsCategoriesChanged="resultsCategoriesChanged"
+        @resultsRedirectsChanged="resultsRedirectsChanged"
+        @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
+        @languageSwitched="languageSwitched"
+        @modeSwitched="modeSwitched"
+        @mobileDisplaySwitched="mobileDisplaySwitched"
+      ></input-form>
+    </div>
+    <div
+      v-if="
+        (!global.state.showHelp &&
+          !global.state.mobileMode &&
+          global.state.checkboxFilterEnabled) ||
+        (!global.state.showHelp &&
+          global.state.mobileMode &&
+          global.state.mobileDisplay === 'categories')
+      "
+      class="inputcategoriescontainer grid-item-categories"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+      ref="inputcategoriescontainer"
+    >
+      <categories-checkbox-filter
         v-if="
-          (!global.state.mobileMode && global.state.checkboxFilterEnabled) ||
-          (global.state.mobileMode &&
-            global.state.mobileDisplay === 'categories')
+          ((!global.state.mobileMode &&
+            global.state.resultsCategoriesEnabled) ||
+            (global.state.mobileMode &&
+              global.state.mobileDisplay === 'categories')) &&
+          resultsCategoriesAllArray.length > 0 &&
+          global.state.resultsCategoriesDone
         "
-        class="inputcategoriescontainer grid-item-categories"
-        :class="{
-          mobile: global.state.mobileMode
-        }"
-        :style="{
-          '--categoriesmobileheight': scrollboxContainerHeight + 'px'
-        }"
-        ref="inputcategoriescontainer"
-      >
-        <categories-checkbox-filter
-          v-if="
-            ((!global.state.mobileMode &&
-              global.state.resultsCategoriesEnabled) ||
-              (global.state.mobileMode &&
-                global.state.mobileDisplay === 'categories')) &&
-            resultsCategoriesAllArray.length > 0 &&
-            global.state.resultsCategoriesDone
-          "
-          :items="resultsCategoriesAllArray"
-          :root-height="scrollboxContainerHeight"
-        ></categories-checkbox-filter>
-      </div>
-
-      <outgraph
-        v-if="
-          !global.state.mobileMode ||
-          (global.state.mobileMode && global.state.mobileDisplay === 'outgraph')
-        "
-        class="grid-item-graph"
-        ref="outgraph"
-        @circleButtonClicked="circleButtonClicked"
-      ></outgraph>
-
-      <main-title-info
-        v-if="
-          !global.state.mobileMode ||
-          (global.state.mobileMode && global.state.mobileDisplay === 'maininfo')
-        "
-        class="grid-item-maininfo"
-        :class="{
-          mobile: global.state.mobileMode
-        }"
-      ></main-title-info>
+        :items="resultsCategoriesAllArray"
+        :root-height="scrollboxContainerHeight"
+      ></categories-checkbox-filter>
     </div>
 
-    <div v-if="global.state.showHelp" class="help-container">
+    <outgraph
+      v-if="
+        (!global.state.showHelp && !global.state.mobileMode) ||
+        (!global.state.showHelp &&
+          global.state.mobileMode &&
+          global.state.mobileDisplay === 'outgraph')
+      "
+      class="grid-item-graph"
+      ref="outgraph"
+      @circleButtonClicked="circleButtonClicked"
+    ></outgraph>
+
+    <main-title-info
+      v-if="
+        (!global.state.showHelp && !global.state.mobileMode) ||
+        (!global.state.showHelp &&
+          global.state.mobileMode &&
+          global.state.mobileDisplay === 'maininfo')
+      "
+      class="grid-item-maininfo"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    ></main-title-info>
+
+    <div
+      v-if="global.state.showHelp"
+      class="grid-item-help"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
       <help></help>
     </div>
   </div>
@@ -128,8 +134,6 @@ export default {
   },
   data() {
     return {
-      gridWidthNocategories: 1520,
-      gridHeightSubtract: 0,
       scrollboxContainerHeight: 300
     }
   },
@@ -357,18 +361,6 @@ export default {
       this.$i18n.locale = value
       this.global.setLanguage(value)
     },
-    gridWidthNocategoriesChanged(value) {
-      this.gridWidthNocategories = value
-    },
-    gridHeightChanged(value) {
-      this.gridHeightSubtract = value
-      // needed for init, first display, otherwise --gridmobileheight wrong
-      if (this.global.state.mobileMode) {
-        this.scrollboxContainerHeight =
-          this.$refs.flexcontainer.getBoundingClientRect().height -
-          this.gridHeightSubtract
-      }
-    },
     modeSwitched() {
       this.windowResized()
     },
@@ -380,18 +372,9 @@ export default {
     },
     windowResized() {
       this.$nextTick(() => {
-        if (!this.global.state.mobileMode) {
-          if (this.$refs.inputcategoriescontainer) {
-            this.scrollboxContainerHeight =
-              this.$refs.inputcategoriescontainer.getBoundingClientRect().height
-          }
-        } else {
-          this.scrollboxContainerHeight =
-            this.$refs.flexcontainer.getBoundingClientRect().height -
-            this.gridHeightSubtract
-
-          this.$refs.inputForm.windowResized()
-        }
+        this.scrollboxContainerHeight =
+          this.$refs.gridcontainer.getBoundingClientRect().height -
+          this.$refs.inputarea.getBoundingClientRect().height
       })
     }
   },
@@ -409,25 +392,6 @@ export default {
 .inputcategoriescontainer {
   position: relative;
 }
-.page-flex-container {
-  display: flex;
-  height: 100vh;
-
-  /* only needed in mobile portrait mode - workaround scrollbars */
-  overflow: hidden;
-}
-
-@media (orientation: landscape) {
-  .page-flex-container {
-    flex-direction: row;
-  }
-}
-
-@media (orientation: portrait) {
-  .page-flex-container {
-    flex-direction: column;
-  }
-}
 
 .grid-container-base {
   display: grid;
@@ -436,57 +400,66 @@ export default {
 .grid-container {
   width: 100%;
   grid-template-columns: 3fr minmax(320px, 1fr);
-  grid-template-rows: 3fr 1fr;
-  height: calc(100% - var(--gridheightsubtract));
+  grid-template-rows: min-content 3fr 1fr;
+  height: 100vh;
 }
 
 .grid-container-nocategories {
   width: 100%;
   grid-template-columns: 1fr;
-  grid-template-rows: 2fr 1fr;
-  height: calc(100% - var(--gridheightsubtract));
+  grid-template-rows: min-content 2fr 1fr;
+  height: 100vh;
 }
 
 .grid-container-base.mobile {
   grid-template-columns: 1fr;
-  grid-template-rows: var(--gridmobileheight);
+  grid-template-rows: min-content var(--gridmobileheight);
+  height: 100vh;
 }
-.grid-container-base.flex {
-  flex: 1 0 auto;
+
+.grid-item-input {
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
 }
 
 .grid-item-graph {
   grid-column: 1 / 2;
-  grid-row: 1 / 2;
+  grid-row: 2 / 3;
 }
 
 .grid-item-categories {
   grid-column: 2 / 3;
-  grid-row: 1 / 3;
+  grid-row: 2 / 4;
 }
 
 .grid-item-maininfo {
   grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   overflow-y: auto;
 }
 
 .grid-item-categories.mobile {
   grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+.grid-item-input.mobile {
+  grid-column: 1 / 2;
   grid-row: 1 / 2;
-  height: var(--categoriesmobileheight);
 }
 
 .grid-item-maininfo.mobile {
   grid-column: 1 / 2;
-  grid-row: 1 / 2;
-
+  grid-row: 2 / 3;
   overflow-y: auto;
 }
-.help-container {
-  grid-column: 1 / 2;
-  grid-row: 1 / 2;
+.grid-item-help {
+  grid-column: 1 / 3;
+  grid-row: 2 / 4;
   width: 100%;
   overflow-y: auto;
+}
+.grid-item-help.mobile {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
 }
 </style>

@@ -517,8 +517,6 @@ export default {
     'resultsCategoriesChanged',
     'checkboxFilterEnabledChanged',
     'languageSwitched',
-    'grid-width-nocategories-changed',
-    'grid-height-changed',
     'mode-switched',
     'mobile-display-switched'
   ],
@@ -554,7 +552,6 @@ export default {
     },
     resultsCategoriesChanged(value) {
       this.global.setResultsCategoriesEnabled(value)
-      this.windowResized()
       this.resetFirstItem()
       this.$emit('resultsCategoriesChanged', value)
     },
@@ -576,9 +573,7 @@ export default {
     },
     checkboxFilterEnabledChanged(value) {
       this.global.setCheckboxFilterEnabled(value)
-      this.windowResized()
       this.resetFirstItem()
-
       this.$emit('checkboxFilterEnabledChanged', value)
     },
     languageSwitched(value) {
@@ -621,56 +616,10 @@ export default {
     },
     showHelpClicked(value) {
       this.global.setShowHelp(value)
-      // resize needed here, not after emit in MainView
-      this.windowResized()
       this.$emit('showHelpClicked', value)
-    },
-    windowResized() {
-      this.$nextTick(() => {
-        let vw
-        if (typeof window.visualViewport === 'undefined') {
-          vw = Math.min(window.innerWidth, document.documentElement.clientWidth)
-        } else {
-          vw = Math.min(
-            window.innerWidth,
-            document.documentElement.clientWidth,
-            window.visualViewport.width
-          )
-        }
-
-        //min width categories checkbox filter
-        if (
-          this.global.state.checkboxFilterEnabled &&
-          this.global.state.resultsCategoriesEnabled &&
-          !this.global.state.mobileMode &&
-          !this.global.state.showHelp
-        ) {
-          vw -= 320
-        }
-
-        // remove inputform width in landscape
-        if (window.matchMedia('(orientation: landscape)').matches) {
-          vw -= this.$refs.inputformflexcontainer.getBoundingClientRect().width
-        }
-
-        this.$emit('grid-width-nocategories-changed', vw)
-
-        let vh
-        if (window.matchMedia('(orientation: portrait)').matches) {
-          vh = this.$refs.inputformflexcontainer.getBoundingClientRect().height
-          this.portraitMode = true
-        } else {
-          vh = 0
-          this.portraitMode = false
-        }
-
-        this.$emit('grid-height-changed', vh)
-      })
     }
   },
   mounted() {
-    window.addEventListener('resize', this.windowResized)
-
     // init
     this.languageSwitched('en')
     this.categoriesOnHoverOrClickChanged('catshover')
@@ -686,8 +635,6 @@ export default {
         this.categoriesOnHoverOrClickChanged('catsclick')
       }
     }
-
-    this.windowResized()
 
     // handle parameters from URL
     /**
@@ -811,9 +758,6 @@ export default {
     if (search && search.length > 0) {
       this.$emit('fetchDataClicked', search)
     }
-  },
-  beforeUnMount() {
-    window.removeEventListener('resize', this.windowResized)
   }
 }
 </script>
