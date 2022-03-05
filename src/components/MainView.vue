@@ -441,6 +441,7 @@ export default {
 }
 
 .grid-container-nocategories {
+  width: 100%;
   grid-template-columns: 1fr;
   grid-template-rows: 2fr 1fr;
   height: calc(100% - var(--gridheightsubtract));
