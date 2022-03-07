@@ -811,15 +811,6 @@ export default {
   filter: invert(0.75);
 }
 
-.pagecount {
-  display: inline-block;
-  width: 180px;
-}
-@media (hover: hover) and (pointer: fine) {
-  .searchicon:hover {
-    filter: invert(0.5);
-  }
-}
 .searchbutton {
   border: none;
   background-color: transparent;
@@ -827,7 +818,6 @@ export default {
 
 .categoriesicon,
 .titleicon,
-.searchicon,
 .checkboxfiltericon,
 .redirectsicon,
 .graphicon,
