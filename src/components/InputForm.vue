@@ -1,82 +1,16 @@
 <template>
-  <div class="inputform-flex-container">
+  <div
+    class="inputform-flex-container"
+    :class="{
+      mobile: global.state.mobileMode
+    }"
+  >
     <div
-      class="inputform-flex-item-1"
-      :style="{
-        'margin-left': portraitMode && global.state.mobileMode ? '5px' : '',
-        'margin-top': portraitMode && global.state.mobileMode ? '5px' : ''
+      id="item1"
+      :class="{
+        mobile: global.state.mobileMode
       }"
     >
-      <form>
-        <span>
-          <input
-            id="showHelp"
-            class="checkbox"
-            type="checkbox"
-            :checked="global.state.showHelp"
-            @change="showHelpClicked($event.target.checked)"
-          />
-          <label class="checkboxlabel" for="showHelp">
-            <img class="helpicon" src="../assets/images/question-mark.svg" />
-          </label>
-        </span>
-
-        <input
-          class="radiobutton"
-          type="radio"
-          id="desktop"
-          value="desktop"
-          :checked="!global.state.mobileMode"
-          :disabled="
-            !global.state.showHelp &&
-            (global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone))
-          "
-          @change="modeSwitched($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          :class="{
-            itemdisabled:
-              !global.state.showHelp &&
-              (global.state.inputsDisabled ||
-                (global.state.resultsCategoriesEnabled &&
-                  !global.state.resultsCategoriesDone))
-          }"
-          for="desktop"
-        >
-          <img class="desktopicon" src="../assets/images/desktop-pc.svg" />
-        </label>
-        <input
-          class="radiobutton"
-          type="radio"
-          id="mobile"
-          value="mobile"
-          :checked="global.state.mobileMode"
-          :disabled="
-            !global.state.showHelp &&
-            (global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone))
-          "
-          @change="modeSwitched($event.target.value)"
-        />
-
-        <label
-          class="radiolabel"
-          :class="{
-            itemdisabled:
-              !global.state.showHelp &&
-              (global.state.inputsDisabled ||
-                (global.state.resultsCategoriesEnabled &&
-                  !global.state.resultsCategoriesDone))
-          }"
-          for="mobile"
-          ><img class="mobileicon" src="../assets/images/smartphone.svg" />
-        </label>
-      </form>
-
       <form>
         <input
           class="radiobutton"
@@ -131,8 +65,14 @@
           ><img class="flagicon" src="../assets/images/de-flag.svg"
         /></label>
       </form>
-
-      <form @submit.prevent="fetchData">
+    </div>
+    <div
+      id="item2"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
+      <form class="inputform" @submit.prevent="fetchData">
         <input
           type="text"
           id="title"
@@ -145,9 +85,6 @@
             (global.state.resultsCategoriesEnabled &&
               !global.state.resultsCategoriesDone)
           "
-          :style="{
-            width: portraitMode && global.state.mobileMode ? '108px' : ''
-          }"
         />
         <button
           class="searchbutton"
@@ -170,8 +107,15 @@
           />
         </button>
       </form>
+    </div>
 
-      <form @submit.prevent="">
+    <div
+      id="item3"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
+      <form class="inputform" @submit.prevent="">
         <label for="filter"
           ><img class="titleiconsmall" src="../assets/images/text-tool.svg"
         /></label>
@@ -187,13 +131,16 @@
             (global.state.mobileMode &&
               global.state.mobileDisplay === 'maininfo')
           "
-          :style="{
-            width: portraitMode && global.state.mobileMode ? '120px' : ''
-          }"
         />
       </form>
-
-      <form @submit.prevent="">
+    </div>
+    <div
+      id="item4"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
+      <form class="inputform" @submit.prevent="">
         <label for="filterCategories">
           <img
             class="categoriesiconsmall"
@@ -216,172 +163,175 @@
             (global.state.mobileMode &&
               global.state.mobileDisplay === 'maininfo')
           "
-          :style="{
-            width: portraitMode && global.state.mobileMode ? '120px' : ''
-          }"
         />
       </form>
     </div>
+
     <div
-      class="inputform-flex-item-2"
-      :style="{
-        'margin-top': portraitMode && global.state.mobileMode ? '5px' : ''
+      id="item5"
+      :class="{
+        mobile: global.state.mobileMode
       }"
+      v-if="global.state.mobileMode"
     >
-      <div v-if="global.state.mobileMode">
-        <input
-          class="radiobutton"
-          type="radio"
-          :disabled="global.state.showHelp"
-          id="outgraph"
-          value="outgraph"
-          :checked="global.state.mobileDisplay === 'outgraph'"
-          @change="mobileDisplaySwitched($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          for="outgraph"
-          :class="{ itemdisabled: global.state.showHelp }"
-          ><img class="graphicon" src="../assets/images/analytics-graph.svg"
-        /></label>
-        <input
-          class="radiobutton"
-          type="radio"
-          :disabled="global.state.showHelp"
-          id="maininfo"
-          value="maininfo"
-          :checked="global.state.mobileDisplay === 'maininfo'"
-          @change="mobileDisplaySwitched($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          for="maininfo"
-          :class="{ itemdisabled: global.state.showHelp }"
-          ><img class="titleicon" src="../assets/images/text-tool.svg"
-        /></label>
-        <input
-          class="radiobutton"
-          type="radio"
-          :disabled="
+      <input
+        class="radiobutton"
+        type="radio"
+        :disabled="global.state.showHelp"
+        id="outgraph"
+        value="outgraph"
+        :checked="global.state.mobileDisplay === 'outgraph'"
+        @change="mobileDisplaySwitched($event.target.value)"
+      />
+      <label
+        class="radiolabel"
+        for="outgraph"
+        :class="{ itemdisabled: global.state.showHelp }"
+        ><img class="graphicon" src="../assets/images/analytics-graph.svg"
+      /></label>
+      <input
+        class="radiobutton"
+        type="radio"
+        :disabled="global.state.showHelp"
+        id="maininfo"
+        value="maininfo"
+        :checked="global.state.mobileDisplay === 'maininfo'"
+        @change="mobileDisplaySwitched($event.target.value)"
+      />
+      <label
+        class="radiolabel"
+        for="maininfo"
+        :class="{ itemdisabled: global.state.showHelp }"
+        ><img class="titleicon" src="../assets/images/text-tool.svg"
+      /></label>
+      <input
+        class="radiobutton"
+        type="radio"
+        :disabled="
+          global.state.showHelp ||
+          (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
+        "
+        id="categories"
+        value="categories"
+        :checked="global.state.mobileDisplay === 'categories'"
+        @change="mobileDisplaySwitched($event.target.value)"
+      />
+      <label
+        class="radiolabel"
+        for="categories"
+        :class="{
+          itemdisabled:
             global.state.showHelp ||
             (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
+        }"
+      >
+        <img class="checkboxfiltericon" src="../assets/images/document2.svg" />
+      </label>
+    </div>
+    <div
+      id="item6"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
+      <span>
+        <input
+          id="resultsCategories"
+          class="checkbox"
+          type="checkbox"
+          :checked="global.state.resultsCategoriesEnabled"
+          :disabled="
+            global.state.inputsDisabled ||
+            (global.state.mobileMode &&
+              (global.state.mobileDisplay === 'maininfo' ||
+                global.state.mobileDisplay === 'categories'))
           "
-          id="categories"
-          value="categories"
-          :checked="global.state.mobileDisplay === 'categories'"
-          @change="mobileDisplaySwitched($event.target.value)"
+          @change="resultsCategoriesChanged($event.target.checked)"
         />
         <label
-          class="radiolabel"
-          for="categories"
+          class="checkboxlabel"
           :class="{
             itemdisabled:
-              global.state.showHelp ||
-              (global.state.mobileMode &&
-                !global.state.resultsCategoriesEnabled)
-          }"
-        >
-          <img
-            class="checkboxfiltericon"
-            src="../assets/images/document2.svg"
-          />
-        </label>
-      </div>
-
-      <div>
-        <span>
-          <input
-            id="resultsCategories"
-            class="checkbox"
-            type="checkbox"
-            :checked="global.state.resultsCategoriesEnabled"
-            :disabled="
               global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
-            "
-            @change="resultsCategoriesChanged($event.target.checked)"
-          />
-          <label
-            class="checkboxlabel"
-            :class="{
-              itemdisabled:
-                global.state.inputsDisabled ||
-                (global.state.mobileMode &&
-                  (global.state.mobileDisplay === 'maininfo' ||
-                    global.state.mobileDisplay === 'categories'))
-            }"
-            for="resultsCategories"
-          >
-            <img class="categoriesicon" src="../assets/images/document.svg" />
-          </label>
-        </span>
-        <span v-if="!global.state.mobileMode">
-          <input
-            id="checkboxFilter"
-            class="checkbox"
-            type="checkbox"
-            :checked="global.state.checkboxFilterEnabled"
-            :disabled="
+          }"
+          for="resultsCategories"
+        >
+          <img class="categoriesicon" src="../assets/images/document.svg" />
+        </label>
+      </span>
+      <span v-if="!global.state.mobileMode">
+        <input
+          id="checkboxFilter"
+          class="checkbox"
+          type="checkbox"
+          :checked="global.state.checkboxFilterEnabled"
+          :disabled="
+            global.state.inputsDisabled ||
+            !global.state.resultsCategoriesEnabled
+          "
+          @change="checkboxFilterEnabledChanged($event.target.checked)"
+        />
+        <label
+          class="checkboxlabel"
+          :class="{
+            itemdisabled:
               global.state.inputsDisabled ||
               !global.state.resultsCategoriesEnabled
-            "
-            @change="checkboxFilterEnabledChanged($event.target.checked)"
-          />
-          <label
-            class="checkboxlabel"
+          }"
+          for="checkboxFilter"
+        >
+          <img
+            class="checkboxfiltericon"
             :class="{
               itemdisabled:
                 global.state.inputsDisabled ||
                 !global.state.resultsCategoriesEnabled
             }"
-            for="checkboxFilter"
-          >
-            <img
-              class="checkboxfiltericon"
-              :class="{
-                itemdisabled:
-                  global.state.inputsDisabled ||
-                  !global.state.resultsCategoriesEnabled
-              }"
-              src="../assets/images/document2.svg"
-            />
-          </label>
-        </span>
-        <span>
-          <input
-            id="resultsRedirects"
-            class="checkbox"
-            type="checkbox"
-            :disabled="
+            src="../assets/images/document2.svg"
+          />
+        </label>
+      </span>
+      <span>
+        <input
+          id="resultsRedirects"
+          class="checkbox"
+          type="checkbox"
+          :disabled="
+            global.state.inputsDisabled ||
+            (global.state.mobileMode &&
+              (global.state.mobileDisplay === 'maininfo' ||
+                global.state.mobileDisplay === 'categories'))
+          "
+          :checked="global.state.resultsRedirectsEnabled"
+          @change="resultsRedirectsChanged($event.target.checked)"
+        />
+        <label
+          class="checkboxlabel"
+          :class="{
+            itemdisabled:
               global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
                   global.state.mobileDisplay === 'categories'))
-            "
-            :checked="global.state.resultsRedirectsEnabled"
-            @change="resultsRedirectsChanged($event.target.checked)"
+          }"
+          for="resultsRedirects"
+        >
+          <img
+            class="redirectsicon"
+            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
           />
-          <label
-            class="checkboxlabel"
-            :class="{
-              itemdisabled:
-                global.state.inputsDisabled ||
-                (global.state.mobileMode &&
-                  (global.state.mobileDisplay === 'maininfo' ||
-                    global.state.mobileDisplay === 'categories'))
-            }"
-            for="resultsRedirects"
-          >
-            <img
-              class="redirectsicon"
-              src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
-            />
-          </label>
-        </span>
-      </div>
-
+        </label>
+      </span>
+    </div>
+    <div
+      id="item7"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
       <form>
         <span
           ><img class="categoriesiconsmall" src="../assets/images/document.svg"
@@ -447,7 +397,14 @@
           ><img class="hovericon" src="../assets/images/mouse-hover.svg"
         /></label>
       </form>
-      <div>
+    </div>
+    <div
+      id="item8"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
+      <span>
         <span
           v-show="
             global.state.resultsCategoriesEnabled &&
@@ -464,10 +421,12 @@
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
-        <span class="fontsize90"
+        <span class="fontsize70"
           >{{ $t('results')
           }}{{ global.state.filteredResultsArray.length }}</span
         >
+      </span>
+      <span>
         <span
           v-show="
             global.state.resultsRedirectsEnabled &&
@@ -484,16 +443,15 @@
           "
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
-      </div>
+      </span>
       <div
-        class="fontsize90"
+        class="fontsize70"
         :style="{
           visibility:
             global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        {{ $t('showing') }}{{ $t('from') }}{{ global.state.indexStart + 1
-        }}{{ $t('to')
+        {{ $t('showing') }}{{ global.state.indexStart + 1 }}{{ $t('to')
         }}{{
           global.state.indexEnd + 1 > global.state.filteredResultsArray.length
             ? global.state.indexEnd +
@@ -502,6 +460,82 @@
             : global.state.indexEnd + 1
         }}
       </div>
+    </div>
+    <div
+      id="item9"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
+      <form>
+        <input
+          class="radiobutton"
+          type="radio"
+          id="desktop"
+          value="desktop"
+          :checked="!global.state.mobileMode"
+          :disabled="
+            !global.state.showHelp &&
+            (global.state.inputsDisabled ||
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone))
+          "
+          @change="modeSwitched($event.target.value)"
+        />
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              !global.state.showHelp &&
+              (global.state.inputsDisabled ||
+                (global.state.resultsCategoriesEnabled &&
+                  !global.state.resultsCategoriesDone))
+          }"
+          for="desktop"
+        >
+          <img class="desktopicon" src="../assets/images/desktop-pc.svg" />
+        </label>
+        <input
+          class="radiobutton"
+          type="radio"
+          id="mobile"
+          value="mobile"
+          :checked="global.state.mobileMode"
+          :disabled="
+            !global.state.showHelp &&
+            (global.state.inputsDisabled ||
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone))
+          "
+          @change="modeSwitched($event.target.value)"
+        />
+
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              !global.state.showHelp &&
+              (global.state.inputsDisabled ||
+                (global.state.resultsCategoriesEnabled &&
+                  !global.state.resultsCategoriesDone))
+          }"
+          for="mobile"
+          ><img class="mobileicon" src="../assets/images/smartphone.svg" />
+        </label>
+
+        <span>
+          <input
+            id="showHelp"
+            class="checkbox"
+            type="checkbox"
+            :checked="global.state.showHelp"
+            @change="showHelpClicked($event.target.checked)"
+          />
+          <label class="checkboxlabel" for="showHelp">
+            <img class="helpicon" src="../assets/images/question-mark.svg" />
+          </label>
+        </span>
+      </form>
     </div>
   </div>
 </template>
@@ -531,11 +565,6 @@ export default {
     )
 
     return { global, numberOfPages }
-  },
-  data() {
-    return {
-      portraitMode: false
-    }
   },
 
   methods: {
@@ -762,8 +791,83 @@ export default {
 }
 </script>
 <style scoped>
-.fontsize90 {
-  font-size: 90%;
+#item8 {
+  width: 180px;
+}
+.inputform-flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+#item2,
+#item3,
+#item4 {
+  flex-grow: 1;
+}
+
+#item8 {
+  flex-shrink: 0;
+}
+
+@media only screen and (max-width: 1300px) {
+  #item2.mobile,
+  #item3.mobile,
+  #item4.mobile {
+    flex-basis: 30%;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  #item2,
+  #item3,
+  #item4 {
+    flex-basis: 30%;
+  }
+}
+
+@media only screen and (max-width: 940px) {
+  #item2,
+  #item3,
+  #item4,
+  #item2.mobile,
+  #item3.mobile,
+  #item4.mobile {
+    flex-basis: 50%;
+  }
+}
+
+@media only screen and (max-width: 680px) {
+  #item6.mobile,
+  #item7.mobile,
+  #item8.mobile {
+    flex-basis: 30%;
+  }
+}
+
+@media only screen and (max-width: 580px) {
+  #item6,
+  #item7 {
+    flex-basis: 50%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  #item6.mobile,
+  #item7.mobile {
+    flex-basis: 50%;
+  }
+}
+
+.inputform {
+  display: flex;
+}
+#title,
+#filter,
+#filterCategories {
+  flex-grow: 1;
+}
+.fontsize70 {
+  font-size: 70%;
 }
 
 .radiobutton,
@@ -796,17 +900,6 @@ export default {
     filter: invert(0.25);
   }
 }
-.inputform-flex-container {
-  display: flex;
-  justify-content: space-around;
-  flex: 0 1 auto;
-}
-
-.inputform-flex-item-1,
-.inputform-flex-item-2 {
-  flex: 0 1 auto;
-  font-size: 90%;
-}
 .itemdisabled {
   filter: invert(0.75);
 }
@@ -815,7 +908,6 @@ export default {
   border: none;
   background-color: transparent;
 }
-
 .categoriesicon,
 .titleicon,
 .checkboxfiltericon,
@@ -844,28 +936,13 @@ export default {
   vertical-align: middle;
 }
 
-.numberresultsicon {
-  height: 1em;
-}
-
-.absolutebottomcenter {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.rotate90deg {
-  transform: rotate(90deg);
-}
-
 .searchinputarea,
 .titleinputarea,
 .categoriesinputarea {
   margin-top: 3px;
   margin-bottom: 3px;
+  width: 150px;
 }
-
 .searchinputarea:focus,
 .titleinputarea:focus,
 .categoriesinputarea:focus {
@@ -878,7 +955,6 @@ export default {
     opacity: 0;
   }
 }
-
 .fetchingicon {
   filter: invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg)
     brightness(105%) contrast(124%);
@@ -887,33 +963,5 @@ export default {
   vertical-align: middle;
   margin-left: 0.2em;
   margin-right: 0.2em;
-}
-
-.positionrelative {
-  position: relative;
-}
-
-.inputformflexitem3fixedwidth {
-  width: 24px;
-}
-
-.slidervertical {
-  width: var(--height);
-  transform-origin: left;
-  transform: rotate(90deg) translateY(-50%) translateX(-3%);
-}
-
-@media (orientation: landscape) {
-  .inputform-flex-container {
-    flex-direction: column;
-    min-width: 250px;
-    width: 250px;
-  }
-}
-
-@media (orientation: portrait) {
-  .inputform-flex-container {
-    flex-direction: row;
-  }
 }
 </style>
