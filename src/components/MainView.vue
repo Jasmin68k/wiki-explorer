@@ -12,9 +12,6 @@
           !global.state.resultsCategoriesEnabled) &&
         !global.state.mobileMode
     }"
-    :style="{
-      '--gridmobileheight': scrollboxContainerHeight + 'px'
-    }"
     ref="gridcontainer"
   >
     <div
@@ -411,7 +408,7 @@ export default {
 
 .grid-container-base.mobile {
   grid-template-columns: 1fr;
-  grid-template-rows: min-content var(--gridmobileheight);
+  grid-template-rows: min-content 1fr;
   height: 100vh;
 }
 
