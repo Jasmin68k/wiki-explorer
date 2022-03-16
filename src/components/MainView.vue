@@ -84,6 +84,34 @@
       }"
     ></main-title-info>
 
+    <!-- <div
+      class="grid-item-statusbar"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+      v-if="
+        global.state.filteredResultsArray.length > 0 &&
+        (!global.state.mobileMode ||
+          (global.state.mobileMode &&
+            global.state.mobileDisplay === 'outgraph'))
+      "
+    >
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dicta, dolorum.
+    </div> -->
+
+    <status-bar
+      class="grid-item-statusbar"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+      v-if="
+        global.state.filteredResultsArray.length > 0 &&
+        (!global.state.mobileMode ||
+          (global.state.mobileMode &&
+            global.state.mobileDisplay === 'outgraph'))
+      "
+    ></status-bar>
+
     <div
       v-if="global.state.showHelp"
       class="grid-item-help"
@@ -102,6 +130,7 @@ import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
+import StatusBar from './StatusBar.vue'
 import Help from './Help.vue'
 import {
   wikiFetchAddCategoriesToTitlePage,
@@ -120,7 +149,8 @@ export default {
     MainTitleInfo,
     Outgraph,
     CategoriesCheckboxFilter,
-    Help
+    Help,
+    StatusBar
   },
   setup() {
     const global = inject('global')
@@ -395,25 +425,29 @@ export default {
 .grid-container {
   width: 100%;
   grid-template-columns: 3fr minmax(320px, 1fr);
-  grid-template-rows: min-content 3fr 1fr;
+  grid-template-rows: min-content 3fr min-content 1fr;
   height: 100vh;
 }
 
 .grid-container-nocategories {
   width: 100%;
   grid-template-columns: 1fr;
-  grid-template-rows: min-content 2fr 1fr;
+  grid-template-rows: min-content 2fr min-content 1fr;
   height: 100vh;
 }
 
 .grid-container-base.mobile {
   grid-template-columns: 1fr;
-  grid-template-rows: min-content 1fr;
+  grid-template-rows: min-content 1fr min-content;
   height: 100vh;
 }
 
 .grid-item-input {
   grid-column: 1 / 3;
+  grid-row: 1 / 2;
+}
+.grid-item-input.mobile {
+  grid-column: 1 / 2;
   grid-row: 1 / 2;
 }
 
@@ -424,22 +458,17 @@ export default {
 
 .grid-item-categories {
   grid-column: 2 / 3;
-  grid-row: 2 / 4;
+  grid-row: 2 / 5;
 }
-
-.grid-item-maininfo {
-  grid-column: 1 / 2;
-  grid-row: 3 / 4;
-  overflow-y: auto;
-}
-
 .grid-item-categories.mobile {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
 }
-.grid-item-input.mobile {
+
+.grid-item-maininfo {
   grid-column: 1 / 2;
-  grid-row: 1 / 2;
+  grid-row: 4 / 5;
+  overflow-y: auto;
 }
 
 .grid-item-maininfo.mobile {
@@ -447,6 +476,17 @@ export default {
   grid-row: 2 / 3;
   overflow-y: auto;
 }
+
+.grid-item-statusbar {
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
+.grid-item-statusbar.mobile {
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
 .grid-item-help {
   grid-column: 1 / 3;
   grid-row: 2 / 4;
@@ -455,6 +495,6 @@ export default {
 }
 .grid-item-help.mobile {
   grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-row: 2 / 4;
 }
 </style>
