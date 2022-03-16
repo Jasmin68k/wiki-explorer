@@ -401,6 +401,8 @@ export default {
           this.$refs.gridcontainer.getBoundingClientRect().height -
           this.$refs.inputarea.getBoundingClientRect().height
       })
+
+      console.log(this.$refs.inputarea.getBoundingClientRect().width)
     }
   },
   mounted() {

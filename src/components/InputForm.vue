@@ -404,69 +404,6 @@
         mobile: global.state.mobileMode
       }"
     >
-      <span>
-        <span
-          v-show="
-            global.state.resultsCategoriesEnabled &&
-            !global.state.resultsCategoriesDone
-          "
-          ><img class="fetchingicon" src="../assets/images/document.svg"
-        /></span>
-        <span
-          v-show="
-            global.state.resultsRedirectsEnabled &&
-            !global.state.resultsRedirectsDone
-          "
-          ><img
-            class="fetchingicon"
-            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
-        /></span>
-        <span class="fontsize70"
-          >{{ $t('results')
-          }}{{ global.state.filteredResultsArray.length }}</span
-        >
-      </span>
-      <span>
-        <span
-          v-show="
-            global.state.resultsRedirectsEnabled &&
-            !global.state.resultsRedirectsDone
-          "
-          ><img
-            class="fetchingicon"
-            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
-        /></span>
-        <span
-          v-show="
-            global.state.resultsCategoriesEnabled &&
-            !global.state.resultsCategoriesDone
-          "
-          ><img class="fetchingicon" src="../assets/images/document.svg"
-        /></span>
-      </span>
-      <div
-        class="fontsize70"
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
-        }"
-      >
-        {{ $t('showing') }}{{ global.state.indexStart + 1 }}{{ $t('to')
-        }}{{
-          global.state.indexEnd + 1 > global.state.filteredResultsArray.length
-            ? global.state.indexEnd +
-              1 -
-              global.state.filteredResultsArray.length
-            : global.state.indexEnd + 1
-        }}
-      </div>
-    </div>
-    <div
-      id="item9"
-      :class="{
-        mobile: global.state.mobileMode
-      }"
-    >
       <form>
         <input
           class="radiobutton"
@@ -791,9 +728,6 @@ export default {
 }
 </script>
 <style scoped>
-#item8 {
-  width: 180px;
-}
 .inputform-flex-container {
   display: flex;
   flex-wrap: wrap;
@@ -806,18 +740,15 @@ export default {
   flex-grow: 1;
 }
 
-#item8 {
-  flex-shrink: 0;
-}
-
-@media only screen and (max-width: 1300px) {
+@media only screen and (max-width: 1150px) {
   #item2.mobile,
   #item3.mobile,
   #item4.mobile {
     flex-basis: 30%;
   }
 }
-@media only screen and (max-width: 1200px) {
+
+@media only screen and (max-width: 1050px) {
   #item2,
   #item3,
   #item4 {
@@ -836,24 +767,9 @@ export default {
   }
 }
 
-@media only screen and (max-width: 680px) {
-  #item6.mobile,
-  #item7.mobile,
-  #item8.mobile {
-    flex-basis: 30%;
-  }
-}
-
-@media only screen and (max-width: 580px) {
-  #item6,
-  #item7 {
-    flex-basis: 50%;
-  }
-}
-
-@media only screen and (max-width: 400px) {
-  #item6.mobile,
-  #item7.mobile {
+@media only screen and (max-width: 530px) {
+  #item5.mobile,
+  #item6.mobile {
     flex-basis: 50%;
   }
 }
