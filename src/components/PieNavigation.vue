@@ -34,9 +34,7 @@
   <span
     :style="{
       visibility:
-        global.state.filteredResultsArray.length > 0 && global.state.mobileMode
-          ? 'visible'
-          : 'hidden'
+        global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
     }"
     class="pagecount"
   >
@@ -44,11 +42,13 @@
       src="../assets/images/left-arrow.svg"
       @click="prevItem"
       class="leftarrow"
+      :class="{ mobile: global.state.mobileMode }"
     />
     <img
       src="../assets/images/right-arrow.svg"
       @click="nextItem"
       class="rightarrow"
+      :class="{ mobile: global.state.mobileMode }"
     />
   </span>
 </template>
@@ -265,18 +265,29 @@ export default {
 
 .leftarrow {
   position: absolute;
+  transform: translate(-50%, -50%);
+  height: 2.65em;
+  left: calc(50% - 114px);
+  top: calc(50% - 114px);
+}
+.leftarrow.mobile {
   height: 1.75em;
   left: calc(50% - 75px);
   top: calc(50% - 75px);
-  transform: translate(-50%, -50%);
 }
 .rightarrow {
   position: absolute;
+  transform: translate(-50%, -50%);
+  height: 2.65em;
+  left: calc(50% + 114px);
+  top: calc(50% - 114px);
+}
+.rightarrow.mobile {
   height: 1.75em;
   left: calc(50% + 75px);
   top: calc(50% - 75px);
-  transform: translate(-50%, -50%);
 }
+
 @media (hover: hover) and (pointer: fine) {
   .leftarrow:hover,
   .rightarrow:hover {
