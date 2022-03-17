@@ -44,27 +44,11 @@
       src="../assets/images/left-arrow.svg"
       @click="prevItem"
       class="leftarrow"
-      :class="{
-        itemdisabled:
-          global.state.inputsDisabled ||
-          global.state.filteredResultsArray.length === 0 ||
-          (global.state.mobileMode &&
-            (global.state.mobileDisplay === 'maininfo' ||
-              global.state.mobileDisplay === 'categories'))
-      }"
     />
     <img
       src="../assets/images/right-arrow.svg"
       @click="nextItem"
       class="rightarrow"
-      :class="{
-        itemdisabled:
-          global.state.inputsDisabled ||
-          global.state.filteredResultsArray.length === 0 ||
-          (global.state.mobileMode &&
-            (global.state.mobileDisplay === 'maininfo' ||
-              global.state.mobileDisplay === 'categories'))
-      }"
     />
   </span>
 </template>
