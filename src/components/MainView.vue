@@ -466,7 +466,7 @@ export default {
 
 .grid-item-help {
   grid-column: 1 / 3;
-  grid-row: 2 / 4;
+  grid-row: 2 / 5;
   width: 100%;
   overflow-y: auto;
 }
