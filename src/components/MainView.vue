@@ -407,20 +407,20 @@ export default {
 .grid-container {
   width: 100%;
   grid-template-columns: 3fr minmax(320px, 1fr);
-  grid-template-rows: min-content 3fr min-content 1fr;
+  grid-template-rows: min-content min-content 3fr 1fr;
   height: 100vh;
 }
 
 .grid-container-nocategories {
   width: 100%;
   grid-template-columns: 1fr;
-  grid-template-rows: min-content 2fr min-content 1fr;
+  grid-template-rows: min-content min-content 2fr 1fr;
   height: 100vh;
 }
 
 .grid-container-base.mobile {
   grid-template-columns: 1fr;
-  grid-template-rows: min-content 1fr min-content;
+  grid-template-rows: min-content min-content 1fr;
   height: 100vh;
 }
 
@@ -435,7 +435,7 @@ export default {
 
 .grid-item-graph {
   grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
 }
 
 .grid-item-categories {
@@ -461,7 +461,7 @@ export default {
 
 .grid-item-statusbar {
   grid-column: 1 / 2;
-  grid-row: 3 / 4;
+  grid-row: 2 / 3;
 }
 
 .grid-item-help {
