@@ -84,26 +84,8 @@
       }"
     ></main-title-info>
 
-    <!-- <div
-      class="grid-item-statusbar"
-      :class="{
-        mobile: global.state.mobileMode
-      }"
-      v-if="
-        global.state.filteredResultsArray.length > 0 &&
-        (!global.state.mobileMode ||
-          (global.state.mobileMode &&
-            global.state.mobileDisplay === 'outgraph'))
-      "
-    >
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dicta, dolorum.
-    </div> -->
-
     <status-bar
       class="grid-item-statusbar"
-      :class="{
-        mobile: global.state.mobileMode
-      }"
       v-if="
         global.state.filteredResultsArray.length > 0 &&
         (!global.state.mobileMode ||
@@ -478,11 +460,6 @@ export default {
 }
 
 .grid-item-statusbar {
-  grid-column: 1 / 2;
-  grid-row: 3 / 4;
-}
-
-.grid-item-statusbar.mobile {
   grid-column: 1 / 2;
   grid-row: 3 / 4;
 }
