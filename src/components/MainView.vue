@@ -306,15 +306,26 @@ export default {
     },
 
     async circleButtonClicked(index) {
-      this.global.setTitle(
-        await wikiFetchGetRedirectTarget(
-          this.global.state.displayResultsArray[index].title,
-          this.global.state.language
-        )
-      )
-
-      this.getMainInfo()
-      this.getJson()
+      switch (this.global.state.buttonMode) {
+        case 'search':
+          this.global.setTitle(
+            await wikiFetchGetRedirectTarget(
+              this.global.state.displayResultsArray[index].title,
+              this.global.state.language
+            )
+          )
+          this.getMainInfo()
+          this.getJson()
+          break
+        case 'catsredir':
+          break
+        case 'wiki':
+          window.open(
+            this.global.state.displayResultsArray[index].url,
+            '_blank'
+          )
+          break
+      }
     },
     async fetchDataClicked(value) {
       if (value) {

@@ -122,12 +122,6 @@
       {{ $t('help-redirects-switch2') }}
     </div>
     <div>
-      <span>
-        <img
-          class="icon-help-small-left2"
-          src="../assets/images/document.svg"
-        />
-      </span>
       <div class="icon-help-container">
         <img class="icon-help" src="../assets/images/mouse-click.svg" />
       </div>

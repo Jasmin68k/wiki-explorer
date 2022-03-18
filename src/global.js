@@ -20,6 +20,7 @@ const state = reactive({
   redirectsDone: false,
   graphFirstItem: 1,
   pieAngleSaved: 0,
+  buttonMode: 'search',
   filteredResultsArray: computed(function () {
     if (state.inputsDisabled) {
       return []
@@ -173,6 +174,9 @@ const setGraphFirstItem = (value) => {
 const setPieAngleSaved = (value) => {
   state.pieAngleSaved = value
 }
+const setButtonMode = (value) => {
+  state.buttonMode = value
+}
 
 export default {
   state: readonly(state),
@@ -194,5 +198,6 @@ export default {
   setResultsRedirectsDone,
   setRedirectsDone,
   setGraphFirstItem,
-  setPieAngleSaved
+  setPieAngleSaved,
+  setButtonMode
 }

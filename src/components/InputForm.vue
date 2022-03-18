@@ -333,9 +333,6 @@
       }"
     >
       <form>
-        <span
-          ><img class="categoriesiconsmall" src="../assets/images/document.svg"
-        /></span>
         <input
           class="radiobutton"
           type="radio"
@@ -398,8 +395,96 @@
         /></label>
       </form>
     </div>
+
     <div
       id="item8"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+    >
+      <form>
+        <input
+          class="radiobutton"
+          type="radio"
+          id="search"
+          value="search"
+          :disabled="global.state.inputsDisabled"
+          @change="buttonModeSwitched($event.target.value)"
+          ref="search"
+        />
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled: global.state.inputsDisabled
+          }"
+          for="search"
+          ><img class="searchicon" src="../assets/images/search.svg"
+        /></label>
+        <input
+          class="radiobutton"
+          type="radio"
+          id="catsredir"
+          value="catsredir"
+          :disabled="
+            global.state.inputsDisabled ||
+            (global.state.resultsCategoriesEnabled &&
+              !global.state.resultsCategoriesDone) ||
+            (global.state.resultsRedirectsEnabled &&
+              !global.state.resultsRedirectsDone)
+          "
+          @change="buttonModeSwitched($event.target.value)"
+          ref="catsredir"
+        />
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled:
+              global.state.inputsDisabled ||
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone) ||
+              (global.state.resultsRedirectsEnabled &&
+                !global.state.resultsRedirectsDone) ||
+              (!global.state.resultsCategoriesEnabled &&
+                !global.state.resultsRedirectsEnabled)
+          }"
+          for="catsredir"
+        >
+          <div class="catsredircontainer">
+            <img class="catsrediricon" src="../assets/images/document.svg" />
+            <img
+              class="catsrediricon"
+              src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+            />
+          </div>
+        </label>
+        <input
+          class="radiobutton"
+          type="radio"
+          id="wiki"
+          value="wiki"
+          :disabled="global.state.inputsDisabled"
+          @change="buttonModeSwitched($event.target.value)"
+          ref="wiki"
+        />
+        <label
+          class="radiolabel"
+          :class="{
+            itemdisabled: global.state.inputsDisabled
+          }"
+          for="wiki"
+        >
+          <div class="wikipediaiconcontainer">
+            <img
+              class="wikipediaiconsmall"
+              src="../assets/images/wikipedia.svg"
+            />
+          </div>
+        </label>
+      </form>
+    </div>
+
+    <div
+      id="item9"
       :class="{
         mobile: global.state.mobileMode
       }"
@@ -553,6 +638,31 @@ export default {
 
       this.$emit('languageSwitched', value)
     },
+
+    buttonModeSwitched(value) {
+      switch (value) {
+        case 'search':
+          this.$refs.search.checked = true
+          this.$refs.catsredir.checked = false
+          this.$refs.wiki.checked = false
+
+          break
+        case 'catsredir':
+          this.$refs.search.checked = false
+          this.$refs.catsredir.checked = true
+          this.$refs.wiki.checked = false
+
+          break
+        case 'wiki':
+          this.$refs.search.checked = false
+          this.$refs.catsredir.checked = false
+          this.$refs.wiki.checked = true
+
+          break
+      }
+      this.global.setButtonMode(value)
+    },
+
     categoriesOnHoverOrClickChanged(value) {
       if (value === 'catshover') {
         this.$refs.catsHover.checked = true
@@ -588,6 +698,7 @@ export default {
   mounted() {
     // init
     this.languageSwitched('en')
+    this.buttonModeSwitched('search')
     this.categoriesOnHoverOrClickChanged('catshover')
 
     if (window.matchMedia('(orientation: landscape)').matches) {
@@ -740,7 +851,7 @@ export default {
   flex-grow: 1;
 }
 
-@media only screen and (max-width: 1150px) {
+@media only screen and (max-width: 1260px) {
   #item2.mobile,
   #item3.mobile,
   #item4.mobile {
@@ -748,7 +859,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: 1050px) {
+@media only screen and (max-width: 1160px) {
   #item2,
   #item3,
   #item4 {
@@ -756,7 +867,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: 940px) {
+@media only screen and (max-width: 950px) {
   #item2,
   #item3,
   #item4,
@@ -767,10 +878,27 @@ export default {
   }
 }
 
-@media only screen and (max-width: 530px) {
-  #item5.mobile,
-  #item6.mobile {
+@media only screen and (max-width: 640px) {
+  #item5.mobile {
+    flex-basis: 41%;
+  }
+
+  #item6.mobile,
+  #item7.mobile {
+    flex-basis: 27%;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  #item6,
+  #item7 {
     flex-basis: 50%;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  #item4.mobile {
+    flex-basis: 90%;
   }
 }
 
@@ -834,7 +962,10 @@ export default {
 .flagicon,
 .clickicon,
 .hovericon,
-.helpicon {
+.helpicon,
+.searchicon,
+.wikipediaiconcontainer,
+.catsredircontainer {
   width: 2.66em;
   height: 1.4em;
   vertical-align: middle;
@@ -846,9 +977,16 @@ export default {
 
 .searchiconsmall,
 .titleiconsmall,
-.categoriesiconsmall {
+.categoriesiconsmall,
+.wikipediaiconsmall {
   width: 1.4em;
   height: 1.4em;
+  vertical-align: middle;
+}
+
+.catsrediricon {
+  width: 1.3em;
+  height: 1.3em;
   vertical-align: middle;
 }
 
