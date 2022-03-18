@@ -17,7 +17,7 @@
           !global.statefull.titlePage.missing
     "
     ref="titlebutton"
-    v-on="{ mouseenter: initHoverButtonTitleCoords }"
+    v-on="{ mouseenter: hoverTitleButton }"
   >
     <div
       class="buttonicongridcontainer"
@@ -139,6 +139,18 @@ export default {
     const hoverBottomTitle = ref(0)
     const titleButtonHoverOverride = ref(false)
 
+    function hoverTitleButton() {
+      if (
+        !global.state.mobileMode &&
+        global.state.showCatsRedir &&
+        global.state.categoriesOnHover
+      ) {
+        global.setCatsRedirResult(global.statefull.titlePage)
+      }
+
+      initHoverButtonTitleCoords()
+    }
+
     function initHoverButtonTitleCoords() {
       if (props.outgraphref) {
         if (titlebutton.value && props.outgraphref.getBoundingClientRect) {
@@ -181,6 +193,7 @@ export default {
       hoverBottomTitle,
       titleButtonHoverOverride,
       initHoverButtonTitleCoords,
+      hoverTitleButton,
       catsClick
     }
   },

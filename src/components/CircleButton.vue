@@ -10,7 +10,7 @@
       width: global.state.mobileMode ? 125 * 0.66 + 'px' : 125 + 'px'
     }"
     ref="circlebutton"
-    v-on="{ mouseenter: () => initHoverButtonCircleCoords(index) }"
+    v-on="{ mouseenter: hoverCircleButton }"
   >
     <div
       class="buttonicongridcontainer"
@@ -170,6 +170,18 @@ export default {
     const hoverBottom = ref(0)
     const circleButtonHoverOverride = ref(false)
 
+    function hoverCircleButton() {
+      if (
+        !global.state.mobileMode &&
+        global.state.showCatsRedir &&
+        global.state.categoriesOnHover
+      ) {
+        global.setCatsRedirResult(global.state.displayResultsArray[props.index])
+      }
+
+      initHoverButtonCircleCoords()
+    }
+
     function initHoverButtonCircleCoords() {
       if (circlebutton.value && props.outgraphref.getBoundingClientRect) {
         hoverRight.value =
@@ -216,6 +228,7 @@ export default {
       hoverBottom,
       circleButtonHoverOverride,
       initHoverButtonCircleCoords,
+      hoverCircleButton,
       catsClick
     }
   },

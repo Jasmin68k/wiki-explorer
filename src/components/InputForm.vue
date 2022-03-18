@@ -332,12 +332,7 @@
         </label>
       </span>
     </div>
-    <div
-      id="item7"
-      :class="{
-        mobile: global.state.mobileMode
-      }"
-    >
+    <div v-if="!global.state.mobileMode" id="item7">
       <form>
         <input
           class="radiobutton"
@@ -715,8 +710,13 @@ export default {
     modeSwitched(value) {
       if (value === 'mobile') {
         this.global.setMobileMode(true)
+        this.global.setCategoriesOnHover(false)
       } else {
         this.global.setMobileMode(false)
+
+        this.$nextTick(() => {
+          this.categoriesOnHoverOrClickChanged('catshover')
+        })
       }
       this.global.setShowCatsRedir(false)
       this.buttonModeSwitched('search')
@@ -738,12 +738,12 @@ export default {
     this.categoriesOnHoverOrClickChanged('catshover')
 
     if (window.matchMedia('(orientation: landscape)').matches) {
-      if (window.innerWidth < 860) {
+      if (window.innerWidth < 950) {
         this.modeSwitched('mobile')
         this.categoriesOnHoverOrClickChanged('catsclick')
       }
     } else {
-      if (window.innerWidth < 610) {
+      if (window.innerWidth < 800) {
         this.modeSwitched('mobile')
         this.categoriesOnHoverOrClickChanged('catsclick')
       }
@@ -887,14 +887,6 @@ export default {
   flex-grow: 1;
 }
 
-@media only screen and (max-width: 1260px) {
-  #item2.mobile,
-  #item3.mobile,
-  #item4.mobile {
-    flex-basis: 30%;
-  }
-}
-
 @media only screen and (max-width: 1160px) {
   #item2,
   #item3,
@@ -906,35 +898,16 @@ export default {
 @media only screen and (max-width: 950px) {
   #item2,
   #item3,
-  #item4,
-  #item2.mobile,
-  #item3.mobile,
-  #item4.mobile {
+  #item4 {
     flex-basis: 50%;
-  }
-}
-
-@media only screen and (max-width: 640px) {
-  #item5.mobile {
-    flex-basis: 41%;
-  }
-
-  #item6.mobile,
-  #item7.mobile {
-    flex-basis: 27%;
   }
 }
 
 @media only screen and (max-width: 550px) {
+  #item5.mobile,
   #item6,
   #item7 {
     flex-basis: 50%;
-  }
-}
-
-@media only screen and (max-width: 350px) {
-  #item4.mobile {
-    flex-basis: 90%;
   }
 }
 

@@ -2,19 +2,22 @@
   <div class="container">
     <div class="title">
       <h3>
-        {{ catsredirresult.title }}
+        {{ global.state.catsRedirResult.title }}
       </h3>
     </div>
     <div
       class="categories"
       v-if="
         global.state.resultsCategoriesEnabled &&
-        catsredirresult.categories.length > 0
+        global.state.catsRedirResult.categories.length > 0
       "
     >
       <h4>{{ $t('categories') }}</h4>
       <ul>
-        <li v-for="category in catsredirresult.categories" :key="category">
+        <li
+          v-for="category in global.state.catsRedirResult.categories"
+          :key="category"
+        >
           {{ category }}
         </li>
       </ul>
@@ -23,12 +26,15 @@
       class="redirects"
       v-if="
         global.state.resultsRedirectsEnabled &&
-        catsredirresult.redirects.length > 0
+        global.state.catsRedirResult.redirects.length > 0
       "
     >
       <ul>
         <h4>{{ $t('redirects') }}</h4>
-        <li v-for="redirect in catsredirresult.redirects" :key="redirect">
+        <li
+          v-for="redirect in global.state.catsRedirResult.redirects"
+          :key="redirect"
+        >
           {{ redirect }}
         </li>
       </ul>
@@ -47,9 +53,6 @@
 import { inject } from 'vue'
 export default {
   name: 'CategoriesRedirects',
-  props: {
-    catsredirresult: { required: true, default: {} }
-  },
   setup() {
     const global = inject('global')
     return { global }

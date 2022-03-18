@@ -116,12 +116,11 @@
           global.state.resultsCategoriesEnabled &&
           !global.state.mobileMode
       }"
-      :catsredirresult="catsRedirResult"
     ></categories-redirects>
 
     <help
       v-if="global.state.showHelp"
-      class="grid-item-categoriesredirects"
+      class="grid-item-help"
       :class="{
         mobile: global.state.mobileMode
       }"
@@ -166,8 +165,7 @@ export default {
   },
   data() {
     return {
-      scrollboxContainerHeight: 300,
-      catsRedirResult: {}
+      scrollboxContainerHeight: 300
     }
   },
   computed: {
@@ -311,7 +309,7 @@ export default {
         // needs await, otherwise one will overwrite the other
         await this.getCategories()
         await this.getRedirects()
-        this.catsRedirResult = this.global.statefull.titlePage
+        this.global.setCatsRedirResult(this.global.statefull.titlePage)
       }
     },
     async getCategories() {
@@ -346,9 +344,13 @@ export default {
             this.getJson()
             break
           case 'catsredir':
-            this.catsRedirResult = this.global.state.displayResultsArray[index]
-            this.global.setShowCatsRedir(true)
-            this.windowResized()
+            if (!this.global.state.categoriesOnHover) {
+              this.global.setCatsRedirResult(
+                this.global.state.displayResultsArray[index]
+              )
+              this.global.setShowCatsRedir(true)
+              this.windowResized()
+            }
             break
           case 'wiki':
             window.open(
@@ -365,11 +367,12 @@ export default {
         case 'search':
           break
         case 'catsredir':
-          this.catsRedirResult = this.global.statefull.titlePage
-          if (this.global.state.mobileMode) {
-            this.global.setShowCatsRedir(true)
+          if (!this.global.state.categoriesOnHover) {
+            this.global.setCatsRedirResult(this.global.statefull.titlePage)
+            if (this.global.state.mobileMode) {
+              this.global.setShowCatsRedir(true)
+            }
           }
-          // this.windowResized()
           break
         case 'wiki':
           // window.location = this.global.statefull.titlePage.url
@@ -435,7 +438,7 @@ export default {
       this.global.setLanguage(value)
     },
     modeSwitched() {
-      this.catsRedirResult = this.global.statefull.titlePage
+      this.global.setCatsRedirResult(this.global.statefull.titlePage)
       this.windowResized()
     },
     mobileDisplaySwitched() {
