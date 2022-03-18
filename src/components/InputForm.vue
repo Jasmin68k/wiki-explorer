@@ -252,6 +252,7 @@
           class="checkboxlabel"
           :class="{
             itemdisabled:
+              global.state.showCatsRedir ||
               global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
@@ -269,6 +270,7 @@
           type="checkbox"
           :checked="global.state.checkboxFilterEnabled"
           :disabled="
+            global.state.showCatsRedir ||
             global.state.inputsDisabled ||
             !global.state.resultsCategoriesEnabled
           "
@@ -300,6 +302,7 @@
           class="checkbox"
           type="checkbox"
           :disabled="
+            global.state.showCatsRedir ||
             global.state.inputsDisabled ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
@@ -312,6 +315,7 @@
           class="checkboxlabel"
           :class="{
             itemdisabled:
+              global.state.showCatsRedir ||
               global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
@@ -602,11 +606,25 @@ export default {
       this.$emit('fetchDataClicked', value)
     },
     resultsCategoriesChanged(value) {
+      if (
+        value === false &&
+        this.global.state.resultsRedirectsEnabled === false
+      ) {
+        this.buttonModeSwitched('search')
+      }
+
       this.global.setResultsCategoriesEnabled(value)
       this.resetFirstItem()
       this.$emit('resultsCategoriesChanged', value)
     },
     resultsRedirectsChanged(value) {
+      if (
+        value === false &&
+        this.global.state.resultsCategoriesEnabled === false
+      ) {
+        this.buttonModeSwitched('search')
+      }
+
       this.global.setResultsRedirectsEnabled(value)
       this.$emit('resultsRedirectsChanged', value)
     },

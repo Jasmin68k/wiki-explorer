@@ -184,21 +184,13 @@ export default {
       catsClick
     }
   },
+  emits: ['titleButtonClicked'],
   props: {
     outgraphref: { required: true, default: {} }
   },
   methods: {
     titleButton() {
-      switch (this.global.state.buttonMode) {
-        case 'search':
-          break
-        case 'catsredir':
-          break
-        case 'wiki':
-          // window.location = this.global.statefull.titlePage.url
-          window.open(this.global.statefull.titlePage.url, '_blank')
-          break
-      }
+      this.$emit('titleButtonClicked')
     }
   }
 }

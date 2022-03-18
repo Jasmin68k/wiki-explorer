@@ -6,11 +6,12 @@
   "max-results-per-page": "Max. Ergebnisse pro Seite: ",
   "results": "Ergebnisse: ",
   "showing": "Angezeigt: ",
-
   "to": " bis ",
   "scale-graph": "Graphen skalieren",
   "graph-radius": "Graphenradius",
   "search-on-wikipedia": "Bei Wikipedia suchen...",
+  "categories": "Kategorien",
+  "redirects": "Weiterleitungen",
   "help-help": "Zeige/verstecke diese Hilfe-Seite.",
   "help-desktop-mobile": "Arbeitsplatzmodus oder mobiler Modus",
   "help-language": "Sprache für Wikipedia und Bedienelemente",

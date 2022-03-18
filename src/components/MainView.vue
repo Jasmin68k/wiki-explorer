@@ -35,9 +35,11 @@
     <div
       v-if="
         (!global.state.showHelp &&
+          !global.state.showCatsRedir &&
           !global.state.mobileMode &&
           global.state.checkboxFilterEnabled) ||
         (!global.state.showHelp &&
+          !global.state.showCatsRedir &&
           global.state.mobileMode &&
           global.state.mobileDisplay === 'categories')
       "
@@ -62,19 +64,26 @@
 
     <outgraph
       v-if="
-        (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp &&
+          !global.state.showCatsRedir &&
+          !global.state.mobileMode) ||
+        (!global.state.showHelp &&
+          !global.state.showCatsRedir &&
           global.state.mobileMode &&
           global.state.mobileDisplay === 'outgraph')
       "
       class="grid-item-graph"
       @circleButtonClicked="circleButtonClicked"
+      @titleButtonClicked="titleButtonClicked"
     ></outgraph>
 
     <main-title-info
       v-if="
-        (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp &&
+          !global.state.showCatsRedir &&
+          !global.state.mobileMode) ||
+        (!global.state.showHelp &&
+          !global.state.showCatsRedir &&
           global.state.mobileMode &&
           global.state.mobileDisplay === 'maininfo')
       "
@@ -87,6 +96,8 @@
     <status-bar
       class="grid-item-statusbar"
       v-if="
+        !global.state.showHelp &&
+        !global.state.showCatsRedir &&
         global.state.filteredResultsArray.length > 0 &&
         (!global.state.mobileMode ||
           (global.state.mobileMode &&
@@ -94,15 +105,23 @@
       "
     ></status-bar>
 
-    <div
+    <categories-redirects
+      v-if="!global.state.showHelp && global.state.showCatsRedir"
+      class="grid-item-help"
+      :class="{
+        mobile: global.state.mobileMode
+      }"
+      :catsredirresult="catsRedirResult"
+    ></categories-redirects>
+
+    <help
       v-if="global.state.showHelp"
       class="grid-item-help"
       :class="{
         mobile: global.state.mobileMode
       }"
     >
-      <help></help>
-    </div>
+    </help>
   </div>
 </template>
 
@@ -113,6 +132,7 @@ import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 import StatusBar from './StatusBar.vue'
+import CategoriesRedirects from './CategoriesRedirects.vue'
 import Help from './Help.vue'
 import {
   wikiFetchAddCategoriesToTitlePage,
@@ -132,7 +152,8 @@ export default {
     Outgraph,
     CategoriesCheckboxFilter,
     Help,
-    StatusBar
+    StatusBar,
+    CategoriesRedirects
   },
   setup() {
     const global = inject('global')
@@ -141,7 +162,8 @@ export default {
   },
   data() {
     return {
-      scrollboxContainerHeight: 300
+      scrollboxContainerHeight: 300,
+      catsRedirResult: {}
     }
   },
   computed: {
@@ -306,27 +328,47 @@ export default {
     },
 
     async circleButtonClicked(index) {
+      if (!this.global.state.displayResultsArray[index].missing) {
+        switch (this.global.state.buttonMode) {
+          case 'search':
+            this.global.setTitle(
+              await wikiFetchGetRedirectTarget(
+                this.global.state.displayResultsArray[index].title,
+                this.global.state.language
+              )
+            )
+            this.getMainInfo()
+            this.getJson()
+            break
+          case 'catsredir':
+            this.catsRedirResult = this.global.state.displayResultsArray[index]
+            this.global.setShowCatsRedir(true)
+            break
+          case 'wiki':
+            window.open(
+              this.global.state.displayResultsArray[index].url,
+              '_blank'
+            )
+            break
+        }
+      }
+    },
+
+    titleButtonClicked() {
       switch (this.global.state.buttonMode) {
         case 'search':
-          this.global.setTitle(
-            await wikiFetchGetRedirectTarget(
-              this.global.state.displayResultsArray[index].title,
-              this.global.state.language
-            )
-          )
-          this.getMainInfo()
-          this.getJson()
           break
         case 'catsredir':
+          this.catsRedirResult = this.global.statefull.titlePage
+          this.global.setShowCatsRedir(true)
           break
         case 'wiki':
-          window.open(
-            this.global.state.displayResultsArray[index].url,
-            '_blank'
-          )
+          // window.location = this.global.statefull.titlePage.url
+          window.open(this.global.statefull.titlePage.url, '_blank')
           break
       }
     },
+
     async fetchDataClicked(value) {
       if (value) {
         this.global.setTitle(

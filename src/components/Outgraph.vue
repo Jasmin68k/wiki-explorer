@@ -1,6 +1,9 @@
 <template>
   <div class="outgraph" ref="outgraphref">
-    <title-button :outgraphref="outgraphref"></title-button>
+    <title-button
+      :outgraphref="outgraphref"
+      @titleButtonClicked="titleButtonClicked"
+    ></title-button>
 
     <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
       <circle-button
@@ -116,11 +119,14 @@ export default {
     }
   },
   components: { TitleButton, CircleButton, PieNavigation },
-  emits: ['circleButtonClicked'],
+  emits: ['circleButtonClicked', 'titleButtonClicked'],
 
   methods: {
     circleButtonClicked(index) {
       this.$emit('circleButtonClicked', index)
+    },
+    titleButtonClicked() {
+      this.$emit('titleButtonClicked')
     }
   }
 }
