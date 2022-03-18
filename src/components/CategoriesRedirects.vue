@@ -5,7 +5,13 @@
         {{ catsredirresult.title }}
       </h3>
     </div>
-    <div class="categories" v-if="global.state.resultsCategoriesEnabled">
+    <div
+      class="categories"
+      v-if="
+        global.state.resultsCategoriesEnabled &&
+        catsredirresult.categories.length > 0
+      "
+    >
       <h4>{{ $t('categories') }}</h4>
       <ul>
         <li v-for="category in catsredirresult.categories" :key="category">
@@ -13,7 +19,13 @@
         </li>
       </ul>
     </div>
-    <div class="redirects" v-if="global.state.resultsRedirectsEnabled">
+    <div
+      class="redirects"
+      v-if="
+        global.state.resultsRedirectsEnabled &&
+        catsredirresult.redirects.length > 0
+      "
+    >
       <ul>
         <h4>{{ $t('redirects') }}</h4>
         <li v-for="redirect in catsredirresult.redirects" :key="redirect">
@@ -22,7 +34,11 @@
       </ul>
     </div>
 
-    <button class="closebutton" @click="global.setShowCatsRedir(false)">
+    <button
+      v-if="global.state.mobileMode"
+      class="closebutton"
+      @click="global.setShowCatsRedir(false)"
+    >
       <img class="closebuttonicon" src="../assets/images/close-button.svg" />
     </button>
   </div>

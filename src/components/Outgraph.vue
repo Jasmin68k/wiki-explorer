@@ -106,6 +106,8 @@ export default {
 
     watchEffect(() => calcCoordinates(global.state.displayResultsArray))
     watchEffect(() => calcCoordinates(global.state.mobileMode))
+    watchEffect(() => calcCoordinates(global.state.checkboxFilterEnabled))
+    watchEffect(() => calcCoordinates(global.state.showCatsRedir))
 
     onUnmounted(() => {
       window.removeEventListener('resize', calcCoordinates)

@@ -4,12 +4,14 @@
     :class="{
       mobile: global.state.mobileMode,
       'grid-container':
-        global.state.checkboxFilterEnabled &&
-        global.state.resultsCategoriesEnabled &&
+        ((global.state.checkboxFilterEnabled &&
+          global.state.resultsCategoriesEnabled) ||
+          global.state.showCatsRedir) &&
         !global.state.mobileMode,
-      'grid-container-nocategories':
+      'grid-container-nocategoriesredirectscheckbox':
         (!global.state.checkboxFilterEnabled ||
           !global.state.resultsCategoriesEnabled) &&
+        !global.state.showCatsRedir &&
         !global.state.mobileMode
     }"
     ref="gridcontainer"
@@ -30,22 +32,22 @@
         @languageSwitched="languageSwitched"
         @modeSwitched="modeSwitched"
         @mobileDisplaySwitched="mobileDisplaySwitched"
+        @buttonModeSwitched="buttonModeSwitched"
       ></input-form>
     </div>
     <div
       v-if="
         (!global.state.showHelp &&
-          !global.state.showCatsRedir &&
           !global.state.mobileMode &&
           global.state.checkboxFilterEnabled) ||
         (!global.state.showHelp &&
-          !global.state.showCatsRedir &&
           global.state.mobileMode &&
           global.state.mobileDisplay === 'categories')
       "
-      class="inputcategoriescontainer grid-item-categories"
+      class="inputcategoriescontainer grid-item-checkbox"
       :class="{
-        mobile: global.state.mobileMode
+        mobile: global.state.mobileMode,
+        categoriesredirects: global.state.showCatsRedir
       }"
     >
       <categories-checkbox-filter
@@ -64,9 +66,7 @@
 
     <outgraph
       v-if="
-        (!global.state.showHelp &&
-          !global.state.showCatsRedir &&
-          !global.state.mobileMode) ||
+        (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp &&
           !global.state.showCatsRedir &&
           global.state.mobileMode &&
@@ -77,11 +77,9 @@
       @titleButtonClicked="titleButtonClicked"
     ></outgraph>
 
-    <main-title-info
+    <div
       v-if="
-        (!global.state.showHelp &&
-          !global.state.showCatsRedir &&
-          !global.state.mobileMode) ||
+        (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp &&
           !global.state.showCatsRedir &&
           global.state.mobileMode &&
@@ -91,32 +89,39 @@
       :class="{
         mobile: global.state.mobileMode
       }"
-    ></main-title-info>
+      ref="maininfo"
+    >
+      <main-title-info></main-title-info>
+    </div>
 
     <status-bar
       class="grid-item-statusbar"
       v-if="
         !global.state.showHelp &&
-        !global.state.showCatsRedir &&
         global.state.filteredResultsArray.length > 0 &&
         (!global.state.mobileMode ||
-          (global.state.mobileMode &&
+          (!global.state.showCatsRedir &&
+            global.state.mobileMode &&
             global.state.mobileDisplay === 'outgraph'))
       "
     ></status-bar>
 
     <categories-redirects
       v-if="!global.state.showHelp && global.state.showCatsRedir"
-      class="grid-item-help"
+      class="grid-item-categoriesredirects"
       :class="{
-        mobile: global.state.mobileMode
+        mobile: global.state.mobileMode,
+        checkbox:
+          global.state.checkboxFilterEnabled &&
+          global.state.resultsCategoriesEnabled &&
+          !global.state.mobileMode
       }"
       :catsredirresult="catsRedirResult"
     ></categories-redirects>
 
     <help
       v-if="global.state.showHelp"
-      class="grid-item-help"
+      class="grid-item-categoriesredirects"
       :class="{
         mobile: global.state.mobileMode
       }"
@@ -157,7 +162,6 @@ export default {
   },
   setup() {
     const global = inject('global')
-
     return { global }
   },
   data() {
@@ -307,6 +311,7 @@ export default {
         // needs await, otherwise one will overwrite the other
         await this.getCategories()
         await this.getRedirects()
+        this.catsRedirResult = this.global.statefull.titlePage
       }
     },
     async getCategories() {
@@ -343,6 +348,7 @@ export default {
           case 'catsredir':
             this.catsRedirResult = this.global.state.displayResultsArray[index]
             this.global.setShowCatsRedir(true)
+            this.windowResized()
             break
           case 'wiki':
             window.open(
@@ -360,13 +366,20 @@ export default {
           break
         case 'catsredir':
           this.catsRedirResult = this.global.statefull.titlePage
-          this.global.setShowCatsRedir(true)
+          if (this.global.state.mobileMode) {
+            this.global.setShowCatsRedir(true)
+          }
+          // this.windowResized()
           break
         case 'wiki':
           // window.location = this.global.statefull.titlePage.url
           window.open(this.global.statefull.titlePage.url, '_blank')
           break
       }
+    },
+
+    buttonModeSwitched() {
+      this.windowResized()
     },
 
     async fetchDataClicked(value) {
@@ -422,6 +435,7 @@ export default {
       this.global.setLanguage(value)
     },
     modeSwitched() {
+      this.catsRedirResult = this.global.statefull.titlePage
       this.windowResized()
     },
     mobileDisplaySwitched() {
@@ -432,9 +446,16 @@ export default {
     },
     windowResized() {
       this.$nextTick(() => {
-        this.scrollboxContainerHeight =
-          this.$refs.gridcontainer.getBoundingClientRect().height -
-          this.$refs.inputarea.getBoundingClientRect().height
+        if (this.global.state.showCatsRedir && !this.global.state.mobileMode) {
+          this.scrollboxContainerHeight =
+            this.$refs.gridcontainer.getBoundingClientRect().height -
+            this.$refs.inputarea.getBoundingClientRect().height -
+            this.$refs.maininfo.getBoundingClientRect().height
+        } else {
+          this.scrollboxContainerHeight =
+            this.$refs.gridcontainer.getBoundingClientRect().height -
+            this.$refs.inputarea.getBoundingClientRect().height
+        }
       })
     }
   },
@@ -464,7 +485,7 @@ export default {
   height: 100vh;
 }
 
-.grid-container-nocategories {
+.grid-container-nocategoriesredirectscheckbox {
   width: 100%;
   grid-template-columns: 1fr;
   grid-template-rows: min-content min-content 2fr 1fr;
@@ -491,13 +512,17 @@ export default {
   grid-row: 3 / 4;
 }
 
-.grid-item-categories {
+.grid-item-checkbox {
   grid-column: 2 / 3;
   grid-row: 2 / 5;
 }
-.grid-item-categories.mobile {
+.grid-item-checkbox.mobile {
   grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-row: 2 / 4;
+}
+.grid-item-checkbox.categoriesredirects {
+  grid-column: 2 / 3;
+  grid-row: 2 / 4;
 }
 
 .grid-item-maininfo {
@@ -508,7 +533,7 @@ export default {
 
 .grid-item-maininfo.mobile {
   grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-row: 2 / 4;
   overflow-y: auto;
 }
 
@@ -526,5 +551,20 @@ export default {
 .grid-item-help.mobile {
   grid-column: 1 / 2;
   grid-row: 2 / 4;
+}
+.grid-item-categoriesredirects {
+  grid-column: 2 / 3;
+  grid-row: 2 / 5;
+  width: 100%;
+  overflow-y: auto;
+}
+.grid-item-categoriesredirects.mobile {
+  grid-column: 1 / 2;
+  grid-row: 2 / 4;
+}
+.grid-item-categoriesredirects.checkbox {
+  grid-row: 4 / 5;
+  width: 100%;
+  overflow-y: auto;
 }
 </style>

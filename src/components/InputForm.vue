@@ -192,7 +192,7 @@
       <input
         class="radiobutton"
         type="radio"
-        :disabled="global.state.showHelp"
+        :disabled="global.state.showHelp || global.state.showCatsRedir"
         id="maininfo"
         value="maininfo"
         :checked="global.state.mobileDisplay === 'maininfo'"
@@ -201,7 +201,9 @@
       <label
         class="radiolabel"
         for="maininfo"
-        :class="{ itemdisabled: global.state.showHelp }"
+        :class="{
+          itemdisabled: global.state.showHelp || global.state.showCatsRedir
+        }"
         ><img class="titleicon" src="../assets/images/text-tool.svg"
       /></label>
       <input
@@ -209,6 +211,7 @@
         type="radio"
         :disabled="
           global.state.showHelp ||
+          global.state.showCatsRedir ||
           (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
         "
         id="categories"
@@ -222,6 +225,7 @@
         :class="{
           itemdisabled:
             global.state.showHelp ||
+            global.state.showCatsRedir ||
             (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
         }"
       >
@@ -252,7 +256,7 @@
           class="checkboxlabel"
           :class="{
             itemdisabled:
-              global.state.showCatsRedir ||
+              (global.state.mobileMode && global.state.showCatsRedir) ||
               global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
@@ -270,7 +274,7 @@
           type="checkbox"
           :checked="global.state.checkboxFilterEnabled"
           :disabled="
-            global.state.showCatsRedir ||
+            (global.state.mobileMode && global.state.showCatsRedir) ||
             global.state.inputsDisabled ||
             !global.state.resultsCategoriesEnabled
           "
@@ -302,7 +306,6 @@
           class="checkbox"
           type="checkbox"
           :disabled="
-            global.state.showCatsRedir ||
             global.state.inputsDisabled ||
             (global.state.mobileMode &&
               (global.state.mobileDisplay === 'maininfo' ||
@@ -315,7 +318,6 @@
           class="checkboxlabel"
           :class="{
             itemdisabled:
-              global.state.showCatsRedir ||
               global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
@@ -578,7 +580,8 @@ export default {
     'checkboxFilterEnabledChanged',
     'languageSwitched',
     'mode-switched',
-    'mobile-display-switched'
+    'mobile-display-switched',
+    'button-mode-switched'
   ],
 
   setup() {
@@ -660,18 +663,30 @@ export default {
     buttonModeSwitched(value) {
       switch (value) {
         case 'search':
+          if (!this.global.state.mobileMode) {
+            this.global.setShowCatsRedir(false)
+          }
+
           this.$refs.search.checked = true
           this.$refs.catsredir.checked = false
           this.$refs.wiki.checked = false
 
           break
         case 'catsredir':
+          if (!this.global.state.mobileMode) {
+            this.global.setShowCatsRedir(true)
+          }
+
           this.$refs.search.checked = false
           this.$refs.catsredir.checked = true
           this.$refs.wiki.checked = false
 
           break
         case 'wiki':
+          if (!this.global.state.mobileMode) {
+            this.global.setShowCatsRedir(false)
+          }
+
           this.$refs.search.checked = false
           this.$refs.catsredir.checked = false
           this.$refs.wiki.checked = true
@@ -679,6 +694,7 @@ export default {
           break
       }
       this.global.setButtonMode(value)
+      this.$emit('button-mode-switched')
     },
 
     categoriesOnHoverOrClickChanged(value) {
@@ -702,6 +718,8 @@ export default {
       } else {
         this.global.setMobileMode(false)
       }
+      this.global.setShowCatsRedir(false)
+      this.buttonModeSwitched('search')
       this.$emit('mode-switched', value)
     },
     mobileDisplaySwitched(value) {
