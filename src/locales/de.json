@@ -53,5 +53,6 @@
   "help-outro13g": "checkboxfilter - Nur Arbeitsplatzmodus: Schalte Kontrollkästchenfilter für Kategorien ein/aus, 'on' oder 'off' valide",
   "help-outro13h": "redirects - Schalte Weiterleitungen ein/aus, 'on' oder 'off' valide",
   "help-outro13i": "categoriesmode - Zeige Kategorien bei Mausschweben oder Klick, valide 'click' oder 'hover'",
-  "help-outro13j": "search - Wikipedia-Seite, nach der gesucht werden soll"
+  "help-outro13j": "search - Wikipedia-Seite, nach der gesucht werden soll",
+  "open": "Öffne"
 }

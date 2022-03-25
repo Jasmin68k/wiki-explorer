@@ -53,5 +53,6 @@
   "help-outro13g": "checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, 'on' or 'off' valid",
   "help-outro13h": "redirects - Enable/disable redirects, 'on' or 'off' valid",
   "help-outro13i": "categoriesmode - Show categories on click or hover, valid 'click' or 'hover'",
-  "help-outro13j": "search - Wikipedia page to search for"
+  "help-outro13j": "search - Wikipedia page to search for",
+  "open": "Open"
 }

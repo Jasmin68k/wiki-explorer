@@ -9,9 +9,14 @@
         <img class="image" :src="global.statefull.titlePage.image" />
       </div>
       <div v-if="global.statefull.titlePage.title">
-        <h2>
+        <h2 class="heading">
           {{ global.statefull.titlePage.title }}
         </h2>
+
+        <button class="wikibutton" @click="wikiClicked">
+          {{ $t('open') }}
+          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+        </button>
       </div>
 
       <div class="extract" v-html="global.statefull.titlePage.extract"></div>
@@ -57,7 +62,11 @@ export default {
   name: 'MainTitleInfo',
   setup() {
     const global = inject('global')
-    return { global }
+
+    function wikiClicked() {
+      window.open(this.global.statefull.titlePage.url, '_blank')
+    }
+    return { global, wikiClicked }
   },
   components: { CategoriesRedirectsTitle }
 }
@@ -77,5 +86,23 @@ export default {
 }
 .imageonly {
   width: 100%;
+}
+.heading {
+  display: inline;
+  vertical-align: middle;
+}
+.heading {
+  display: inline;
+}
+.wikibutton {
+  font-size: 90%;
+  vertical-align: middle;
+  margin-left: 1em;
+  border-radius: 0;
+  border: 1px solid black;
+}
+.wikipediaicon {
+  height: 1.5em;
+  vertical-align: top;
 }
 </style>

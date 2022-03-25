@@ -74,7 +74,6 @@
       "
       class="grid-item-graph"
       @circleButtonClicked="circleButtonClicked"
-      @titleButtonClicked="titleButtonClicked"
     ></outgraph>
 
     <div
@@ -359,25 +358,6 @@ export default {
             )
             break
         }
-      }
-    },
-
-    titleButtonClicked() {
-      switch (this.global.state.buttonMode) {
-        case 'search':
-          break
-        case 'catsredir':
-          if (!this.global.state.categoriesOnHover) {
-            this.global.setCatsRedirResult(this.global.statefull.titlePage)
-            if (this.global.state.mobileMode) {
-              this.global.setShowCatsRedir(true)
-            }
-          }
-          break
-        case 'wiki':
-          // window.location = this.global.statefull.titlePage.url
-          window.open(this.global.statefull.titlePage.url, '_blank')
-          break
       }
     },
 

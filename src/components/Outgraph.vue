@@ -1,10 +1,5 @@
 <template>
   <div class="outgraph" ref="outgraphref">
-    <title-button
-      :outgraphref="outgraphref"
-      @titleButtonClicked="titleButtonClicked"
-    ></title-button>
-
     <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
       <circle-button
         :index="index"
@@ -28,7 +23,7 @@ import {
   reactive,
   onUnmounted
 } from 'vue'
-import TitleButton from './TitleButton.vue'
+
 import CircleButton from './CircleButton.vue'
 import PieNavigation from './PieNavigation.vue'
 
@@ -120,15 +115,12 @@ export default {
       pieNavigationRadius
     }
   },
-  components: { TitleButton, CircleButton, PieNavigation },
-  emits: ['circleButtonClicked', 'titleButtonClicked'],
+  components: { CircleButton, PieNavigation },
+  emits: ['circleButtonClicked'],
 
   methods: {
     circleButtonClicked(index) {
       this.$emit('circleButtonClicked', index)
-    },
-    titleButtonClicked() {
-      this.$emit('titleButtonClicked')
     }
   }
 }
