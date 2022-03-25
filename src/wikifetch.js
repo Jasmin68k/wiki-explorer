@@ -138,6 +138,9 @@ export async function wikiFetchTitlePage(title, language) {
     // check if image exists
     if ((titlePage.image = responseFull.query.pages[pageId].original)) {
       titlePage.image = responseFull.query.pages[pageId].original.source
+    } else {
+      // otherwise undefined
+      titlePage.image = ''
     }
   } catch (error) {
     // add error/display for user or similar
