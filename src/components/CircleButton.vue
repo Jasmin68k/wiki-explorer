@@ -147,8 +147,9 @@
   >
     <ul>
       <li
-        v-for="category in global.state.displayResultsArray[index].categories"
-        :key="category"
+        v-for="(category, index) in global.state.displayResultsArray[index]
+          .categories"
+        :key="index"
       >
         {{ category }}
       </li>
