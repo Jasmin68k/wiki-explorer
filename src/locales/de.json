@@ -24,12 +24,10 @@
   "help-checkboxfilter-switch": "[Nur Arbeitsplatzmodus] Zeige/verstecke Kontrollkästchenfilter für Kategorien.",
   "help-redirects-switch1": "Zeige/verstecke Weiterleitungen. Holen für große Seiten kann  langsam sein. ",
   "help-redirects-switch2": " blinkt und Klick auf ein Ergebnis ist ausgeschaltet während des Holens.",
-  "help-categoriesclickhover-switch1": "Zeige Kategorien durch Klicken (",
-  "help-categoriesclickhover-switch2": " ) oder Mausschweben.",
-
-  "help-intro1": "Suche nach einer Wikipedia-Seite und erkunde alle verlinkten Wikipedia-Seiten mit Tortennavigation (Klicken, berühren, ziehen, Mausrad). Klicke auf den Titel irgendeines äußeren Ergebnisses um dieses zum neuen Suchziel zu machen. Das Wikipedia-Piktogramm öffnet die dazugehörige Wikipedia-Seite in einem neuen Reiter/Fenster. Mausschweben über einem Titel oder Klicken auf das Kategorien-Piktogramm (nur sichtbar, wenn Klick-Modus eingeschaltet ist, s. unten) zeigt seine Kategorien.",
-  "help-intro2": "Ergebnisse können nach Titeln und/oder Kategorien gefiltert werden, einfach in den dazugehörigen Texteingabefeldern anfangen zu tippen. Kategorien können auch mit einem Kontrollkästchenfilter, der eine Liste aller Kategorien aller Ergebnisse beinhaltet, gefiltert werden. Fehlende Seiten (welche bei Wikipedia verlinkt sind, aber noch nicht angelegt wurden) sind rot markiert. Ein Auszug mit Bild ist auch verfügbar.",
-  "help-intro3": "Die Anzeige aller Weiterleitungen von Wikipedia (alternative Suchbegriffe), die zu jedem einzelnen Ergebnis führen, kann auch eingeschaltet werden.",
+  "help-categoriesclickhover-switch": "[Nur Arbeitsplatzmodus] Zeige Kategorien durch Klicken oder Mausschweben.",
+  "help-buttonmode-switch": "Schalte Klickmodus für Ergebnisschalftflächen um: Suche, zeige Kategorien/Weiterleitungen, öffne Wikipedia-Seite",
+  "help-intro1": "Suche nach einer Wikipedia-Seite und erkunde alle verlinkten Wikipedia-Seiten mit Tortennavigation (Klicken, berühren, ziehen, Mausrad). Klicke auf den Titel irgendeines Ergebnisses um dieses zum neuen Suchziel zu machen, seine Kategorien/Weiterleitungen anzuzeigen oder seine Wikipedia-Seite zu öffnen (umstellbar, s. unten). Wenn Kategorien/Weiterleitungen eingeschaltet sind, zeigt Mausschweben über einem Titel (nur Arbeitsplatzmodus) oder darauf Klicken seine Kategorien.",
+  "help-intro2": "Ergebnisse können nach Titeln und/oder Kategorien gefiltert werden, einfach in den dazugehörigen Texteingabefeldern anfangen zu tippen. Kategorien können auch mit einem Kontrollkästchenfilter, der eine Liste aller Kategorien aller Ergebnisse beinhaltet, gefiltert werden. Fehlende Seiten (welche bei Wikipedia verlinkt sind, aber noch nicht angelegt wurden) sind rot markiert. Ein Auszug mit Bild, Schaltfläche um Wikipedia zu öffnen und Kategorien/Weiterleitungen (wenn eingeschaltet) ist auch verfügbar.",
   "help-arrows": "Vorheriges/nächstes Ergebnis",
   "help-outro0": "URL Parameter",
   "help-outro1": "Es kann/können beim Öffnen von Wiki-Explorer auch ein oder mehrere der folgenden Parameter direct zur URL hinzugefügt werden wie unten:",
@@ -53,6 +51,7 @@
   "help-outro13g": "checkboxfilter - Nur Arbeitsplatzmodus: Schalte Kontrollkästchenfilter für Kategorien ein/aus, 'on' oder 'off' valide",
   "help-outro13h": "redirects - Schalte Weiterleitungen ein/aus, 'on' oder 'off' valide",
   "help-outro13i": "categoriesmode - Zeige Kategorien bei Mausschweben oder Klick, valide 'click' oder 'hover'",
-  "help-outro13j": "search - Wikipedia-Seite, nach der gesucht werden soll",
+  "help-outro13j": "buttonmode - Bei Klick auf Ergebnistitel: Suche, zeige Kategorien/Weiterleitungen oder öffne Wikipedia, valide 'search', 'catsredir' oder 'wiki'",
+  "help-outro13k": "search - Wikipedia-Seite, nach der gesucht werden soll",
   "open": "Öffne"
 }

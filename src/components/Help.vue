@@ -4,7 +4,6 @@
       <h1>Wiki-Explorer</h1>
       <p>{{ $t('help-intro1') }}</p>
       <p>{{ $t('help-intro2') }}</p>
-      <p>{{ $t('help-intro3') }}</p>
     </div>
     <div>
       <div class="icon-help-container">
@@ -121,6 +120,34 @@
       /></span>
       {{ $t('help-redirects-switch2') }}
     </div>
+
+    <div>
+      <div class="icon-help-container">
+        <img class="icon-help" src="../assets/images/search.svg" />
+      </div>
+      <div class="icon-help-container">
+        <div :style="{ width: '2.66em' }">
+          <img class="icon-help2" src="../assets/images/document.svg" />
+          <img
+            class="icon-help2"
+            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+          />
+        </div>
+      </div>
+      <div class="icon-help-container">
+        <div :style="{ width: '2.66em' }">
+          <img
+            class="icon-help"
+            :style="{ width: '1.4em' }"
+            src="../assets/images/wikipedia.svg"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="help-text">
+      {{ $t('help-buttonmode-switch') }}
+    </div>
+
     <div>
       <div class="icon-help-container">
         <img class="icon-help" src="../assets/images/mouse-click.svg" />
@@ -130,9 +157,7 @@
       </div>
     </div>
     <div class="help-text">
-      {{ $t('help-categoriesclickhover-switch1') }}
-      <span><img class="icon-help3" src="../assets/images/document.svg" /></span
-      >{{ $t('help-categoriesclickhover-switch2') }}
+      {{ $t('help-categoriesclickhover-switch') }}
     </div>
     <div>
       <div>
@@ -191,7 +216,8 @@
         {{ $t('help-outro13g') }}<br />
         {{ $t('help-outro13h') }}<br />
         {{ $t('help-outro13i') }}<br />
-        {{ $t('help-outro13j') }}
+        {{ $t('help-outro13j') }}<br />
+        {{ $t('help-outro13k') }}
       </p>
     </div>
   </div>
@@ -230,6 +256,12 @@ export default {
   height: 1.4em;
   vertical-align: middle;
 }
+.icon-help2 {
+  width: 1.3em;
+  height: 1.4em;
+  vertical-align: middle;
+}
+
 .icon-help3 {
   height: 1em;
   vertical-align: middle;
