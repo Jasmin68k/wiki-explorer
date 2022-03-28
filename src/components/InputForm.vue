@@ -761,6 +761,7 @@ export default {
      * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
      * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
      * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
+     * @param {String} buttonmode - Search, show categories/redirects or open Wikipedia on button click, valid search, catsredir, wiki
      * @param {String} search - Wikipedia page to search for (global.state.title)
      */
 
@@ -775,6 +776,7 @@ export default {
     const checkboxfilter = urlParameters.get('checkboxfilter')
     const redirects = urlParameters.get('redirects')
     const categoriesmode = urlParameters.get('categoriesmode')
+    const buttonmode = urlParameters.get('buttonmode')
     const search = urlParameters.get('search')
 
     if (mode === 'desktop' || mode === 'mobile') {
@@ -864,6 +866,36 @@ export default {
 
         case 'hover':
           this.categoriesOnHoverOrClickChanged('catshover')
+      }
+    }
+
+    if (categoriesmode === 'click' || categoriesmode === 'hover') {
+      switch (categoriesmode) {
+        case 'click':
+          this.categoriesOnHoverOrClickChanged('catsclick')
+          break
+
+        case 'hover':
+          this.categoriesOnHoverOrClickChanged('catshover')
+      }
+    }
+
+    if (
+      buttonmode === 'search' ||
+      buttonmode === 'catsredir' ||
+      buttonmode === 'wiki'
+    ) {
+      switch (buttonmode) {
+        case 'search':
+          this.buttonModeSwitched('search')
+          break
+
+        case 'catsredir':
+          this.buttonModeSwitched('catsredir')
+          break
+
+        case 'wiki':
+          this.buttonModeSwitched('wiki')
       }
     }
 
