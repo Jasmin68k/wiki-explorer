@@ -3,7 +3,6 @@
     <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
       <circle-button
         :index="index"
-        :outgraphref="outgraphref"
         :coordinates="circleButtonCoordinates.value[index]"
         @circleButtonClicked="circleButtonClicked"
       >
