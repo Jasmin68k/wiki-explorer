@@ -18,9 +18,8 @@
           <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
         </button>
       </div>
-
-      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
       <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
+      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
     </div>
     <div
       v-if="
@@ -32,9 +31,8 @@
           {{ global.statefull.titlePage.title }}
         </h2>
       </div>
-
-      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
       <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
+      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
     </div>
     <div
       v-if="
@@ -46,11 +44,10 @@
           {{ global.statefull.titlePage.title }}
         </h2>
       </div>
-
+      <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
       <div>
         <img class="imageonly" :src="global.statefull.titlePage.image" />
       </div>
-      <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
     </div>
   </div>
 </template>

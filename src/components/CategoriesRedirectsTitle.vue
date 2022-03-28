@@ -1,6 +1,11 @@
 <template>
+  <!-- abusing resultsCategoriesEnabled and resultsRedirectsEnabled also for toggling visibility in MainInfo -->
+
   <div
-    v-if="global.statefull.titlePage.categories.length > 0"
+    v-if="
+      global.statefull.titlePage.categories.length > 0 &&
+      global.state.resultsCategoriesEnabled
+    "
     class="catsredirects"
   >
     <span
@@ -18,7 +23,10 @@
   </div>
 
   <div
-    v-if="global.statefull.titlePage.redirects.length > 0"
+    v-if="
+      global.statefull.titlePage.redirects.length > 0 &&
+      global.state.resultsRedirectsEnabled
+    "
     class="catsredirects"
   >
     <span
