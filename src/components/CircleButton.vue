@@ -13,6 +13,7 @@
     v-on="{ mouseenter: hoverCircleButton }"
   >
     <button
+      ref="buttonref"
       :class="{
         missing: global.state.displayResultsArray[index].missing,
         circlebuttonactualhover:
@@ -40,11 +41,31 @@
   </div>
 </template>
 <script>
-import { inject } from 'vue'
+import { inject, onMounted, onUpdated, ref } from 'vue'
 export default {
   name: 'CircleButton',
   setup(props) {
     const global = inject('global')
+
+    const buttonref = ref(null)
+
+    onMounted(() => {
+      adjustFontSize()
+    })
+
+    onUpdated(() => {
+      adjustFontSize()
+    })
+
+    // make font smaller, if otherwise button text overflows
+    function adjustFontSize() {
+      if (buttonref.value.scrollHeight > buttonref.value.clientHeight) {
+        let fontsize = parseFloat(buttonref.value.style['font-size'])
+        fontsize -= 1
+        buttonref.value.style['font-size'] = fontsize + '%'
+        adjustFontSize()
+      }
+    }
 
     function hoverCircleButton() {
       if (
@@ -58,7 +79,8 @@ export default {
 
     return {
       global,
-      hoverCircleButton
+      hoverCircleButton,
+      buttonref
     }
   },
 
