@@ -116,7 +116,7 @@ export default {
     }
   },
   components: { CircleButton, PieNavigation },
-  emits: ['circleButtonClicked'],
+  emits: ['circleButtonClicked', 'circleButtonWindowResizeTrigger'],
 
   methods: {
     circleButtonClicked(clickData) {

@@ -53,5 +53,12 @@
   "help-outro13i": "categoriesmode - Zeige Kategorien bei Mausschweben oder Klick, valide 'click' oder 'hover'",
   "help-outro13j": "buttonmode - Bei Klick auf Ergebnistitel: Suche, zeige Kategorien/Weiterleitungen oder öffne Wikipedia, valide 'search', 'catsredir' oder 'wiki'",
   "help-outro13k": "search - Wikipedia-Seite, nach der gesucht werden soll",
-  "open": "Öffne"
+  "open": "Öffne",
+  "lmb": "LMT: ",
+  "ctrllmb": "STRG+LMT: ",
+  "hover": "Mausschweben: ",
+  "mmb": "MMT: ",
+  "openwiki": "Wikipedia",
+  "search": "Suche",
+  "showcatsredir": "Kateg./Weiterl."
 }

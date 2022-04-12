@@ -53,5 +53,12 @@
   "help-outro13i": "categoriesmode - Show categories on click or hover, valid 'click' or 'hover'",
   "help-outro13j": "buttonmode - On result button title click: Search, show categories/redirects or open Wikipedia on button click, valid 'search', 'catsredir' or 'wiki'",
   "help-outro13k": "search - Wikipedia page to search for",
-  "open": "Open"
+  "open": "Open",
+  "lmb": "LMB: ",
+  "ctrllmb": "CTRL+LMB: ",
+  "hover": "Hover: ",
+  "mmb": "MMB: ",
+  "openwiki": "Wikipedia",
+  "search": "Search",
+  "showcatsredir": "Categories/redirects"
 }

@@ -33,6 +33,7 @@
         @modeSwitched="modeSwitched"
         @mobileDisplaySwitched="mobileDisplaySwitched"
         @buttonModeSwitched="buttonModeSwitched"
+        @categoriesOnHoverChanged="categoriesOnHoverChanged"
       ></input-form>
     </div>
     <div
@@ -393,6 +394,7 @@ export default {
     },
     buttonModeSwitched() {
       this.windowResized()
+      this.updateButtonModeString()
     },
 
     async fetchDataClicked(value) {
@@ -446,7 +448,82 @@ export default {
     languageSwitched(value) {
       this.$i18n.locale = value
       this.global.setLanguage(value)
+      this.updateButtonModeString()
     },
+    categoriesOnHoverChanged() {
+      this.updateButtonModeString()
+    },
+    updateButtonModeString() {
+      switch (this.global.state.buttonMode) {
+        case 'search':
+          if (!this.global.state.categoriesOnHover) {
+            this.global.setButtonModeString(
+              this.$t('lmb') +
+                this.$t('search') +
+                ' - ' +
+                this.$t('ctrllmb') +
+                this.$t('showcatsredir') +
+                ' - ' +
+                this.$t('mmb') +
+                this.$t('openwiki')
+            )
+          } else {
+            this.global.setButtonModeString(
+              this.$t('lmb') +
+                this.$t('search') +
+                ' - ' +
+                this.$t('hover') +
+                this.$t('showcatsredir') +
+                ' - ' +
+                this.$t('mmb') +
+                this.$t('openwiki')
+            )
+          }
+
+          break
+        case 'catsredir':
+          if (!this.global.state.categoriesOnHover) {
+            this.global.setButtonModeString(
+              this.$t('lmb') +
+                this.$t('showcatsredir') +
+                ' - ' +
+                this.$t('ctrllmb') +
+                this.$t('search') +
+                ' - ' +
+                this.$t('mmb') +
+                this.$t('openwiki')
+            )
+          } else {
+            this.global.setButtonModeString(
+              this.$t('hover') +
+                this.$t('showcatsredir') +
+                ' - ' +
+                this.$t('ctrllmb') +
+                this.$t('search') +
+                ' - ' +
+                this.$t('mmb') +
+                this.$t('openwiki')
+            )
+          }
+          break
+        case 'wiki':
+          if (!this.global.state.categoriesOnHover) {
+            this.global.setButtonModeString(
+              this.$t('lmb') + this.$t('openwiki')
+            )
+          } else {
+            this.global.setButtonModeString(
+              this.$t('lmb') +
+                this.$t('openwiki') +
+                ' - ' +
+                this.$t('hover') +
+                this.$t('showcatsredir')
+            )
+          }
+          break
+      }
+    },
+
     modeSwitched() {
       this.global.setCatsRedirResult(this.global.statefull.titlePage)
       this.windowResized()

@@ -23,6 +23,7 @@ const state = reactive({
   showCatsRedir: false,
   buttonMode: 'search',
   catsRedirResult: { categories: [], redirects: [] },
+  buttonModeString: '',
   filteredResultsArray: computed(function () {
     if (state.inputsDisabled) {
       return []
@@ -185,6 +186,9 @@ const setShowCatsRedir = (value) => {
 const setCatsRedirResult = (value) => {
   state.catsRedirResult = value
 }
+const setButtonModeString = (value) => {
+  state.buttonModeString = value
+}
 
 export default {
   state: readonly(state),
@@ -209,5 +213,6 @@ export default {
   setPieAngleSaved,
   setButtonMode,
   setShowCatsRedir,
-  setCatsRedirResult
+  setCatsRedirResult,
+  setButtonModeString
 }

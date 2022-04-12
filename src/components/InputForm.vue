@@ -576,7 +576,8 @@ export default {
     'languageSwitched',
     'mode-switched',
     'mobile-display-switched',
-    'button-mode-switched'
+    'button-mode-switched',
+    'categoriesOnHoverChanged'
   ],
 
   setup() {
@@ -689,6 +690,7 @@ export default {
           break
       }
       this.global.setButtonMode(value)
+
       this.$emit('button-mode-switched')
     },
 
@@ -706,6 +708,7 @@ export default {
       } else {
         this.global.setCategoriesOnHover(false)
       }
+      this.$emit('categoriesOnHoverChanged')
     },
     modeSwitched(value) {
       if (value === 'mobile') {
