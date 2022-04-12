@@ -34,7 +34,7 @@
         (global.state.resultsRedirectsEnabled &&
           !global.state.resultsRedirectsDone)
       "
-      @click.prevent="circleButton(index)"
+      @click.prevent="circleButton($event, index)"
     >
       {{ global.state.displayResultsArray[index].title }}
     </button>
@@ -44,7 +44,7 @@
 import { inject, onMounted, onUpdated, ref } from 'vue'
 export default {
   name: 'CircleButton',
-  setup(props) {
+  setup(props, { emit }) {
     const global = inject('global')
 
     const buttonref = ref(null)
@@ -68,11 +68,11 @@ export default {
     }
 
     function hoverCircleButton() {
-      if (
-        !global.state.mobileMode &&
-        global.state.showCatsRedir &&
-        global.state.categoriesOnHover
-      ) {
+      if (!global.state.mobileMode && global.state.categoriesOnHover) {
+        if (!global.showCatsRedir) {
+          global.setShowCatsRedir(true)
+          emit('circleButtonWindowResizeTrigger')
+        }
         global.setCatsRedirResult(global.state.displayResultsArray[props.index])
       }
     }
@@ -84,7 +84,7 @@ export default {
     }
   },
 
-  emits: ['circleButtonClicked'],
+  emits: ['circleButtonClicked', 'circleButtonWindowResizeTrigger'],
   props: {
     index: { required: true, default: -1, type: Number },
     coordinates: {
@@ -99,8 +99,8 @@ export default {
     }
   },
   methods: {
-    circleButton(index) {
-      this.$emit('circleButtonClicked', index)
+    circleButton(event, index) {
+      this.$emit('circleButtonClicked', { event: event, index: index })
     }
   }
 }

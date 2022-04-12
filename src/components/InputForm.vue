@@ -658,9 +658,9 @@ export default {
     buttonModeSwitched(value) {
       switch (value) {
         case 'search':
-          if (!this.global.state.mobileMode) {
-            this.global.setShowCatsRedir(false)
-          }
+          // if (!this.global.state.mobileMode) {
+          //   this.global.setShowCatsRedir(false)
+          // }
 
           this.$refs.search.checked = true
           this.$refs.catsredir.checked = false
@@ -668,9 +668,9 @@ export default {
 
           break
         case 'catsredir':
-          if (!this.global.state.mobileMode) {
-            this.global.setShowCatsRedir(true)
-          }
+          // if (!this.global.state.mobileMode) {
+          //   this.global.setShowCatsRedir(true)
+          // }
 
           this.$refs.search.checked = false
           this.$refs.catsredir.checked = true
@@ -678,9 +678,9 @@ export default {
 
           break
         case 'wiki':
-          if (!this.global.state.mobileMode) {
-            this.global.setShowCatsRedir(false)
-          }
+          // if (!this.global.state.mobileMode) {
+          //   this.global.setShowCatsRedir(false)
+          // }
 
           this.$refs.search.checked = false
           this.$refs.catsredir.checked = false

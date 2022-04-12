@@ -5,6 +5,7 @@
         :index="index"
         :coordinates="circleButtonCoordinates.value[index]"
         @circleButtonClicked="circleButtonClicked"
+        @circleButtonWindowResizeTrigger="circleButtonWindowResizeTrigger"
       >
       </circle-button>
     </div>
@@ -118,8 +119,11 @@ export default {
   emits: ['circleButtonClicked'],
 
   methods: {
-    circleButtonClicked(index) {
-      this.$emit('circleButtonClicked', index)
+    circleButtonClicked(clickData) {
+      this.$emit('circleButtonClicked', clickData)
+    },
+    circleButtonWindowResizeTrigger() {
+      this.$emit('circleButtonWindowResizeTrigger')
     }
   }
 }

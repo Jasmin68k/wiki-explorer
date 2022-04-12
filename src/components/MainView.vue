@@ -74,6 +74,7 @@
       "
       class="grid-item-graph"
       @circleButtonClicked="circleButtonClicked"
+      @circleButtonWindowResizeTrigger="circleButtonWindowResizeTrigger"
     ></outgraph>
 
     <div
@@ -115,6 +116,7 @@
           global.state.resultsCategoriesEnabled &&
           !global.state.mobileMode
       }"
+      @closeButtonClicked="catsRedirClosed"
     ></categories-redirects>
 
     <help
@@ -329,31 +331,55 @@ export default {
       this.global.setRedirectsDone(true)
     },
 
-    async circleButtonClicked(index) {
-      if (!this.global.state.displayResultsArray[index].missing) {
+    async circleButtonClicked(clickData) {
+      if (!this.global.state.displayResultsArray[clickData.index].missing) {
         switch (this.global.state.buttonMode) {
           case 'search':
-            this.global.setTitle(
-              await wikiFetchGetRedirectTarget(
-                this.global.state.displayResultsArray[index].title,
-                this.global.state.language
+            if (!clickData.event.ctrlKey) {
+              this.global.setTitle(
+                await wikiFetchGetRedirectTarget(
+                  this.global.state.displayResultsArray[clickData.index].title,
+                  this.global.state.language
+                )
               )
-            )
-            this.getMainInfo()
-            this.getJson()
+              this.getMainInfo()
+              this.getJson()
+            } else {
+              if (!this.global.state.categoriesOnHover) {
+                this.global.setCatsRedirResult(
+                  this.global.state.displayResultsArray[clickData.index]
+                )
+                this.global.setShowCatsRedir(true)
+                this.windowResized()
+              }
+            }
+
             break
+
           case 'catsredir':
-            if (!this.global.state.categoriesOnHover) {
-              this.global.setCatsRedirResult(
-                this.global.state.displayResultsArray[index]
+            if (!clickData.event.ctrlKey) {
+              if (!this.global.state.categoriesOnHover) {
+                this.global.setCatsRedirResult(
+                  this.global.state.displayResultsArray[clickData.index]
+                )
+                this.global.setShowCatsRedir(true)
+                this.windowResized()
+              }
+            } else {
+              this.global.setTitle(
+                await wikiFetchGetRedirectTarget(
+                  this.global.state.displayResultsArray[clickData.index].title,
+                  this.global.state.language
+                )
               )
-              this.global.setShowCatsRedir(true)
-              this.windowResized()
+              this.getMainInfo()
+              this.getJson()
             }
             break
+
           case 'wiki':
             window.open(
-              this.global.state.displayResultsArray[index].url,
+              this.global.state.displayResultsArray[clickData.index].url,
               '_blank'
             )
             break
@@ -361,6 +387,10 @@ export default {
       }
     },
 
+    catsRedirClosed() {
+      this.global.setShowCatsRedir(false)
+      this.windowResized()
+    },
     buttonModeSwitched() {
       this.windowResized()
     },
@@ -426,6 +456,9 @@ export default {
     },
     showHelpSwitched() {
       this.global.setInputsDisabled(this.global.state.showHelp)
+    },
+    circleButtonWindowResizeTrigger() {
+      this.windowResized()
     },
     windowResized() {
       this.$nextTick(() => {

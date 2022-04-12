@@ -40,11 +40,7 @@
       </ul>
     </div>
 
-    <button
-      v-if="global.state.mobileMode"
-      class="closebutton"
-      @click="global.setShowCatsRedir(false)"
-    >
+    <button class="closebutton" @click="closeButtonClicked">
       <img class="closebuttonicon" src="../assets/images/close-button.svg" />
     </button>
   </div>
@@ -53,9 +49,15 @@
 import { inject } from 'vue'
 export default {
   name: 'CategoriesRedirects',
+  emits: ['closeButtonClicked'],
   setup() {
     const global = inject('global')
     return { global }
+  },
+  methods: {
+    closeButtonClicked() {
+      this.$emit('closeButtonClicked')
+    }
   }
 }
 </script>
