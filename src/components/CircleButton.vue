@@ -35,6 +35,7 @@
           !global.state.resultsRedirectsDone)
       "
       @click.prevent="circleButton($event, index)"
+      @auxclick.prevent="circleButtonMiddle(index)"
     >
       {{ global.state.displayResultsArray[index].title }}
     </button>
@@ -101,6 +102,11 @@ export default {
   methods: {
     circleButton(event, index) {
       this.$emit('circleButtonClicked', { event: event, index: index })
+    },
+    circleButtonMiddle(index) {
+      if (!this.global.state.displayResultsArray[index].missing) {
+        window.open(this.global.state.displayResultsArray[index].url, '_blank')
+      }
     }
   }
 }
