@@ -45,22 +45,16 @@
     </button>
   </div>
 </template>
-<script>
+
+<script setup>
 import { inject } from 'vue'
-export default {
-  name: 'CategoriesRedirects',
-  emits: ['closeButtonClicked'],
-  setup() {
-    const global = inject('global')
-    return { global }
-  },
-  methods: {
-    closeButtonClicked() {
-      this.$emit('closeButtonClicked')
-    }
-  }
+const global = inject('global')
+const emit = defineEmits(['closeButtonClicked'])
+function closeButtonClicked() {
+  emit('closeButtonClicked')
 }
 </script>
+
 <style scoped>
 .container {
   position: relative;
