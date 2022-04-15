@@ -222,20 +222,14 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  name: 'Help',
-  data() {
-    return {
-      currentUrl: ''
-    }
-  },
-  mounted() {
-    // both versions work
-    // this.currentUrl = window.location.origin + window.location.pathname
-    this.currentUrl = window.location.href.split('?')[0]
-  }
-}
+<script setup>
+import { ref, onMounted } from 'vue'
+const currentUrl = ref('')
+onMounted(() => {
+  // both versions work
+  // currentUrl.value = window.location.origin + window.location.pathname
+  currentUrl.value = window.location.href.split('?')[0]
+})
 </script>
 <style scoped>
 .grid-container-help {
