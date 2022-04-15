@@ -61,17 +61,11 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import { inject } from 'vue'
-
-export default {
-  name: 'StatusBar',
-  setup() {
-    const global = inject('global')
-    return { global }
-  }
-}
+const global = inject('global')
 </script>
+
 <style scoped>
 @keyframes fadeIn {
   from {
