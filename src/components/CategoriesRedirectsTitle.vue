@@ -42,16 +42,12 @@
     </ul>
   </div>
 </template>
-<script>
+
+<script setup>
 import { inject } from 'vue'
-export default {
-  name: 'CategoriesRedirectsTitle',
-  setup() {
-    const global = inject('global')
-    return { global }
-  }
-}
+const global = inject('global')
 </script>
+
 <style scoped>
 .catsredirects {
   font-size: 90%;
