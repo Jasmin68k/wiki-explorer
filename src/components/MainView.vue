@@ -62,6 +62,7 @@
         "
         :items="resultsCategoriesAllArray"
         :root-height="scrollboxContainerHeight"
+        @windowResize="windowResized"
       ></categories-checkbox-filter>
     </div>
 
