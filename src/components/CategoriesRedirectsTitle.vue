@@ -14,8 +14,8 @@
 
     <ul class="list-horizontal">
       <li
-        v-for="category in global.statefull.titlePage.categories"
-        :key="category"
+        v-for="(category, index) in global.statefull.titlePage.categories"
+        :key="index"
       >
         {{ category }}
       </li>

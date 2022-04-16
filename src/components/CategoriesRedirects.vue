@@ -15,8 +15,8 @@
       <h4>{{ $t('categories') }}</h4>
       <ul class="list-horizontal">
         <li
-          v-for="category in global.state.catsRedirResult.categories"
-          :key="category"
+          v-for="(category, index) in global.state.catsRedirResult.categories"
+          :key="index"
         >
           {{ category }}
         </li>
