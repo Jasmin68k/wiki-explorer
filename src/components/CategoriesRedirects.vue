@@ -32,8 +32,8 @@
       <h4>{{ t('redirects') }}</h4>
       <ul class="list-horizontal">
         <li
-          v-for="redirect in global.state.catsRedirResult.redirects"
-          :key="redirect"
+          v-for="(redirect, index) in global.state.catsRedirResult.redirects"
+          :key="index"
         >
           {{ redirect }}
         </li>

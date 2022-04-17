@@ -34,8 +34,8 @@
     >
     <ul class="list-horizontal">
       <li
-        v-for="redirect in global.statefull.titlePage.redirects"
-        :key="redirect"
+        v-for="(redirect, index) in global.statefull.titlePage.redirects"
+        :key="index"
       >
         {{ redirect }}
       </li>
