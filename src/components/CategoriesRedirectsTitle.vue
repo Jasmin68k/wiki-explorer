@@ -9,7 +9,7 @@
     class="catsredirects"
   >
     <span
-      ><b>{{ $t('categories') }}</b></span
+      ><b>{{ t('categories') }}</b></span
     >
 
     <ul class="list-horizontal">
@@ -30,7 +30,7 @@
     class="catsredirects"
   >
     <span
-      ><b>{{ $t('redirects') }}</b></span
+      ><b>{{ t('redirects') }}</b></span
     >
     <ul class="list-horizontal">
       <li
@@ -45,6 +45,10 @@
 
 <script setup>
 import { inject } from 'vue'
+
+import { useI18n } from 'vue-i18n/index'
+const { t } = useI18n({})
+
 const global = inject('global')
 </script>
 

@@ -16,8 +16,8 @@
     </div>
   </div>
   <div class="checkboxbuttons">
-    <button @click.prevent="categoriesAll">{{ $t('all') }}</button>
-    <button @click.prevent="categoriesNone">{{ $t('none') }}</button>
+    <button @click.prevent="categoriesAll">{{ t('all') }}</button>
+    <button @click.prevent="categoriesNone">{{ t('none') }}</button>
   </div>
 </template>
 <script setup>
@@ -27,6 +27,9 @@
 // https://codepen.io/zupkode/pen/oNgaqLv
 
 import { inject, computed, onMounted, onBeforeUnmount, ref } from 'vue'
+
+import { useI18n } from 'vue-i18n/index'
+const { t } = useI18n({})
 
 const global = inject('global')
 

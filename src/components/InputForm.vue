@@ -77,7 +77,7 @@
           type="text"
           id="title"
           class="searchinputarea"
-          :placeholder="$t('search-on-wikipedia')"
+          :placeholder="t('search-on-wikipedia')"
           :value="global.state.title"
           @input="titleChanged($event.target.value)"
           :disabled="
@@ -123,7 +123,7 @@
           type="text"
           id="filter"
           class="titleinputarea"
-          :placeholder="$t('filter-results-titles')"
+          :placeholder="t('filter-results-titles')"
           :value="global.state.filter"
           @input="resetFirstItem(), filterChanged($event.target.value)"
           :disabled="
@@ -151,7 +151,7 @@
           type="text"
           id="filterCategories"
           class="categoriesinputarea"
-          :placeholder="$t('filter-results-categories')"
+          :placeholder="t('filter-results-categories')"
           :value="global.state.filterCategories"
           @input="
             resetFirstItem(), filterCategoriesChanged($event.target.value)
@@ -564,6 +564,9 @@
 </template>
 <script setup>
 import { inject, nextTick, onMounted, ref } from 'vue'
+
+import { useI18n } from 'vue-i18n/index'
+const { t } = useI18n({})
 
 const global = inject('global')
 
