@@ -132,8 +132,15 @@
   </div>
 </template>
 
-<script>
-import { inject } from 'vue'
+<script setup>
+import {
+  inject,
+  computed,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  ref
+} from 'vue'
 import InputForm from './InputForm.vue'
 import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
@@ -151,416 +158,410 @@ import {
   wikiFetchGetRedirectTarget
 } from '../wikifetch.js'
 
-export default {
-  name: 'MainView',
-  components: {
-    InputForm,
-    MainTitleInfo,
-    Outgraph,
-    CategoriesCheckboxFilter,
-    Help,
-    StatusBar,
-    CategoriesRedirects
-  },
-  setup() {
-    const global = inject('global')
-    return { global }
-  },
-  data() {
-    return {
-      scrollboxContainerHeight: 300
+// import { createI18n, useI18n } from 'vue-i18n/index'
+// import en from '../locales/en.json'
+// import de from '../locales/de.json'
+// createI18n({
+//   locale: import.meta.env.VUE_APP_I18N_LOCALE || 'en',
+//   fallbackLocale: import.meta.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
+//   legacy: false,
+//   messages: {
+//     en,
+//     de
+//   }
+// })
+
+import { useI18n } from 'vue-i18n/index'
+const { t, locale } = useI18n({})
+
+const global = inject('global')
+
+const gridcontainer = ref(null)
+const inputarea = ref(null)
+const maininfo = ref(null)
+
+const scrollboxContainerHeight = ref(300)
+
+const resultsCategoriesAllArray = computed(function () {
+  if (
+    !(
+      global.state.resultsCategoriesDone &&
+      global.state.resultsCategoriesEnabled &&
+      ((!global.state.mobileMode && global.state.checkboxFilterEnabled) ||
+        global.state.mobileMode)
+    )
+  ) {
+    return []
+  }
+  let allCategoriesSet = new Set()
+
+  for (const pageId of global.statefull.resultsMap.keys()) {
+    const resultPage = global.statefull.resultsMap.get(pageId)
+    if (
+      resultPage.categories &&
+      resultPage.title.toLowerCase().includes(global.state.filter.toLowerCase())
+    ) {
+      resultPage.categories.forEach((category) =>
+        // no duplicate check needed in Set
+        category
+          .toLowerCase()
+          .includes(global.state.filterCategories.toLowerCase())
+          ? allCategoriesSet.add(category)
+          : null
+      )
     }
-  },
-  computed: {
-    resultsCategoriesAllArray() {
-      if (
-        !(
-          this.global.state.resultsCategoriesDone &&
-          this.global.state.resultsCategoriesEnabled &&
-          ((!this.global.state.mobileMode &&
-            this.global.state.checkboxFilterEnabled) ||
-            this.global.state.mobileMode)
-        )
-      ) {
-        return []
-      }
-      let allCategoriesSet = new Set()
+  }
 
-      for (const pageId of this.global.statefull.resultsMap.keys()) {
-        const resultPage = this.global.statefull.resultsMap.get(pageId)
-        if (
-          resultPage.categories &&
-          resultPage.title
-            .toLowerCase()
-            .includes(this.global.state.filter.toLowerCase())
-        ) {
-          resultPage.categories.forEach((category) =>
-            // no duplicate check needed in Set
-            category
-              .toLowerCase()
-              .includes(this.global.state.filterCategories.toLowerCase())
-              ? allCategoriesSet.add(category)
-              : null
-          )
-        }
-      }
+  let allCategories = Array.from(allCategoriesSet)
 
-      let allCategories = Array.from(allCategoriesSet)
+  allCategories = allCategories.sort((a, b) => {
+    return a.localeCompare(b)
+  })
 
-      allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
-      })
+  return allCategories
+})
 
-      return allCategories
-    },
-    resultsCategoriesAllArrayUnfiltered() {
-      if (
-        !(
-          this.global.state.resultsCategoriesDone &&
-          this.global.state.resultsCategoriesEnabled
-        )
-      ) {
-        return []
-      }
-      let allCategoriesSet = new Set()
+const resultsCategoriesAllArrayUnfiltered = computed(function () {
+  if (
+    !(
+      global.state.resultsCategoriesDone &&
+      global.state.resultsCategoriesEnabled
+    )
+  ) {
+    return []
+  }
+  let allCategoriesSet = new Set()
 
-      for (const pageId of this.global.statefull.resultsMap.keys()) {
-        const resultPage = this.global.statefull.resultsMap.get(pageId)
-        if (resultPage.categories) {
-          // Set doesn't allow duplicate values, so no check needed
-          resultPage.categories.forEach((category) =>
-            allCategoriesSet.add(category)
-          )
-        }
-      }
-
-      let allCategories = Array.from(allCategoriesSet)
-
-      allCategories = allCategories.sort((a, b) => {
-        return a.localeCompare(b)
-      })
-
-      return allCategories
+  for (const pageId of global.statefull.resultsMap.keys()) {
+    const resultPage = global.statefull.resultsMap.get(pageId)
+    if (resultPage.categories) {
+      // Set doesn't allow duplicate values, so no check needed
+      resultPage.categories.forEach((category) =>
+        allCategoriesSet.add(category)
+      )
     }
-  },
+  }
 
-  methods: {
-    async getJson() {
-      this.global.setInputsDisabled(true)
-      this.global.statefull.resultsMap = await wikiFetchPages(
-        this.global.state.title,
-        this.global.state.language
-      )
+  let allCategories = Array.from(allCategoriesSet)
 
-      this.global.setResultsCategoriesDone(false)
+  allCategories = allCategories.sort((a, b) => {
+    return a.localeCompare(b)
+  })
 
-      if (this.global.state.resultsCategoriesEnabled) {
-        this.getResultsCategories()
-      }
+  return allCategories
+})
 
-      this.global.setResultsRedirectsDone(false)
+async function getJson() {
+  global.setInputsDisabled(true)
+  global.statefull.resultsMap = await wikiFetchPages(
+    global.state.title,
+    global.state.language
+  )
 
-      if (this.global.state.resultsRedirectsEnabled) {
-        this.getResultsRedirects()
-      }
+  global.setResultsCategoriesDone(false)
 
-      this.global.setGraphFirstItem(1)
-      this.global.setInputsDisabled(false)
-    },
+  if (global.state.resultsCategoriesEnabled) {
+    getResultsCategories()
+  }
 
-    async getResultsCategories() {
-      // with big pages this requires lots of api fetches, which makes up majority of the wait time
+  global.setResultsRedirectsDone(false)
 
-      // skip fetch when no results
-      if (this.global.statefull.resultsMap.size > 0) {
-        this.global.statefull.resultsMap = await wikiFetchAddCategoriesToPages(
-          this.global.state.title,
-          this.global.state.language,
-          this.global.statefull.resultsMap
-        )
-      }
+  if (global.state.resultsRedirectsEnabled) {
+    getResultsRedirects()
+  }
 
-      this.global.setResultsCategoriesDone(true)
+  global.setGraphFirstItem(1)
+  global.setInputsDisabled(false)
+}
 
-      this.global.statefull.checkedCategories = new Set(
-        this.resultsCategoriesAllArrayUnfiltered
-      )
-    },
+async function getResultsCategories() {
+  // with big pages this requires lots of api fetches, which makes up majority of the wait time
 
-    async getResultsRedirects() {
-      // skip fetch when no results
-      if (this.global.statefull.resultsMap.size > 0) {
-        this.global.statefull.resultsMap = await wikiFetchAddRedirectsToPages(
-          this.global.state.title,
-          this.global.state.language,
-          this.global.statefull.resultsMap
-        )
-      }
+  // skip fetch when no results
+  if (global.statefull.resultsMap.size > 0) {
+    global.statefull.resultsMap = await wikiFetchAddCategoriesToPages(
+      global.state.title,
+      global.state.language,
+      global.statefull.resultsMap
+    )
+  }
 
-      this.global.setResultsRedirectsDone(true)
-    },
+  global.setResultsCategoriesDone(true)
 
-    async getMainInfo() {
-      this.global.statefull.titlePage = await wikiFetchTitlePage(
-        this.global.state.title,
-        this.global.state.language
-      )
+  global.statefull.checkedCategories = new Set(
+    resultsCategoriesAllArrayUnfiltered.value
+  )
+}
 
-      this.global.setRedirectsDone(false)
+async function getResultsRedirects() {
+  // skip fetch when no results
+  if (global.statefull.resultsMap.size > 0) {
+    global.statefull.resultsMap = await wikiFetchAddRedirectsToPages(
+      global.state.title,
+      global.state.language,
+      global.statefull.resultsMap
+    )
+  }
 
-      if (!this.global.statefull.titlePage.missing) {
-        // needs await, otherwise one will overwrite the other
-        await this.getCategories()
-        await this.getRedirects()
-        this.global.setCatsRedirResult(this.global.statefull.titlePage)
-      }
-    },
-    async getCategories() {
-      this.global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
-        this.global.state.title,
-        this.global.state.language,
-        this.global.statefull.titlePage
-      )
-    },
+  global.setResultsRedirectsDone(true)
+}
 
-    async getRedirects() {
-      this.global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
-        this.global.state.title,
-        this.global.state.language,
-        this.global.statefull.titlePage
-      )
+async function getMainInfo() {
+  global.statefull.titlePage = await wikiFetchTitlePage(
+    global.state.title,
+    global.state.language
+  )
 
-      this.global.setRedirectsDone(true)
-    },
+  global.setRedirectsDone(false)
 
-    async circleButtonClicked(clickData) {
-      if (!this.global.state.displayResultsArray[clickData.index].missing) {
-        switch (this.global.state.buttonMode) {
-          case 'search':
-            if (!clickData.event.ctrlKey) {
-              this.global.setTitle(
-                await wikiFetchGetRedirectTarget(
-                  this.global.state.displayResultsArray[clickData.index].title,
-                  this.global.state.language
-                )
-              )
-              this.getMainInfo()
-              this.getJson()
-            } else {
-              if (!this.global.state.categoriesOnHover) {
-                this.global.setCatsRedirResult(
-                  this.global.state.displayResultsArray[clickData.index]
-                )
-                this.global.setShowCatsRedir(true)
-                this.windowResized()
-              }
-            }
-
-            break
-
-          case 'catsredir':
-            if (!clickData.event.ctrlKey) {
-              if (!this.global.state.categoriesOnHover) {
-                this.global.setCatsRedirResult(
-                  this.global.state.displayResultsArray[clickData.index]
-                )
-                this.global.setShowCatsRedir(true)
-                this.windowResized()
-              }
-            } else {
-              this.global.setTitle(
-                await wikiFetchGetRedirectTarget(
-                  this.global.state.displayResultsArray[clickData.index].title,
-                  this.global.state.language
-                )
-              )
-              this.getMainInfo()
-              this.getJson()
-            }
-            break
-
-          case 'wiki':
-            window.open(
-              this.global.state.displayResultsArray[clickData.index].url,
-              '_blank'
-            )
-            break
-        }
-      }
-    },
-
-    catsRedirClosed() {
-      this.global.setShowCatsRedir(false)
-      this.windowResized()
-    },
-    buttonModeSwitched() {
-      this.windowResized()
-      this.updateButtonModeString()
-    },
-
-    async fetchDataClicked(value) {
-      if (value) {
-        this.global.setTitle(
-          await wikiFetchGetRedirectTarget(value, this.global.state.language)
-        )
-
-        this.getMainInfo()
-        this.getJson()
-      }
-    },
-    async resultsCategoriesChanged() {
-      if (
-        this.global.state.resultsCategoriesEnabled &&
-        !this.global.state.resultsCategoriesDone
-      ) {
-        this.getResultsCategories()
-      }
-      if (
-        this.global.state.resultsCategoriesEnabled &&
-        this.global.state.resultsCategoriesDone
-      ) {
-        this.global.statefull.checkedCategories = new Set(
-          this.resultsCategoriesAllArrayUnfiltered
-        )
-      }
-    },
-    async resultsRedirectsChanged() {
-      if (
-        this.global.state.resultsRedirectsEnabled &&
-        !this.global.state.resultsRedirectsDone
-      ) {
-        await this.getResultsRedirects()
-      }
-    },
-    checkboxFilterEnabledChanged() {
-      // for switch from desktop to mobile
-      if (!this.global.state.checkboxFilterEnabled) {
-        this.global.statefull.checkedCategories = new Set(
-          this.resultsCategoriesAllArrayUnfiltered
-        )
-      }
-
-      if (this.global.state.checkboxFilterEnabled) {
-        this.global.statefull.checkedCategories = new Set(
-          this.resultsCategoriesAllArrayUnfiltered
-        )
-      }
-    },
-    languageSwitched(value) {
-      this.$i18n.locale = value
-      this.global.setLanguage(value)
-      this.updateButtonModeString()
-    },
-    categoriesOnHoverChanged() {
-      this.updateButtonModeString()
-    },
-    updateButtonModeString() {
-      switch (this.global.state.buttonMode) {
-        case 'search':
-          if (!this.global.state.categoriesOnHover) {
-            this.global.setButtonModeString(
-              this.$t('lmb') +
-                this.$t('search') +
-                ' - ' +
-                this.$t('ctrllmb') +
-                this.$t('showcatsredir') +
-                ' - ' +
-                this.$t('mmb') +
-                this.$t('openwiki')
-            )
-          } else {
-            this.global.setButtonModeString(
-              this.$t('lmb') +
-                this.$t('search') +
-                ' - ' +
-                this.$t('hover') +
-                this.$t('showcatsredir') +
-                ' - ' +
-                this.$t('mmb') +
-                this.$t('openwiki')
-            )
-          }
-
-          break
-        case 'catsredir':
-          if (!this.global.state.categoriesOnHover) {
-            this.global.setButtonModeString(
-              this.$t('lmb') +
-                this.$t('showcatsredir') +
-                ' - ' +
-                this.$t('ctrllmb') +
-                this.$t('search') +
-                ' - ' +
-                this.$t('mmb') +
-                this.$t('openwiki')
-            )
-          } else {
-            this.global.setButtonModeString(
-              this.$t('hover') +
-                this.$t('showcatsredir') +
-                ' - ' +
-                this.$t('ctrllmb') +
-                this.$t('search') +
-                ' - ' +
-                this.$t('mmb') +
-                this.$t('openwiki')
-            )
-          }
-          break
-        case 'wiki':
-          if (!this.global.state.categoriesOnHover) {
-            this.global.setButtonModeString(
-              this.$t('lmb') + this.$t('openwiki')
-            )
-          } else {
-            this.global.setButtonModeString(
-              this.$t('lmb') +
-                this.$t('openwiki') +
-                ' - ' +
-                this.$t('hover') +
-                this.$t('showcatsredir')
-            )
-          }
-          break
-      }
-    },
-
-    modeSwitched() {
-      this.global.setCatsRedirResult(this.global.statefull.titlePage)
-      this.windowResized()
-    },
-    mobileDisplaySwitched() {
-      this.windowResized()
-    },
-    showHelpSwitched() {
-      this.global.setInputsDisabled(this.global.state.showHelp)
-    },
-    circleButtonWindowResizeTrigger() {
-      this.windowResized()
-    },
-    windowResized() {
-      this.$nextTick(() => {
-        if (this.global.state.showCatsRedir && !this.global.state.mobileMode) {
-          this.scrollboxContainerHeight =
-            this.$refs.gridcontainer.getBoundingClientRect().height -
-            this.$refs.inputarea.getBoundingClientRect().height -
-            this.$refs.maininfo.getBoundingClientRect().height
-        } else {
-          this.scrollboxContainerHeight =
-            this.$refs.gridcontainer.getBoundingClientRect().height -
-            this.$refs.inputarea.getBoundingClientRect().height
-        }
-      })
-    }
-  },
-  mounted() {
-    window.addEventListener('resize', this.windowResized)
-    this.windowResized()
-  },
-  beforeUnMount() {
-    window.removeEventListener('resize', this.windowResized)
+  if (!global.statefull.titlePage.missing) {
+    // needs await, otherwise one will overwrite the other
+    await getCategories()
+    await getRedirects()
+    global.setCatsRedirResult(global.statefull.titlePage)
   }
 }
+async function getCategories() {
+  global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
+    global.state.title,
+    global.state.language,
+    global.statefull.titlePage
+  )
+}
+
+async function getRedirects() {
+  global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
+    global.state.title,
+    global.state.language,
+    global.statefull.titlePage
+  )
+
+  global.setRedirectsDone(true)
+}
+
+async function circleButtonClicked(clickData) {
+  if (!global.state.displayResultsArray[clickData.index].missing) {
+    switch (global.state.buttonMode) {
+      case 'search':
+        if (!clickData.event.ctrlKey) {
+          global.setTitle(
+            await wikiFetchGetRedirectTarget(
+              global.state.displayResultsArray[clickData.index].title,
+              global.state.language
+            )
+          )
+          getMainInfo()
+          getJson()
+        } else {
+          if (!global.state.categoriesOnHover) {
+            global.setCatsRedirResult(
+              global.state.displayResultsArray[clickData.index]
+            )
+            global.setShowCatsRedir(true)
+            windowResized()
+          }
+        }
+
+        break
+
+      case 'catsredir':
+        if (!clickData.event.ctrlKey) {
+          if (!global.state.categoriesOnHover) {
+            global.setCatsRedirResult(
+              global.state.displayResultsArray[clickData.index]
+            )
+            global.setShowCatsRedir(true)
+            windowResized()
+          }
+        } else {
+          global.setTitle(
+            await wikiFetchGetRedirectTarget(
+              global.state.displayResultsArray[clickData.index].title,
+              global.state.language
+            )
+          )
+          getMainInfo()
+          getJson()
+        }
+        break
+
+      case 'wiki':
+        window.open(
+          global.state.displayResultsArray[clickData.index].url,
+          '_blank'
+        )
+        break
+    }
+  }
+}
+
+function catsRedirClosed() {
+  global.setShowCatsRedir(false)
+  windowResized()
+}
+function buttonModeSwitched() {
+  windowResized()
+  updateButtonModeString()
+}
+
+async function fetchDataClicked(value) {
+  if (value) {
+    global.setTitle(
+      await wikiFetchGetRedirectTarget(value, global.state.language)
+    )
+
+    getMainInfo()
+    getJson()
+  }
+}
+async function resultsCategoriesChanged() {
+  if (
+    global.state.resultsCategoriesEnabled &&
+    !global.state.resultsCategoriesDone
+  ) {
+    getResultsCategories()
+  }
+  if (
+    global.state.resultsCategoriesEnabled &&
+    global.state.resultsCategoriesDone
+  ) {
+    global.statefull.checkedCategories = new Set(
+      resultsCategoriesAllArrayUnfiltered.value
+    )
+  }
+}
+async function resultsRedirectsChanged() {
+  if (
+    global.state.resultsRedirectsEnabled &&
+    !global.state.resultsRedirectsDone
+  ) {
+    await getResultsRedirects()
+  }
+}
+function checkboxFilterEnabledChanged() {
+  // for switch from desktop to mobile
+  if (!global.state.checkboxFilterEnabled) {
+    global.statefull.checkedCategories = new Set(
+      resultsCategoriesAllArrayUnfiltered.value
+    )
+  }
+
+  if (global.state.checkboxFilterEnabled) {
+    global.statefull.checkedCategories = new Set(
+      resultsCategoriesAllArrayUnfiltered.value
+    )
+  }
+}
+function languageSwitched(value) {
+  // $i18n.locale = value
+  locale.value = value
+
+  global.setLanguage(value)
+  updateButtonModeString()
+}
+function categoriesOnHoverChanged() {
+  updateButtonModeString()
+}
+function updateButtonModeString() {
+  switch (global.state.buttonMode) {
+    case 'search':
+      if (!global.state.categoriesOnHover) {
+        global.setButtonModeString(
+          t('lmb') +
+            t('search') +
+            ' - ' +
+            t('ctrllmb') +
+            t('showcatsredir') +
+            ' - ' +
+            t('mmb') +
+            t('openwiki')
+        )
+      } else {
+        global.setButtonModeString(
+          t('lmb') +
+            t('search') +
+            ' - ' +
+            t('hover') +
+            t('showcatsredir') +
+            ' - ' +
+            t('mmb') +
+            t('openwiki')
+        )
+      }
+
+      break
+    case 'catsredir':
+      if (!global.state.categoriesOnHover) {
+        global.setButtonModeString(
+          t('lmb') +
+            t('showcatsredir') +
+            ' - ' +
+            t('ctrllmb') +
+            t('search') +
+            ' - ' +
+            t('mmb') +
+            t('openwiki')
+        )
+      } else {
+        global.setButtonModeString(
+          t('hover') +
+            t('showcatsredir') +
+            ' - ' +
+            t('ctrllmb') +
+            t('search') +
+            ' - ' +
+            t('mmb') +
+            t('openwiki')
+        )
+      }
+      break
+    case 'wiki':
+      if (!global.state.categoriesOnHover) {
+        global.setButtonModeString(t('lmb') + t('openwiki'))
+      } else {
+        global.setButtonModeString(
+          t('lmb') + t('openwiki') + ' - ' + t('hover') + t('showcatsredir')
+        )
+      }
+      break
+  }
+}
+
+function modeSwitched() {
+  global.setCatsRedirResult(global.statefull.titlePage)
+  windowResized()
+}
+function mobileDisplaySwitched() {
+  windowResized()
+}
+function showHelpSwitched() {
+  global.setInputsDisabled(global.state.showHelp)
+}
+function circleButtonWindowResizeTrigger() {
+  windowResized()
+}
+async function windowResized() {
+  await nextTick()
+  if (global.state.showCatsRedir && !global.state.mobileMode) {
+    scrollboxContainerHeight.value =
+      gridcontainer.value.getBoundingClientRect().height -
+      inputarea.value.getBoundingClientRect().height -
+      maininfo.value.getBoundingClientRect().height
+  } else {
+    scrollboxContainerHeight.value =
+      gridcontainer.value.getBoundingClientRect().height -
+      inputarea.value.getBoundingClientRect().height
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('resize', windowResized)
+  windowResized()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', windowResized)
+})
 </script>
 
 <style scoped>
