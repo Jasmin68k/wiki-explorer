@@ -562,352 +562,325 @@
     </div>
   </div>
 </template>
-<script>
-import { inject, computed } from 'vue'
+<script setup>
+import { inject, nextTick, onMounted, ref } from 'vue'
 
-export default {
-  name: 'InputForm',
-  emits: [
-    'fetchDataClicked',
-    'resultsRedirectsChanged',
-    'showHelpClicked',
-    'resultsCategoriesChanged',
-    'checkboxFilterEnabledChanged',
-    'languageSwitched',
-    'mode-switched',
-    'mobile-display-switched',
-    'button-mode-switched',
-    'categoriesOnHoverChanged'
-  ],
+const global = inject('global')
 
-  setup() {
-    const global = inject('global')
+const emit = defineEmits([
+  'fetchDataClicked',
+  'resultsRedirectsChanged',
+  'showHelpClicked',
+  'resultsCategoriesChanged',
+  'checkboxFilterEnabledChanged',
+  'languageSwitched',
+  'mode-switched',
+  'mobile-display-switched',
+  'button-mode-switched',
+  'categoriesOnHoverChanged'
+])
 
-    const numberOfPages = computed(() =>
-      Math.ceil(
-        global.state.filteredResultsArray.length / global.state.sizePerPage
-      )
-    )
+const langEn = ref(null)
+const langDe = ref(null)
+const catsClick = ref(null)
+const catsHover = ref(null)
+const catsredir = ref(null)
+const search = ref(null)
+const wiki = ref(null)
 
-    return { global, numberOfPages }
-  },
-
-  methods: {
-    // can this be done more elegantly?
-    fetchData(submitEvent) {
-      let value = ''
-      for (let element of submitEvent.target.elements) {
-        if (element.id === 'title') {
-          value = element.value
-          break
-        }
-      }
-      this.$emit('fetchDataClicked', value)
-    },
-    resultsCategoriesChanged(value) {
-      if (
-        value === false &&
-        this.global.state.resultsRedirectsEnabled === false
-      ) {
-        this.buttonModeSwitched('search')
-      }
-
-      this.global.setResultsCategoriesEnabled(value)
-      this.resetFirstItem()
-      this.$emit('resultsCategoriesChanged', value)
-    },
-    resultsRedirectsChanged(value) {
-      if (
-        value === false &&
-        this.global.state.resultsCategoriesEnabled === false
-      ) {
-        this.buttonModeSwitched('search')
-      }
-
-      this.global.setResultsRedirectsEnabled(value)
-      this.$emit('resultsRedirectsChanged', value)
-    },
-    titleChanged(value) {
-      this.global.setTitle(value)
-    },
-    filterChanged(value) {
-      this.global.setFilter(value)
-    },
-    filterCategoriesChanged(value) {
-      this.global.setFilterCategories(value)
-    },
-    resetFirstItem() {
-      this.global.setGraphFirstItem(1)
-    },
-    checkboxFilterEnabledChanged(value) {
-      this.global.setCheckboxFilterEnabled(value)
-      this.resetFirstItem()
-      this.$emit('checkboxFilterEnabledChanged', value)
-    },
-    languageSwitched(value) {
-      if (value === 'en') {
-        this.$refs.langEn.checked = true
-        this.$refs.langDe.checked = false
-      } else {
-        this.$refs.langEn.checked = false
-        this.$refs.langDe.checked = true
-      }
-
-      this.$emit('languageSwitched', value)
-    },
-
-    buttonModeSwitched(value) {
-      switch (value) {
-        case 'search':
-          // if (!this.global.state.mobileMode) {
-          //   this.global.setShowCatsRedir(false)
-          // }
-
-          this.$refs.search.checked = true
-          this.$refs.catsredir.checked = false
-          this.$refs.wiki.checked = false
-
-          break
-        case 'catsredir':
-          // if (!this.global.state.mobileMode) {
-          //   this.global.setShowCatsRedir(true)
-          // }
-
-          this.$refs.search.checked = false
-          this.$refs.catsredir.checked = true
-          this.$refs.wiki.checked = false
-
-          break
-        case 'wiki':
-          // if (!this.global.state.mobileMode) {
-          //   this.global.setShowCatsRedir(false)
-          // }
-
-          this.$refs.search.checked = false
-          this.$refs.catsredir.checked = false
-          this.$refs.wiki.checked = true
-
-          break
-      }
-      this.global.setButtonMode(value)
-
-      this.$emit('button-mode-switched')
-    },
-
-    categoriesOnHoverOrClickChanged(value) {
-      if (value === 'catshover') {
-        this.$refs.catsHover.checked = true
-        this.$refs.catsClick.checked = false
-      } else {
-        this.$refs.catsHover.checked = false
-        this.$refs.catsClick.checked = true
-      }
-
-      if (value === 'catshover') {
-        this.global.setCategoriesOnHover(true)
-      } else {
-        this.global.setCategoriesOnHover(false)
-      }
-      this.$emit('categoriesOnHoverChanged')
-    },
-    modeSwitched(value) {
-      if (value === 'mobile') {
-        this.global.setMobileMode(true)
-        this.global.setCategoriesOnHover(false)
-      } else {
-        this.global.setMobileMode(false)
-
-        this.$nextTick(() => {
-          this.categoriesOnHoverOrClickChanged('catshover')
-        })
-      }
-      this.global.setShowCatsRedir(false)
-      this.buttonModeSwitched('search')
-      this.$emit('mode-switched', value)
-    },
-    mobileDisplaySwitched(value) {
-      this.global.setMobileDisplay(value)
-      this.$emit('mobile-display-switched', value)
-    },
-    showHelpClicked(value) {
-      this.global.setShowHelp(value)
-      this.$emit('showHelpClicked', value)
-    }
-  },
-  mounted() {
-    // init
-    this.languageSwitched('en')
-    this.buttonModeSwitched('search')
-    this.categoriesOnHoverOrClickChanged('catshover')
-
-    if (window.matchMedia('(orientation: landscape)').matches) {
-      if (window.innerWidth < 950) {
-        this.modeSwitched('mobile')
-        this.categoriesOnHoverOrClickChanged('catsclick')
-      }
-    } else {
-      if (window.innerWidth < 800) {
-        this.modeSwitched('mobile')
-        this.categoriesOnHoverOrClickChanged('catsclick')
-      }
-    }
-
-    // handle parameters from URL
-    /**
-     * URL Parameters
-     * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> gloabl.state.mobileMode true/false)
-     * @param {String} lang - UI and Wikipedia language, en or de valid (-> global.state.language)
-     * @param {String} categories - Enable/disable results categories, on or off valid (boolean to global.state.resultsCategoriesEnabled)
-     * @param {String} titlefilter - String to filter results titles with (global.state.filter)
-     * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
-     * @param {String} mobileview - Mobile mode only: Switch view mode, valid results, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
-     * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
-     * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
-     * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
-     * @param {String} buttonmode - Search, show categories/redirects or open Wikipedia on button click, valid search, catsredir, wiki
-     * @param {String} search - Wikipedia page to search for (global.state.title)
-     */
-
-    const urlParameters = new URLSearchParams(window.location.search)
-
-    const mode = urlParameters.get('mode')
-    const lang = urlParameters.get('lang')
-    const titlefilter = urlParameters.get('titlefilter')
-    const categoriesfilter = urlParameters.get('categoriesfilter')
-    const categories = urlParameters.get('categories')
-    const mobileview = urlParameters.get('mobileview')
-    const checkboxfilter = urlParameters.get('checkboxfilter')
-    const redirects = urlParameters.get('redirects')
-    const categoriesmode = urlParameters.get('categoriesmode')
-    const buttonmode = urlParameters.get('buttonmode')
-    const search = urlParameters.get('search')
-
-    if (mode === 'desktop' || mode === 'mobile') {
-      this.modeSwitched(mode)
-    }
-
-    if (lang === 'en' || lang === 'de') {
-      this.languageSwitched(lang)
-    }
-
-    if (categories === 'on' || categories === 'off') {
-      switch (categories) {
-        case 'on':
-          this.resultsCategoriesChanged(true)
-          break
-
-        case 'off':
-          this.resultsCategoriesChanged(false)
-          break
-      }
-    }
-
-    if (titlefilter && titlefilter.length > 0) {
-      this.resetFirstItem()
-      this.filterChanged(titlefilter)
-    }
-
-    if (
-      categoriesfilter &&
-      categoriesfilter.length > 0 &&
-      this.global.state.resultsCategoriesEnabled
-    ) {
-      this.resetFirstItem()
-      this.filterCategoriesChanged(categoriesfilter)
-    }
-
-    if (
-      this.global.state.mobileMode &&
-      (mobileview === 'results' ||
-        mobileview === 'extract' ||
-        mobileview === 'categories')
-    ) {
-      switch (mobileview) {
-        case 'results':
-          this.mobileDisplaySwitched('outgraph')
-          break
-        case 'extract':
-          this.mobileDisplaySwitched('maininfo')
-          break
-        case 'categories':
-          this.mobileDisplaySwitched('categories')
-          break
-      }
-    }
-
-    if (
-      !this.global.state.mobileMode &&
-      (checkboxfilter === 'on' || checkboxfilter === 'off')
-    ) {
-      switch (checkboxfilter) {
-        case 'on':
-          if (this.global.state.resultsCategoriesEnabled) {
-            this.checkboxFilterEnabledChanged(true)
-          }
-          break
-        case 'off':
-          this.checkboxFilterEnabledChanged(false)
-          break
-      }
-    }
-
-    if (redirects === 'on' || redirects === 'off') {
-      switch (redirects) {
-        case 'on':
-          this.resultsRedirectsChanged(true)
-          break
-        case 'off':
-          this.resultsRedirectsChanged(false)
-      }
-    }
-
-    if (categoriesmode === 'click' || categoriesmode === 'hover') {
-      switch (categoriesmode) {
-        case 'click':
-          this.categoriesOnHoverOrClickChanged('catsclick')
-          break
-
-        case 'hover':
-          this.categoriesOnHoverOrClickChanged('catshover')
-      }
-    }
-
-    if (categoriesmode === 'click' || categoriesmode === 'hover') {
-      switch (categoriesmode) {
-        case 'click':
-          this.categoriesOnHoverOrClickChanged('catsclick')
-          break
-
-        case 'hover':
-          this.categoriesOnHoverOrClickChanged('catshover')
-      }
-    }
-
-    if (
-      buttonmode === 'search' ||
-      buttonmode === 'catsredir' ||
-      buttonmode === 'wiki'
-    ) {
-      switch (buttonmode) {
-        case 'search':
-          this.buttonModeSwitched('search')
-          break
-
-        case 'catsredir':
-          this.buttonModeSwitched('catsredir')
-          break
-
-        case 'wiki':
-          this.buttonModeSwitched('wiki')
-      }
-    }
-
-    // do search last after evaluating all other parameters
-    if (search && search.length > 0) {
-      this.$emit('fetchDataClicked', search)
+// can this be done more elegantly?
+function fetchData(submitEvent) {
+  let value = ''
+  for (let element of submitEvent.target.elements) {
+    if (element.id === 'title') {
+      value = element.value
+      break
     }
   }
+  emit('fetchDataClicked', value)
 }
+
+function resultsCategoriesChanged(value) {
+  if (value === false && global.state.resultsRedirectsEnabled === false) {
+    buttonModeSwitched('search')
+  }
+
+  global.setResultsCategoriesEnabled(value)
+  resetFirstItem()
+  emit('resultsCategoriesChanged', value)
+}
+function resultsRedirectsChanged(value) {
+  if (value === false && global.state.resultsCategoriesEnabled === false) {
+    buttonModeSwitched('search')
+  }
+
+  global.setResultsRedirectsEnabled(value)
+  emit('resultsRedirectsChanged', value)
+}
+function titleChanged(value) {
+  global.setTitle(value)
+}
+function filterChanged(value) {
+  global.setFilter(value)
+}
+function filterCategoriesChanged(value) {
+  global.setFilterCategories(value)
+}
+function resetFirstItem() {
+  global.setGraphFirstItem(1)
+}
+function checkboxFilterEnabledChanged(value) {
+  global.setCheckboxFilterEnabled(value)
+  resetFirstItem()
+  emit('checkboxFilterEnabledChanged', value)
+}
+function languageSwitched(value) {
+  if (value === 'en') {
+    langEn.value.checked = true
+    langDe.value.checked = false
+  } else {
+    langEn.value.checked = false
+    langDe.value.checked = true
+  }
+
+  emit('languageSwitched', value)
+}
+function buttonModeSwitched(value) {
+  switch (value) {
+    case 'search':
+      search.value.checked = true
+      catsredir.value.checked = false
+      wiki.value.checked = false
+
+      break
+    case 'catsredir':
+      search.value.checked = false
+      catsredir.value.checked = true
+      wiki.value.checked = false
+
+      break
+    case 'wiki':
+      search.value.checked = false
+      catsredir.value.checked = false
+      wiki.value.checked = true
+
+      break
+  }
+  global.setButtonMode(value)
+
+  emit('button-mode-switched')
+}
+function categoriesOnHoverOrClickChanged(value) {
+  if (value === 'catshover') {
+    catsHover.value.checked = true
+    catsClick.value.checked = false
+  } else {
+    catsHover.value.checked = false
+    catsClick.value.checked = true
+  }
+
+  if (value === 'catshover') {
+    global.setCategoriesOnHover(true)
+  } else {
+    global.setCategoriesOnHover(false)
+  }
+  emit('categoriesOnHoverChanged')
+}
+async function modeSwitched(value) {
+  if (value === 'mobile') {
+    global.setMobileMode(true)
+    global.setCategoriesOnHover(false)
+  } else {
+    global.setMobileMode(false)
+
+    await nextTick()
+    categoriesOnHoverOrClickChanged('catshover')
+  }
+  global.setShowCatsRedir(false)
+  buttonModeSwitched('search')
+  emit('mode-switched', value)
+}
+function mobileDisplaySwitched(value) {
+  global.setMobileDisplay(value)
+  emit('mobile-display-switched', value)
+}
+function showHelpClicked(value) {
+  global.setShowHelp(value)
+  emit('showHelpClicked', value)
+}
+onMounted(() => {
+  // init
+  languageSwitched('en')
+  buttonModeSwitched('search')
+  categoriesOnHoverOrClickChanged('catshover')
+
+  if (window.matchMedia('(orientation: landscape)').matches) {
+    if (window.innerWidth < 950) {
+      modeSwitched('mobile')
+      categoriesOnHoverOrClickChanged('catsclick')
+    }
+  } else {
+    if (window.innerWidth < 800) {
+      modeSwitched('mobile')
+      categoriesOnHoverOrClickChanged('catsclick')
+    }
+  }
+
+  // handle parameters from URL
+  /**
+   * URL Parameters
+   * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> gloabl.state.mobileMode true/false)
+   * @param {String} lang - UI and Wikipedia language, en or de valid (-> global.state.language)
+   * @param {String} categories - Enable/disable results categories, on or off valid (boolean to global.state.resultsCategoriesEnabled)
+   * @param {String} titlefilter - String to filter results titles with (global.state.filter)
+   * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
+   * @param {String} mobileview - Mobile mode only: Switch view mode, valid results, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
+   * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
+   * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
+   * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
+   * @param {String} buttonmode - Search, show categories/redirects or open Wikipedia on button click, valid search, catsredir, wiki
+   * @param {String} search - Wikipedia page to search for (global.state.title)
+   */
+
+  const urlParameters = new URLSearchParams(window.location.search)
+
+  const mode = urlParameters.get('mode')
+  const lang = urlParameters.get('lang')
+  const titlefilter = urlParameters.get('titlefilter')
+  const categoriesfilter = urlParameters.get('categoriesfilter')
+  const categories = urlParameters.get('categories')
+  const mobileview = urlParameters.get('mobileview')
+  const checkboxfilter = urlParameters.get('checkboxfilter')
+  const redirects = urlParameters.get('redirects')
+  const categoriesmode = urlParameters.get('categoriesmode')
+  const buttonmode = urlParameters.get('buttonmode')
+  const search = urlParameters.get('search')
+
+  if (mode === 'desktop' || mode === 'mobile') {
+    modeSwitched(mode)
+  }
+
+  if (lang === 'en' || lang === 'de') {
+    languageSwitched(lang)
+  }
+
+  if (categories === 'on' || categories === 'off') {
+    switch (categories) {
+      case 'on':
+        resultsCategoriesChanged(true)
+        break
+
+      case 'off':
+        resultsCategoriesChanged(false)
+        break
+    }
+  }
+
+  if (titlefilter && titlefilter.length > 0) {
+    resetFirstItem()
+    filterChanged(titlefilter)
+  }
+
+  if (
+    categoriesfilter &&
+    categoriesfilter.length > 0 &&
+    global.state.resultsCategoriesEnabled
+  ) {
+    resetFirstItem()
+    filterCategoriesChanged(categoriesfilter)
+  }
+
+  if (
+    global.state.mobileMode &&
+    (mobileview === 'results' ||
+      mobileview === 'extract' ||
+      mobileview === 'categories')
+  ) {
+    switch (mobileview) {
+      case 'results':
+        mobileDisplaySwitched('outgraph')
+        break
+      case 'extract':
+        mobileDisplaySwitched('maininfo')
+        break
+      case 'categories':
+        mobileDisplaySwitched('categories')
+        break
+    }
+  }
+
+  if (
+    !global.state.mobileMode &&
+    (checkboxfilter === 'on' || checkboxfilter === 'off')
+  ) {
+    switch (checkboxfilter) {
+      case 'on':
+        if (global.state.resultsCategoriesEnabled) {
+          checkboxFilterEnabledChanged(true)
+        }
+        break
+      case 'off':
+        checkboxFilterEnabledChanged(false)
+        break
+    }
+  }
+
+  if (redirects === 'on' || redirects === 'off') {
+    switch (redirects) {
+      case 'on':
+        resultsRedirectsChanged(true)
+        break
+      case 'off':
+        resultsRedirectsChanged(false)
+    }
+  }
+
+  if (categoriesmode === 'click' || categoriesmode === 'hover') {
+    switch (categoriesmode) {
+      case 'click':
+        categoriesOnHoverOrClickChanged('catsclick')
+        break
+
+      case 'hover':
+        categoriesOnHoverOrClickChanged('catshover')
+    }
+  }
+
+  if (categoriesmode === 'click' || categoriesmode === 'hover') {
+    switch (categoriesmode) {
+      case 'click':
+        categoriesOnHoverOrClickChanged('catsclick')
+        break
+
+      case 'hover':
+        categoriesOnHoverOrClickChanged('catshover')
+    }
+  }
+
+  if (
+    buttonmode === 'search' ||
+    buttonmode === 'catsredir' ||
+    buttonmode === 'wiki'
+  ) {
+    switch (buttonmode) {
+      case 'search':
+        buttonModeSwitched('search')
+        break
+
+      case 'catsredir':
+        buttonModeSwitched('catsredir')
+        break
+
+      case 'wiki':
+        buttonModeSwitched('wiki')
+    }
+  }
+
+  // do search last after evaluating all other parameters
+  if (search && search.length > 0) {
+    emit('fetchDataClicked', search)
+  }
+})
 </script>
 <style scoped>
 .inputform-flex-container {
