@@ -12,7 +12,7 @@
         global.state.catsRedirResult.categories.length > 0
       "
     >
-      <h4>{{ $t('categories') }}</h4>
+      <h4>{{ t('categories') }}</h4>
       <ul class="list-horizontal">
         <li
           v-for="(category, index) in global.state.catsRedirResult.categories"
@@ -29,7 +29,7 @@
         global.state.catsRedirResult.redirects.length > 0
       "
     >
-      <h4>{{ $t('redirects') }}</h4>
+      <h4>{{ t('redirects') }}</h4>
       <ul class="list-horizontal">
         <li
           v-for="redirect in global.state.catsRedirResult.redirects"
@@ -45,22 +45,20 @@
     </button>
   </div>
 </template>
-<script>
+
+<script setup>
 import { inject } from 'vue'
-export default {
-  name: 'CategoriesRedirects',
-  emits: ['closeButtonClicked'],
-  setup() {
-    const global = inject('global')
-    return { global }
-  },
-  methods: {
-    closeButtonClicked() {
-      this.$emit('closeButtonClicked')
-    }
-  }
+
+import { useI18n } from 'vue-i18n/index'
+const { t } = useI18n({})
+
+const global = inject('global')
+const emit = defineEmits(['closeButtonClicked'])
+function closeButtonClicked() {
+  emit('closeButtonClicked')
 }
 </script>
+
 <style scoped>
 .container {
   position: relative;

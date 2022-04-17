@@ -23,7 +23,7 @@
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
         <span
-          >{{ $t('results')
+          >{{ t('results')
           }}{{ global.state.filteredResultsArray.length }}</span
         >
         <span
@@ -49,7 +49,7 @@
             global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
         }"
       >
-        {{ $t('showing') }}{{ global.state.indexStart + 1 }}{{ $t('to')
+        {{ t('showing') }}{{ global.state.indexStart + 1 }}{{ t('to')
         }}{{
           global.state.indexEnd + 1 > global.state.filteredResultsArray.length
             ? global.state.indexEnd +
@@ -61,17 +61,15 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import { inject } from 'vue'
 
-export default {
-  name: 'StatusBar',
-  setup() {
-    const global = inject('global')
-    return { global }
-  }
-}
+import { useI18n } from 'vue-i18n/index'
+const { t } = useI18n({})
+
+const global = inject('global')
 </script>
+
 <style scoped>
 @keyframes fadeIn {
   from {

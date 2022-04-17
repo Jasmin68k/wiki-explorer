@@ -2,20 +2,12 @@
   <MainView />
 </template>
 
-<script>
+<script setup>
 import { provide } from 'vue'
 import MainView from './components/MainView.vue'
 import global from './global.js'
 
-export default {
-  name: 'App',
-  components: {
-    MainView
-  },
-  setup() {
-    provide('global', global)
-  }
-}
+provide('global', global)
 </script>
 
 <style>

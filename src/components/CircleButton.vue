@@ -41,73 +41,67 @@
     </button>
   </div>
 </template>
-<script>
+<script setup>
 import { inject, onMounted, onUpdated, ref } from 'vue'
-export default {
-  name: 'CircleButton',
-  setup(props, { emit }) {
-    const global = inject('global')
 
-    const buttonref = ref(null)
+const global = inject('global')
 
-    onMounted(() => {
-      adjustFontSize()
-    })
+const emit = defineEmits([
+  'circleButtonClicked',
+  'circleButtonWindowResizeTrigger'
+])
 
-    onUpdated(() => {
-      adjustFontSize()
-    })
-
-    // make font smaller, if otherwise button text overflows
-    function adjustFontSize() {
-      if (buttonref.value.scrollHeight > buttonref.value.clientHeight) {
-        let fontsize = parseFloat(buttonref.value.style['font-size'])
-        fontsize -= 1
-        buttonref.value.style['font-size'] = fontsize + '%'
-        adjustFontSize()
+const props = defineProps({
+  index: { required: true, default: -1, type: Number },
+  coordinates: {
+    required: true,
+    default: () => {
+      return {
+        x: -5000,
+        y: -5000
       }
-    }
-
-    function hoverCircleButton() {
-      if (!global.state.mobileMode && global.state.categoriesOnHover) {
-        if (!global.showCatsRedir) {
-          global.setShowCatsRedir(true)
-          emit('circleButtonWindowResizeTrigger')
-        }
-        global.setCatsRedirResult(global.state.displayResultsArray[props.index])
-      }
-    }
-
-    return {
-      global,
-      hoverCircleButton,
-      buttonref
-    }
-  },
-
-  emits: ['circleButtonClicked', 'circleButtonWindowResizeTrigger'],
-  props: {
-    index: { required: true, default: -1, type: Number },
-    coordinates: {
-      required: true,
-      default: () => {
-        return {
-          x: -5000,
-          y: -5000
-        }
-      },
-      type: Object
-    }
-  },
-  methods: {
-    circleButton(event, index) {
-      this.$emit('circleButtonClicked', { event: event, index: index })
     },
-    circleButtonMiddle(index) {
-      if (!this.global.state.displayResultsArray[index].missing) {
-        window.open(this.global.state.displayResultsArray[index].url, '_blank')
-      }
+    type: Object
+  }
+})
+
+const buttonref = ref(null)
+
+onMounted(() => {
+  adjustFontSize()
+})
+
+onUpdated(() => {
+  adjustFontSize()
+})
+
+// make font smaller, if otherwise button text overflows
+function adjustFontSize() {
+  if (buttonref.value.scrollHeight > buttonref.value.clientHeight) {
+    let fontsize = parseFloat(buttonref.value.style['font-size'])
+    fontsize -= 1
+    buttonref.value.style['font-size'] = fontsize + '%'
+    adjustFontSize()
+  }
+}
+
+function hoverCircleButton() {
+  if (!global.state.mobileMode && global.state.categoriesOnHover) {
+    if (!global.showCatsRedir) {
+      global.setShowCatsRedir(true)
+      emit('circleButtonWindowResizeTrigger')
     }
+    global.setCatsRedirResult(global.state.displayResultsArray[props.index])
+  }
+}
+
+function circleButton(event, index) {
+  emit('circleButtonClicked', { event: event, index: index })
+}
+
+function circleButtonMiddle(index) {
+  if (!global.state.displayResultsArray[index].missing) {
+    window.open(global.state.displayResultsArray[index].url, '_blank')
   }
 }
 </script>

@@ -14,7 +14,7 @@
         </h2>
 
         <button class="wikibutton" @click="wikiClicked">
-          {{ $t('open') }}
+          {{ t('open') }}
           <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
         </button>
       </div>
@@ -51,23 +51,21 @@
     </div>
   </div>
 </template>
-<script>
+
+<script setup>
 import { inject } from 'vue'
 import CategoriesRedirectsTitle from './CategoriesRedirectsTitle.vue'
 
-export default {
-  name: 'MainTitleInfo',
-  setup() {
-    const global = inject('global')
+import { useI18n } from 'vue-i18n/index'
+const { t } = useI18n({})
 
-    function wikiClicked() {
-      window.open(this.global.statefull.titlePage.url, '_blank')
-    }
-    return { global, wikiClicked }
-  },
-  components: { CategoriesRedirectsTitle }
+const global = inject('global')
+
+function wikiClicked() {
+  window.open(global.statefull.titlePage.url, '_blank')
 }
 </script>
+
 <style scoped>
 .extract {
   text-align: justify;

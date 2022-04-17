@@ -16,164 +16,172 @@
     </div>
   </div>
   <div class="checkboxbuttons">
-    <button @click.prevent="categoriesAll">{{ $t('all') }}</button>
-    <button @click.prevent="categoriesNone">{{ $t('none') }}</button>
+    <button @click.prevent="categoriesAll">{{ t('all') }}</button>
+    <button @click.prevent="categoriesNone">{{ t('none') }}</button>
   </div>
 </template>
-<script>
+<script setup>
 // Virtual scrollbox concept mainly taken from:
 // https://dev.to/adamklein/build-your-own-virtual-scroll-part-i-11ib
 // https://stackoverflow.com/questions/60924305/how-to-make-virtual-scroll
 // https://codepen.io/zupkode/pen/oNgaqLv
 
-import { inject } from 'vue'
-export default {
-  name: 'CategoriesCheckboxFilter',
-  setup() {
-    const global = inject('global')
+import { inject, computed, onMounted, onBeforeUnmount, ref } from 'vue'
 
-    return { global }
-  },
-  props: {
-    items: { required: true, default: () => [], type: Array },
-    rootHeight: { required: true, default: 300, type: Number }
-  },
-  data() {
-    return {
-      // Height of each row, give it an initial value but this gets calculated dynamically on mounted
-      rowHeight: 30,
-      // Current scroll top position, we update this inside the scroll event handler
-      scrollTop: 0,
-      // Extra padding at the top and bottom so that the items transition smoothly
-      // Think of it as extra items just before the viewport starts and just after the viewport ends
-      nodePadding: 20
-    }
-  },
+import { useI18n } from 'vue-i18n/index'
+const { t } = useI18n({})
 
-  computed: {
-    // Total height of the viewport = number of items in the array x height of each item
-    viewportHeight() {
-      return this.itemCount * this.rowHeight
-    },
-    // Out of all the items in the massive array, we only render a subset of them
-    // This is the starting index from which we show a few items
-    startIndex() {
-      let startNode =
-        Math.floor(this.scrollTop / this.rowHeight) - this.nodePadding
-      startNode = Math.max(0, startNode)
-      return startNode
-    },
-    // This is the number of items we show after the starting index
-    // If the array has a total 10000 items, we want to show items from say index 1049 till 1069
-    // visible node count is that number 20 and starting index is 1049
-    visibleNodeCount() {
-      let count =
-        Math.ceil(this.rootHeight / this.rowHeight) + 2 * this.nodePadding
-      count = Math.min(this.itemCount - this.startIndex, count)
-      return count
-    },
-    // Subset of items shown from the full array
-    visibleItems() {
-      return this.items.slice(
-        this.startIndex,
-        this.startIndex + this.visibleNodeCount
-      )
-    },
-    itemCount() {
-      return this.items.length
-    },
-    // The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
-    offsetY() {
-      return this.startIndex * this.rowHeight
-    },
-    // This is the direct list container, we apply a translateY to this
-    spacerStyle() {
-      return {
-        transform: 'translateY(' + this.offsetY + 'px)'
-      }
-    },
-    viewportStyle() {
-      return {
-        overflow: 'hidden',
-        height: this.viewportHeight + 'px',
-        position: 'relative'
-      }
-    },
-    rootStyle() {
-      return {
-        height: this.rootHeight + 'px',
-        overflow: 'auto'
-      }
-    }
-  },
-  methods: {
-    categoriesAll() {
-      // Temp construct fixes checkboxes not updated from unchecked to check in certain situations,
-      // e. g. none, scroll max down, filter categories, all
-      // also triggers v-model update only at end, might even be faster
+const global = inject('global')
 
-      let checkedCategoriesTemp = new Set()
-      // no duplicate check needed in Set
-      this.items.forEach((item) => checkedCategoriesTemp.add(item))
-      this.global.statefull.checkedCategories = checkedCategoriesTemp
-      this.global.setGraphFirstItem(1)
-    },
-    categoriesNone() {
-      // https://stackoverflow.com/a/44204227
-      // ECMAScript 6 sets can permit faster computing of the elements of one array that aren't in the other
-      // Since the lookup complexity for the V8 engine browsers use these days is O(1), the time complexity of the whole algorithm is O(n)
-      const toRemove = new Set(this.items)
+const root = ref(null)
+const spacer = ref(null)
 
-      let tempArray = Array.from(this.global.statefull.checkedCategories)
-      tempArray = tempArray.filter((x) => !toRemove.has(x))
+const emit = defineEmits(['windowResize'])
 
-      this.global.statefull.checkedCategories = new Set(tempArray)
+const props = defineProps({
+  items: { required: true, default: () => [], type: Array },
+  rootHeight: { required: true, default: 300, type: Number }
+})
 
-      this.global.setGraphFirstItem(1)
-      if (!this.global.state.checkboxFilterEnabled) {
-        // enable in desktop when changed in mobile
-        this.global.setCheckboxFilterEnabled(true)
-      }
-    },
-    resultsCategoriesCheckboxChanged() {
-      this.global.setGraphFirstItem(1)
-    },
-    handleScroll() {
-      this.scrollTop = this.$refs.root.scrollTop
-    },
-    // Find the largest height amongst all the children
-    // Remember each row has to be of the same height
-    // I am working on the different height version
-    calculateInitialRowHeight() {
-      const children = this.$refs.spacer.children
-      let largestHeight = 0
-      for (let i = 0; i < children.length; i++) {
-        if (children[i].offsetHeight > largestHeight) {
-          largestHeight = children[i].offsetHeight
-        }
-      }
-      return largestHeight
-    }
-  },
-  mounted() {
-    // emit did not work for whatever reason
-    this.$parent.windowResized()
+// Height of each row, give it an initial value but this gets calculated dynamically on mounted
+const rowHeight = ref(30)
+// Current scroll top position, we update this inside the scroll event handler
+const scrollTop = ref(0)
+// Extra padding at the top and bottom so that the items transition smoothly
+// Think of it as extra items just before the viewport starts and just after the viewport ends
+// not ref, hardcoded
+const nodePadding = 20
 
-    this.$refs.root.addEventListener('scroll', this.handleScroll, {
-      passive: true
-    })
-    // Calculate that initial row height dynamically
-    const largestHeight = this.calculateInitialRowHeight()
-    this.rowHeight =
-      typeof largestHeight !== 'undefined' && largestHeight !== null
-        ? largestHeight
-        : 30
-  },
-  // unmounted() this.$refs.root = null -> error
-  beforeUnmount() {
-    this.$refs.root.removeEventListener('scroll', this.handleScroll)
+// Total height of the viewport = number of items in the array x height of each item
+
+const viewportHeight = computed(() => itemCount.value * rowHeight.value)
+
+// Out of all the items in the massive array, we only render a subset of them
+// This is the starting index from which we show a few items
+
+const startIndex = computed(function () {
+  let startNode = Math.floor(scrollTop.value / rowHeight.value) - nodePadding
+  startNode = Math.max(0, startNode)
+
+  return startNode
+})
+
+// This is the number of items we show after the starting index
+// If the array has a total 10000 items, we want to show items from say index 1049 till 1069
+// visible node count is that number 20 and starting index is 1049
+
+const visibleNodeCount = computed(function () {
+  let count = Math.ceil(props.rootHeight / rowHeight.value) + 2 * nodePadding
+  count = Math.min(itemCount.value - startIndex.value, count)
+  return count
+})
+
+// Subset of items shown from the full array
+
+const visibleItems = computed(() =>
+  props.items.slice(startIndex.value, startIndex.value + visibleNodeCount.value)
+)
+
+const itemCount = computed(() => props.items.length)
+
+// The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
+const offsetY = computed(() => startIndex.value * rowHeight.value)
+
+// This is the direct list container, we apply a translateY to this
+const spacerStyle = computed(function () {
+  return {
+    transform: 'translateY(' + offsetY.value + 'px)'
+  }
+})
+
+const viewportStyle = computed(function () {
+  return {
+    overflow: 'hidden',
+    height: viewportHeight.value + 'px',
+    position: 'relative'
+  }
+})
+
+const rootStyle = computed(function () {
+  return {
+    height: props.rootHeight + 'px',
+    overflow: 'auto'
+  }
+})
+
+function categoriesAll() {
+  // Temp construct fixes checkboxes not updated from unchecked to check in certain situations,
+  // e. g. none, scroll max down, filter categories, all
+  // also triggers v-model update only at end, might even be faster
+
+  let checkedCategoriesTemp = new Set()
+  // no duplicate check needed in Set
+  props.items.forEach((item) => checkedCategoriesTemp.add(item))
+  global.statefull.checkedCategories = checkedCategoriesTemp
+  global.setGraphFirstItem(1)
+}
+function categoriesNone() {
+  // https://stackoverflow.com/a/44204227
+  // ECMAScript 6 sets can permit faster computing of the elements of one array that aren't in the other
+  // Since the lookup complexity for the V8 engine browsers use these days is O(1), the time complexity of the whole algorithm is O(n)
+  const toRemove = new Set(props.items)
+
+  let tempArray = Array.from(global.statefull.checkedCategories)
+  tempArray = tempArray.filter((x) => !toRemove.has(x))
+
+  global.statefull.checkedCategories = new Set(tempArray)
+
+  global.setGraphFirstItem(1)
+  if (!global.state.checkboxFilterEnabled) {
+    // enable in desktop when changed in mobile
+    global.setCheckboxFilterEnabled(true)
   }
 }
+function resultsCategoriesCheckboxChanged() {
+  global.setGraphFirstItem(1)
+}
+function handleScroll() {
+  scrollTop.value = root.value.scrollTop
+}
+
+// Find the largest height amongst all the children
+// Remember each row has to be of the same height
+// I am working on the different height version
+function calculateInitialRowHeight() {
+  const children = spacer.value.children
+  let largestHeight = 0
+  for (let i = 0; i < children.length; i++) {
+    if (children[i].offsetHeight > largestHeight) {
+      largestHeight = children[i].offsetHeight
+    }
+  }
+  return largestHeight
+}
+
+onMounted(() => {
+  // emit did not work for whatever reason
+  // $parent.windowResized()
+
+  // script setup testing with emit again
+
+  emit('windowResize')
+
+  root.value.addEventListener('scroll', handleScroll, {
+    passive: true
+  })
+
+  // Calculate that initial row height dynamically
+  const largestHeight = calculateInitialRowHeight()
+  rowHeight.value =
+    typeof largestHeight !== 'undefined' && largestHeight !== null
+      ? largestHeight
+      : 30
+})
+
+// unmounted() root.value === null -> error
+onBeforeUnmount(() => {
+  root.value.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style scoped>

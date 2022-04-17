@@ -52,183 +52,167 @@
     />
   </span>
 </template>
-<script>
+
+<script setup>
 import { inject, watchEffect, ref, onUnmounted } from 'vue'
 
-export default {
-  name: 'PieNavigation',
-  props: {
-    radius: { required: true, default: 250, type: Number }
-  },
+const global = inject('global')
 
-  setup() {
-    const global = inject('global')
+// variable props not used so not declared with 'const props =' - otherwise tslint error unused var
+// https://github.com/vuejs/eslint-plugin-vue/issues/1753
+defineProps({
+  radius: { required: true, default: 260, type: Number }
+})
 
-    let slice = ref('')
-    let mousedown = false
-    let angle = global.state.pieAngleSaved
+let slice = ref('')
+let mousedown = false
+let angle = global.state.pieAngleSaved
 
-    function nextItem() {
-      let item = global.state.graphFirstItem
+function nextItem() {
+  let item = global.state.graphFirstItem
 
-      item += 1
-      if (item > global.state.filteredResultsArray.length) {
-        item -= global.state.filteredResultsArray.length
-      }
-      angle += 360 / global.state.filteredResultsArray.length
+  item += 1
+  if (item > global.state.filteredResultsArray.length) {
+    item -= global.state.filteredResultsArray.length
+  }
+  angle += 360 / global.state.filteredResultsArray.length
 
-      global.setGraphFirstItem(item)
-      drawSlice()
-    }
+  global.setGraphFirstItem(item)
+  drawSlice()
+}
 
-    function prevItem() {
-      let item = global.state.graphFirstItem
-      item -= 1
-      if (item < 1) {
-        item += global.state.filteredResultsArray.length
-      }
-      angle -= 360 / global.state.filteredResultsArray.length
-      global.setGraphFirstItem(item)
-      drawSlice()
-    }
+function prevItem() {
+  let item = global.state.graphFirstItem
+  item -= 1
+  if (item < 1) {
+    item += global.state.filteredResultsArray.length
+  }
+  angle -= 360 / global.state.filteredResultsArray.length
+  global.setGraphFirstItem(item)
+  drawSlice()
+}
 
-    function wheelSpin(event) {
-      const delta = event.wheelDeltaY
+function wheelSpin(event) {
+  const delta = event.wheelDeltaY
 
-      if (delta !== 0) {
-        let item = global.state.graphFirstItem
+  if (delta !== 0) {
+    let item = global.state.graphFirstItem
 
-        switch (true) {
-          case delta < 0:
-            item += 1
-            if (item > global.state.filteredResultsArray.length) {
-              item -= global.state.filteredResultsArray.length
-            }
-            angle += 360 / global.state.filteredResultsArray.length
-            break
-          case delta > 0:
-            item -= 1
-            if (item < 1) {
-              item += global.state.filteredResultsArray.length
-            }
-            angle -= 360 / global.state.filteredResultsArray.length
-            break
+    switch (true) {
+      case delta < 0:
+        item += 1
+        if (item > global.state.filteredResultsArray.length) {
+          item -= global.state.filteredResultsArray.length
         }
-        global.setGraphFirstItem(item)
-        drawSlice()
-      }
+        angle += 360 / global.state.filteredResultsArray.length
+        break
+      case delta > 0:
+        item -= 1
+        if (item < 1) {
+          item += global.state.filteredResultsArray.length
+        }
+        angle -= 360 / global.state.filteredResultsArray.length
+        break
     }
-
-    function mouseDown(event) {
-      mousedown = true
-      //for init on click before move
-      pieNavigation(event)
-    }
-    function mouseUp() {
-      mousedown = false
-    }
-
-    function pieNavigation(event) {
-      if (mousedown) {
-        // normalize coordinates to unit circle
-        const xRaw =
-          (event.offsetX - event.target.offsetWidth / 2) /
-          (event.target.offsetWidth / 2)
-        const yRaw =
-          (event.offsetY - event.target.offsetHeight / 2) /
-          (event.target.offsetHeight / 2)
-        const length = Math.sqrt(xRaw * xRaw + yRaw * yRaw)
-        const x = xRaw / length
-        const y = yRaw / length
-
-        doNavigation(x, y)
-      }
-    }
-
-    function doNavigation(x, y) {
-      angle = calcAngle(x, y)
-
-      // map to 0 degrees on top of circle
-      angle += 90
-      // map mouse pointer to middle of slice
-      angle -=
-        (360 / global.state.filteredResultsArray.length) *
-        (global.state.sizePerPage / 2)
-      // clean up over-/undershoot
-      angle %= 360
-
-      // map angle range to number/index [+1] of results
-      let resultStart = Math.floor(
-        Math.max(
-          1,
-          Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
-        ),
-        10
-      )
-      if (resultStart < 1) {
-        resultStart += global.state.filteredResultsArray.length
-      }
-
-      drawSlice()
-
-      global.setGraphFirstItem(resultStart)
-    }
-
-    function calcAngle(x, y) {
-      return (Math.atan2(-y, -x) * 180) / Math.PI + 180
-    }
-
-    function drawSlice() {
-      if (
-        global.state.sizePerPage >= global.state.filteredResultsArray.length
-      ) {
-        // slice covers whole circle
-        // need to draw using two arcs, otherwise won't work
-        slice.value = 'M 1 0 A 1 1 0 0 1 -1 0 M -1 0 A 1 1 0 0 1 1 0'
-      } else {
-        const anglePerResult = 360 / global.state.filteredResultsArray.length
-
-        const angleStart = angle
-        const angleEnd = angle + anglePerResult * global.state.sizePerPage
-
-        const startX = Math.cos((2 * Math.PI * angleStart) / 360)
-        const startY = Math.sin((2 * Math.PI * angleStart) / 360)
-        const endX = Math.cos((2 * Math.PI * angleEnd) / 360)
-        const endY = Math.sin((2 * Math.PI * angleEnd) / 360)
-
-        const largeArc =
-          anglePerResult * global.state.sizePerPage > 180 ? '1' : '0'
-
-        slice.value = `M 0 0 L ${startX} ${startY} A 1 1 0 ${largeArc} 1 ${endX} ${endY} L 0 0`
-      }
-    }
-
-    //reset slice to start, when indexStart is reset (which happens on new title, filters changed etc.)
-    function resetSlice() {
-      if (global.state.indexStart === 0) {
-        angle = calcAngle(1, 0)
-        drawSlice()
-      }
-    }
-    watchEffect(() => resetSlice(global.state.indexStart))
-    watchEffect(() => drawSlice(global.state.sizePerPage))
-
-    onUnmounted(() => {
-      global.setPieAngleSaved(angle)
-    })
-
-    return {
-      global,
-      pieNavigation,
-      mouseDown,
-      mouseUp,
-      wheelSpin,
-      prevItem,
-      nextItem,
-      slice
-    }
+    global.setGraphFirstItem(item)
+    drawSlice()
   }
 }
+
+function mouseDown(event) {
+  mousedown = true
+  //for init on click before move
+  pieNavigation(event)
+}
+function mouseUp() {
+  mousedown = false
+}
+
+function pieNavigation(event) {
+  if (mousedown) {
+    // normalize coordinates to unit circle
+    const xRaw =
+      (event.offsetX - event.target.offsetWidth / 2) /
+      (event.target.offsetWidth / 2)
+    const yRaw =
+      (event.offsetY - event.target.offsetHeight / 2) /
+      (event.target.offsetHeight / 2)
+    const length = Math.sqrt(xRaw * xRaw + yRaw * yRaw)
+    const x = xRaw / length
+    const y = yRaw / length
+
+    doNavigation(x, y)
+  }
+}
+
+function doNavigation(x, y) {
+  angle = calcAngle(x, y)
+
+  // map to 0 degrees on top of circle
+  angle += 90
+  // map mouse pointer to middle of slice
+  angle -=
+    (360 / global.state.filteredResultsArray.length) *
+    (global.state.sizePerPage / 2)
+  // clean up over-/undershoot
+  angle %= 360
+
+  // map angle range to number/index [+1] of results
+  let resultStart = Math.floor(
+    Math.max(
+      1,
+      Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
+    ),
+    10
+  )
+  if (resultStart < 1) {
+    resultStart += global.state.filteredResultsArray.length
+  }
+
+  drawSlice()
+
+  global.setGraphFirstItem(resultStart)
+}
+
+function calcAngle(x, y) {
+  return (Math.atan2(-y, -x) * 180) / Math.PI + 180
+}
+
+function drawSlice() {
+  if (global.state.sizePerPage >= global.state.filteredResultsArray.length) {
+    // slice covers whole circle
+    // need to draw using two arcs, otherwise won't work
+    slice.value = 'M 1 0 A 1 1 0 0 1 -1 0 M -1 0 A 1 1 0 0 1 1 0'
+  } else {
+    const anglePerResult = 360 / global.state.filteredResultsArray.length
+
+    const angleStart = angle
+    const angleEnd = angle + anglePerResult * global.state.sizePerPage
+
+    const startX = Math.cos((2 * Math.PI * angleStart) / 360)
+    const startY = Math.sin((2 * Math.PI * angleStart) / 360)
+    const endX = Math.cos((2 * Math.PI * angleEnd) / 360)
+    const endY = Math.sin((2 * Math.PI * angleEnd) / 360)
+
+    const largeArc = anglePerResult * global.state.sizePerPage > 180 ? '1' : '0'
+
+    slice.value = `M 0 0 L ${startX} ${startY} A 1 1 0 ${largeArc} 1 ${endX} ${endY} L 0 0`
+  }
+}
+
+//reset slice to start, when indexStart is reset (which happens on new title, filters changed etc.)
+function resetSlice() {
+  if (global.state.indexStart === 0) {
+    angle = calcAngle(1, 0)
+    drawSlice()
+  }
+}
+watchEffect(() => resetSlice(global.state.indexStart))
+watchEffect(() => drawSlice(global.state.sizePerPage))
+
+onUnmounted(() => {
+  global.setPieAngleSaved(angle)
+})
 </script>
 <style scoped>
 .piebackground {
