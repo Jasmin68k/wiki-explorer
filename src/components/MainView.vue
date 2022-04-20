@@ -34,6 +34,7 @@
         @mobileDisplaySwitched="mobileDisplaySwitched"
         @buttonModeSwitched="buttonModeSwitched"
         @categoriesOnHoverChanged="categoriesOnHoverChanged"
+        @closeCatsRedir="catsRedirClosed"
       ></input-form>
     </div>
     <div
@@ -357,7 +358,14 @@ async function circleButtonClicked(clickData) {
             global.setCatsRedirResult(
               global.state.displayResultsArray[clickData.index]
             )
-            global.setShowCatsRedir(true)
+            if (
+              !global.showCatsRedir &&
+              (global.state.resultsCategoriesEnabled ||
+                global.state.resultsRedirectsEnabled)
+            ) {
+              global.setShowCatsRedir(true)
+            }
+
             windowResized()
           }
         }
@@ -370,7 +378,14 @@ async function circleButtonClicked(clickData) {
             global.setCatsRedirResult(
               global.state.displayResultsArray[clickData.index]
             )
-            global.setShowCatsRedir(true)
+
+            if (
+              !global.showCatsRedir &&
+              (global.state.resultsCategoriesEnabled ||
+                global.state.resultsRedirectsEnabled)
+            ) {
+              global.setShowCatsRedir(true)
+            }
             windowResized()
           }
         } else {

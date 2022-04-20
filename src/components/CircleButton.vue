@@ -87,11 +87,15 @@ function adjustFontSize() {
 
 function hoverCircleButton() {
   if (!global.state.mobileMode && global.state.categoriesOnHover) {
-    if (!global.showCatsRedir) {
+    global.setCatsRedirResult(global.state.displayResultsArray[props.index])
+    if (
+      !global.showCatsRedir &&
+      (global.state.resultsCategoriesEnabled ||
+        global.state.resultsRedirectsEnabled)
+    ) {
       global.setShowCatsRedir(true)
       emit('circleButtonWindowResizeTrigger')
     }
-    global.setCatsRedirResult(global.state.displayResultsArray[props.index])
   }
 }
 

@@ -580,7 +580,8 @@ const emit = defineEmits([
   'mode-switched',
   'mobile-display-switched',
   'button-mode-switched',
-  'categoriesOnHoverChanged'
+  'categoriesOnHoverChanged',
+  'closeCatsRedir'
 ])
 
 const langEn = ref(null)
@@ -611,6 +612,10 @@ function resultsCategoriesChanged(value) {
   global.setResultsCategoriesEnabled(value)
   resetFirstItem()
   emit('resultsCategoriesChanged', value)
+
+  if (value === false && !global.state.resultsRedirectsEnabled) {
+    emit('closeCatsRedir')
+  }
 }
 function resultsRedirectsChanged(value) {
   if (value === false && global.state.resultsCategoriesEnabled === false) {
@@ -619,6 +624,10 @@ function resultsRedirectsChanged(value) {
 
   global.setResultsRedirectsEnabled(value)
   emit('resultsRedirectsChanged', value)
+
+  if (value === false && !global.state.resultsCategoriesEnabled) {
+    emit('closeCatsRedir')
+  }
 }
 function titleChanged(value) {
   global.setTitle(value)
