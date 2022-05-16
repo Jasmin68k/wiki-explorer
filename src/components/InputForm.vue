@@ -17,6 +17,8 @@
           type="radio"
           id="en"
           value="en"
+          name="language"
+          checked="true"
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
@@ -24,7 +26,6 @@
                 !global.state.resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
-          ref="langEn"
         />
         <label
           class="radiolabel"
@@ -43,6 +44,7 @@
           type="radio"
           id="de"
           value="de"
+          name="language"
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
@@ -50,7 +52,6 @@
                 !global.state.resultsCategoriesDone))
           "
           @change="languageSwitched($event.target.value)"
-          ref="langDe"
         />
         <label
           class="radiolabel"
@@ -347,7 +348,7 @@
               (global.state.mobileDisplay === 'maininfo' ||
                 global.state.mobileDisplay === 'categories'))
           "
-          ref="catsClick"
+          name="categorieshoverorclick"
           @change="categoriesOnHoverOrClickChanged($event.target.value)"
         />
         <label
@@ -377,7 +378,8 @@
               (global.state.mobileDisplay === 'maininfo' ||
                 global.state.mobileDisplay === 'categories'))
           "
-          ref="catsHover"
+          name="categorieshoverorclick"
+          checked="true"
           @change="categoriesOnHoverOrClickChanged($event.target.value)"
         />
         <label
@@ -409,9 +411,9 @@
           type="radio"
           id="search"
           value="search"
+          :checked="global.state.buttonMode === 'search'"
           :disabled="global.state.inputsDisabled"
           @change="buttonModeSwitched($event.target.value)"
-          ref="search"
         />
         <label
           class="radiolabel"
@@ -426,6 +428,7 @@
           type="radio"
           id="catsredir"
           value="catsredir"
+          :checked="global.state.buttonMode === 'catsredir'"
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled &&
@@ -434,7 +437,6 @@
               !global.state.resultsRedirectsDone)
           "
           @change="buttonModeSwitched($event.target.value)"
-          ref="catsredir"
         />
         <label
           class="radiolabel"
@@ -463,9 +465,9 @@
           type="radio"
           id="wiki"
           value="wiki"
+          :checked="global.state.buttonMode === 'wiki'"
           :disabled="global.state.inputsDisabled"
           @change="buttonModeSwitched($event.target.value)"
-          ref="wiki"
         />
         <label
           class="radiolabel"
@@ -563,7 +565,7 @@
   </div>
 </template>
 <script setup>
-import { inject, nextTick, onMounted, ref } from 'vue'
+import { inject, nextTick, onMounted } from 'vue'
 
 import { useI18n } from 'vue-i18n/index'
 const { t } = useI18n({})
@@ -583,14 +585,6 @@ const emit = defineEmits([
   'categoriesOnHoverChanged',
   'closeCatsRedir'
 ])
-
-const langEn = ref(null)
-const langDe = ref(null)
-const catsClick = ref(null)
-const catsHover = ref(null)
-const catsredir = ref(null)
-const search = ref(null)
-const wiki = ref(null)
 
 // can this be done more elegantly?
 function fetchData(submitEvent) {
@@ -647,50 +641,14 @@ function checkboxFilterEnabledChanged(value) {
   emit('checkboxFilterEnabledChanged', value)
 }
 function languageSwitched(value) {
-  if (value === 'en') {
-    langEn.value.checked = true
-    langDe.value.checked = false
-  } else {
-    langEn.value.checked = false
-    langDe.value.checked = true
-  }
-
   emit('languageSwitched', value)
 }
 function buttonModeSwitched(value) {
-  switch (value) {
-    case 'search':
-      search.value.checked = true
-      catsredir.value.checked = false
-      wiki.value.checked = false
-
-      break
-    case 'catsredir':
-      search.value.checked = false
-      catsredir.value.checked = true
-      wiki.value.checked = false
-
-      break
-    case 'wiki':
-      search.value.checked = false
-      catsredir.value.checked = false
-      wiki.value.checked = true
-
-      break
-  }
   global.setButtonMode(value)
 
   emit('button-mode-switched')
 }
 function categoriesOnHoverOrClickChanged(value) {
-  if (value === 'catshover') {
-    catsHover.value.checked = true
-    catsClick.value.checked = false
-  } else {
-    catsHover.value.checked = false
-    catsClick.value.checked = true
-  }
-
   if (value === 'catshover') {
     global.setCategoriesOnHover(true)
   } else {
