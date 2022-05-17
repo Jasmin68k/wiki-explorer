@@ -10,7 +10,6 @@
       width: global.state.mobileMode ? 125 * 0.66 + 'px' : 125 + 'px',
       height: global.state.mobileMode ? 75 * 0.66 + 'px' : 75 + 'px'
     }"
-    v-on="{ mouseenter: hoverCircleButton }"
   >
     <button
       ref="buttonref"
@@ -46,12 +45,9 @@ import { inject, onMounted, onUpdated, ref } from 'vue'
 
 const global = inject('global')
 
-const emit = defineEmits([
-  'circleButtonClicked',
-  'circleButtonWindowResizeTrigger'
-])
+const emit = defineEmits(['circleButtonClicked'])
 
-const props = defineProps({
+defineProps({
   index: { required: true, default: -1, type: Number },
   coordinates: {
     required: true,
@@ -82,20 +78,6 @@ function adjustFontSize() {
     fontsize -= 1
     buttonref.value.style['font-size'] = fontsize + '%'
     adjustFontSize()
-  }
-}
-
-function hoverCircleButton() {
-  if (!global.state.mobileMode && global.state.categoriesOnHover) {
-    global.setCatsRedirResult(global.state.displayResultsArray[props.index])
-    if (
-      !global.showCatsRedir &&
-      (global.state.resultsCategoriesEnabled ||
-        global.state.resultsRedirectsEnabled)
-    ) {
-      global.setShowCatsRedir(true)
-      emit('circleButtonWindowResizeTrigger')
-    }
   }
 }
 

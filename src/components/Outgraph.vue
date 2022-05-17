@@ -5,7 +5,6 @@
         :index="index"
         :coordinates="circleButtonCoordinates.value[index]"
         @circleButtonClicked="circleButtonClicked"
-        @circleButtonWindowResizeTrigger="circleButtonWindowResizeTrigger"
       >
       </circle-button>
     </div>
@@ -29,10 +28,7 @@ import PieNavigation from './PieNavigation.vue'
 
 const global = inject('global')
 
-const emit = defineEmits([
-  'circleButtonClicked',
-  'circleButtonWindowResizeTrigger'
-])
+const emit = defineEmits(['circleButtonClicked'])
 
 onMounted(() => {
   window.addEventListener('resize', calcCoordinates)
@@ -112,9 +108,6 @@ onUnmounted(() => {
 
 function circleButtonClicked(clickData) {
   emit('circleButtonClicked', clickData)
-}
-function circleButtonWindowResizeTrigger() {
-  emit('circleButtonWindowResizeTrigger')
 }
 </script>
 <style scoped>

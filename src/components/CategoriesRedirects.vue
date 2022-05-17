@@ -1,43 +1,37 @@
 <template>
   <div class="container">
-    <div class="title">
-      <h3>
-        {{ global.state.catsRedirResult.title }}
-      </h3>
-    </div>
-    <div
-      class="catsredirects"
-      v-if="
-        global.state.resultsCategoriesEnabled &&
-        global.state.catsRedirResult.categories.length > 0
-      "
-    >
-      <h4>{{ t('categories') }}</h4>
-      <ul class="list-horizontal">
-        <li
-          v-for="(category, index) in global.state.catsRedirResult.categories"
-          :key="index"
-        >
-          {{ category }}
-        </li>
-      </ul>
-    </div>
-    <div
-      class="catsredirects"
-      v-if="
-        global.state.resultsRedirectsEnabled &&
-        global.state.catsRedirResult.redirects.length > 0
-      "
-    >
-      <h4>{{ t('redirects') }}</h4>
-      <ul class="list-horizontal">
-        <li
-          v-for="(redirect, index) in global.state.catsRedirResult.redirects"
-          :key="index"
-        >
-          {{ redirect }}
-        </li>
-      </ul>
+    <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
+      <div class="title">
+        <h3>
+          {{ page.title }}
+        </h3>
+      </div>
+
+      <div
+        class="catsredirects"
+        v-if="
+          global.state.resultsCategoriesEnabled && page.categories.length > 0
+        "
+      >
+        <h4>{{ t('categories') }}</h4>
+        <ul class="list-horizontal">
+          <li v-for="(category, index) in page.categories" :key="index">
+            {{ category }}
+          </li>
+        </ul>
+      </div>
+
+      <div
+        class="catsredirects"
+        v-if="global.state.resultsRedirectsEnabled && page.redirects.length > 0"
+      >
+        <h4>{{ t('redirects') }}</h4>
+        <ul class="list-horizontal">
+          <li v-for="(redirect, index) in page.redirects" :key="index">
+            {{ redirect }}
+          </li>
+        </ul>
+      </div>
     </div>
 
     <button class="closebutton" @click="closeButtonClicked">

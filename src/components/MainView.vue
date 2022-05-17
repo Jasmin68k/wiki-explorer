@@ -77,7 +77,6 @@
       "
       class="grid-item-graph"
       @circleButtonClicked="circleButtonClicked"
-      @circleButtonWindowResizeTrigger="circleButtonWindowResizeTrigger"
     ></outgraph>
 
     <div
@@ -319,7 +318,6 @@ async function getMainInfo() {
     // needs await, otherwise one will overwrite the other
     await getCategories()
     await getRedirects()
-    global.setCatsRedirResult(global.statefull.titlePage)
   }
 }
 async function getCategories() {
@@ -355,9 +353,6 @@ async function circleButtonClicked(clickData) {
           getJson()
         } else {
           if (!global.state.categoriesOnHover) {
-            global.setCatsRedirResult(
-              global.state.displayResultsArray[clickData.index]
-            )
             if (
               !global.showCatsRedir &&
               (global.state.resultsCategoriesEnabled ||
@@ -375,10 +370,6 @@ async function circleButtonClicked(clickData) {
       case 'catsredir':
         if (!clickData.event.ctrlKey) {
           if (!global.state.categoriesOnHover) {
-            global.setCatsRedirResult(
-              global.state.displayResultsArray[clickData.index]
-            )
-
             if (
               !global.showCatsRedir &&
               (global.state.resultsCategoriesEnabled ||
@@ -543,7 +534,6 @@ function updateButtonModeString() {
 }
 
 function modeSwitched() {
-  global.setCatsRedirResult(global.statefull.titlePage)
   windowResized()
 }
 function mobileDisplaySwitched() {
@@ -551,9 +541,6 @@ function mobileDisplaySwitched() {
 }
 function showHelpSwitched() {
   global.setInputsDisabled(global.state.showHelp)
-}
-function circleButtonWindowResizeTrigger() {
-  windowResized()
 }
 async function windowResized() {
   await nextTick()
