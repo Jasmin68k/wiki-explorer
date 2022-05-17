@@ -1,12 +1,8 @@
 <template>
   <div
-    class="grid-container-base"
+    class="grid-container"
     :class="{
-      mobile: global.state.mobileMode,
-      'grid-container':
-        global.state.resultsCategoriesEnabled && !global.state.mobileMode,
-      'grid-container-nocategoriesredirectscheckbox':
-        !global.state.resultsCategoriesEnabled && !global.state.mobileMode
+      mobile: global.state.mobileMode
     }"
     ref="gridcontainer"
   >
@@ -23,20 +19,17 @@
         @resultsCategoriesChanged="resultsCategoriesChanged"
         @resultsRedirectsChanged="resultsRedirectsChanged"
         @languageSwitched="languageSwitched"
-        @modeSwitched="modeSwitched"
       ></input-form>
     </div>
+
     <div
-      v-if="
-        (!global.state.showHelp && !global.state.mobileMode) ||
-        (!global.state.showHelp && global.state.mobileMode)
-      "
-      class="inputcategoriescontainer grid-item-checkbox categoriesredirects"
+      v-if="!global.state.showHelp"
+      class="grid-item-tabarea"
       :class="{
         mobile: global.state.mobileMode
       }"
     >
-      <categories-checkbox-filter
+      <!-- <categories-checkbox-filter
         v-if="
           ((!global.state.mobileMode &&
             global.state.resultsCategoriesEnabled) ||
@@ -47,19 +40,32 @@
         :items="resultsCategoriesAllArray"
         :root-height="scrollboxContainerHeight"
         @windowResize="windowResized"
-      ></categories-checkbox-filter>
+      ></categories-checkbox-filter> -->
+      <h4>Future tab area</h4>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi fuga,
+        reprehenderit minima labore sint aliquam nulla similique qui veniam quas
+        aut corporis, optio ut nesciunt iste obcaecati possimus magni dicta
+        atque? Explicabo obcaecati odio quae magnam saepe aut officia
+        voluptatibus totam libero modi consequatur perferendis deserunt
+        repudiandae ipsa quam blanditiis sint maxime cupiditate voluptate
+        tenetur architecto, voluptatem exercitationem! Delectus doloremque
+        mollitia non, quidem, velit dignissimos rem incidunt temporibus
+        exercitationem commodi tempora cum, est nobis repudiandae. Iure ea sit
+        molestiae, ipsam ducimus laboriosam? Eaque, ex mollitia modi eius
+        exercitationem totam tempora odio eveniet velit eum, omnis a, nobis
+        commodi quaerat nulla!
+      </p>
     </div>
 
+    <!-- mobile mode -> outgraph in tabs -->
     <outgraph
-      v-if="
-        (!global.state.showHelp && !global.state.mobileMode) ||
-        (!global.state.showHelp && global.state.mobileMode)
-      "
+      v-if="!global.state.showHelp && !global.state.mobileMode"
       class="grid-item-graph"
       @circleButtonClicked="circleButtonClicked"
     ></outgraph>
 
-    <div
+    <!-- <div
       v-if="
         (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp && global.state.mobileMode)
@@ -71,17 +77,15 @@
       ref="maininfo"
     >
       <main-title-info></main-title-info>
-    </div>
+    </div> -->
 
     <status-bar
       class="grid-item-statusbar"
       v-if="
-        !global.state.showHelp &&
-        global.state.filteredResultsArray.length > 0 &&
-        (!global.state.mobileMode || global.state.mobileMode)
+        !global.state.showHelp && global.state.filteredResultsArray.length > 0
       "
     ></status-bar>
-
+    <!-- 
     <categories-redirects
       v-if="!global.state.showHelp"
       class="grid-item-categoriesredirects"
@@ -90,7 +94,7 @@
         checkbox:
           global.state.resultsCategoriesEnabled && !global.state.mobileMode
       }"
-    ></categories-redirects>
+    ></categories-redirects> -->
 
     <help
       v-if="global.state.showHelp"
@@ -107,17 +111,17 @@
 import {
   inject,
   computed,
-  nextTick,
-  onMounted,
-  onBeforeUnmount,
+  // nextTick,
+  // onMounted,
+  // onBeforeUnmount,
   ref
 } from 'vue'
 import InputForm from './InputForm.vue'
-import MainTitleInfo from './MainTitleInfo.vue'
+// import MainTitleInfo from './MainTitleInfo.vue'
 import Outgraph from './Outgraph.vue'
-import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
+// import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 import StatusBar from './StatusBar.vue'
-import CategoriesRedirects from './CategoriesRedirects.vue'
+// import CategoriesRedirects from './CategoriesRedirects.vue'
 import Help from './Help.vue'
 import {
   wikiFetchAddCategoriesToTitlePage,
@@ -149,47 +153,47 @@ const global = inject('global')
 
 const gridcontainer = ref(null)
 const inputarea = ref(null)
-const maininfo = ref(null)
+// const maininfo = ref(null)
 
-const scrollboxContainerHeight = ref(300)
+// const scrollboxContainerHeight = ref(300)
 
-const resultsCategoriesAllArray = computed(function () {
-  if (
-    !(
-      global.state.resultsCategoriesDone &&
-      global.state.resultsCategoriesEnabled &&
-      (!global.state.mobileMode || global.state.mobileMode)
-    )
-  ) {
-    return []
-  }
-  let allCategoriesSet = new Set()
+// const resultsCategoriesAllArray = computed(function () {
+//   if (
+//     !(
+//       global.state.resultsCategoriesDone &&
+//       global.state.resultsCategoriesEnabled &&
+//       (!global.state.mobileMode || global.state.mobileMode)
+//     )
+//   ) {
+//     return []
+//   }
+//   let allCategoriesSet = new Set()
 
-  for (const pageId of global.statefull.resultsMap.keys()) {
-    const resultPage = global.statefull.resultsMap.get(pageId)
-    if (
-      resultPage.categories &&
-      resultPage.title.toLowerCase().includes(global.state.filter.toLowerCase())
-    ) {
-      resultPage.categories.forEach((category) =>
-        // no duplicate check needed in Set
-        category
-          .toLowerCase()
-          .includes(global.state.filterCategories.toLowerCase())
-          ? allCategoriesSet.add(category)
-          : null
-      )
-    }
-  }
+//   for (const pageId of global.statefull.resultsMap.keys()) {
+//     const resultPage = global.statefull.resultsMap.get(pageId)
+//     if (
+//       resultPage.categories &&
+//       resultPage.title.toLowerCase().includes(global.state.filter.toLowerCase())
+//     ) {
+//       resultPage.categories.forEach((category) =>
+//         // no duplicate check needed in Set
+//         category
+//           .toLowerCase()
+//           .includes(global.state.filterCategories.toLowerCase())
+//           ? allCategoriesSet.add(category)
+//           : null
+//       )
+//     }
+//   }
 
-  let allCategories = Array.from(allCategoriesSet)
+//   let allCategories = Array.from(allCategoriesSet)
 
-  allCategories = allCategories.sort((a, b) => {
-    return a.localeCompare(b)
-  })
+//   allCategories = allCategories.sort((a, b) => {
+//     return a.localeCompare(b)
+//   })
 
-  return allCategories
-})
+//   return allCategories
+// })
 
 const resultsCategoriesAllArrayUnfiltered = computed(function () {
   if (
@@ -364,63 +368,51 @@ function languageSwitched(value) {
   global.setLanguage(value)
 }
 
-function modeSwitched() {
-  windowResized()
-}
+// function modeSwitched() {
+// windowResized()
+// }
 function showHelpSwitched() {
   global.setInputsDisabled(global.state.showHelp)
 }
-async function windowResized() {
-  await nextTick()
-  if (!global.state.mobileMode) {
-    scrollboxContainerHeight.value =
-      gridcontainer.value.getBoundingClientRect().height -
-      inputarea.value.getBoundingClientRect().height -
-      maininfo.value.getBoundingClientRect().height
-  } else {
-    scrollboxContainerHeight.value =
-      gridcontainer.value.getBoundingClientRect().height -
-      inputarea.value.getBoundingClientRect().height
-  }
-}
+// async function windowResized() {
+//   await nextTick()
+//   if (!global.state.mobileMode) {
+//     scrollboxContainerHeight.value =
+//       gridcontainer.value.getBoundingClientRect().height -
+//       inputarea.value.getBoundingClientRect().height
+//   } else {
+//     scrollboxContainerHeight.value =
+//       gridcontainer.value.getBoundingClientRect().height -
+//       inputarea.value.getBoundingClientRect().height
+//   }
+// }
 
-onMounted(() => {
-  window.addEventListener('resize', windowResized)
-  windowResized()
-})
+// onMounted(() => {
+//   window.addEventListener('resize', windowResized)
+//   windowResized()
+// })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', windowResized)
-})
+// onBeforeUnmount(() => {
+//   window.removeEventListener('resize', windowResized)
+// })
 </script>
 
 <style scoped>
-.inputcategoriescontainer {
+/* .inputcategoriescontainer {
   position: relative;
-}
-
-.grid-container-base {
-  display: grid;
-}
+} */
 
 .grid-container {
+  display: grid;
   width: 100%;
   grid-template-columns: 3fr minmax(320px, 1fr);
-  grid-template-rows: min-content min-content 3fr 1fr;
-  height: 100vh;
-}
-
-.grid-container-nocategoriesredirectscheckbox {
-  width: 100%;
-  grid-template-columns: 1fr;
-  grid-template-rows: min-content min-content 2fr 1fr;
-  height: 100vh;
-}
-
-.grid-container-base.mobile {
-  grid-template-columns: 1fr;
   grid-template-rows: min-content min-content 1fr;
   height: 100vh;
+}
+
+.grid-container.mobile {
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content min-content 1fr;
 }
 
 .grid-item-input {
@@ -432,12 +424,21 @@ onBeforeUnmount(() => {
   grid-row: 1 / 2;
 }
 
+.grid-item-tabarea {
+  grid-column: 2 / 3;
+  grid-row: 2 / 4;
+}
+.grid-item-tabarea.mobile {
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
 .grid-item-graph {
   grid-column: 1 / 2;
   grid-row: 3 / 4;
 }
 
-.grid-item-checkbox {
+/* .grid-item-checkbox {
   grid-column: 2 / 3;
   grid-row: 2 / 5;
 }
@@ -460,7 +461,7 @@ onBeforeUnmount(() => {
   grid-column: 1 / 2;
   grid-row: 2 / 4;
   overflow-y: auto;
-}
+} */
 
 .grid-item-statusbar {
   grid-column: 1 / 2;
@@ -469,7 +470,7 @@ onBeforeUnmount(() => {
 
 .grid-item-help {
   grid-column: 1 / 3;
-  grid-row: 2 / 5;
+  grid-row: 2 / 4;
   width: 100%;
   overflow-y: auto;
 }
@@ -477,7 +478,7 @@ onBeforeUnmount(() => {
   grid-column: 1 / 2;
   grid-row: 2 / 4;
 }
-.grid-item-categoriesredirects {
+/* .grid-item-categoriesredirects {
   grid-column: 2 / 3;
   grid-row: 2 / 5;
   width: 100%;
@@ -491,5 +492,5 @@ onBeforeUnmount(() => {
   grid-row: 4 / 5;
   width: 100%;
   overflow-y: auto;
-}
+} */
 </style>

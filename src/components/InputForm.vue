@@ -361,8 +361,6 @@ async function modeSwitched(value) {
   } else {
     global.setMobileMode(false)
   }
-
-  emit('mode-switched', value)
 }
 function showHelpClicked(value) {
   global.setShowHelp(value)
