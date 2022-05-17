@@ -1,6 +1,9 @@
 <template>
   <div class="container">
-    <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
+    <div
+      v-for="(page, index) in global.state.filteredResultsArray"
+      :key="index"
+    >
       <div class="title">
         <h3>
           {{ page.title }}

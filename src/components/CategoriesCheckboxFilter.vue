@@ -143,15 +143,31 @@ function handleScroll() {
 // Find the largest height amongst all the children
 // Remember each row has to be of the same height
 // I am working on the different height version
+
+// !!!
+// This does not work, when not in visible tab (display: none causing problems)
+// !!!
+
 function calculateInitialRowHeight() {
-  const children = spacer.value.children
   let largestHeight = 0
+  const children = spacer.value.children
+
   for (let i = 0; i < children.length; i++) {
     if (children[i].offsetHeight > largestHeight) {
       largestHeight = children[i].offsetHeight
     }
   }
   return largestHeight
+}
+
+function initRowHeight() {
+  // Calculate that initial row height dynamically
+  const largestHeight = calculateInitialRowHeight()
+
+  rowHeight.value =
+    typeof largestHeight !== 'undefined' && largestHeight !== null
+      ? largestHeight
+      : 30
 }
 
 onMounted(() => {
@@ -166,12 +182,7 @@ onMounted(() => {
     passive: true
   })
 
-  // Calculate that initial row height dynamically
-  const largestHeight = calculateInitialRowHeight()
-  rowHeight.value =
-    typeof largestHeight !== 'undefined' && largestHeight !== null
-      ? largestHeight
-      : 30
+  initRowHeight()
 })
 
 // unmounted() root.value === null -> error

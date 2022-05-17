@@ -18,7 +18,7 @@
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
-        <span
+        <span v-show="global.state.filteredResultsArray.length > 0"
           >{{ t('results')
           }}{{ global.state.filteredResultsArray.length }}</span
         >

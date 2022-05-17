@@ -42,7 +42,7 @@
         @windowResize="windowResized"
       ></categories-checkbox-filter> -->
 
-      <TabArea></TabArea>
+      <TabArea :categoriesAll="resultsCategoriesAllArray"></TabArea>
     </div>
 
     <!-- mobile mode -> outgraph in tabs -->
@@ -68,9 +68,7 @@
 
     <status-bar
       class="grid-item-statusbar"
-      v-if="
-        !global.state.showHelp && global.state.filteredResultsArray.length > 0
-      "
+      v-if="!global.state.showHelp"
     ></status-bar>
     <!-- 
     <categories-redirects
@@ -146,43 +144,43 @@ const inputarea = ref(null)
 
 // const scrollboxContainerHeight = ref(300)
 
-// const resultsCategoriesAllArray = computed(function () {
-//   if (
-//     !(
-//       global.state.resultsCategoriesDone &&
-//       global.state.resultsCategoriesEnabled &&
-//       (!global.state.mobileMode || global.state.mobileMode)
-//     )
-//   ) {
-//     return []
-//   }
-//   let allCategoriesSet = new Set()
+const resultsCategoriesAllArray = computed(function () {
+  if (
+    !(
+      global.state.resultsCategoriesDone &&
+      global.state.resultsCategoriesEnabled &&
+      (!global.state.mobileMode || global.state.mobileMode)
+    )
+  ) {
+    return []
+  }
+  let allCategoriesSet = new Set()
 
-//   for (const pageId of global.statefull.resultsMap.keys()) {
-//     const resultPage = global.statefull.resultsMap.get(pageId)
-//     if (
-//       resultPage.categories &&
-//       resultPage.title.toLowerCase().includes(global.state.filter.toLowerCase())
-//     ) {
-//       resultPage.categories.forEach((category) =>
-//         // no duplicate check needed in Set
-//         category
-//           .toLowerCase()
-//           .includes(global.state.filterCategories.toLowerCase())
-//           ? allCategoriesSet.add(category)
-//           : null
-//       )
-//     }
-//   }
+  for (const pageId of global.statefull.resultsMap.keys()) {
+    const resultPage = global.statefull.resultsMap.get(pageId)
+    if (
+      resultPage.categories &&
+      resultPage.title.toLowerCase().includes(global.state.filter.toLowerCase())
+    ) {
+      resultPage.categories.forEach((category) =>
+        // no duplicate check needed in Set
+        category
+          .toLowerCase()
+          .includes(global.state.filterCategories.toLowerCase())
+          ? allCategoriesSet.add(category)
+          : null
+      )
+    }
+  }
 
-//   let allCategories = Array.from(allCategoriesSet)
+  let allCategories = Array.from(allCategoriesSet)
 
-//   allCategories = allCategories.sort((a, b) => {
-//     return a.localeCompare(b)
-//   })
+  allCategories = allCategories.sort((a, b) => {
+    return a.localeCompare(b)
+  })
 
-//   return allCategories
-// })
+  return allCategories
+})
 
 const resultsCategoriesAllArrayUnfiltered = computed(function () {
   if (
@@ -415,7 +413,7 @@ function showHelpSwitched() {
 
 .grid-item-tabarea {
   grid-column: 2 / 3;
-  grid-row: 2 / 4;
+  grid-row: 3 / 4;
 }
 .grid-item-tabarea.mobile {
   grid-column: 1 / 2;
@@ -453,7 +451,7 @@ function showHelpSwitched() {
 } */
 
 .grid-item-statusbar {
-  grid-column: 1 / 2;
+  grid-column: 1 / 3;
   grid-row: 2 / 3;
 }
 
