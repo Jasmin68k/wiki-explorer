@@ -41,21 +41,8 @@
         :root-height="scrollboxContainerHeight"
         @windowResize="windowResized"
       ></categories-checkbox-filter> -->
-      <h4>Future tab area</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi fuga,
-        reprehenderit minima labore sint aliquam nulla similique qui veniam quas
-        aut corporis, optio ut nesciunt iste obcaecati possimus magni dicta
-        atque? Explicabo obcaecati odio quae magnam saepe aut officia
-        voluptatibus totam libero modi consequatur perferendis deserunt
-        repudiandae ipsa quam blanditiis sint maxime cupiditate voluptate
-        tenetur architecto, voluptatem exercitationem! Delectus doloremque
-        mollitia non, quidem, velit dignissimos rem incidunt temporibus
-        exercitationem commodi tempora cum, est nobis repudiandae. Iure ea sit
-        molestiae, ipsam ducimus laboriosam? Eaque, ex mollitia modi eius
-        exercitationem totam tempora odio eveniet velit eum, omnis a, nobis
-        commodi quaerat nulla!
-      </p>
+
+      <TabArea></TabArea>
     </div>
 
     <!-- mobile mode -> outgraph in tabs -->
@@ -122,6 +109,7 @@ import Outgraph from './Outgraph.vue'
 // import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 import StatusBar from './StatusBar.vue'
 // import CategoriesRedirects from './CategoriesRedirects.vue'
+import TabArea from './TabArea.vue'
 import Help from './Help.vue'
 import {
   wikiFetchAddCategoriesToTitlePage,
@@ -147,6 +135,7 @@ import {
 // })
 
 import { useI18n } from 'vue-i18n/index'
+
 const { locale } = useI18n({})
 
 const global = inject('global')
