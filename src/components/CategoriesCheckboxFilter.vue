@@ -132,10 +132,6 @@ function categoriesNone() {
   global.statefull.checkedCategories = new Set(tempArray)
 
   global.setGraphFirstItem(1)
-  if (!global.state.checkboxFilterEnabled) {
-    // enable in desktop when changed in mobile
-    global.setCheckboxFilterEnabled(true)
-  }
 }
 function resultsCategoriesCheckboxChanged() {
   global.setGraphFirstItem(1)

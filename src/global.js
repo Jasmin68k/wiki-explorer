@@ -11,7 +11,6 @@ const state = reactive({
   mobileDisplay: 'outgraph',
   resultsCategoriesEnabled: true,
   resultsRedirectsEnabled: false,
-  checkboxFilterEnabled: true,
   sizePerPage: 16,
   inputsDisabled: false,
   resultsCategoriesDone: true,
@@ -50,7 +49,7 @@ const state = reactive({
     if (
       state.resultsCategoriesEnabled &&
       state.resultsCategoriesDone &&
-      ((!state.mobileMode && state.checkboxFilterEnabled) || state.mobileMode)
+      (!state.mobileMode || state.mobileMode)
     ) {
       filteredArray = filteredArray.filter((page) =>
         page.categories
@@ -145,9 +144,6 @@ const setResultsCategoriesEnabled = (value) => {
 const setResultsRedirectsEnabled = (value) => {
   state.resultsRedirectsEnabled = value
 }
-const setCheckboxFilterEnabled = (value) => {
-  state.checkboxFilterEnabled = value
-}
 const setSizePerPage = (value) => {
   state.sizePerPage = value
 }
@@ -182,7 +178,6 @@ export default {
   setMobileDisplay,
   setResultsCategoriesEnabled,
   setResultsRedirectsEnabled,
-  setCheckboxFilterEnabled,
   setSizePerPage,
   setInputsDisabled,
   setResultsCategoriesDone,

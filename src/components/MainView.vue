@@ -4,13 +4,9 @@
     :class="{
       mobile: global.state.mobileMode,
       'grid-container':
-        global.state.checkboxFilterEnabled &&
-        global.state.resultsCategoriesEnabled &&
-        !global.state.mobileMode,
+        global.state.resultsCategoriesEnabled && !global.state.mobileMode,
       'grid-container-nocategoriesredirectscheckbox':
-        (!global.state.checkboxFilterEnabled ||
-          !global.state.resultsCategoriesEnabled) &&
-        !global.state.mobileMode
+        !global.state.resultsCategoriesEnabled && !global.state.mobileMode
     }"
     ref="gridcontainer"
   >
@@ -26,7 +22,6 @@
         @showHelpClicked="showHelpSwitched"
         @resultsCategoriesChanged="resultsCategoriesChanged"
         @resultsRedirectsChanged="resultsRedirectsChanged"
-        @checkboxFilterEnabledChanged="checkboxFilterEnabledChanged"
         @languageSwitched="languageSwitched"
         @modeSwitched="modeSwitched"
         @mobileDisplaySwitched="mobileDisplaySwitched"
@@ -34,9 +29,7 @@
     </div>
     <div
       v-if="
-        (!global.state.showHelp &&
-          !global.state.mobileMode &&
-          global.state.checkboxFilterEnabled) ||
+        (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp &&
           global.state.mobileMode &&
           global.state.mobileDisplay === 'categories')
@@ -105,9 +98,7 @@
       :class="{
         mobile: global.state.mobileMode,
         checkbox:
-          global.state.checkboxFilterEnabled &&
-          global.state.resultsCategoriesEnabled &&
-          !global.state.mobileMode
+          global.state.resultsCategoriesEnabled && !global.state.mobileMode
       }"
     ></categories-redirects>
 
@@ -177,8 +168,7 @@ const resultsCategoriesAllArray = computed(function () {
     !(
       global.state.resultsCategoriesDone &&
       global.state.resultsCategoriesEnabled &&
-      ((!global.state.mobileMode && global.state.checkboxFilterEnabled) ||
-        global.state.mobileMode)
+      (!global.state.mobileMode || global.state.mobileMode)
     )
   ) {
     return []
@@ -375,20 +365,6 @@ async function resultsRedirectsChanged() {
     !global.state.resultsRedirectsDone
   ) {
     await getResultsRedirects()
-  }
-}
-function checkboxFilterEnabledChanged() {
-  // for switch from desktop to mobile
-  if (!global.state.checkboxFilterEnabled) {
-    global.statefull.checkedCategories = new Set(
-      resultsCategoriesAllArrayUnfiltered.value
-    )
-  }
-
-  if (global.state.checkboxFilterEnabled) {
-    global.statefull.checkedCategories = new Set(
-      resultsCategoriesAllArrayUnfiltered.value
-    )
   }
 }
 function languageSwitched(value) {

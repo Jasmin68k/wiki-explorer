@@ -266,39 +266,6 @@
           <img class="categoriesicon" src="../assets/images/document.svg" />
         </label>
       </span>
-      <span v-if="!global.state.mobileMode">
-        <input
-          id="checkboxFilter"
-          class="checkbox"
-          type="checkbox"
-          :checked="global.state.checkboxFilterEnabled"
-          :disabled="
-            global.state.mobileMode ||
-            global.state.inputsDisabled ||
-            !global.state.resultsCategoriesEnabled
-          "
-          @change="checkboxFilterEnabledChanged($event.target.checked)"
-        />
-        <label
-          class="checkboxlabel"
-          :class="{
-            itemdisabled:
-              global.state.inputsDisabled ||
-              !global.state.resultsCategoriesEnabled
-          }"
-          for="checkboxFilter"
-        >
-          <img
-            class="checkboxfiltericon"
-            :class="{
-              itemdisabled:
-                global.state.inputsDisabled ||
-                !global.state.resultsCategoriesEnabled
-            }"
-            src="../assets/images/document2.svg"
-          />
-        </label>
-      </span>
       <span>
         <input
           id="resultsRedirects"
@@ -423,7 +390,6 @@ const emit = defineEmits([
   'resultsRedirectsChanged',
   'showHelpClicked',
   'resultsCategoriesChanged',
-  'checkboxFilterEnabledChanged',
   'languageSwitched',
   'mode-switched',
   'mobile-display-switched',
@@ -471,11 +437,6 @@ function filterCategoriesChanged(value) {
 function resetFirstItem() {
   global.setGraphFirstItem(1)
 }
-function checkboxFilterEnabledChanged(value) {
-  global.setCheckboxFilterEnabled(value)
-  resetFirstItem()
-  emit('checkboxFilterEnabledChanged', value)
-}
 function languageSwitched(value) {
   emit('languageSwitched', value)
 }
@@ -519,7 +480,6 @@ onMounted(() => {
    * @param {String} titlefilter - String to filter results titles with (global.state.filter)
    * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
    * @param {String} mobileview - Mobile mode only: Switch view mode, valid results, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
-   * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
    * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
    * @param {String} search - Wikipedia page to search for (global.state.title)
    */
@@ -532,7 +492,6 @@ onMounted(() => {
   const categoriesfilter = urlParameters.get('categoriesfilter')
   const categories = urlParameters.get('categories')
   const mobileview = urlParameters.get('mobileview')
-  const checkboxfilter = urlParameters.get('checkboxfilter')
   const redirects = urlParameters.get('redirects')
   const search = urlParameters.get('search')
 
@@ -585,22 +544,6 @@ onMounted(() => {
         break
       case 'categories':
         mobileDisplaySwitched('categories')
-        break
-    }
-  }
-
-  if (
-    !global.state.mobileMode &&
-    (checkboxfilter === 'on' || checkboxfilter === 'off')
-  ) {
-    switch (checkboxfilter) {
-      case 'on':
-        if (global.state.resultsCategoriesEnabled) {
-          checkboxFilterEnabledChanged(true)
-        }
-        break
-      case 'off':
-        checkboxFilterEnabledChanged(false)
         break
     }
   }
