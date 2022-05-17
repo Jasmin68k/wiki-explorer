@@ -8,7 +8,6 @@ const state = reactive({
   showHelp: false,
   mobileMode: false,
   language: 'en',
-  mobileDisplay: 'outgraph',
   resultsCategoriesEnabled: true,
   resultsRedirectsEnabled: false,
   sizePerPage: 16,
@@ -135,9 +134,6 @@ const setMobileMode = (value) => {
 const setLanguage = (value) => {
   state.language = value
 }
-const setMobileDisplay = (value) => {
-  state.mobileDisplay = value
-}
 const setResultsCategoriesEnabled = (value) => {
   state.resultsCategoriesEnabled = value
 }
@@ -175,7 +171,6 @@ export default {
   setShowHelp,
   setMobileMode,
   setLanguage,
-  setMobileDisplay,
   setResultsCategoriesEnabled,
   setResultsRedirectsEnabled,
   setSizePerPage,

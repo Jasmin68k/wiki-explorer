@@ -24,15 +24,12 @@
         @resultsRedirectsChanged="resultsRedirectsChanged"
         @languageSwitched="languageSwitched"
         @modeSwitched="modeSwitched"
-        @mobileDisplaySwitched="mobileDisplaySwitched"
       ></input-form>
     </div>
     <div
       v-if="
         (!global.state.showHelp && !global.state.mobileMode) ||
-        (!global.state.showHelp &&
-          global.state.mobileMode &&
-          global.state.mobileDisplay === 'categories')
+        (!global.state.showHelp && global.state.mobileMode)
       "
       class="inputcategoriescontainer grid-item-checkbox categoriesredirects"
       :class="{
@@ -43,8 +40,7 @@
         v-if="
           ((!global.state.mobileMode &&
             global.state.resultsCategoriesEnabled) ||
-            (global.state.mobileMode &&
-              global.state.mobileDisplay === 'categories')) &&
+            global.state.mobileMode) &&
           resultsCategoriesAllArray.length > 0 &&
           global.state.resultsCategoriesDone
         "
@@ -57,9 +53,7 @@
     <outgraph
       v-if="
         (!global.state.showHelp && !global.state.mobileMode) ||
-        (!global.state.showHelp &&
-          global.state.mobileMode &&
-          global.state.mobileDisplay === 'outgraph')
+        (!global.state.showHelp && global.state.mobileMode)
       "
       class="grid-item-graph"
       @circleButtonClicked="circleButtonClicked"
@@ -68,9 +62,7 @@
     <div
       v-if="
         (!global.state.showHelp && !global.state.mobileMode) ||
-        (!global.state.showHelp &&
-          global.state.mobileMode &&
-          global.state.mobileDisplay === 'maininfo')
+        (!global.state.showHelp && global.state.mobileMode)
       "
       class="grid-item-maininfo"
       :class="{
@@ -86,9 +78,7 @@
       v-if="
         !global.state.showHelp &&
         global.state.filteredResultsArray.length > 0 &&
-        (!global.state.mobileMode ||
-          (global.state.mobileMode &&
-            global.state.mobileDisplay === 'outgraph'))
+        (!global.state.mobileMode || global.state.mobileMode)
       "
     ></status-bar>
 
@@ -375,9 +365,6 @@ function languageSwitched(value) {
 }
 
 function modeSwitched() {
-  windowResized()
-}
-function mobileDisplaySwitched() {
   windowResized()
 }
 function showHelpSwitched() {

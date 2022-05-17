@@ -127,11 +127,7 @@
           :placeholder="t('filter-results-titles')"
           :value="global.state.filter"
           @input="resetFirstItem(), filterChanged($event.target.value)"
-          :disabled="
-            global.state.inputsDisabled ||
-            (global.state.mobileMode &&
-              global.state.mobileDisplay === 'maininfo')
-          "
+          :disabled="global.state.inputsDisabled || global.state.mobileMode"
         />
       </form>
     </div>
@@ -161,76 +157,12 @@
             global.state.inputsDisabled ||
             !global.state.resultsCategoriesDone ||
             !global.state.resultsCategoriesEnabled ||
-            (global.state.mobileMode &&
-              global.state.mobileDisplay === 'maininfo')
+            global.state.mobileMode
           "
         />
       </form>
     </div>
 
-    <div
-      id="item5"
-      :class="{
-        mobile: global.state.mobileMode
-      }"
-      v-if="global.state.mobileMode"
-    >
-      <input
-        class="radiobutton"
-        type="radio"
-        :disabled="global.state.showHelp"
-        id="outgraph"
-        value="outgraph"
-        :checked="global.state.mobileDisplay === 'outgraph'"
-        @change="mobileDisplaySwitched($event.target.value)"
-      />
-      <label
-        class="radiolabel"
-        for="outgraph"
-        :class="{ itemdisabled: global.state.showHelp }"
-        ><img class="graphicon" src="../assets/images/analytics-graph.svg"
-      /></label>
-      <input
-        class="radiobutton"
-        type="radio"
-        :disabled="global.state.showHelp"
-        id="maininfo"
-        value="maininfo"
-        :checked="global.state.mobileDisplay === 'maininfo'"
-        @change="mobileDisplaySwitched($event.target.value)"
-      />
-      <label
-        class="radiolabel"
-        for="maininfo"
-        :class="{
-          itemdisabled: global.state.showHelp
-        }"
-        ><img class="titleicon" src="../assets/images/text-tool.svg"
-      /></label>
-      <input
-        class="radiobutton"
-        type="radio"
-        :disabled="
-          global.state.showHelp ||
-          (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
-        "
-        id="categories"
-        value="categories"
-        :checked="global.state.mobileDisplay === 'categories'"
-        @change="mobileDisplaySwitched($event.target.value)"
-      />
-      <label
-        class="radiolabel"
-        for="categories"
-        :class="{
-          itemdisabled:
-            global.state.showHelp ||
-            (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
-        }"
-      >
-        <img class="checkboxfiltericon" src="../assets/images/document2.svg" />
-      </label>
-    </div>
     <div
       id="item6"
       :class="{
@@ -243,12 +175,7 @@
           class="checkbox"
           type="checkbox"
           :checked="global.state.resultsCategoriesEnabled"
-          :disabled="
-            global.state.inputsDisabled ||
-            (global.state.mobileMode &&
-              (global.state.mobileDisplay === 'maininfo' ||
-                global.state.mobileDisplay === 'categories'))
-          "
+          :disabled="global.state.inputsDisabled || global.state.mobileMode"
           @change="resultsCategoriesChanged($event.target.checked)"
         />
         <label
@@ -257,9 +184,7 @@
             itemdisabled:
               global.state.mobileMode ||
               global.state.inputsDisabled ||
-              (global.state.mobileMode &&
-                (global.state.mobileDisplay === 'maininfo' ||
-                  global.state.mobileDisplay === 'categories'))
+              global.state.mobileMode
           }"
           for="resultsCategories"
         >
@@ -271,23 +196,14 @@
           id="resultsRedirects"
           class="checkbox"
           type="checkbox"
-          :disabled="
-            global.state.inputsDisabled ||
-            (global.state.mobileMode &&
-              (global.state.mobileDisplay === 'maininfo' ||
-                global.state.mobileDisplay === 'categories'))
-          "
+          :disabled="global.state.inputsDisabled || global.state.mobileMode"
           :checked="global.state.resultsRedirectsEnabled"
           @change="resultsRedirectsChanged($event.target.checked)"
         />
         <label
           class="checkboxlabel"
           :class="{
-            itemdisabled:
-              global.state.inputsDisabled ||
-              (global.state.mobileMode &&
-                (global.state.mobileDisplay === 'maininfo' ||
-                  global.state.mobileDisplay === 'categories'))
+            itemdisabled: global.state.inputsDisabled || global.state.mobileMode
           }"
           for="resultsRedirects"
         >
@@ -392,7 +308,6 @@ const emit = defineEmits([
   'resultsCategoriesChanged',
   'languageSwitched',
   'mode-switched',
-  'mobile-display-switched',
   'closeCatsRedir'
 ])
 
@@ -449,10 +364,6 @@ async function modeSwitched(value) {
 
   emit('mode-switched', value)
 }
-function mobileDisplaySwitched(value) {
-  global.setMobileDisplay(value)
-  emit('mobile-display-switched', value)
-}
 function showHelpClicked(value) {
   global.setShowHelp(value)
   emit('showHelpClicked', value)
@@ -479,7 +390,6 @@ onMounted(() => {
    * @param {String} categories - Enable/disable results categories, on or off valid (boolean to global.state.resultsCategoriesEnabled)
    * @param {String} titlefilter - String to filter results titles with (global.state.filter)
    * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
-   * @param {String} mobileview - Mobile mode only: Switch view mode, valid results, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
    * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
    * @param {String} search - Wikipedia page to search for (global.state.title)
    */
@@ -491,7 +401,6 @@ onMounted(() => {
   const titlefilter = urlParameters.get('titlefilter')
   const categoriesfilter = urlParameters.get('categoriesfilter')
   const categories = urlParameters.get('categories')
-  const mobileview = urlParameters.get('mobileview')
   const redirects = urlParameters.get('redirects')
   const search = urlParameters.get('search')
 
@@ -527,25 +436,6 @@ onMounted(() => {
   ) {
     resetFirstItem()
     filterCategoriesChanged(categoriesfilter)
-  }
-
-  if (
-    global.state.mobileMode &&
-    (mobileview === 'results' ||
-      mobileview === 'extract' ||
-      mobileview === 'categories')
-  ) {
-    switch (mobileview) {
-      case 'results':
-        mobileDisplaySwitched('outgraph')
-        break
-      case 'extract':
-        mobileDisplaySwitched('maininfo')
-        break
-      case 'categories':
-        mobileDisplaySwitched('categories')
-        break
-    }
   }
 
   if (redirects === 'on' || redirects === 'off') {
