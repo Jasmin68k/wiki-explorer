@@ -30,8 +30,6 @@
         @languageSwitched="languageSwitched"
         @modeSwitched="modeSwitched"
         @mobileDisplaySwitched="mobileDisplaySwitched"
-        @buttonModeSwitched="buttonModeSwitched"
-        @categoriesOnHoverChanged="categoriesOnHoverChanged"
       ></input-form>
     </div>
     <div
@@ -164,7 +162,7 @@ import {
 // })
 
 import { useI18n } from 'vue-i18n/index'
-const { t, locale } = useI18n({})
+const { locale } = useI18n({})
 
 const global = inject('global')
 
@@ -332,47 +330,17 @@ async function getRedirects() {
 
 async function circleButtonClicked(clickData) {
   if (!global.state.displayResultsArray[clickData.index].missing) {
-    switch (global.state.buttonMode) {
-      case 'search':
-        if (!clickData.event.ctrlKey) {
-          global.setTitle(
-            await wikiFetchGetRedirectTarget(
-              global.state.displayResultsArray[clickData.index].title,
-              global.state.language
-            )
-          )
-          getMainInfo()
-          getJson()
-        }
-
-        break
-
-      case 'catsredir':
-        if (clickData.event.ctrlKey) {
-          global.setTitle(
-            await wikiFetchGetRedirectTarget(
-              global.state.displayResultsArray[clickData.index].title,
-              global.state.language
-            )
-          )
-          getMainInfo()
-          getJson()
-        }
-        break
-
-      case 'wiki':
-        window.open(
-          global.state.displayResultsArray[clickData.index].url,
-          '_blank'
+    if (!clickData.event.ctrlKey) {
+      global.setTitle(
+        await wikiFetchGetRedirectTarget(
+          global.state.displayResultsArray[clickData.index].title,
+          global.state.language
         )
-        break
+      )
+      getMainInfo()
+      getJson()
     }
   }
-}
-
-function buttonModeSwitched() {
-  windowResized()
-  updateButtonModeString()
 }
 
 async function fetchDataClicked(value) {
@@ -428,74 +396,6 @@ function languageSwitched(value) {
   locale.value = value
 
   global.setLanguage(value)
-  updateButtonModeString()
-}
-function categoriesOnHoverChanged() {
-  updateButtonModeString()
-}
-function updateButtonModeString() {
-  switch (global.state.buttonMode) {
-    case 'search':
-      if (!global.state.categoriesOnHover) {
-        global.setButtonModeString(
-          t('lmb') +
-            t('search') +
-            ' - ' +
-            t('ctrllmb') +
-            t('showcatsredir') +
-            ' - ' +
-            t('mmb') +
-            t('openwiki')
-        )
-      } else {
-        global.setButtonModeString(
-          t('lmb') +
-            t('search') +
-            ' - ' +
-            t('hover') +
-            t('showcatsredir') +
-            ' - ' +
-            t('mmb') +
-            t('openwiki')
-        )
-      }
-
-      break
-    case 'catsredir':
-      if (!global.state.categoriesOnHover) {
-        global.setButtonModeString(
-          t('lmb') +
-            t('showcatsredir') +
-            ' - ' +
-            t('ctrllmb') +
-            t('search') +
-            ' - ' +
-            t('mmb') +
-            t('openwiki')
-        )
-      } else {
-        global.setButtonModeString(
-          t('hover') +
-            t('showcatsredir') +
-            ' - ' +
-            t('ctrllmb') +
-            t('search') +
-            ' - ' +
-            t('mmb') +
-            t('openwiki')
-        )
-      }
-      break
-    case 'wiki':
-      if (!global.state.categoriesOnHover) {
-        global.setButtonModeString(t('lmb') + t('openwiki'))
-      } else {
-        global.setButtonModeString(
-          t('lmb') + t('openwiki') + ' - ' + t('hover') + t('showcatsredir')
-        )
-      }
-      break
-  }
 }
 
 function modeSwitched() {

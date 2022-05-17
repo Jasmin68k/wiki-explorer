@@ -331,158 +331,6 @@
         </label>
       </span>
     </div>
-    <div v-if="!global.state.mobileMode" id="item7">
-      <form>
-        <input
-          class="radiobutton"
-          type="radio"
-          id="catsclick"
-          value="catsclick"
-          :disabled="
-            global.state.inputsDisabled ||
-            (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone) ||
-            (global.state.mobileMode &&
-              (global.state.mobileDisplay === 'maininfo' ||
-                global.state.mobileDisplay === 'categories'))
-          "
-          name="categorieshoverorclick"
-          @change="categoriesOnHoverOrClickChanged($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          :class="{
-            itemdisabled:
-              global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone) ||
-              (global.state.mobileMode &&
-                (global.state.mobileDisplay === 'maininfo' ||
-                  global.state.mobileDisplay === 'categories'))
-          }"
-          for="catsclick"
-          ><img class="clickicon" src="../assets/images/mouse-click.svg"
-        /></label>
-        <input
-          class="radiobutton"
-          type="radio"
-          id="catshover"
-          value="catshover"
-          :disabled="
-            global.state.inputsDisabled ||
-            (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone) ||
-            (global.state.mobileMode &&
-              (global.state.mobileDisplay === 'maininfo' ||
-                global.state.mobileDisplay === 'categories'))
-          "
-          name="categorieshoverorclick"
-          checked="true"
-          @change="categoriesOnHoverOrClickChanged($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          :class="{
-            itemdisabled:
-              global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone) ||
-              (global.state.mobileMode &&
-                (global.state.mobileDisplay === 'maininfo' ||
-                  global.state.mobileDisplay === 'categories'))
-          }"
-          for="catshover"
-          ><img class="hovericon" src="../assets/images/mouse-hover.svg"
-        /></label>
-      </form>
-    </div>
-
-    <div
-      id="item8"
-      :class="{
-        mobile: global.state.mobileMode
-      }"
-    >
-      <form>
-        <input
-          class="radiobutton"
-          type="radio"
-          id="search"
-          value="search"
-          :checked="global.state.buttonMode === 'search'"
-          :disabled="global.state.inputsDisabled"
-          @change="buttonModeSwitched($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          :class="{
-            itemdisabled: global.state.inputsDisabled
-          }"
-          for="search"
-          ><img class="searchicon" src="../assets/images/search.svg"
-        /></label>
-        <input
-          class="radiobutton"
-          type="radio"
-          id="catsredir"
-          value="catsredir"
-          :checked="global.state.buttonMode === 'catsredir'"
-          :disabled="
-            global.state.inputsDisabled ||
-            (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone) ||
-            (global.state.resultsRedirectsEnabled &&
-              !global.state.resultsRedirectsDone)
-          "
-          @change="buttonModeSwitched($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          :class="{
-            itemdisabled:
-              global.state.inputsDisabled ||
-              (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone) ||
-              (global.state.resultsRedirectsEnabled &&
-                !global.state.resultsRedirectsDone) ||
-              (!global.state.resultsCategoriesEnabled &&
-                !global.state.resultsRedirectsEnabled)
-          }"
-          for="catsredir"
-        >
-          <div class="catsredircontainer">
-            <img class="catsrediricon" src="../assets/images/document.svg" />
-            <img
-              class="catsrediricon"
-              src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
-            />
-          </div>
-        </label>
-        <input
-          class="radiobutton"
-          type="radio"
-          id="wiki"
-          value="wiki"
-          :checked="global.state.buttonMode === 'wiki'"
-          :disabled="global.state.inputsDisabled"
-          @change="buttonModeSwitched($event.target.value)"
-        />
-        <label
-          class="radiolabel"
-          :class="{
-            itemdisabled: global.state.inputsDisabled
-          }"
-          for="wiki"
-        >
-          <div class="wikipediaiconcontainer">
-            <img
-              class="wikipediaiconsmall"
-              src="../assets/images/wikipedia.svg"
-            />
-          </div>
-        </label>
-      </form>
-    </div>
 
     <div
       id="item9"
@@ -563,7 +411,7 @@
   </div>
 </template>
 <script setup>
-import { inject, nextTick, onMounted } from 'vue'
+import { inject, onMounted } from 'vue'
 
 import { useI18n } from 'vue-i18n/index'
 const { t } = useI18n({})
@@ -579,8 +427,6 @@ const emit = defineEmits([
   'languageSwitched',
   'mode-switched',
   'mobile-display-switched',
-  'button-mode-switched',
-  'categoriesOnHoverChanged',
   'closeCatsRedir'
 ])
 
@@ -597,10 +443,6 @@ function fetchData(submitEvent) {
 }
 
 function resultsCategoriesChanged(value) {
-  if (value === false && global.state.resultsRedirectsEnabled === false) {
-    buttonModeSwitched('search')
-  }
-
   global.setResultsCategoriesEnabled(value)
   resetFirstItem()
   emit('resultsCategoriesChanged', value)
@@ -610,10 +452,6 @@ function resultsCategoriesChanged(value) {
   }
 }
 function resultsRedirectsChanged(value) {
-  if (value === false && global.state.resultsCategoriesEnabled === false) {
-    buttonModeSwitched('search')
-  }
-
   global.setResultsRedirectsEnabled(value)
   emit('resultsRedirectsChanged', value)
 
@@ -641,30 +479,13 @@ function checkboxFilterEnabledChanged(value) {
 function languageSwitched(value) {
   emit('languageSwitched', value)
 }
-function buttonModeSwitched(value) {
-  global.setButtonMode(value)
-
-  emit('button-mode-switched')
-}
-function categoriesOnHoverOrClickChanged(value) {
-  if (value === 'catshover') {
-    global.setCategoriesOnHover(true)
-  } else {
-    global.setCategoriesOnHover(false)
-  }
-  emit('categoriesOnHoverChanged')
-}
 async function modeSwitched(value) {
   if (value === 'mobile') {
     global.setMobileMode(true)
-    global.setCategoriesOnHover(false)
   } else {
     global.setMobileMode(false)
-
-    await nextTick()
-    categoriesOnHoverOrClickChanged('catshover')
   }
-  buttonModeSwitched('search')
+
   emit('mode-switched', value)
 }
 function mobileDisplaySwitched(value) {
@@ -678,18 +499,14 @@ function showHelpClicked(value) {
 onMounted(() => {
   // init
   languageSwitched('en')
-  buttonModeSwitched('search')
-  categoriesOnHoverOrClickChanged('catshover')
 
   if (window.matchMedia('(orientation: landscape)').matches) {
     if (window.innerWidth < 950) {
       modeSwitched('mobile')
-      categoriesOnHoverOrClickChanged('catsclick')
     }
   } else {
     if (window.innerWidth < 800) {
       modeSwitched('mobile')
-      categoriesOnHoverOrClickChanged('catsclick')
     }
   }
 
@@ -704,8 +521,6 @@ onMounted(() => {
    * @param {String} mobileview - Mobile mode only: Switch view mode, valid results, extract, categories (outgraph, maininfo, categories -> global.state.mobileDisplay)
    * @param {String} checkboxfilter - Desktop mode only: Enable/disable checkbox categories filter, on or off valid (boolean to global.state.checkboxFilterEnabled)
    * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
-   * @param {String} categoriesmode - Show categories on click or hover, valid click or hover
-   * @param {String} buttonmode - Search, show categories/redirects or open Wikipedia on button click, valid search, catsredir, wiki
    * @param {String} search - Wikipedia page to search for (global.state.title)
    */
 
@@ -719,8 +534,6 @@ onMounted(() => {
   const mobileview = urlParameters.get('mobileview')
   const checkboxfilter = urlParameters.get('checkboxfilter')
   const redirects = urlParameters.get('redirects')
-  const categoriesmode = urlParameters.get('categoriesmode')
-  const buttonmode = urlParameters.get('buttonmode')
   const search = urlParameters.get('search')
 
   if (mode === 'desktop' || mode === 'mobile') {
@@ -799,47 +612,6 @@ onMounted(() => {
         break
       case 'off':
         resultsRedirectsChanged(false)
-    }
-  }
-
-  if (categoriesmode === 'click' || categoriesmode === 'hover') {
-    switch (categoriesmode) {
-      case 'click':
-        categoriesOnHoverOrClickChanged('catsclick')
-        break
-
-      case 'hover':
-        categoriesOnHoverOrClickChanged('catshover')
-    }
-  }
-
-  if (categoriesmode === 'click' || categoriesmode === 'hover') {
-    switch (categoriesmode) {
-      case 'click':
-        categoriesOnHoverOrClickChanged('catsclick')
-        break
-
-      case 'hover':
-        categoriesOnHoverOrClickChanged('catshover')
-    }
-  }
-
-  if (
-    buttonmode === 'search' ||
-    buttonmode === 'catsredir' ||
-    buttonmode === 'wiki'
-  ) {
-    switch (buttonmode) {
-      case 'search':
-        buttonModeSwitched('search')
-        break
-
-      case 'catsredir':
-        buttonModeSwitched('catsredir')
-        break
-
-      case 'wiki':
-        buttonModeSwitched('wiki')
     }
   }
 

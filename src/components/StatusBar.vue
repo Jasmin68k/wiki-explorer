@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div v-if="!global.state.mobileMode" class="statusbar-container">
-      <span>{{ global.state.buttonModeString }}</span>
-    </div>
-
     <div class="statusbar-container">
       <span>
         <span

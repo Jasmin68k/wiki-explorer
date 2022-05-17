@@ -2,7 +2,6 @@
   <div
     v-show="!global.state.inputsDisabled"
     class="circlebutton"
-    :class="{ hoverdisabled: !global.state.categoriesOnHover }"
     :style="{
       left: coordinates.x + 'px',
       top: coordinates.y + 'px',

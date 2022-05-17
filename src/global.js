@@ -12,7 +12,6 @@ const state = reactive({
   resultsCategoriesEnabled: true,
   resultsRedirectsEnabled: false,
   checkboxFilterEnabled: true,
-  categoriesOnHover: true,
   sizePerPage: 16,
   inputsDisabled: false,
   resultsCategoriesDone: true,
@@ -20,8 +19,6 @@ const state = reactive({
   redirectsDone: false,
   graphFirstItem: 1,
   pieAngleSaved: 0,
-  buttonMode: 'search',
-  buttonModeString: '',
   filteredResultsArray: computed(function () {
     if (state.inputsDisabled) {
       return []
@@ -151,9 +148,6 @@ const setResultsRedirectsEnabled = (value) => {
 const setCheckboxFilterEnabled = (value) => {
   state.checkboxFilterEnabled = value
 }
-const setCategoriesOnHover = (value) => {
-  state.categoriesOnHover = value
-}
 const setSizePerPage = (value) => {
   state.sizePerPage = value
 }
@@ -175,12 +169,6 @@ const setGraphFirstItem = (value) => {
 const setPieAngleSaved = (value) => {
   state.pieAngleSaved = value
 }
-const setButtonMode = (value) => {
-  state.buttonMode = value
-}
-const setButtonModeString = (value) => {
-  state.buttonModeString = value
-}
 
 export default {
   state: readonly(state),
@@ -195,14 +183,11 @@ export default {
   setResultsCategoriesEnabled,
   setResultsRedirectsEnabled,
   setCheckboxFilterEnabled,
-  setCategoriesOnHover,
   setSizePerPage,
   setInputsDisabled,
   setResultsCategoriesDone,
   setResultsRedirectsDone,
   setRedirectsDone,
   setGraphFirstItem,
-  setPieAngleSaved,
-  setButtonMode,
-  setButtonModeString
+  setPieAngleSaved
 }
