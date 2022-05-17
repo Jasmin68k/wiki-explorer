@@ -193,7 +193,7 @@
       <input
         class="radiobutton"
         type="radio"
-        :disabled="global.state.showHelp || global.state.showCatsRedir"
+        :disabled="global.state.showHelp"
         id="maininfo"
         value="maininfo"
         :checked="global.state.mobileDisplay === 'maininfo'"
@@ -203,7 +203,7 @@
         class="radiolabel"
         for="maininfo"
         :class="{
-          itemdisabled: global.state.showHelp || global.state.showCatsRedir
+          itemdisabled: global.state.showHelp
         }"
         ><img class="titleicon" src="../assets/images/text-tool.svg"
       /></label>
@@ -212,7 +212,6 @@
         type="radio"
         :disabled="
           global.state.showHelp ||
-          global.state.showCatsRedir ||
           (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
         "
         id="categories"
@@ -226,7 +225,6 @@
         :class="{
           itemdisabled:
             global.state.showHelp ||
-            global.state.showCatsRedir ||
             (global.state.mobileMode && !global.state.resultsCategoriesEnabled)
         }"
       >
@@ -257,7 +255,7 @@
           class="checkboxlabel"
           :class="{
             itemdisabled:
-              (global.state.mobileMode && global.state.showCatsRedir) ||
+              global.state.mobileMode ||
               global.state.inputsDisabled ||
               (global.state.mobileMode &&
                 (global.state.mobileDisplay === 'maininfo' ||
@@ -275,7 +273,7 @@
           type="checkbox"
           :checked="global.state.checkboxFilterEnabled"
           :disabled="
-            (global.state.mobileMode && global.state.showCatsRedir) ||
+            global.state.mobileMode ||
             global.state.inputsDisabled ||
             !global.state.resultsCategoriesEnabled
           "
@@ -666,7 +664,6 @@ async function modeSwitched(value) {
     await nextTick()
     categoriesOnHoverOrClickChanged('catshover')
   }
-  global.setShowCatsRedir(false)
   buttonModeSwitched('search')
   emit('mode-switched', value)
 }

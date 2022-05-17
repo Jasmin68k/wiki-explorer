@@ -20,7 +20,6 @@ const state = reactive({
   redirectsDone: false,
   graphFirstItem: 1,
   pieAngleSaved: 0,
-  showCatsRedir: false,
   buttonMode: 'search',
   buttonModeString: '',
   filteredResultsArray: computed(function () {
@@ -179,9 +178,6 @@ const setPieAngleSaved = (value) => {
 const setButtonMode = (value) => {
   state.buttonMode = value
 }
-const setShowCatsRedir = (value) => {
-  state.showCatsRedir = value
-}
 const setButtonModeString = (value) => {
   state.buttonModeString = value
 }
@@ -208,6 +204,5 @@ export default {
   setGraphFirstItem,
   setPieAngleSaved,
   setButtonMode,
-  setShowCatsRedir,
   setButtonModeString
 }

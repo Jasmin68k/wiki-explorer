@@ -33,10 +33,6 @@
         </ul>
       </div>
     </div>
-
-    <button class="closebutton" @click="closeButtonClicked">
-      <img class="closebuttonicon" src="../assets/images/close-button.svg" />
-    </button>
   </div>
 </template>
 
@@ -47,10 +43,6 @@ import { useI18n } from 'vue-i18n/index'
 const { t } = useI18n({})
 
 const global = inject('global')
-const emit = defineEmits(['closeButtonClicked'])
-function closeButtonClicked() {
-  emit('closeButtonClicked')
-}
 </script>
 
 <style scoped>
@@ -58,20 +50,6 @@ function closeButtonClicked() {
   position: relative;
   font-size: 90%;
 }
-.closebuttonicon {
-  vertical-align: middle;
-}
-.closebutton {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 2em;
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  z-index: 1;
-}
-
 .catsredirects {
   /* font-size: 90%; */
   text-align: left;

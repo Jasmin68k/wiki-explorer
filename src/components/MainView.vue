@@ -4,14 +4,12 @@
     :class="{
       mobile: global.state.mobileMode,
       'grid-container':
-        ((global.state.checkboxFilterEnabled &&
-          global.state.resultsCategoriesEnabled) ||
-          global.state.showCatsRedir) &&
+        global.state.checkboxFilterEnabled &&
+        global.state.resultsCategoriesEnabled &&
         !global.state.mobileMode,
       'grid-container-nocategoriesredirectscheckbox':
         (!global.state.checkboxFilterEnabled ||
           !global.state.resultsCategoriesEnabled) &&
-        !global.state.showCatsRedir &&
         !global.state.mobileMode
     }"
     ref="gridcontainer"
@@ -34,7 +32,6 @@
         @mobileDisplaySwitched="mobileDisplaySwitched"
         @buttonModeSwitched="buttonModeSwitched"
         @categoriesOnHoverChanged="categoriesOnHoverChanged"
-        @closeCatsRedir="catsRedirClosed"
       ></input-form>
     </div>
     <div
@@ -46,10 +43,9 @@
           global.state.mobileMode &&
           global.state.mobileDisplay === 'categories')
       "
-      class="inputcategoriescontainer grid-item-checkbox"
+      class="inputcategoriescontainer grid-item-checkbox categoriesredirects"
       :class="{
-        mobile: global.state.mobileMode,
-        categoriesredirects: global.state.showCatsRedir
+        mobile: global.state.mobileMode
       }"
     >
       <categories-checkbox-filter
@@ -71,7 +67,6 @@
       v-if="
         (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp &&
-          !global.state.showCatsRedir &&
           global.state.mobileMode &&
           global.state.mobileDisplay === 'outgraph')
       "
@@ -83,7 +78,6 @@
       v-if="
         (!global.state.showHelp && !global.state.mobileMode) ||
         (!global.state.showHelp &&
-          !global.state.showCatsRedir &&
           global.state.mobileMode &&
           global.state.mobileDisplay === 'maininfo')
       "
@@ -102,14 +96,13 @@
         !global.state.showHelp &&
         global.state.filteredResultsArray.length > 0 &&
         (!global.state.mobileMode ||
-          (!global.state.showCatsRedir &&
-            global.state.mobileMode &&
+          (global.state.mobileMode &&
             global.state.mobileDisplay === 'outgraph'))
       "
     ></status-bar>
 
     <categories-redirects
-      v-if="!global.state.showHelp && global.state.showCatsRedir"
+      v-if="!global.state.showHelp"
       class="grid-item-categoriesredirects"
       :class="{
         mobile: global.state.mobileMode,
@@ -118,7 +111,6 @@
           global.state.resultsCategoriesEnabled &&
           !global.state.mobileMode
       }"
-      @closeButtonClicked="catsRedirClosed"
     ></categories-redirects>
 
     <help
@@ -351,35 +343,12 @@ async function circleButtonClicked(clickData) {
           )
           getMainInfo()
           getJson()
-        } else {
-          if (!global.state.categoriesOnHover) {
-            if (
-              !global.showCatsRedir &&
-              (global.state.resultsCategoriesEnabled ||
-                global.state.resultsRedirectsEnabled)
-            ) {
-              global.setShowCatsRedir(true)
-            }
-
-            windowResized()
-          }
         }
 
         break
 
       case 'catsredir':
-        if (!clickData.event.ctrlKey) {
-          if (!global.state.categoriesOnHover) {
-            if (
-              !global.showCatsRedir &&
-              (global.state.resultsCategoriesEnabled ||
-                global.state.resultsRedirectsEnabled)
-            ) {
-              global.setShowCatsRedir(true)
-            }
-            windowResized()
-          }
-        } else {
+        if (clickData.event.ctrlKey) {
           global.setTitle(
             await wikiFetchGetRedirectTarget(
               global.state.displayResultsArray[clickData.index].title,
@@ -401,10 +370,6 @@ async function circleButtonClicked(clickData) {
   }
 }
 
-function catsRedirClosed() {
-  global.setShowCatsRedir(false)
-  windowResized()
-}
 function buttonModeSwitched() {
   windowResized()
   updateButtonModeString()
@@ -544,7 +509,7 @@ function showHelpSwitched() {
 }
 async function windowResized() {
   await nextTick()
-  if (global.state.showCatsRedir && !global.state.mobileMode) {
+  if (!global.state.mobileMode) {
     scrollboxContainerHeight.value =
       gridcontainer.value.getBoundingClientRect().height -
       inputarea.value.getBoundingClientRect().height -
