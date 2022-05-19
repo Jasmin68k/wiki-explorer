@@ -42,7 +42,10 @@
         @windowResize="windowResized"
       ></categories-checkbox-filter> -->
 
-      <TabArea :categoriesAll="resultsCategoriesAllArray"></TabArea>
+      <TabArea
+        :categoriesAll="resultsCategoriesAllArray"
+        @circleButtonClicked="circleButtonClicked"
+      ></TabArea>
     </div>
 
     <!-- mobile mode -> outgraph in tabs -->

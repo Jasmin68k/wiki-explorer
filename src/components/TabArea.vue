@@ -1,19 +1,4 @@
 <template>
-  <!-- <h4>Tab Area</h4>
-  <p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, harum
-    consectetur. Quas esse ipsum corporis, velit molestiae officia. Beatae animi
-    exercitationem illum necessitatibus eligendi ipsam repudiandae fugit facere
-    porro culpa est, voluptates, velit explicabo nihil accusantium? Corporis
-    dignissimos, laboriosam quos mollitia accusantium rem, molestias culpa dolor
-    perferendis inventore doloremque iusto reiciendis minus facilis recusandae
-    illum, iste laudantium tempore! Voluptatum, recusandae! Blanditiis quasi
-    laudantium cum temporibus eligendi animi sed soluta, asperiores id nobis
-    eius voluptatem cumque omnis accusantium, qui atque incidunt eum fugiat,
-    magnam explicabo iusto! Laudantium quam porro iure quos, voluptatum itaque
-    molestiae. Laudantium libero, est voluptatem vitae magni et.
-  </p> -->
-
   <div class="tabbed" ref="tabbed">
     <input
       v-if="global.state.mobileMode"
@@ -53,24 +38,16 @@
     </nav>
 
     <section>
-      <div v-if="global.state.mobileMode" class="tab1" :style="heightStyle">
-        grapharea[T] Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-        nihil dicta, repellat laudantium, libero laboriosam facilis
-        necessitatibus tempore totam nulla provident exercitationem culpa sed
-        voluptate eum debitis consequatur nisi suscipit pariatur, blanditiis
-        inventore minus. Quibusdam dolores veritatis natus explicabo labore!
-        Dolore ab iusto voluptatem voluptate molestiae, aliquid est
-        exercitationem itaque esse! Non eos facilis harum repudiandae unde ullam
-        culpa ipsa dolor expedita necessitatibus quasi tempore in quis totam, ab
-        odit error accusantium et dolorem atque quas voluptatem blanditiis
-        facere. Eos voluptates suscipit reiciendis delectus, fugiat asperiores
-        placeat animi nulla ut illo quis praesentium accusantium hic at iure
-        laudantium mollitia eius.
-      </div>
-      <div class="tab2" :style="heightStyle">
-        <CategoriesRedirects></CategoriesRedirects>
-      </div>
-      <div class="tab3" :style="heightStyle">
+      <Outgraph
+        v-if="global.state.mobileMode"
+        class="tab1"
+        @circleButtonClicked="circleButtonClicked"
+        ref="outgraphref"
+      >
+      </Outgraph>
+
+      <CategoriesRedirects class="tab2"></CategoriesRedirects>
+      <div class="tab3">
         <CategoriesCheckboxFilter
           v-if="
             global.state.resultsCategoriesEnabled &&
@@ -83,9 +60,8 @@
           @windowResize="windowResized"
         ></CategoriesCheckboxFilter>
       </div>
-      <div class="tab4" :style="heightStyle">
-        <MainTitleInfo></MainTitleInfo>
-      </div>
+
+      <MainTitleInfo class="tab4"></MainTitleInfo>
     </section>
   </div>
 </template>
@@ -94,7 +70,6 @@
 import {
   inject,
   ref,
-  reactive,
   watchEffect,
   nextTick,
   onMounted,
@@ -103,18 +78,20 @@ import {
 import MainTitleInfo from './MainTitleInfo.vue'
 import CategoriesRedirects from './CategoriesRedirects.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
+import Outgraph from './Outgraph.vue'
 
 // import { useI18n } from 'vue-i18n/index'
 // const { t } = useI18n({})
 const global = inject('global')
+const emit = defineEmits(['circleButtonClicked'])
 const tab2 = ref(null)
 const tab4 = ref(null)
 const label4 = ref(null)
 const tabbed = ref(null)
 const scrollboxContainerHeight = ref(300)
-const heightStyle = reactive({ height: '500px' })
+const navHeight = ref(10)
 const tab3active = ref(false)
-
+const outgraphref = ref(null)
 const props = defineProps({
   categoriesAll: { required: true, default: () => [], type: Array }
 })
@@ -132,20 +109,31 @@ watchEffect(() => {
   }
 })
 
+function circleButtonClicked(clickData) {
+  emit('circleButtonClicked', clickData)
+}
+
 // This is needed to have CategoriesCheckboxFilter only rendered after tab is active
 // otherwise calculcateInitialRowHeight will not work, since spacer.value.children is empty
 // with display: none
 function tabSelection(id) {
   windowResized()
+
   tab3active.value = id === 'tab3'
+
+  // recalc coordinates, when chosen from not visible state in mobile mode, otherwise won't work after resize with graph not visible
+  if (id === 'tab1') {
+    outgraphref.value.calcCoordinates()
+  }
 }
 
 async function windowResized() {
   await nextTick()
+
+  // add proper check for highest of all labels and possible second row
+  navHeight.value = label4.value.getBoundingClientRect().height
   scrollboxContainerHeight.value =
-    tabbed.value.getBoundingClientRect().height -
-    label4.value.getBoundingClientRect().height
-  heightStyle['height'] = scrollboxContainerHeight.value + 'px'
+    tabbed.value.getBoundingClientRect().height - navHeight.value
 }
 
 onMounted(() => {
@@ -162,22 +150,14 @@ onBeforeUnmount(() => {
   display: block;
   margin-left: 0;
   clear: both;
+  position: relative;
+  height: calc(100% - v-bind(navHeight + 'px'));
 }
 
 .tabbed > input,
 .tabbed section > div {
   display: none;
 }
-
-/* .tabbed section > div { */
-/* padding: 0; */
-/* width: 100%; */
-/* border: 1px solid black; */
-/* background: #fff; */
-/* line-height: 1.5em; */
-/* letter-spacing: 0.3px; */
-/* color: #444; */
-/* } */
 
 #tab1:checked ~ section .tab1,
 #tab2:checked ~ section .tab2,
@@ -216,27 +196,22 @@ nav label:active {
   position: relative;
 }
 
-/* #tab1:checked ~ nav label[for='tab1']:after,
-#tab2:checked ~ nav label[for='tab2']:after,
-#tab3:checked ~ nav label[for='tab3']:after,
-#tab4:checked ~ nav label[for='tab4']:after {
-  content: '';
-  display: block;
-  position: absolute;
-  width: 100%;
-  background: white;
-  left: 0;
-} */
 .tabbed {
   height: 100%;
 }
-.tab1,
 .tab2,
 .tab3,
 .tab4 {
   overflow-y: auto;
 }
-.tab3 {
-  position: relative;
+.tab1,
+.tab2,
+.tab3,
+.tab4 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
