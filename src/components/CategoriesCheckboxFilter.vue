@@ -15,9 +15,13 @@
       </ul>
     </div>
   </div>
-  <div class="checkboxbuttons">
-    <button @click.prevent="categoriesAll">{{ t('all') }}</button>
-    <button @click.prevent="categoriesNone">{{ t('none') }}</button>
+  <div class="checkboxbuttonscontainer">
+    <button class="checkboxbuttons" @click.prevent="categoriesAll">
+      {{ t('all') }}
+    </button>
+    <button class="checkboxbuttons" @click.prevent="categoriesNone">
+      {{ t('none') }}
+    </button>
   </div>
 </template>
 <script setup>
@@ -207,11 +211,26 @@ li {
   overflow-y: auto;
 }
 
-.checkboxbuttons {
+.checkboxbuttonscontainer {
   position: absolute;
-  right: 30px;
+  right: 20px;
+  top: 5px;
   z-index: 1;
 }
+.checkboxbuttons {
+  vertical-align: middle;
+  width: 4em;
+  height: 1.8em;
+  margin-left: 3px;
+  margin-right: 3px;
+  border-radius: 0;
+  border: 1px solid black;
+  background-color: #ddd;
+}
+.checkboxbuttons:hover {
+  filter: invert(0.25);
+}
+
 .root {
   top: 0;
   left: 0;

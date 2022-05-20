@@ -116,10 +116,13 @@ function wikiClicked() {
 .wikibutton {
   font-size: 90%;
   vertical-align: middle;
-
+  background-color: #ddd;
   border-radius: 0;
   border: 1px solid black;
   margin-bottom: 1.5em;
+}
+.wikibutton:hover {
+  filter: invert(0.25);
 }
 .wikipediaicon {
   height: 1.5em;
