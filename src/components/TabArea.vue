@@ -48,7 +48,14 @@
           global.state.resultsRedirectsEnabled
         "
         for="tab2"
-        ><div class="tabiconcontainer">
+      >
+        <div
+          v-if="
+            global.state.resultsCategoriesEnabled &&
+            global.state.resultsRedirectsEnabled
+          "
+          class="tabiconcontainer"
+        >
           <span>
             <img class="tabdoubleicon" src="../assets/images/document.svg"
           /></span>
@@ -57,6 +64,29 @@
               class="tabdoubleicon"
               src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
           /></span>
+        </div>
+
+        <div
+          v-if="
+            global.state.resultsCategoriesEnabled &&
+            !global.state.resultsRedirectsEnabled
+          "
+          class="tabiconcontainer"
+        >
+          <img class="tabicon" src="../assets/images/document.svg" />
+        </div>
+
+        <div
+          v-if="
+            !global.state.resultsCategoriesEnabled &&
+            global.state.resultsRedirectsEnabled
+          "
+          class="tabiconcontainer"
+        >
+          <img
+            class="tabicon"
+            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+          />
         </div>
       </label>
       <label v-if="global.state.resultsCategoriesEnabled" for="tab3"
