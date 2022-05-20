@@ -277,6 +277,7 @@ async function getMainInfo() {
   )
 
   global.setRedirectsDone(false)
+  global.setCategoriesDone(false)
 
   if (!global.statefull.titlePage.missing) {
     // needs await, otherwise one will overwrite the other
@@ -290,6 +291,7 @@ async function getCategories() {
     global.state.language,
     global.statefull.titlePage
   )
+  global.setCategoriesDone(true)
 }
 
 async function getRedirects() {

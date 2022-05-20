@@ -4,7 +4,8 @@
   <div
     v-if="
       global.statefull.titlePage.categories.length > 0 &&
-      global.state.resultsCategoriesEnabled
+      global.state.resultsCategoriesEnabled &&
+      global.state.categoriesDone
     "
     class="catsredirects"
   >
@@ -25,7 +26,8 @@
   <div
     v-if="
       global.statefull.titlePage.redirects.length > 0 &&
-      global.state.resultsRedirectsEnabled
+      global.state.resultsRedirectsEnabled &&
+      global.state.redirectsDone
     "
     class="catsredirects"
   >

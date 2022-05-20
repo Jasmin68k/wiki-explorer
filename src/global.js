@@ -15,6 +15,7 @@ const state = reactive({
   resultsCategoriesDone: true,
   resultsRedirectsDone: true,
   redirectsDone: false,
+  categoriesDone: false,
   graphFirstItem: 1,
   pieAngleSaved: 0,
   activeTab: 'tab2',
@@ -165,6 +166,9 @@ const setPieAngleSaved = (value) => {
 const setActiveTab = (value) => {
   state.activeTab = value
 }
+const setCategoriesDone = (value) => {
+  state.categoriesDone = value
+}
 
 export default {
   state: readonly(state),
@@ -184,5 +188,6 @@ export default {
   setRedirectsDone,
   setGraphFirstItem,
   setPieAngleSaved,
-  setActiveTab
+  setActiveTab,
+  setCategoriesDone
 }

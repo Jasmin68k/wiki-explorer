@@ -1,60 +1,80 @@
 <template>
+  <!-- abusing resultsCategoriesEnabled and resultsRedirectsEnabled also for waiting on finish before display -->
   <div>
     <div
       v-if="
-        global.statefull.titlePage.extract && global.statefull.titlePage.image
+        (!global.state.resultsCategoriesEnabled &&
+          !global.state.resultsRedirectsEnabled) ||
+        (global.state.resultsCategoriesEnabled &&
+          global.state.categoriesDone &&
+          !global.state.resultsRedirectsEnabled) ||
+        (!global.state.resultsCategoriesEnabled &&
+          global.state.resultsRedirectsEnabled &&
+          global.state.redirectsDone) ||
+        (global.state.resultsCategoriesEnabled &&
+          global.state.categoriesDone &&
+          global.state.resultsRedirectsEnabled &&
+          global.state.redirectsDone)
       "
     >
-      <div>
-        <img class="image" :src="global.statefull.titlePage.image" />
-      </div>
-      <div v-if="global.statefull.titlePage.title">
-        <h4 class="heading">
-          {{ global.statefull.titlePage.title }}
-        </h4>
+      <div
+        v-if="
+          global.statefull.titlePage.extract && global.statefull.titlePage.image
+        "
+      >
+        <div>
+          <img class="image" :src="global.statefull.titlePage.image" />
+        </div>
+        <div v-if="global.statefull.titlePage.title">
+          <h4 class="heading">
+            {{ global.statefull.titlePage.title }}
+          </h4>
 
-        <button class="wikibutton" @click="wikiClicked">
-          {{ t('open') }}
-          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
-        </button>
+          <button class="wikibutton" @click="wikiClicked">
+            {{ t('open') }}
+            <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+          </button>
+        </div>
+        <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
+        <div class="extract" v-html="global.statefull.titlePage.extract"></div>
       </div>
-      <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
-      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
-    </div>
-    <div
-      v-if="
-        global.statefull.titlePage.extract && !global.statefull.titlePage.image
-      "
-    >
-      <div v-if="global.statefull.titlePage.title">
-        <h4 class="heading">
-          {{ global.statefull.titlePage.title }}
-        </h4>
-        <button class="wikibutton" @click="wikiClicked">
-          {{ t('open') }}
-          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
-        </button>
+      <div
+        v-if="
+          global.statefull.titlePage.extract &&
+          !global.statefull.titlePage.image
+        "
+      >
+        <div v-if="global.statefull.titlePage.title">
+          <h4 class="heading">
+            {{ global.statefull.titlePage.title }}
+          </h4>
+          <button class="wikibutton" @click="wikiClicked">
+            {{ t('open') }}
+            <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+          </button>
+        </div>
+        <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
+        <div class="extract" v-html="global.statefull.titlePage.extract"></div>
       </div>
-      <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
-      <div class="extract" v-html="global.statefull.titlePage.extract"></div>
-    </div>
-    <div
-      v-if="
-        !global.statefull.titlePage.extract && global.statefull.titlePage.image
-      "
-    >
-      <div v-if="global.statefull.titlePage.title">
-        <h4 class="heading">
-          {{ global.statefull.titlePage.title }}
-        </h4>
-        <button class="wikibutton" @click="wikiClicked">
-          {{ t('open') }}
-          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
-        </button>
-      </div>
-      <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
-      <div>
-        <img class="imageonly" :src="global.statefull.titlePage.image" />
+      <div
+        v-if="
+          !global.statefull.titlePage.extract &&
+          global.statefull.titlePage.image
+        "
+      >
+        <div v-if="global.statefull.titlePage.title">
+          <h4 class="heading">
+            {{ global.statefull.titlePage.title }}
+          </h4>
+          <button class="wikibutton" @click="wikiClicked">
+            {{ t('open') }}
+            <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+          </button>
+        </div>
+        <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
+        <div>
+          <img class="imageonly" :src="global.statefull.titlePage.image" />
+        </div>
       </div>
     </div>
   </div>
