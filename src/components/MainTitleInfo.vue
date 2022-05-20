@@ -9,9 +9,9 @@
         <img class="image" :src="global.statefull.titlePage.image" />
       </div>
       <div v-if="global.statefull.titlePage.title">
-        <h2 class="heading">
+        <h4 class="heading">
           {{ global.statefull.titlePage.title }}
-        </h2>
+        </h4>
 
         <button class="wikibutton" @click="wikiClicked">
           {{ t('open') }}
@@ -27,9 +27,13 @@
       "
     >
       <div v-if="global.statefull.titlePage.title">
-        <h2>
+        <h4 class="heading">
           {{ global.statefull.titlePage.title }}
-        </h2>
+        </h4>
+        <button class="wikibutton" @click="wikiClicked">
+          {{ t('open') }}
+          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+        </button>
       </div>
       <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
       <div class="extract" v-html="global.statefull.titlePage.extract"></div>
@@ -40,9 +44,13 @@
       "
     >
       <div v-if="global.statefull.titlePage.title">
-        <h2>
+        <h4 class="heading">
           {{ global.statefull.titlePage.title }}
-        </h2>
+        </h4>
+        <button class="wikibutton" @click="wikiClicked">
+          {{ t('open') }}
+          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+        </button>
       </div>
       <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
       <div>
@@ -75,7 +83,7 @@ function wikiClicked() {
 }
 .image {
   float: right;
-  width: 33%;
+  width: 50%;
   margin: 0 0 10px 10px;
   padding-right: 10px;
 }
@@ -83,18 +91,16 @@ function wikiClicked() {
   width: 100%;
 }
 .heading {
-  display: inline;
+  /* display: inline; */
   vertical-align: middle;
-}
-.heading {
-  display: inline;
 }
 .wikibutton {
   font-size: 90%;
   vertical-align: middle;
-  margin-left: 1em;
+  /* margin-left: 1em; */
   border-radius: 0;
   border: 1px solid black;
+  margin-bottom: 1.5em;
 }
 .wikipediaicon {
   height: 1.5em;
