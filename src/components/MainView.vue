@@ -29,19 +29,6 @@
         mobile: global.state.mobileMode
       }"
     >
-      <!-- <categories-checkbox-filter
-        v-if="
-          ((!global.state.mobileMode &&
-            global.state.resultsCategoriesEnabled) ||
-            global.state.mobileMode) &&
-          resultsCategoriesAllArray.length > 0 &&
-          global.state.resultsCategoriesDone
-        "
-        :items="resultsCategoriesAllArray"
-        :root-height="scrollboxContainerHeight"
-        @windowResize="windowResized"
-      ></categories-checkbox-filter> -->
-
       <TabArea
         :categoriesAll="resultsCategoriesAllArray"
         @circleButtonClicked="circleButtonClicked"
@@ -55,34 +42,10 @@
       @circleButtonClicked="circleButtonClicked"
     ></outgraph>
 
-    <!-- <div
-      v-if="
-        (!global.state.showHelp && !global.state.mobileMode) ||
-        (!global.state.showHelp && global.state.mobileMode)
-      "
-      class="grid-item-maininfo"
-      :class="{
-        mobile: global.state.mobileMode
-      }"
-      ref="maininfo"
-    >
-      <main-title-info></main-title-info>
-    </div> -->
-
     <status-bar
       class="grid-item-statusbar"
       v-if="!global.state.showHelp"
     ></status-bar>
-    <!-- 
-    <categories-redirects
-      v-if="!global.state.showHelp"
-      class="grid-item-categoriesredirects"
-      :class="{
-        mobile: global.state.mobileMode,
-        checkbox:
-          global.state.resultsCategoriesEnabled && !global.state.mobileMode
-      }"
-    ></categories-redirects> -->
 
     <help
       v-if="global.state.showHelp"
@@ -96,20 +59,13 @@
 </template>
 
 <script setup>
-import {
-  inject,
-  computed,
-  // nextTick,
-  // onMounted,
-  // onBeforeUnmount,
-  ref
-} from 'vue'
+import { inject, computed, ref } from 'vue'
 import InputForm from './InputForm.vue'
-// import MainTitleInfo from './MainTitleInfo.vue'
+
 import Outgraph from './Outgraph.vue'
-// import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
+
 import StatusBar from './StatusBar.vue'
-// import CategoriesRedirects from './CategoriesRedirects.vue'
+
 import TabArea from './TabArea.vue'
 import Help from './Help.vue'
 import {
@@ -122,19 +78,6 @@ import {
   wikiFetchGetRedirectTarget
 } from '../wikifetch.js'
 
-// import { createI18n, useI18n } from 'vue-i18n/index'
-// import en from '../locales/en.json'
-// import de from '../locales/de.json'
-// createI18n({
-//   locale: import.meta.env.VUE_APP_I18N_LOCALE || 'en',
-//   fallbackLocale: import.meta.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-//   legacy: false,
-//   messages: {
-//     en,
-//     de
-//   }
-// })
-
 import { useI18n } from 'vue-i18n/index'
 
 const { locale } = useI18n({})
@@ -143,9 +86,6 @@ const global = inject('global')
 
 const gridcontainer = ref(null)
 const inputarea = ref(null)
-// const maininfo = ref(null)
-
-// const scrollboxContainerHeight = ref(300)
 
 const resultsCategoriesAllArray = computed(function () {
   if (
@@ -360,40 +300,12 @@ function languageSwitched(value) {
   global.setLanguage(value)
 }
 
-// function modeSwitched() {
-// windowResized()
-// }
 function showHelpSwitched() {
   global.setInputsDisabled(global.state.showHelp)
 }
-// async function windowResized() {
-//   await nextTick()
-//   if (!global.state.mobileMode) {
-//     scrollboxContainerHeight.value =
-//       gridcontainer.value.getBoundingClientRect().height -
-//       inputarea.value.getBoundingClientRect().height
-//   } else {
-//     scrollboxContainerHeight.value =
-//       gridcontainer.value.getBoundingClientRect().height -
-//       inputarea.value.getBoundingClientRect().height
-//   }
-// }
-
-// onMounted(() => {
-//   window.addEventListener('resize', windowResized)
-//   windowResized()
-// })
-
-// onBeforeUnmount(() => {
-//   window.removeEventListener('resize', windowResized)
-// })
 </script>
 
 <style scoped>
-/* .inputcategoriescontainer {
-  position: relative;
-} */
-
 .grid-container {
   display: grid;
   width: 100%;
@@ -430,31 +342,6 @@ function showHelpSwitched() {
   grid-row: 3 / 4;
 }
 
-/* .grid-item-checkbox {
-  grid-column: 2 / 3;
-  grid-row: 2 / 5;
-}
-.grid-item-checkbox.mobile {
-  grid-column: 1 / 2;
-  grid-row: 2 / 4;
-}
-.grid-item-checkbox.categoriesredirects {
-  grid-column: 2 / 3;
-  grid-row: 2 / 4;
-}
-
-.grid-item-maininfo {
-  grid-column: 1 / 2;
-  grid-row: 4 / 5;
-  overflow-y: auto;
-}
-
-.grid-item-maininfo.mobile {
-  grid-column: 1 / 2;
-  grid-row: 2 / 4;
-  overflow-y: auto;
-} */
-
 .grid-item-statusbar {
   grid-column: 1 / 3;
   grid-row: 2 / 3;
@@ -470,19 +357,4 @@ function showHelpSwitched() {
   grid-column: 1 / 2;
   grid-row: 2 / 4;
 }
-/* .grid-item-categoriesredirects {
-  grid-column: 2 / 3;
-  grid-row: 2 / 5;
-  width: 100%;
-  overflow-y: auto;
-}
-.grid-item-categoriesredirects.mobile {
-  grid-column: 1 / 2;
-  grid-row: 2 / 4;
-}
-.grid-item-categoriesredirects.checkbox {
-  grid-row: 4 / 5;
-  width: 100%;
-  overflow-y: auto;
-} */
 </style>

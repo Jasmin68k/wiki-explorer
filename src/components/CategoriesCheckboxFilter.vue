@@ -144,10 +144,6 @@ function handleScroll() {
 // Remember each row has to be of the same height
 // I am working on the different height version
 
-// !!!
-// This does not work, when not in visible tab (display: none causing problems)
-// !!!
-
 function calculateInitialRowHeight() {
   let largestHeight = 0
   const children = spacer.value.children
@@ -175,7 +171,6 @@ onMounted(() => {
   // $parent.windowResized()
 
   // script setup testing with emit again
-
   emit('windowResize')
 
   root.value.addEventListener('scroll', handleScroll, {
