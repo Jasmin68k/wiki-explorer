@@ -2,14 +2,13 @@
   <div class="tabbed" ref="tabbed">
     <input
       v-if="global.state.mobileMode"
-      checked="true"
       id="tab1"
       type="radio"
       name="tabs"
+      ref="tab1"
       @click="tabSelection($event.target.id)"
     />
     <input
-      checked="true"
       id="tab2"
       type="radio"
       name="tabs"
@@ -81,7 +80,7 @@
             global.state.resultsCategoriesEnabled &&
             global.state.resultsCategoriesDone &&
             props.categoriesAll.length > 0 &&
-            tab3active
+            global.state.activeTab === 'tab3'
           "
           :items="props.categoriesAll"
           :rootHeight="scrollboxContainerHeight"
@@ -108,31 +107,38 @@ import CategoriesRedirects from './CategoriesRedirects.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
 import Outgraph from './Outgraph.vue'
 
-// import { useI18n } from 'vue-i18n/index'
-// const { t } = useI18n({})
 const global = inject('global')
 const emit = defineEmits(['circleButtonClicked'])
+const tab1 = ref(null)
 const tab2 = ref(null)
 const tab4 = ref(null)
 const label4 = ref(null)
 const tabbed = ref(null)
 const scrollboxContainerHeight = ref(300)
 const navHeight = ref(10)
-const tab3active = ref(false)
+
 const outgraphref = ref(null)
 const props = defineProps({
   categoriesAll: { required: true, default: () => [], type: Array }
 })
 
 // switch to tab other than graph, when leaving mobileMode
+// switch to graph when entering mobile
 watchEffect(() => {
   if (!global.state.mobileMode) {
     if (tab2.value) {
       tab2.value.checked = true
+      global.setActiveTab('tab2')
     } else {
       if (tab4.value) {
         tab4.value.checked = true
+        global.setActiveTab('tab4')
       }
+    }
+  } else {
+    if (tab1.value) {
+      tab1.value.checked = true
+      global.setActiveTab('tab1')
     }
   }
 })
@@ -147,7 +153,7 @@ function circleButtonClicked(clickData) {
 function tabSelection(id) {
   windowResized()
 
-  tab3active.value = id === 'tab3'
+  global.setActiveTab(id)
 
   // recalc coordinates, when chosen from not visible state in mobile mode, otherwise won't work after resize with graph not visible
   if (id === 'tab1') {
@@ -164,8 +170,24 @@ async function windowResized() {
     tabbed.value.getBoundingClientRect().height - navHeight.value
 }
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('resize', windowResized)
+  await nextTick()
+  if (tab1.value) {
+    tab1.value.checked = true
+    global.setActiveTab('tab1')
+  } else {
+    if (tab2.value) {
+      tab2.value.checked = true
+      global.setActiveTab('tab2')
+    } else {
+      if (tab4.value) {
+        tab4.value.checked = true
+        global.setActiveTab('tab4')
+      }
+    }
+  }
+
   windowResized()
 })
 onBeforeUnmount(() => {
