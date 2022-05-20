@@ -9,6 +9,10 @@
       @click="tabSelection($event.target.id)"
     />
     <input
+      v-if="
+        global.state.resultsCategoriesEnabled ||
+        global.state.resultsRedirectsEnabled
+      "
       id="tab2"
       type="radio"
       name="tabs"
@@ -16,6 +20,7 @@
       @click="tabSelection($event.target.id)"
     />
     <input
+      v-if="global.state.resultsCategoriesEnabled"
       id="tab3"
       type="radio"
       name="tabs"
@@ -37,7 +42,12 @@
             src="../assets/images/analytics-graph.svg"
           /></div
       ></label>
-      <label for="tab2"
+      <label
+        v-if="
+          global.state.resultsCategoriesEnabled ||
+          global.state.resultsRedirectsEnabled
+        "
+        for="tab2"
         ><div class="tabiconcontainer">
           <span>
             <img class="tabdoubleicon" src="../assets/images/document.svg"
@@ -49,7 +59,7 @@
           /></span>
         </div>
       </label>
-      <label for="tab3"
+      <label v-if="global.state.resultsCategoriesEnabled" for="tab3"
         ><div class="tabiconcontainer">
           <span>
             <img class="tabdoubleicon" src="../assets/images/document.svg"
@@ -73,8 +83,14 @@
       >
       </Outgraph>
 
-      <CategoriesRedirects class="tab2"></CategoriesRedirects>
-      <div class="tab3">
+      <CategoriesRedirects
+        v-if="
+          global.state.resultsCategoriesEnabled ||
+          global.state.resultsRedirectsEnabled
+        "
+        class="tab2"
+      ></CategoriesRedirects>
+      <div v-if="global.state.resultsCategoriesEnabled" class="tab3">
         <CategoriesCheckboxFilter
           v-if="
             global.state.resultsCategoriesEnabled &&
@@ -140,6 +156,27 @@ watchEffect(() => {
       tab1.value.checked = true
       global.setActiveTab('tab1')
     }
+  }
+})
+
+watchEffect(() => {
+  if (
+    !global.state.resultsCategoriesEnabled &&
+    global.state.activeTab === 'tab3'
+  ) {
+    tab4.value.checked = true
+    global.setActiveTab('tab4')
+  }
+})
+
+watchEffect(() => {
+  if (
+    !global.state.resultsCategoriesEnabled &&
+    !global.state.resultsRedirectsEnabled &&
+    global.state.activeTab === 'tab2'
+  ) {
+    tab4.value.checked = true
+    global.setActiveTab('tab4')
   }
 })
 

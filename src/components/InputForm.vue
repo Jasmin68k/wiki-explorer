@@ -175,16 +175,20 @@
           class="checkbox"
           type="checkbox"
           :checked="global.state.resultsCategoriesEnabled"
-          :disabled="global.state.inputsDisabled || global.state.mobileMode"
+          :disabled="
+            global.state.inputsDisabled ||
+            (global.state.resultsCategoriesEnabled &&
+              !global.state.resultsCategoriesDone)
+          "
           @change="resultsCategoriesChanged($event.target.checked)"
         />
         <label
           class="checkboxlabel"
           :class="{
             itemdisabled:
-              global.state.mobileMode ||
               global.state.inputsDisabled ||
-              global.state.mobileMode
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone)
           }"
           for="resultsCategories"
         >
@@ -196,14 +200,21 @@
           id="resultsRedirects"
           class="checkbox"
           type="checkbox"
-          :disabled="global.state.inputsDisabled || global.state.mobileMode"
           :checked="global.state.resultsRedirectsEnabled"
+          :disabled="
+            global.state.inputsDisabled ||
+            (global.state.resultsRedirectsEnabled &&
+              !global.state.resultsRedirectsDone)
+          "
           @change="resultsRedirectsChanged($event.target.checked)"
         />
         <label
           class="checkboxlabel"
           :class="{
-            itemdisabled: global.state.inputsDisabled || global.state.mobileMode
+            itemdisabled:
+              global.state.inputsDisabled ||
+              (global.state.resultsRedirectsEnabled &&
+                !global.state.resultsRedirectsDone)
           }"
           for="resultsRedirects"
         >
