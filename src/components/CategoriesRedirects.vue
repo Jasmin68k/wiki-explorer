@@ -13,7 +13,9 @@
       <div
         class="catsredirects"
         v-if="
-          global.state.resultsCategoriesEnabled && page.categories.length > 0
+          global.state.resultsCategoriesEnabled &&
+          global.state.resultsCategoriesDone &&
+          page.categories.length > 0
         "
       >
         <h4>{{ t('categories') }}</h4>
@@ -26,7 +28,11 @@
 
       <div
         class="catsredirects"
-        v-if="global.state.resultsRedirectsEnabled && page.redirects.length > 0"
+        v-if="
+          global.state.resultsRedirectsEnabled &&
+          global.state.resultsRedirectsDone &&
+          page.redirects.length > 0
+        "
       >
         <h4>{{ t('redirects') }}</h4>
         <ul class="list-horizontal">
