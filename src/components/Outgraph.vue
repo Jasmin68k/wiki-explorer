@@ -50,8 +50,6 @@ async function calcCoordinates() {
   if (outgraphref.value) {
     // skip if tabbed out/not visible
     if (outgraphref.value.clientHeight > 0) {
-      console.log(Math.random())
-
       const width = outgraphref.value.offsetWidth
       const height = outgraphref.value.offsetHeight
 
