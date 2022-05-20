@@ -31,10 +31,38 @@
     />
 
     <nav>
-      <label v-if="global.state.mobileMode" for="tab1">Graph[T]</label>
-      <label for="tab2">Catsredirs[T]</label>
-      <label for="tab3">Checkbox[T]</label>
-      <label for="tab4" ref="label4">Maininfo[T]</label>
+      <label v-if="global.state.mobileMode" for="tab1"
+        ><div class="tabiconcontainer">
+          <img
+            class="tabicon"
+            src="../assets/images/analytics-graph.svg"
+          /></div
+      ></label>
+      <label for="tab2"
+        ><div class="tabiconcontainer">
+          <span>
+            <img class="tabdoubleicon" src="../assets/images/document.svg"
+          /></span>
+          <span>
+            <img
+              class="tabdoubleicon"
+              src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+          /></span>
+        </div>
+      </label>
+      <label for="tab3"
+        ><div class="tabiconcontainer">
+          <span>
+            <img class="tabdoubleicon" src="../assets/images/document.svg"
+          /></span>
+          <span>
+            <img class="tabdoubleicon" src="../assets/images/document2.svg"
+          /></span></div
+      ></label>
+      <label for="tab4" ref="label4"
+        ><div class="tabiconcontainer">
+          <img class="tabicon" src="../assets/images/text-tool.svg" /></div
+      ></label>
     </nav>
 
     <section>
@@ -213,5 +241,19 @@ nav label:active {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.tabiconcontainer {
+  width: 3.6em;
+  height: 1.2em;
+  vertical-align: middle;
+}
+.tabicon {
+  height: 100%;
+}
+.tabdoubleicon {
+  height: 100%;
+  margin-left: 3px;
+  margin-right: 3px;
 }
 </style>

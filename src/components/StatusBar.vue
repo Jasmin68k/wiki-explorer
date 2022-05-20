@@ -85,5 +85,6 @@ const global = inject('global')
   display: flex;
   justify-content: space-around;
   font-size: 85%;
+  margin-bottom: 3px;
 }
 </style>
