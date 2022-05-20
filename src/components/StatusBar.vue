@@ -42,7 +42,11 @@
       <span
         :style="{
           visibility:
-            global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+            global.state.filteredResultsArray.length > 0 &&
+            (!global.state.mobileMode ||
+              (global.state.mobileMode && global.state.activeTab === 'tab1'))
+              ? 'visible'
+              : 'hidden'
         }"
       >
         {{ t('showing') }}{{ global.state.indexStart + 1 }}{{ t('to')
