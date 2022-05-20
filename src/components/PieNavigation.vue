@@ -40,13 +40,13 @@
   >
     <img
       src="../assets/images/left-arrow.svg"
-      @click="prevItem"
+      @click.prevent="prevItem"
       class="leftarrow"
       :class="{ mobile: global.state.mobileMode }"
     />
     <img
       src="../assets/images/right-arrow.svg"
-      @click="nextItem"
+      @click.prevent="nextItem"
       class="rightarrow"
       :class="{ mobile: global.state.mobileMode }"
     />

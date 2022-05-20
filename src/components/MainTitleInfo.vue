@@ -30,7 +30,7 @@
             {{ global.statefull.titlePage.title }}
           </h4>
 
-          <button class="wikibutton" @click="wikiClicked">
+          <button class="wikibutton" @click.prevent="wikiClicked">
             {{ t('open') }}
             <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
           </button>
@@ -48,7 +48,7 @@
           <h4 class="heading">
             {{ global.statefull.titlePage.title }}
           </h4>
-          <button class="wikibutton" @click="wikiClicked">
+          <button class="wikibutton" @click.prevent="wikiClicked">
             {{ t('open') }}
             <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
           </button>
@@ -66,7 +66,7 @@
           <h4 class="heading">
             {{ global.statefull.titlePage.title }}
           </h4>
-          <button class="wikibutton" @click="wikiClicked">
+          <button class="wikibutton" @click.prevent="wikiClicked">
             {{ t('open') }}
             <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
           </button>
