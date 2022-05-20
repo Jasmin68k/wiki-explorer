@@ -58,20 +58,6 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/analytics-graph.svg" />
-      </div>
-      <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/text-tool.svg" />
-      </div>
-      <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/document2.svg" />
-      </div>
-    </div>
-    <div class="help-text">
-      {{ t('help-mobile-view') }}
-    </div>
-    <div>
-      <div class="icon-help-container">
         <img class="icon-help" src="../assets/images/document.svg" />
       </div>
     </div>
@@ -87,14 +73,6 @@
           src="../assets/images/document.svg"
       /></span>
       {{ t('help-categories-switch2') }}
-    </div>
-    <div>
-      <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/document2.svg" />
-      </div>
-    </div>
-    <div class="help-text">
-      {{ t('help-checkboxfilter-switch') }}
     </div>
     <div>
       <div class="icon-help-container">
@@ -118,44 +96,6 @@
       {{ t('help-redirects-switch2') }}
     </div>
 
-    <div>
-      <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/search.svg" />
-      </div>
-      <div class="icon-help-container">
-        <div :style="{ width: '2.66em' }">
-          <img class="icon-help2" src="../assets/images/document.svg" />
-          <img
-            class="icon-help2"
-            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
-          />
-        </div>
-      </div>
-      <div class="icon-help-container">
-        <div :style="{ width: '2.66em' }">
-          <img
-            class="icon-help"
-            :style="{ width: '1.4em' }"
-            src="../assets/images/wikipedia.svg"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="help-text">
-      {{ t('help-buttonmode-switch') }}
-    </div>
-
-    <div>
-      <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/mouse-click.svg" />
-      </div>
-      <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/mouse-hover.svg" />
-      </div>
-    </div>
-    <div class="help-text">
-      {{ t('help-categoriesclickhover-switch') }}
-    </div>
     <div>
       <div>
         <img
@@ -207,13 +147,10 @@
         {{ t('help-outro13a') }}<br />
         {{ t('help-outro13b') }}<br />
         {{ t('help-outro13c') }}<br />
+        {{ t('help-outro13h') }}<br />
         {{ t('help-outro13d') }}<br />
         {{ t('help-outro13e') }}<br />
-        {{ t('help-outro13f') }}<br />
-        {{ t('help-outro13g') }}<br />
-        {{ t('help-outro13h') }}<br />
-        {{ t('help-outro13i') }}<br />
-        {{ t('help-outro13j') }}<br />
+        <!-- {{ t('help-outro13f') }}<br /> -->
         {{ t('help-outro13k') }}
       </p>
     </div>
