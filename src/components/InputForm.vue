@@ -164,7 +164,7 @@
     </div>
 
     <div
-      id="item6"
+      id="item5"
       :class="{
         mobile: global.state.mobileMode
       }"
@@ -227,7 +227,7 @@
     </div>
 
     <div
-      id="item9"
+      id="item6"
       :class="{
         mobile: global.state.mobileMode
       }"
@@ -397,9 +397,9 @@ onMounted(() => {
    * @param {String} mode - Enable mobile/desktop mode, desktop or mobile valid (-> gloabl.state.mobileMode true/false)
    * @param {String} lang - UI and Wikipedia language, en or de valid (-> global.state.language)
    * @param {String} categories - Enable/disable results categories, on or off valid (boolean to global.state.resultsCategoriesEnabled)
+   * @param {String} redirects - Enable/disable results redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
    * @param {String} titlefilter - String to filter results titles with (global.state.filter)
    * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
-   * @param {String} redirects - Enable/disable redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
    * @param {String} search - Wikipedia page to search for (global.state.title)
    */
 
@@ -407,10 +407,10 @@ onMounted(() => {
 
   const mode = urlParameters.get('mode')
   const lang = urlParameters.get('lang')
-  const titlefilter = urlParameters.get('titlefilter')
-  const categoriesfilter = urlParameters.get('categoriesfilter')
   const categories = urlParameters.get('categories')
   const redirects = urlParameters.get('redirects')
+  const titlefilter = urlParameters.get('titlefilter')
+  const categoriesfilter = urlParameters.get('categoriesfilter')
   const search = urlParameters.get('search')
 
   if (mode === 'desktop' || mode === 'mobile') {
@@ -476,15 +476,7 @@ onMounted(() => {
   flex-grow: 1;
 }
 
-@media only screen and (max-width: 1160px) {
-  #item2,
-  #item3,
-  #item4 {
-    flex-basis: 30%;
-  }
-}
-
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 890px) {
   #item2,
   #item3,
   #item4 {
@@ -492,11 +484,10 @@ onMounted(() => {
   }
 }
 
-@media only screen and (max-width: 550px) {
-  #item5.mobile,
-  #item6,
-  #item7 {
-    flex-basis: 50%;
+@media only screen and (max-width: 400px) {
+  #item3,
+  #item4 {
+    flex-basis: 90%;
   }
 }
 

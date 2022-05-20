@@ -91,13 +91,12 @@ function wikiClicked() {
   width: 100%;
 }
 .heading {
-  /* display: inline; */
   vertical-align: middle;
 }
 .wikibutton {
   font-size: 90%;
   vertical-align: middle;
-  /* margin-left: 1em; */
+
   border-radius: 0;
   border: 1px solid black;
   margin-bottom: 1.5em;
