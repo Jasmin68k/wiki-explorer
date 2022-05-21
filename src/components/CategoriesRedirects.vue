@@ -1,5 +1,19 @@
 <template>
-  <div class="container">
+  <div
+    v-if="
+      (global.state.resultsCategoriesEnabled &&
+        global.state.resultsCategoriesDone &&
+        global.state.resultsRedirectsEnabled &&
+        global.state.resultsRedirectsDone) ||
+      (global.state.resultsCategoriesEnabled &&
+        global.state.resultsCategoriesDone &&
+        !global.state.resultsRedirectsEnabled) ||
+      (!global.state.resultsCategoriesEnabled &&
+        global.state.resultsRedirectsEnabled &&
+        global.state.resultsRedirectsDone)
+    "
+    class="container"
+  >
     <div
       v-for="(page, index) in global.state.filteredResultsArray"
       :key="index"
