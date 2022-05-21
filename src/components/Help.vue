@@ -150,7 +150,6 @@
         {{ t('help-outro13h') }}<br />
         {{ t('help-outro13d') }}<br />
         {{ t('help-outro13e') }}<br />
-        <!-- {{ t('help-outro13f') }}<br /> -->
         {{ t('help-outro13k') }}
       </p>
     </div>
@@ -172,7 +171,8 @@ onMounted(() => {
 <style scoped>
 .grid-container-help {
   display: grid;
-  grid-template-columns: minmax(130px, 1fr) minmax(230px, 7fr);
+  grid-template-columns: minmax(110px, 1fr) minmax(190px, 7fr);
+  grid-auto-rows: min-content;
   align-items: center;
 }
 .icon-help-container {
