@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { inject, watchEffect, ref, onUnmounted } from 'vue'
+import { inject, watchEffect, ref } from 'vue'
 
 const global = inject('global')
 
@@ -171,6 +171,10 @@ function doNavigation(x, y) {
 
   drawSlice()
 
+  // needs to be done here now continuously, instead of in unMounted, since
+  // when switching desktop/mobile mode unMounted happens after setup/mount new
+  global.setPieAngleSaved(angle)
+
   global.setGraphFirstItem(resultStart)
 }
 
@@ -209,10 +213,6 @@ function resetSlice() {
 }
 watchEffect(() => resetSlice(global.state.indexStart))
 watchEffect(() => drawSlice(global.state.sizePerPage))
-
-onUnmounted(() => {
-  global.setPieAngleSaved(angle)
-})
 </script>
 <style scoped>
 .piebackground {
