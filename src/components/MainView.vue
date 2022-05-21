@@ -211,10 +211,14 @@ async function getResultsRedirects() {
 }
 
 async function getMainInfo() {
+  global.setMainInfoDone(false)
+
   global.statefull.titlePage = await wikiFetchTitlePage(
     global.state.title,
     global.state.language
   )
+
+  global.setMainInfoDone(true)
 
   global.setRedirectsDone(false)
   global.setCategoriesDone(false)

@@ -19,6 +19,7 @@ const state = reactive({
   graphFirstItem: 1,
   pieAngleSaved: 0,
   activeTab: 'tab2',
+  mainInfoDone: false,
   filteredResultsArray: computed(function () {
     if (state.inputsDisabled) {
       return []
@@ -169,6 +170,9 @@ const setActiveTab = (value) => {
 const setCategoriesDone = (value) => {
   state.categoriesDone = value
 }
+const setMainInfoDone = (value) => {
+  state.mainInfoDone = value
+}
 
 export default {
   state: readonly(state),
@@ -189,5 +193,6 @@ export default {
   setGraphFirstItem,
   setPieAngleSaved,
   setActiveTab,
-  setCategoriesDone
+  setCategoriesDone,
+  setMainInfoDone
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="tabbed" ref="tabbed">
+  <div v-show="global.state.mainInfoDone" class="tabbed" ref="tabbed">
     <input
       v-if="global.state.mobileMode"
       id="tab1"
