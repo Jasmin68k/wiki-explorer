@@ -23,6 +23,23 @@
           }}{{ global.state.filteredResultsArray.length }}</span
         >
         <span
+          v-if="
+            global.state.filteredResultsArray.length > 0 &&
+            (!global.state.mobileMode ||
+              (global.state.mobileMode && global.state.activeTab === 'tab1'))
+          "
+        >
+          ({{ global.state.indexStart + 1 }} -
+          {{
+            global.state.indexEnd + 1 > global.state.filteredResultsArray.length
+              ? global.state.indexEnd +
+                1 -
+                global.state.filteredResultsArray.length
+              : global.state.indexEnd + 1
+          }})
+        </span>
+
+        <span
           v-show="
             global.state.resultsRedirectsEnabled &&
             !global.state.resultsRedirectsDone
@@ -38,25 +55,6 @@
           "
           ><img class="fetchingicon" src="../assets/images/document.svg"
         /></span>
-      </span>
-      <span
-        :style="{
-          visibility:
-            global.state.filteredResultsArray.length > 0 &&
-            (!global.state.mobileMode ||
-              (global.state.mobileMode && global.state.activeTab === 'tab1'))
-              ? 'visible'
-              : 'hidden'
-        }"
-      >
-        {{ t('showing') }}{{ global.state.indexStart + 1 }}{{ t('to')
-        }}{{
-          global.state.indexEnd + 1 > global.state.filteredResultsArray.length
-            ? global.state.indexEnd +
-              1 -
-              global.state.filteredResultsArray.length
-            : global.state.indexEnd + 1
-        }}
       </span>
     </div>
   </div>
