@@ -88,5 +88,6 @@ const global = inject('global')
   justify-content: space-around;
   font-size: 85%;
   margin-bottom: 3px;
+  height: 1.25em;
 }
 </style>
