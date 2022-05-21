@@ -297,8 +297,10 @@ nav label {
 nav label:nth-child(1) {
   border-left: 1px solid black;
 }
-nav label:hover {
-  filter: invert(0.25);
+@media (hover: hover) and (pointer: fine) {
+  nav label:hover {
+    filter: invert(0.25);
+  }
 }
 nav label:active {
   background: #ffffff;
