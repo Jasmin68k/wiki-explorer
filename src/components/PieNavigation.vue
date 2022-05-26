@@ -5,8 +5,7 @@
       width: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
 
       height: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
-      visibility:
-        global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+      visibility: global.state.filteredResults.length > 0 ? 'visible' : 'hidden'
     }"
     @pointermove="pieNavigation($event)"
     @pointerdown="mouseDown($event)"
@@ -21,8 +20,7 @@
     :style="{
       width: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
       height: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
-      visibility:
-        global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+      visibility: global.state.filteredResults.length > 0 ? 'visible' : 'hidden'
     }"
   >
     <clipPath id="piesliceclip">
@@ -33,8 +31,7 @@
 
   <span
     :style="{
-      visibility:
-        global.state.filteredResultsArray.length > 0 ? 'visible' : 'hidden'
+      visibility: global.state.filteredResults.length > 0 ? 'visible' : 'hidden'
     }"
     class="pagecount"
   >
@@ -72,10 +69,10 @@ function nextItem() {
   let item = global.state.graphFirstItem
 
   item += 1
-  if (item > global.state.filteredResultsArray.length) {
-    item -= global.state.filteredResultsArray.length
+  if (item > global.state.filteredResults.length) {
+    item -= global.state.filteredResults.length
   }
-  angle += 360 / global.state.filteredResultsArray.length
+  angle += 360 / global.state.filteredResults.length
 
   global.setGraphFirstItem(item)
   drawSlice()
@@ -85,9 +82,9 @@ function prevItem() {
   let item = global.state.graphFirstItem
   item -= 1
   if (item < 1) {
-    item += global.state.filteredResultsArray.length
+    item += global.state.filteredResults.length
   }
-  angle -= 360 / global.state.filteredResultsArray.length
+  angle -= 360 / global.state.filteredResults.length
   global.setGraphFirstItem(item)
   drawSlice()
 }
@@ -101,17 +98,17 @@ function wheelSpin(event) {
     switch (true) {
       case delta < 0:
         item += 1
-        if (item > global.state.filteredResultsArray.length) {
-          item -= global.state.filteredResultsArray.length
+        if (item > global.state.filteredResults.length) {
+          item -= global.state.filteredResults.length
         }
-        angle += 360 / global.state.filteredResultsArray.length
+        angle += 360 / global.state.filteredResults.length
         break
       case delta > 0:
         item -= 1
         if (item < 1) {
-          item += global.state.filteredResultsArray.length
+          item += global.state.filteredResults.length
         }
-        angle -= 360 / global.state.filteredResultsArray.length
+        angle -= 360 / global.state.filteredResults.length
         break
     }
     global.setGraphFirstItem(item)
@@ -152,21 +149,17 @@ function doNavigation(x, y) {
   angle += 90
   // map mouse pointer to middle of slice
   angle -=
-    (360 / global.state.filteredResultsArray.length) *
-    (global.state.sizePerPage / 2)
+    (360 / global.state.filteredResults.length) * (global.state.sizePerPage / 2)
   // clean up over-/undershoot
   angle %= 360
 
   // map angle range to number/index [+1] of results
   let resultStart = Math.floor(
-    Math.max(
-      1,
-      Math.ceil((global.state.filteredResultsArray.length / 360) * angle)
-    ),
+    Math.max(1, Math.ceil((global.state.filteredResults.length / 360) * angle)),
     10
   )
   if (resultStart < 1) {
-    resultStart += global.state.filteredResultsArray.length
+    resultStart += global.state.filteredResults.length
   }
 
   drawSlice()
@@ -183,12 +176,12 @@ function calcAngle(x, y) {
 }
 
 function drawSlice() {
-  if (global.state.sizePerPage >= global.state.filteredResultsArray.length) {
+  if (global.state.sizePerPage >= global.state.filteredResults.length) {
     // slice covers whole circle
     // need to draw using two arcs, otherwise won't work
     slice.value = 'M 1 0 A 1 1 0 0 1 -1 0 M -1 0 A 1 1 0 0 1 1 0'
   } else {
-    const anglePerResult = 360 / global.state.filteredResultsArray.length
+    const anglePerResult = 360 / global.state.filteredResults.length
 
     const angleStart = angle
     const angleEnd = angle + anglePerResult * global.state.sizePerPage

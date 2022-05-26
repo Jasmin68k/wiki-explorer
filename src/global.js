@@ -20,15 +20,15 @@ const state = reactive({
   pieAngleSaved: 0,
   activeTab: 'tab2',
   mainInfoDone: false,
-  filteredResultsArray: computed(function () {
+  filteredResults: computed(function () {
     if (state.inputsDisabled) {
       return []
     }
 
-    let filteredArray = Array.from(statefull.resultsMap.values())
+    let filtered = Array.from(statefull.resultsMap.values())
 
     // apply titles filter
-    filteredArray = filteredArray.filter((page) =>
+    filtered = filtered.filter((page) =>
       page.title.toLowerCase().includes(state.filter.toLowerCase())
     )
 
@@ -39,7 +39,7 @@ const state = reactive({
       state.resultsCategoriesDone &&
       state.filterCategories
     ) {
-      filteredArray = filteredArray.filter((page) =>
+      filtered = filtered.filter((page) =>
         page.categories
           ? page.categories.find((item) =>
               item.toLowerCase().includes(state.filterCategories.toLowerCase())
@@ -53,7 +53,7 @@ const state = reactive({
       state.resultsCategoriesDone &&
       (!state.mobileMode || state.mobileMode)
     ) {
-      filteredArray = filteredArray.filter((page) =>
+      filtered = filtered.filter((page) =>
         page.categories
           ? page.categories.find((item) =>
               statefull.checkedCategories.has(item)
@@ -63,30 +63,27 @@ const state = reactive({
     }
 
     // sort
-    filteredArray = filteredArray.sort((a, b) => {
+    filtered = filtered.sort((a, b) => {
       return a.title.localeCompare(b.title)
     })
 
-    return filteredArray
+    return filtered
   }),
-  displayResultsArray: computed(function () {
+  displayResults: computed(function () {
     let array = []
     if (state.inputsDisabled) {
       return array
     }
 
-    if (!(state.indexEnd + 1 > state.filteredResultsArray.length)) {
-      array = state.filteredResultsArray.slice(
-        state.indexStart,
-        state.indexEnd + 1
-      )
+    if (!(state.indexEnd + 1 > state.filteredResults.length)) {
+      array = state.filteredResults.slice(state.indexStart, state.indexEnd + 1)
     } else {
-      array = state.filteredResultsArray
+      array = state.filteredResults
         .slice(state.indexStart)
         .concat(
-          state.filteredResultsArray.slice(
+          state.filteredResults.slice(
             0,
-            state.indexEnd - state.filteredResultsArray.length + 1
+            state.indexEnd - state.filteredResults.length + 1
           )
         )
     }
@@ -99,15 +96,14 @@ const state = reactive({
     return indexStart
   }),
   indexEnd: computed(function () {
-    // this can be higher than last index, wrap around is done in displayResultsArray
+    // this can be higher than last index, wrap around is done in displayResults
     let indexEnd
 
     // handle less results than max possible
-    if (!(state.sizePerPage > state.filteredResultsArray.length)) {
+    if (!(state.sizePerPage > state.filteredResults.length)) {
       indexEnd = state.graphFirstItem - 1 + state.sizePerPage - 1
     } else {
-      indexEnd =
-        state.graphFirstItem - 1 + state.filteredResultsArray.length - 1
+      indexEnd = state.graphFirstItem - 1 + state.filteredResults.length - 1
     }
 
     return indexEnd

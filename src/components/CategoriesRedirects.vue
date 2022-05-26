@@ -14,10 +14,7 @@
     "
     class="container"
   >
-    <div
-      v-for="(page, index) in global.state.filteredResultsArray"
-      :key="index"
-    >
+    <div v-for="(page, index) in global.state.filteredResults" :key="index">
       <div class="title">
         <h3>
           {{ page.title }}

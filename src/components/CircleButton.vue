@@ -13,7 +13,7 @@
     <button
       ref="buttonref"
       :class="{
-        missing: global.state.displayResultsArray[index].missing,
+        missing: global.state.displayResults[index].missing,
         circlebuttonactualhover:
           (!global.state.inputsDisabled &&
             global.state.resultsCategoriesEnabled &&
@@ -26,7 +26,7 @@
         'font-size': global.state.mobileMode ? 83.4 * 0.66 + '%' : 83.4 + '%'
       }"
       :disabled="
-        global.state.displayResultsArray[index].missing ||
+        global.state.displayResults[index].missing ||
         (global.state.resultsCategoriesEnabled &&
           !global.state.resultsCategoriesDone) ||
         (global.state.resultsRedirectsEnabled &&
@@ -35,7 +35,7 @@
       @click.prevent="circleButton($event, index)"
       @auxclick.prevent="circleButtonMiddle(index)"
     >
-      {{ global.state.displayResultsArray[index].title }}
+      {{ global.state.displayResults[index].title }}
     </button>
   </div>
 </template>
@@ -85,8 +85,8 @@ function circleButton(event, index) {
 }
 
 function circleButtonMiddle(index) {
-  if (!global.state.displayResultsArray[index].missing) {
-    window.open(global.state.displayResultsArray[index].url, '_blank')
+  if (!global.state.displayResults[index].missing) {
+    window.open(global.state.displayResults[index].url, '_blank')
   }
 }
 </script>

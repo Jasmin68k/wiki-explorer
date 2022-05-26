@@ -18,23 +18,20 @@
             class="fetchingicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
-        <span v-show="global.state.filteredResultsArray.length > 0"
-          >{{ t('results')
-          }}{{ global.state.filteredResultsArray.length }}</span
+        <span v-show="global.state.filteredResults.length > 0"
+          >{{ t('results') }}{{ global.state.filteredResults.length }}</span
         >
         <span
           v-if="
-            global.state.filteredResultsArray.length > 0 &&
+            global.state.filteredResults.length > 0 &&
             (!global.state.mobileMode ||
               (global.state.mobileMode && global.state.activeTab === 'tab1'))
           "
         >
           ({{ global.state.indexStart + 1 }} -
           {{
-            global.state.indexEnd + 1 > global.state.filteredResultsArray.length
-              ? global.state.indexEnd +
-                1 -
-                global.state.filteredResultsArray.length
+            global.state.indexEnd + 1 > global.state.filteredResults.length
+              ? global.state.indexEnd + 1 - global.state.filteredResults.length
               : global.state.indexEnd + 1
           }})
         </span>

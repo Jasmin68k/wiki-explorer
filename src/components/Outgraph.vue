@@ -1,6 +1,6 @@
 <template>
   <div class="outgraph" ref="outgraphref">
-    <div v-for="(page, index) in global.state.displayResultsArray" :key="index">
+    <div v-for="(page, index) in global.state.displayResults" :key="index">
       <circle-button
         :index="index"
         :coordinates="circleButtonCoordinates.value[index]"
@@ -102,7 +102,7 @@ async function calcCoordinates() {
   }
 }
 
-watchEffect(() => calcCoordinates(global.state.displayResultsArray))
+watchEffect(() => calcCoordinates(global.state.displayResults))
 watchEffect(() => calcCoordinates(global.state.mobileMode))
 
 onUnmounted(() => {

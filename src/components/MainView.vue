@@ -248,11 +248,11 @@ async function getRedirects() {
 }
 
 async function circleButtonClicked(clickData) {
-  if (!global.state.displayResultsArray[clickData.index].missing) {
+  if (!global.state.displayResults[clickData.index].missing) {
     if (!clickData.event.ctrlKey) {
       global.setTitle(
         await wikiFetchGetRedirectTarget(
-          global.state.displayResultsArray[clickData.index].title,
+          global.state.displayResults[clickData.index].title,
           global.state.language
         )
       )
