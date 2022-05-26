@@ -155,7 +155,7 @@ const resultsCategoriesAllArrayUnfiltered = computed(function () {
   return allCategories
 })
 
-async function getJson() {
+async function getResults() {
   global.setInputsDisabled(true)
   global.statefull.resultsMap = await wikiFetchPages(
     global.state.title,
@@ -257,7 +257,7 @@ async function circleButtonClicked(clickData) {
         )
       )
       getMainInfo()
-      getJson()
+      getResults()
     }
   }
 }
@@ -269,7 +269,7 @@ async function fetchDataClicked(value) {
     )
 
     getMainInfo()
-    getJson()
+    getResults()
   }
 }
 async function resultsCategoriesChanged() {
