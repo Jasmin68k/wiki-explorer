@@ -1,5 +1,12 @@
 <template>
-  <div v-show="global.state.mainInfoDone" class="tabbed" ref="tabbed">
+  <!-- Don't use v-show, then label height calulcation doesn't work in onMounted leading to vertical overflow -->
+  <div
+    :style="{
+      visibility: global.state.mainInfoDone ? 'visible' : 'hidden'
+    }"
+    class="tabbed"
+    ref="tabbed"
+  >
     <input
       v-if="global.state.mobileMode"
       id="tab1"
@@ -233,6 +240,7 @@ async function windowResized() {
 
   // add proper check for highest of all labels and possible second row
   navHeight.value = label4.value.getBoundingClientRect().height
+
   scrollboxContainerHeight.value =
     tabbed.value.getBoundingClientRect().height - navHeight.value
 }
