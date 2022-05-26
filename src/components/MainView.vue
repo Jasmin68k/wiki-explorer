@@ -201,7 +201,6 @@ async function getResultsRedirects() {
   // skip fetch when no results
   if (global.statefull.resultsMap.size > 0) {
     global.statefull.resultsMap = await wikiFetchAddRedirectsToPages(
-      global.state.title,
       global.state.language,
       global.statefull.resultsMap
     )

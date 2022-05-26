@@ -20,6 +20,12 @@ let noCategoryPrefix = {
   de: '[ KEINE KATEGORIE ]'
 }
 
+/**
+ * Query Wikipedia for all Wikipedia pages linked to from Wikipedia page given by title and language
+ * @param {String} title
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Map} with keys pageId and values Page (imported class) with title, url, pageid and missing populated
+ */
 export async function wikiFetchPages(title, language) {
   let pages = new Map()
 
@@ -97,6 +103,12 @@ export async function wikiFetchPages(title, language) {
   return pages
 }
 
+/**
+ * Query Wikipedia for Wikipedia page given by title and language
+ * @param {String} title
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {TitlePage} (imported class) with extract, title, url, pageid and missing populated
+ */
 export async function wikiFetchTitlePage(title, language) {
   let titlePage = new TitlePage()
 
@@ -149,6 +161,14 @@ export async function wikiFetchTitlePage(title, language) {
   return titlePage
 }
 
+/**
+ * Query Wikipedia for all categories of all Wikipedia pages linked to from Wikipedia page given by title and language
+ * and add those to given Map
+ * @param {String} title
+ * @param {String} language two letter lower case ('en, 'de')
+ * @param {Map} pages with keys pageId and values Page (imported class)
+ * @returns pages with categories populated
+ */
 export async function wikiFetchAddCategoriesToPages(title, language, pages) {
   do {
     try {
@@ -229,7 +249,16 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
   return pages
 }
 
-export async function wikiFetchAddRedirectsToPages(title, language, pages) {
+// Since redirects are being fetched in parallel individually for each Page for speed reasons, title is taken from Page in pages
+// and does not need to be specified as a parameter.
+/**
+ * Query Wikipedia for all redirects of all Wikipedia pages given as Page in Map with language
+ * and add those to Map
+ * @param {String} language two letter lower case ('en, 'de')
+ * @param {Map} pages with keys pageId and values Page (imported class)
+ * @returns pages with redirects populated
+ */
+export async function wikiFetchAddRedirectsToPages(language, pages) {
   let resultsPromises = new Map()
 
   // initial throttle value in ms
@@ -244,7 +273,7 @@ export async function wikiFetchAddRedirectsToPages(title, language, pages) {
     await new Promise((resolve) => setTimeout(resolve, throttle))
     resultsPromises.set(
       pageId,
-      getSingleRedirect(title, language, resultPage, throttle, retries)
+      getSingleRedirect(language, resultPage, throttle, retries)
     )
   }
   for (const pagePromise of resultsPromises.values()) {
@@ -254,6 +283,13 @@ export async function wikiFetchAddRedirectsToPages(title, language, pages) {
   return pages
 }
 
+/**
+ * Query Wikipedia for all categories of Wikipedia page given by title and language and add those to given TitlePage (imported class)
+ * @param {String} title
+ * @param {String} language two letter lower case ('en, 'de')
+ * @param {TitlePage} page (imported class)
+ * @returns page with categories populated
+ */
 export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
   page.categories = []
   let categoriesQueryPart = {}
@@ -320,6 +356,13 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
   return page
 }
 
+/**
+ * Query Wikipedia for all redirects of Wikipedia page given by title and language and add those to given TitlePage (imported class)
+ * @param {String} title
+ * @param {String} language two letter lower case ('en, 'de')
+ * @param {TitlePage} page (imported class)
+ * @returns page with redirects populated
+ */
 export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
   page.redirects = []
   let redirectsQueryPart = {}
@@ -375,13 +418,14 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
 }
 
 // for parallelized fetching of redirects
-async function getSingleRedirect(
-  title,
-  language,
-  resultPage,
-  throttle,
-  retries
-) {
+/**
+ * Query Wikipedia for all redirects of a Wikipedia page given by resultPage.title and language and add those to resultPage
+ * @param {String} language two letter lower case ('en, 'de')
+ * @param {Page} resultPage (imported class)
+ * @param {Number} throttle initial throttle value in ms
+ * @param {Number} retries number of retries with throttle doubled each time
+ */
+async function getSingleRedirect(language, resultPage, throttle, retries) {
   let redirectsQueryPart = {}
 
   do {
@@ -433,6 +477,14 @@ async function getSingleRedirect(
   resultPage.redirects.sort()
 }
 
+/**
+ * fetch() with configurable number of retries and initial throttle value
+ * @param {*} url url to fetch (resource)
+ * @param {*} options options for fetch (init)
+ * @param {*} retries maximum number of retries before failure
+ * @param {*} throttle initial throttle value in ms, doubles each failed request
+ * @returns {Promise<Response>}
+ */
 async function fetchRetry(url, options, retries, throttle) {
   // wiki returns cross origin request blocked, code 429, when too fast
   let response = ''
@@ -459,6 +511,13 @@ async function fetchRetry(url, options, retries, throttle) {
   }
 }
 
+/**
+ * Query Wikipedia for page given by title and language and return title of page possibly redirected to
+ * (used to resolve title, which might only be a redirect, to title of actual Wikipedia page)
+ * @param {String} title
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {String} actual title of page
+ */
 export async function wikiFetchGetRedirectTarget(title, language) {
   let redirectTarget = ''
   try {

@@ -113,6 +113,11 @@ const state = reactive({
     return indexEnd
   })
 })
+
+// titlePage and resultsMap kept directly writable without setter
+// to keep wikifetch.js modular and simplify their handling
+// checkedCategories kept directly writable without setter
+// to simplify its handling in MainView.vue and CategoriesCheckboxFilter.vue (v-model)
 const statefull = reactive({
   titlePage: new TitlePage(),
   resultsMap: new Map(),
