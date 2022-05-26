@@ -130,10 +130,10 @@ function categoriesNone() {
   // Since the lookup complexity for the V8 engine browsers use these days is O(1), the time complexity of the whole algorithm is O(n)
   const toRemove = new Set(props.items)
 
-  let tempArray = Array.from(global.statefull.checkedCategories)
-  tempArray = tempArray.filter((x) => !toRemove.has(x))
+  let temp = Array.from(global.statefull.checkedCategories)
+  temp = temp.filter((x) => !toRemove.has(x))
 
-  global.statefull.checkedCategories = new Set(tempArray)
+  global.statefull.checkedCategories = new Set(temp)
 
   global.setGraphFirstItem(1)
 }

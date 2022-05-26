@@ -30,7 +30,7 @@
       }"
     >
       <TabArea
-        :categoriesAll="resultsCategoriesAllArray"
+        :categoriesAll="resultsCategoriesAll"
         @circleButtonClicked="circleButtonClicked"
       ></TabArea>
     </div>
@@ -87,7 +87,7 @@ const global = inject('global')
 const gridcontainer = ref(null)
 const inputarea = ref(null)
 
-const resultsCategoriesAllArray = computed(function () {
+const resultsCategoriesAll = computed(function () {
   if (
     !(
       global.state.resultsCategoriesDone &&
@@ -125,7 +125,7 @@ const resultsCategoriesAllArray = computed(function () {
   return allCategories
 })
 
-const resultsCategoriesAllArrayUnfiltered = computed(function () {
+const resultsCategoriesAllUnfiltered = computed(function () {
   if (
     !(
       global.state.resultsCategoriesDone &&
@@ -193,7 +193,7 @@ async function getResultsCategories() {
   global.setResultsCategoriesDone(true)
 
   global.statefull.checkedCategories = new Set(
-    resultsCategoriesAllArrayUnfiltered.value
+    resultsCategoriesAllUnfiltered.value
   )
 }
 
@@ -284,7 +284,7 @@ async function resultsCategoriesChanged() {
     global.state.resultsCategoriesDone
   ) {
     global.statefull.checkedCategories = new Set(
-      resultsCategoriesAllArrayUnfiltered.value
+      resultsCategoriesAllUnfiltered.value
     )
   }
 }
