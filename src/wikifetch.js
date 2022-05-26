@@ -1,7 +1,7 @@
 import { NetworkError, DataError } from './customerrors.js'
 import { Page, TitlePage } from './datamodels.js'
 
-let jsonDataFullQueryPart = {}
+let jsonData = {}
 
 // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
 // User-Agent might not be possible to set in every browser
@@ -38,15 +38,10 @@ export async function wikiFetchPages(title, language) {
         title +
         '&prop=info&inprop=url&origin=*'
 
-      if (jsonDataFullQueryPart.continue) {
-        for (const continueToken of Object.keys(
-          jsonDataFullQueryPart.continue
-        )) {
+      if (jsonData.continue) {
+        for (const continueToken of Object.keys(jsonData.continue)) {
           pageUrl +=
-            '&' +
-            continueToken +
-            '=' +
-            jsonDataFullQueryPart.continue[continueToken]
+            '&' + continueToken + '=' + jsonData.continue[continueToken]
         }
       }
 
@@ -58,22 +53,22 @@ export async function wikiFetchPages(title, language) {
         const message = `${response.status} ${response.statusText}`
         throw new NetworkError(message)
       }
-      jsonDataFullQueryPart = await response.json()
+      jsonData = await response.json()
 
-      if (!jsonDataFullQueryPart.query) {
+      if (!jsonData.query) {
         throw new DataError('No result from API')
       }
 
-      for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
+      for (const pageId of Object.keys(jsonData.query.pages)) {
         // ignore (sometimes) appearing title page in results
-        if (!(jsonDataFullQueryPart.query.pages[pageId].title === title)) {
-          if (jsonDataFullQueryPart.query.pages[pageId].missing !== '') {
+        if (!(jsonData.query.pages[pageId].title === title)) {
+          if (jsonData.query.pages[pageId].missing !== '') {
             pages.set(
               pageId,
               new Page({
-                title: jsonDataFullQueryPart.query.pages[pageId].title,
-                url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
-                pageid: jsonDataFullQueryPart.query.pages[pageId].pageid,
+                title: jsonData.query.pages[pageId].title,
+                url: jsonData.query.pages[pageId].fullurl,
+                pageid: jsonData.query.pages[pageId].pageid,
                 missing: false
               })
             )
@@ -81,9 +76,9 @@ export async function wikiFetchPages(title, language) {
             pages.set(
               pageId,
               new Page({
-                title: jsonDataFullQueryPart.query.pages[pageId].title,
-                url: jsonDataFullQueryPart.query.pages[pageId].fullurl,
-                // in case of missing page jsonDataFullQueryPart.query.pages[pageId].pageid does not exist,
+                title: jsonData.query.pages[pageId].title,
+                url: jsonData.query.pages[pageId].fullurl,
+                // in case of missing page jsonData.query.pages[pageId].pageid does not exist,
                 // which is otherwise identical to pageId.
                 // the values for pageId for all missing pages are consecutive negative integers starting at -1,
                 // which naturally do not reference an actual Wikipedia page, but are assigned here to
@@ -98,7 +93,7 @@ export async function wikiFetchPages(title, language) {
       // add error/display for user or similar
       console.error(`${error.name}: ${error.message}`)
     }
-  } while (jsonDataFullQueryPart.continue)
+  } while (jsonData.continue)
 
   return pages
 }
@@ -134,22 +129,22 @@ export async function wikiFetchTitlePage(title, language) {
       throw new NetworkError(message)
     }
     // add error handling
-    const responseFull = await response.json()
-    const pageId = responseFull.query.pageids[0]
-    if (responseFull.query.pages[pageId].extract) {
-      titlePage.extract = responseFull.query.pages[pageId].extract
+    const jsonTitleData = await response.json()
+    const pageId = jsonTitleData.query.pageids[0]
+    if (jsonTitleData.query.pages[pageId].extract) {
+      titlePage.extract = jsonTitleData.query.pages[pageId].extract
     }
-    titlePage.title = responseFull.query.pages[pageId].title
-    titlePage.url = responseFull.query.pages[pageId].fullurl
+    titlePage.title = jsonTitleData.query.pages[pageId].title
+    titlePage.url = jsonTitleData.query.pages[pageId].fullurl
     titlePage.pageid = pageId
 
-    if (responseFull.query.pages[pageId].missing !== '') {
+    if (jsonTitleData.query.pages[pageId].missing !== '') {
       titlePage.missing = false
     }
 
     // check if image exists
-    if ((titlePage.image = responseFull.query.pages[pageId].original)) {
-      titlePage.image = responseFull.query.pages[pageId].original.source
+    if ((titlePage.image = jsonTitleData.query.pages[pageId].original)) {
+      titlePage.image = jsonTitleData.query.pages[pageId].original.source
     } else {
       // otherwise undefined
       titlePage.image = ''
@@ -181,15 +176,10 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
         title +
         '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
 
-      if (jsonDataFullQueryPart.continue) {
-        for (const continueToken of Object.keys(
-          jsonDataFullQueryPart.continue
-        )) {
+      if (jsonData.continue) {
+        for (const continueToken of Object.keys(jsonData.continue)) {
           pageUrlCategories +=
-            '&' +
-            continueToken +
-            '=' +
-            jsonDataFullQueryPart.continue[continueToken]
+            '&' + continueToken + '=' + jsonData.continue[continueToken]
         }
       }
 
@@ -201,14 +191,14 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
         const message = `${response.status} ${response.statusText}`
         throw new NetworkError(message)
       }
-      jsonDataFullQueryPart = await response.json()
+      jsonData = await response.json()
 
-      if (!jsonDataFullQueryPart.query) {
+      if (!jsonData.query) {
         throw new DataError('No result from API')
       }
 
-      for (const pageId of Object.keys(jsonDataFullQueryPart.query.pages)) {
-        const page = jsonDataFullQueryPart.query.pages[pageId]
+      for (const pageId of Object.keys(jsonData.query.pages)) {
+        const page = jsonData.query.pages[pageId]
 
         // ignore possibly non existing (ignored before) title page in results
         if (!(page.title === title)) {
@@ -236,7 +226,7 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
       // add error/display for user or similar
       console.error(error.message)
     }
-  } while (jsonDataFullQueryPart.continue)
+  } while (jsonData.continue)
 
   // add emptycategory to objects without category for filter
   for (const pageId of pages.keys()) {
@@ -259,7 +249,8 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
  * @returns pages with redirects populated
  */
 export async function wikiFetchAddRedirectsToPages(language, pages) {
-  let resultsPromises = new Map()
+  // results -> {Map<Promise>}
+  let results = new Map()
 
   // initial throttle value in ms
   const throttle = 20
@@ -271,13 +262,14 @@ export async function wikiFetchAddRedirectsToPages(language, pages) {
     const resultPage = pages.get(pageId)
     // don't fire too many at once -> 429/ratelimited
     await new Promise((resolve) => setTimeout(resolve, throttle))
-    resultsPromises.set(
+    results.set(
       pageId,
       getSingleRedirect(language, resultPage, throttle, retries)
     )
   }
-  for (const pagePromise of resultsPromises.values()) {
-    await pagePromise
+  // page -> {Promise}
+  for (const page of results.values()) {
+    await page
   }
 
   return pages
@@ -292,7 +284,7 @@ export async function wikiFetchAddRedirectsToPages(language, pages) {
  */
 export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
   page.categories = []
-  let categoriesQueryPart = {}
+  let jsonCategories = {}
 
   do {
     try {
@@ -304,13 +296,10 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
         title +
         '&origin=*'
 
-      if (categoriesQueryPart.continue) {
-        for (const continueToken of Object.keys(categoriesQueryPart.continue)) {
+      if (jsonCategories.continue) {
+        for (const continueToken of Object.keys(jsonCategories.continue)) {
           categoriesUrl +=
-            '&' +
-            continueToken +
-            '=' +
-            categoriesQueryPart.continue[continueToken]
+            '&' + continueToken + '=' + jsonCategories.continue[continueToken]
         }
       }
 
@@ -323,22 +312,22 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
         const message = `${response.status} ${response.statusText}`
         throw new NetworkError(message)
       }
-      categoriesQueryPart = await response.json()
+      jsonCategories = await response.json()
 
-      let resultsArray = Object.values(categoriesQueryPart.query.pages)
+      let results = Object.values(jsonCategories.query.pages)
 
-      if (!resultsArray[0].categories) {
+      if (!results[0].categories) {
         continue
       }
       // ...query.pages has only one prop at this level equal to page id. -> array index [0]
-      for (let i = 0; i < resultsArray[0].categories.length; i++) {
-        page.categories.push(resultsArray[0].categories[i].title)
+      for (let i = 0; i < results[0].categories.length; i++) {
+        page.categories.push(results[0].categories[i].title)
       }
     } catch (error) {
       // add error/display for user or similar
       console.error(error.message)
     }
-  } while (categoriesQueryPart.continue)
+  } while (jsonCategories.continue)
 
   // filter "Category:" at beginning
   for (let i = 0; i < page.categories.length; i++) {
@@ -365,7 +354,7 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
  */
 export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
   page.redirects = []
-  let redirectsQueryPart = {}
+  let jsonRedirects = {}
 
   do {
     try {
@@ -375,13 +364,10 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
         '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
         title +
         '&origin=*'
-      if (redirectsQueryPart.continue) {
-        for (const continueToken of Object.keys(redirectsQueryPart.continue)) {
+      if (jsonRedirects.continue) {
+        for (const continueToken of Object.keys(jsonRedirects.continue)) {
           redirectsUrl +=
-            '&' +
-            continueToken +
-            '=' +
-            redirectsQueryPart.continue[continueToken]
+            '&' + continueToken + '=' + jsonRedirects.continue[continueToken]
         }
       }
 
@@ -394,22 +380,22 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
         const message = `${response.status} ${response.statusText}`
         throw new NetworkError(message)
       }
-      redirectsQueryPart = await response.json()
+      jsonRedirects = await response.json()
 
-      let resultsArray = Object.values(redirectsQueryPart.query.pages)
+      let results = Object.values(jsonRedirects.query.pages)
 
-      if (!resultsArray[0].redirects) {
+      if (!results[0].redirects) {
         continue
       }
       // ...query.pages has only one prop at this level equal to page id. -> array index [0]
-      for (let i = 0; i < resultsArray[0].redirects.length; i++) {
-        page.redirects.push(resultsArray[0].redirects[i].title)
+      for (let i = 0; i < results[0].redirects.length; i++) {
+        page.redirects.push(results[0].redirects[i].title)
       }
     } catch (error) {
       // add error/display for user or similar
       console.error(error.message)
     }
-  } while (redirectsQueryPart.continue)
+  } while (jsonRedirects.continue)
 
   //sort
   page.redirects.sort()
@@ -426,7 +412,7 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
  * @param {Number} retries number of retries with throttle doubled each time
  */
 async function getSingleRedirect(language, resultPage, throttle, retries) {
-  let redirectsQueryPart = {}
+  let jsonRedirects = {}
 
   do {
     try {
@@ -436,13 +422,10 @@ async function getSingleRedirect(language, resultPage, throttle, retries) {
         '.wikipedia.org/w/api.php?action=query&prop=redirects&format=json&rdlimit=max&titles=' +
         resultPage.title +
         '&origin=*'
-      if (redirectsQueryPart.continue) {
-        for (const continueToken of Object.keys(redirectsQueryPart.continue)) {
+      if (jsonRedirects.continue) {
+        for (const continueToken of Object.keys(jsonRedirects.continue)) {
           redirectsUrl +=
-            '&' +
-            continueToken +
-            '=' +
-            redirectsQueryPart.continue[continueToken]
+            '&' + continueToken + '=' + jsonRedirects.continue[continueToken]
         }
       }
 
@@ -455,23 +438,23 @@ async function getSingleRedirect(language, resultPage, throttle, retries) {
         throttle
       )
 
-      redirectsQueryPart = await response.json()
+      jsonRedirects = await response.json()
 
-      let resultsArray = Object.values(redirectsQueryPart.query.pages)
+      let results = Object.values(jsonRedirects.query.pages)
 
-      if (!resultsArray[0].redirects) {
+      if (!results[0].redirects) {
         continue
       }
 
       // ...query.pages has only one prop at this level equal to page id. -> array index [0]
-      for (let i = 0; i < resultsArray[0].redirects.length; i++) {
-        resultPage.redirects.push(resultsArray[0].redirects[i].title)
+      for (let i = 0; i < results[0].redirects.length; i++) {
+        resultPage.redirects.push(results[0].redirects[i].title)
       }
     } catch (error) {
       // add error/display for user or similar
       console.error(error.message)
     }
-  } while (redirectsQueryPart.continue)
+  } while (jsonRedirects.continue)
 
   //sort
   resultPage.redirects.sort()
