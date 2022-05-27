@@ -24,7 +24,7 @@ let noCategoryPrefix = {
  * Query Wikipedia for all Wikipedia pages linked to from Wikipedia page given by title and language
  * @param {String} title
  * @param {String} language two letter lower case ('en, 'de')
- * @returns {Map} with keys pageId and values Page (imported class) with title, url, pageid and missing populated
+ * @returns {Map<Page>} with keys pageId and values Page (imported class) with title, url, pageid and missing populated
  */
 export async function wikiFetchPages(title, language) {
   let pages = new Map()
@@ -161,8 +161,8 @@ export async function wikiFetchTitlePage(title, language) {
  * and add those to given Map
  * @param {String} title
  * @param {String} language two letter lower case ('en, 'de')
- * @param {Map} pages with keys pageId and values Page (imported class)
- * @returns pages with categories populated
+ * @param {Map<Page>} pages with keys pageId and values Page (imported class)
+ * @returns {Map<Page>} pages with categories populated
  */
 export async function wikiFetchAddCategoriesToPages(title, language, pages) {
   do {
@@ -245,8 +245,8 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
  * Query Wikipedia for all redirects of all Wikipedia pages given as Page in Map with language
  * and add those to Map
  * @param {String} language two letter lower case ('en, 'de')
- * @param {Map} pages with keys pageId and values Page (imported class)
- * @returns pages with redirects populated
+ * @param {Map<Page>} pages with keys pageId and values Page (imported class)
+ * @returns {Map<Page>} pages with redirects populated
  */
 export async function wikiFetchAddRedirectsToPages(language, pages) {
   // results -> {Map<Promise>}
@@ -280,7 +280,7 @@ export async function wikiFetchAddRedirectsToPages(language, pages) {
  * @param {String} title
  * @param {String} language two letter lower case ('en, 'de')
  * @param {TitlePage} page (imported class)
- * @returns page with categories populated
+ * @returns {TitlePage} page with categories populated
  */
 export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
   page.categories = []
@@ -350,7 +350,7 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
  * @param {String} title
  * @param {String} language two letter lower case ('en, 'de')
  * @param {TitlePage} page (imported class)
- * @returns page with redirects populated
+ * @returns {TitlePage} page with redirects populated
  */
 export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
   page.redirects = []
@@ -462,10 +462,10 @@ async function getSingleRedirect(language, resultPage, throttle, retries) {
 
 /**
  * fetch() with configurable number of retries and initial throttle value
- * @param {*} url url to fetch (resource)
- * @param {*} options options for fetch (init)
- * @param {*} retries maximum number of retries before failure
- * @param {*} throttle initial throttle value in ms, doubles each failed request
+ * @param {String} url url to fetch (resource)
+ * @param {Object} options options for fetch (init)
+ * @param {Number} retries maximum number of retries before failure
+ * @param {Number} throttle initial throttle value in ms, doubles each failed request
  * @returns {Promise<Response>}
  */
 async function fetchRetry(url, options, retries, throttle) {
