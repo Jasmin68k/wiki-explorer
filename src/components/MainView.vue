@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { inject, computed, ref } from 'vue'
+import { inject, computed, ref, onMounted } from 'vue'
 import InputForm from './InputForm.vue'
 
 import Outgraph from './Outgraph.vue'
@@ -77,6 +77,8 @@ import {
   wikiFetchPages,
   wikiFetchGetRedirectTarget
 } from '../wikifetch.js'
+
+import { openDatabase, putData, getData } from '../localcache.js'
 
 import { useI18n } from 'vue-i18n/index'
 
@@ -306,6 +308,30 @@ function languageSwitched(value) {
 function showHelpSwitched() {
   global.setInputsDisabled(global.state.showHelp)
 }
+
+onMounted(async () => {
+  try {
+    await openDatabase()
+  } catch (error) {
+    console.error(error.message)
+  }
+
+  //test
+  try {
+    await putData({ msdfsoo: 'masdfeh', meh: 25 }, 'mdsfampf')
+  } catch (error) {
+    console.error(error.message)
+  }
+
+  // test
+  let moo = ''
+  try {
+    moo = await getData('mdsfampf')
+  } catch (error) {
+    console.error(error.message)
+  }
+  console.log(moo)
+})
 </script>
 
 <style scoped>

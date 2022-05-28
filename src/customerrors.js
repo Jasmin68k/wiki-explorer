@@ -10,3 +10,9 @@ export class DataError extends Error {
     this.name = 'DataError'
   }
 }
+// export class DatabaseError extends Error {
+//   constructor(message = 'DatabaseError') {
+//     super(message)
+//     this.name = 'DatabaseError'
+//   }
+// }
