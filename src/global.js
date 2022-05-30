@@ -25,7 +25,7 @@ const state = reactive({
       return []
     }
 
-    let filtered = Array.from(statefull.resultsMap.values())
+    let filtered = Array.from(statefull.resultsPages.values())
 
     // apply titles filter
     filtered = filtered.filter((page) =>
@@ -110,13 +110,13 @@ const state = reactive({
   })
 })
 
-// titlePage and resultsMap kept directly writable without setter
+// titlePage and resultsPages kept directly writable without setter
 // to keep wikifetch.js modular and simplify their handling
 // checkedCategories kept directly writable without setter
 // to simplify its handling in MainView.vue and CategoriesCheckboxFilter.vue (v-model)
 const statefull = reactive({
   titlePage: new TitlePage(),
-  resultsMap: new Map(),
+  resultsPages: new Map(),
   checkedCategories: new Set()
 })
 

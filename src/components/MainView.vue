@@ -101,8 +101,8 @@ const resultsCategoriesAll = computed(function () {
   }
   let allCategoriesSet = new Set()
 
-  for (const pageId of global.statefull.resultsMap.keys()) {
-    const resultPage = global.statefull.resultsMap.get(pageId)
+  for (const pageId of global.statefull.resultsPages.keys()) {
+    const resultPage = global.statefull.resultsPages.get(pageId)
     if (
       resultPage.categories &&
       resultPage.title.toLowerCase().includes(global.state.filter.toLowerCase())
@@ -138,8 +138,8 @@ const resultsCategoriesAllUnfiltered = computed(function () {
   }
   let allCategoriesSet = new Set()
 
-  for (const pageId of global.statefull.resultsMap.keys()) {
-    const resultPage = global.statefull.resultsMap.get(pageId)
+  for (const pageId of global.statefull.resultsPages.keys()) {
+    const resultPage = global.statefull.resultsPages.get(pageId)
     if (resultPage.categories) {
       // Set doesn't allow duplicate values, so no check needed
       resultPage.categories.forEach((category) =>
@@ -159,7 +159,7 @@ const resultsCategoriesAllUnfiltered = computed(function () {
 
 async function getResults() {
   global.setInputsDisabled(true)
-  global.statefull.resultsMap = await wikiFetchPages(
+  global.statefull.resultsPages = await wikiFetchPages(
     global.state.title,
     global.state.language
   )
@@ -184,11 +184,11 @@ async function getResultsCategories() {
   // with big pages this requires lots of api fetches, which makes up majority of the wait time
 
   // skip fetch when no results
-  if (global.statefull.resultsMap.size > 0) {
-    global.statefull.resultsMap = await wikiFetchAddCategoriesToPages(
+  if (global.statefull.resultsPages.size > 0) {
+    global.statefull.resultsPages = await wikiFetchAddCategoriesToPages(
       global.state.title,
       global.state.language,
-      global.statefull.resultsMap
+      global.statefull.resultsPages
     )
   }
 
@@ -201,10 +201,10 @@ async function getResultsCategories() {
 
 async function getResultsRedirects() {
   // skip fetch when no results
-  if (global.statefull.resultsMap.size > 0) {
-    global.statefull.resultsMap = await wikiFetchAddRedirectsToPages(
+  if (global.statefull.resultsPages.size > 0) {
+    global.statefull.resultsPages = await wikiFetchAddRedirectsToPages(
       global.state.language,
-      global.statefull.resultsMap
+      global.statefull.resultsPages
     )
   }
 
