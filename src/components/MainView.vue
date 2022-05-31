@@ -184,7 +184,6 @@ async function getResultsCategories() {
   // skip fetch when no results
   if (global.statefull.resultsMap.size > 0) {
     global.statefull.resultsMap = await wikiFetchAddCategoriesToPages(
-      global.state.title,
       global.state.language,
       global.statefull.resultsMap
     )

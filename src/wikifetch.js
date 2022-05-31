@@ -156,83 +156,138 @@ export async function wikiFetchTitlePage(title, language) {
   return titlePage
 }
 
+// // REPLACED BY EXPERIMENTAL parallelized fetch
+// /**
+//  * Query Wikipedia for all categories of all Wikipedia pages linked to from Wikipedia page given by title and language
+//  * and add those to given Map
+//  * @param {String} title
+//  * @param {String} language two letter lower case ('en, 'de')
+//  * @param {Map<Page>} pages with keys pageId and values Page (imported class)
+//  * @returns {Map<Page>} pages with categories populated
+//  */
+// export async function wikiFetchAddCategoriesToPages(title, language, pages) {
+//   do {
+//     try {
+//       // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
+
+//       let pageUrlCategories =
+//         'https://' +
+//         language +
+//         '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
+//         title +
+//         '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
+
+//       if (jsonData.continue) {
+//         for (const continueToken of Object.keys(jsonData.continue)) {
+//           pageUrlCategories +=
+//             '&' + continueToken + '=' + jsonData.continue[continueToken]
+//         }
+//       }
+
+//       const response = await fetch(pageUrlCategories, {
+//         headers: fetchHeaders
+//       })
+
+//       if (!response.ok) {
+//         const message = `${response.status} ${response.statusText}`
+//         throw new NetworkError(message)
+//       }
+//       jsonData = await response.json()
+
+//       if (!jsonData.query) {
+//         throw new DataError('No result from API')
+//       }
+
+//       for (const pageId of Object.keys(jsonData.query.pages)) {
+//         const page = jsonData.query.pages[pageId]
+
+//         // ignore possibly non existing (ignored before) title page in results
+//         if (!(page.title === title)) {
+//           const resultPage = pages.get(pageId)
+//           if (page.categories) {
+//             page.categories.forEach((category) =>
+//               resultPage.categories.push(category.title)
+//             )
+
+//             // filter "Category:" at beginning
+//             for (let i = 0; i < resultPage.categories.length; i++) {
+//               // not sure it always starts with "Category:", check and only remove if it does
+//               if (
+//                 resultPage.categories[i].startsWith(categoryPrefix[language])
+//               ) {
+//                 resultPage.categories[i] = resultPage.categories[i].substring(
+//                   categoryPrefix[language].length
+//                 )
+//               }
+//             }
+//           }
+//         }
+//       }
+//     } catch (error) {
+//       // add error/display for user or similar
+//       console.error(error.message)
+//     }
+//   } while (jsonData.continue)
+
+//   // add emptycategory to objects without category for filter
+//   for (const pageId of pages.keys()) {
+//     const resultPage = pages.get(pageId)
+//     if (resultPage.categories.length === 0) {
+//       resultPage.categories = [noCategoryPrefix[language]]
+//     }
+//   }
+
+//   return pages
+// }
+
+// Since categories are being fetched in parallel individually for each Page for speed reasons, title is taken from Page in pages
+// and does not need to be specified as a parameter.
 /**
- * Query Wikipedia for all categories of all Wikipedia pages linked to from Wikipedia page given by title and language
- * and add those to given Map
- * @param {String} title
+ * Query Wikipedia for all categories of all Wikipedia pages given as Page in Map with language
+ * and add those to Map
  * @param {String} language two letter lower case ('en, 'de')
  * @param {Map<Page>} pages with keys pageId and values Page (imported class)
  * @returns {Map<Page>} pages with categories populated
  */
-export async function wikiFetchAddCategoriesToPages(title, language, pages) {
-  do {
-    try {
-      // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
+export async function wikiFetchAddCategoriesToPages(language, pages) {
+  // results -> {Map<Promise>}
+  let results = new Map()
 
-      let pageUrlCategories =
-        'https://' +
-        language +
-        '.wikipedia.org/w/api.php?action=query&generator=links&redirects&gpllimit=max&gplnamespace=0&format=json&titles=' +
-        title +
-        '&prop=categories&cllimit=max&clshow=!hidden&origin=*'
+  // initial throttle value in ms
+  const throttle = 20
+  // number of retries with throttle doubled each time
+  const retries = 10
 
-      if (jsonData.continue) {
-        for (const continueToken of Object.keys(jsonData.continue)) {
-          pageUrlCategories +=
-            '&' + continueToken + '=' + jsonData.continue[continueToken]
-        }
-      }
-
-      const response = await fetch(pageUrlCategories, {
-        headers: fetchHeaders
-      })
-
-      if (!response.ok) {
-        const message = `${response.status} ${response.statusText}`
-        throw new NetworkError(message)
-      }
-      jsonData = await response.json()
-
-      if (!jsonData.query) {
-        throw new DataError('No result from API')
-      }
-
-      for (const pageId of Object.keys(jsonData.query.pages)) {
-        const page = jsonData.query.pages[pageId]
-
-        // ignore possibly non existing (ignored before) title page in results
-        if (!(page.title === title)) {
-          const resultPage = pages.get(pageId)
-          if (page.categories) {
-            page.categories.forEach((category) =>
-              resultPage.categories.push(category.title)
-            )
-
-            // filter "Category:" at beginning
-            for (let i = 0; i < resultPage.categories.length; i++) {
-              // not sure it always starts with "Category:", check and only remove if it does
-              if (
-                resultPage.categories[i].startsWith(categoryPrefix[language])
-              ) {
-                resultPage.categories[i] = resultPage.categories[i].substring(
-                  categoryPrefix[language].length
-                )
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      // add error/display for user or similar
-      console.error(error.message)
-    }
-  } while (jsonData.continue)
+  // parallelized fetching of redirects
+  for (const pageId of pages.keys()) {
+    const resultPage = pages.get(pageId)
+    // don't fire too many at once -> 429/ratelimited
+    await new Promise((resolve) => setTimeout(resolve, throttle))
+    results.set(
+      pageId,
+      getSingleCategory(language, resultPage, throttle, retries)
+    )
+  }
+  // page -> {Promise}
+  for (const page of results.values()) {
+    await page
+  }
 
   // add emptycategory to objects without category for filter
+  // and filter "Category:" at beginning
   for (const pageId of pages.keys()) {
     const resultPage = pages.get(pageId)
     if (resultPage.categories.length === 0) {
       resultPage.categories = [noCategoryPrefix[language]]
+    }
+
+    for (let i = 0; i < resultPage.categories.length; i++) {
+      // not sure it always starts with "Category:", check and only remove if it does
+      if (resultPage.categories[i].startsWith(categoryPrefix[language])) {
+        resultPage.categories[i] = resultPage.categories[i].substring(
+          categoryPrefix[language].length
+        )
+      }
     }
   }
 
@@ -401,6 +456,63 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
   page.redirects.sort()
 
   return page
+}
+
+// EXPERIMENTAL - For future simpler cache handling and maybe speed up try parallelized fetching of categories
+/**
+ * Query Wikipedia for all categories of a Wikipedia page given by resultPage.title and language and add those to resultPage
+ * @param {String} language two letter lower case ('en, 'de')
+ * @param {Page} resultPage (imported class)
+ * @param {Number} throttle initial throttle value in ms
+ * @param {Number} retries number of retries with throttle doubled each time
+ */
+async function getSingleCategory(language, resultPage, throttle, retries) {
+  let jsonCategories = {}
+
+  do {
+    try {
+      let categoriesUrl =
+        'https://' +
+        language +
+        '.wikipedia.org/w/api.php?action=query&prop=categories&format=json&cllimit=max&clshow=!hidden&titles=' +
+        resultPage.title +
+        '&origin=*'
+      if (jsonCategories.continue) {
+        for (const continueToken of Object.keys(jsonCategories.continue)) {
+          categoriesUrl +=
+            '&' + continueToken + '=' + jsonCategories.continue[continueToken]
+        }
+      }
+
+      const response = await fetchRetry(
+        categoriesUrl,
+        {
+          headers: fetchHeaders
+        },
+        retries,
+        throttle
+      )
+
+      jsonCategories = await response.json()
+
+      let results = Object.values(jsonCategories.query.pages)
+
+      if (!results[0].categories) {
+        continue
+      }
+
+      // ...query.pages has only one prop at this level equal to page id. -> array index [0]
+      for (let i = 0; i < results[0].categories.length; i++) {
+        resultPage.categories.push(results[0].categories[i].title)
+      }
+    } catch (error) {
+      // add error/display for user or similar
+      console.error(error.message)
+    }
+  } while (jsonCategories.continue)
+
+  //sort
+  resultPage.categories.sort()
 }
 
 // for parallelized fetching of redirects
