@@ -291,7 +291,7 @@ async function resultsRedirectsChanged() {
     global.state.resultsRedirectsEnabled &&
     !global.state.resultsRedirectsDone
   ) {
-    await getResultsRedirects()
+    getResultsRedirects()
   }
 }
 function languageSwitched(value) {
