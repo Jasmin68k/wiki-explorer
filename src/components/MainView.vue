@@ -78,7 +78,15 @@ import {
   wikiFetchGetRedirectTarget
 } from '../wikifetch.js'
 
-import { openDatabase, putData, getData } from '../localcache.js'
+import {
+  openDatabase,
+  putMainInfo,
+  putCategories,
+  putRedirects,
+  putResults,
+  putResultsCategories,
+  putResultsRedirects
+} from '../localcache.js'
 
 import { useI18n } from 'vue-i18n/index'
 
@@ -165,6 +173,11 @@ async function getResults() {
   )
   global.setGraphFirstItem(1)
   global.setInputsDisabled(false)
+  try {
+    await putResults(global.statefull.resultsPages, global.state.title)
+  } catch (error) {
+    console.error(error.message)
+  }
 
   global.setResultsCategoriesDone(false)
   if (global.state.resultsCategoriesEnabled) {
@@ -190,6 +203,14 @@ async function getResultsCategories() {
   }
 
   global.setResultsCategoriesDone(true)
+  try {
+    await putResultsCategories(
+      global.statefull.resultsPages,
+      global.state.title
+    )
+  } catch (error) {
+    console.error(error.message)
+  }
 
   global.statefull.checkedCategories = new Set(
     resultsCategoriesAllUnfiltered.value
@@ -206,6 +227,11 @@ async function getResultsRedirects() {
   }
 
   global.setResultsRedirectsDone(true)
+  try {
+    await putResultsRedirects(global.statefull.resultsPages, global.state.title)
+  } catch (error) {
+    console.error(error.message)
+  }
 }
 
 async function getMainInfo() {
@@ -217,6 +243,11 @@ async function getMainInfo() {
   )
 
   global.setMainInfoDone(true)
+  try {
+    await putMainInfo(global.statefull.titlePage)
+  } catch (error) {
+    console.error(error.message)
+  }
 
   global.setRedirectsDone(false)
   global.setCategoriesDone(false)
@@ -233,6 +264,11 @@ async function getCategories() {
     global.statefull.titlePage
   )
   global.setCategoriesDone(true)
+  try {
+    await putCategories(global.statefull.titlePage)
+  } catch (error) {
+    console.error(error.message)
+  }
 }
 
 async function getRedirects() {
@@ -243,6 +279,11 @@ async function getRedirects() {
   )
 
   global.setRedirectsDone(true)
+  try {
+    await putRedirects(global.statefull.titlePage)
+  } catch (error) {
+    console.error(error.message)
+  }
 }
 
 async function circleButtonClicked(clickData) {
@@ -311,22 +352,6 @@ onMounted(async () => {
   } catch (error) {
     console.error(error.message)
   }
-
-  //test
-  try {
-    await putData({ msdfsoo: 'masdfeh', meh: 25 }, 'mdsfampf')
-  } catch (error) {
-    console.error(error.message)
-  }
-
-  // test
-  let moo = ''
-  try {
-    moo = await getData('mdsfampf')
-  } catch (error) {
-    console.error(error.message)
-  }
-  console.log(moo)
 })
 </script>
 
