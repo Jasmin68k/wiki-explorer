@@ -163,21 +163,18 @@ async function getResults() {
     global.state.title,
     global.state.language
   )
+  global.setGraphFirstItem(1)
+  global.setInputsDisabled(false)
 
   global.setResultsCategoriesDone(false)
-
   if (global.state.resultsCategoriesEnabled) {
     getResultsCategories()
   }
 
   global.setResultsRedirectsDone(false)
-
   if (global.state.resultsRedirectsEnabled) {
     getResultsRedirects()
   }
-
-  global.setGraphFirstItem(1)
-  global.setInputsDisabled(false)
 }
 
 async function getResultsCategories() {
