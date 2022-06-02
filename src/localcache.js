@@ -1,6 +1,3 @@
-// import { DatabaseError } from './customerrors.js'
-// import { Page, TitlePage } from './datamodels.js'
-
 const dbName = 'wiki-explorer'
 const osNames = [
   'maininfo',
@@ -33,6 +30,96 @@ export function openDatabase() {
     request.onsuccess = (event) => {
       db = event.target.result
       resolve()
+    }
+  })
+}
+
+export function getCacheMainInfo(title) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['maininfo'])
+    let objectStore = transaction.objectStore('maininfo')
+    let request = objectStore.get(title)
+
+    request.onsuccess = () => {
+      resolve(request.result)
+    }
+    request.onerror = (event) => {
+      reject(event.target.error)
+    }
+  })
+}
+
+export function getCacheCategories(title) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['categories'])
+    let objectStore = transaction.objectStore('categories')
+    let request = objectStore.get(title)
+
+    request.onsuccess = () => {
+      resolve(request.result)
+    }
+    request.onerror = (event) => {
+      reject(event.target.error)
+    }
+  })
+}
+
+export function getCacheRedirects(title) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['redirects'])
+    let objectStore = transaction.objectStore('redirects')
+    let request = objectStore.get(title)
+
+    request.onsuccess = () => {
+      resolve(request.result)
+    }
+    request.onerror = (event) => {
+      reject(event.target.error)
+    }
+  })
+}
+
+export function getCacheResults(title) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['results'])
+    let objectStore = transaction.objectStore('results')
+    let request = objectStore.get(title)
+
+    request.onsuccess = () => {
+      resolve(request.result)
+    }
+    request.onerror = (event) => {
+      reject(event.target.error)
+    }
+  })
+}
+
+export function getCacheResultsCategories(title) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['resultscategories'])
+    let objectStore = transaction.objectStore('resultscategories')
+    let request = objectStore.get(title)
+
+    request.onsuccess = () => {
+      resolve(request.result)
+    }
+    request.onerror = (event) => {
+      reject(event.target.error)
+    }
+  })
+}
+
+export function getCacheResultsRedirects(title) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['resultsredirects'])
+    let objectStore = transaction.objectStore('resultsredirects')
+    let request = objectStore.get(title)
+
+    request.onsuccess = () => {
+      resolve(request.result)
+    }
+    request.onerror = (event) => {
+      reject(event.target.error)
     }
   })
 }
@@ -208,46 +295,3 @@ export function putCacheResultsRedirects(resultsPages, title) {
     objectStore.put(data, title)
   })
 }
-
-// // no add needed, put is fine (create or overwrite) for what we do
-// export function putData(data, key) {
-//   return new Promise((resolve, reject) => {
-//     let transaction = db.transaction([osName], 'readwrite')
-//     transaction.oncomplete = () => {
-//       resolve()
-//     }
-//     transaction.onerror = (event) => {
-//       reject(event.target.error)
-//     }
-
-//     objectStore = transaction.objectStore(osName)
-//     objectStore.put(data, key)
-//   })
-// }
-
-// export function getData(key) {
-//   return new Promise((resolve, reject) => {
-//     let transaction = db.transaction([osName])
-//     transaction.onerror = (event) => {
-//       reject(event.target.error)
-//     }
-
-//     let objectStore = transaction.objectStore(osName)
-//     let request = objectStore.get(key)
-
-//     // bubbles to transaction
-//     // request.onerror = (event) => {
-//     //   reject(event.target.error)
-//     // }
-
-//     //also fired, if key not found (result undefined), so test needed
-//     request.onsuccess = () => {
-//       if (request.result === undefined) {
-//         let error = { message: 'Key does not exist in database.' }
-//         reject(error)
-//       } else {
-//         resolve(request.result)
-//       }
-//     }
-//   })
-// }
