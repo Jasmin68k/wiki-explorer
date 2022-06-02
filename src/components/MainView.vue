@@ -80,12 +80,12 @@ import {
 
 import {
   openDatabase,
-  putMainInfo,
-  putCategories,
-  putRedirects,
-  putResults,
-  putResultsCategories,
-  putResultsRedirects
+  putCacheMainInfo,
+  putCacheCategories,
+  putCacheRedirects,
+  putCacheResults,
+  putCacheResultsCategories,
+  putCacheResultsRedirects
 } from '../localcache.js'
 
 import { useI18n } from 'vue-i18n/index'
@@ -174,7 +174,7 @@ async function getResults() {
   global.setGraphFirstItem(1)
   global.setInputsDisabled(false)
   try {
-    await putResults(global.statefull.resultsPages, global.state.title)
+    await putCacheResults(global.statefull.resultsPages, global.state.title)
   } catch (error) {
     console.error(error.message)
   }
@@ -204,7 +204,7 @@ async function getResultsCategories() {
 
   global.setResultsCategoriesDone(true)
   try {
-    await putResultsCategories(
+    await putCacheResultsCategories(
       global.statefull.resultsPages,
       global.state.title
     )
@@ -228,7 +228,10 @@ async function getResultsRedirects() {
 
   global.setResultsRedirectsDone(true)
   try {
-    await putResultsRedirects(global.statefull.resultsPages, global.state.title)
+    await putCacheResultsRedirects(
+      global.statefull.resultsPages,
+      global.state.title
+    )
   } catch (error) {
     console.error(error.message)
   }
@@ -244,7 +247,7 @@ async function getMainInfo() {
 
   global.setMainInfoDone(true)
   try {
-    await putMainInfo(global.statefull.titlePage)
+    await putCacheMainInfo(global.statefull.titlePage)
   } catch (error) {
     console.error(error.message)
   }
@@ -265,7 +268,7 @@ async function getCategories() {
   )
   global.setCategoriesDone(true)
   try {
-    await putCategories(global.statefull.titlePage)
+    await putCacheCategories(global.statefull.titlePage)
   } catch (error) {
     console.error(error.message)
   }
@@ -280,7 +283,7 @@ async function getRedirects() {
 
   global.setRedirectsDone(true)
   try {
-    await putRedirects(global.statefull.titlePage)
+    await putCacheRedirects(global.statefull.titlePage)
   } catch (error) {
     console.error(error.message)
   }

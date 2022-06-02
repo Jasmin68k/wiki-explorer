@@ -38,7 +38,7 @@ export function openDatabase() {
 }
 
 // no add needed, put is fine (create or overwrite) for what we do
-export function putMainInfo(titlePage) {
+export function putCacheMainInfo(titlePage) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['maininfo'], 'readwrite')
     transaction.oncomplete = () => {
@@ -63,7 +63,7 @@ export function putMainInfo(titlePage) {
   })
 }
 
-export function putCategories(titlePage) {
+export function putCacheCategories(titlePage) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['categories'], 'readwrite')
     transaction.oncomplete = () => {
@@ -83,7 +83,7 @@ export function putCategories(titlePage) {
   })
 }
 
-export function putRedirects(titlePage) {
+export function putCacheRedirects(titlePage) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['redirects'], 'readwrite')
     transaction.oncomplete = () => {
@@ -103,7 +103,7 @@ export function putRedirects(titlePage) {
   })
 }
 
-export function putResults(resultsPages, title) {
+export function putCacheResults(resultsPages, title) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['results'], 'readwrite')
     transaction.oncomplete = () => {
@@ -137,7 +137,7 @@ export function putResults(resultsPages, title) {
   })
 }
 
-export function putResultsCategories(resultsPages, title) {
+export function putCacheResultsCategories(resultsPages, title) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['resultscategories'], 'readwrite')
     transaction.oncomplete = () => {
@@ -173,7 +173,7 @@ export function putResultsCategories(resultsPages, title) {
   })
 }
 
-export function putResultsRedirects(resultsPages, title) {
+export function putCacheResultsRedirects(resultsPages, title) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['resultsredirects'], 'readwrite')
     transaction.oncomplete = () => {
