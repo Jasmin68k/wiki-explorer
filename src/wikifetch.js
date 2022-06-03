@@ -165,6 +165,7 @@ export async function wikiFetchTitlePage(title, language) {
  * @returns {Map<Page>} pages with categories populated
  */
 export async function wikiFetchAddCategoriesToPages(title, language, pages) {
+  let pageIds = new Set()
   do {
     try {
       // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
@@ -202,28 +203,55 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
 
         // ignore possibly non existing (ignored before) title page in results
         if (!(page.title === title)) {
-          if (pages.get(pageId)) {
-            const resultPage = pages.get(pageId)
-            if (page.categories) {
-              page.categories.forEach((category) =>
-                resultPage.categories.push(category.title)
-              )
+          // add all pageIds from categories fetch for later removal of leftovers in original results
+          pageIds.add(pageId)
+          // fetch page if exists in categories, but not in original results
+          // can happen, if changes between page fetch (mabye from cache) and categories fetch
+          if (!pages.get(pageId)) {
+            const newpage = await wikiFetchSinglePage(page.title, language)
 
-              // filter "Category:" at beginning
-              for (let i = 0; i < resultPage.categories.length; i++) {
-                // not sure it always starts with "Category:", check and only remove if it does
-                if (
-                  resultPage.categories[i].startsWith(categoryPrefix[language])
-                ) {
-                  resultPage.categories[i] = resultPage.categories[i].substring(
-                    categoryPrefix[language].length
-                  )
-                }
+            if (!(newpage.title === title)) {
+              if (newpage.missing !== '') {
+                pages.set(
+                  pageId,
+                  new Page({
+                    title: newpage.title,
+                    url: newpage.fullurl,
+                    pageid: newpage.pageid,
+                    missing: false
+                  })
+                )
+              } else {
+                pages.set(
+                  pageId,
+                  new Page({
+                    title: newpage.title,
+                    url: newpage.fullurl,
+                    pageid: pageId
+                  })
+                )
               }
             }
           }
-          // else if not fetch single and add
-          // handle page still exists in resultsPages, but not in categories fetch anymore -> delete
+          const resultPage = pages.get(pageId)
+
+          if (page.categories) {
+            page.categories.forEach((category) =>
+              resultPage.categories.push(category.title)
+            )
+
+            // filter "Category:" at beginning
+            for (let i = 0; i < resultPage.categories.length; i++) {
+              // not sure it always starts with "Category:", check and only remove if it does
+              if (
+                resultPage.categories[i].startsWith(categoryPrefix[language])
+              ) {
+                resultPage.categories[i] = resultPage.categories[i].substring(
+                  categoryPrefix[language].length
+                )
+              }
+            }
+          }
         }
       }
     } catch (error) {
@@ -231,6 +259,13 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
       console.error(error.message)
     }
   } while (jsonData.continue)
+
+  // handle page still exists in resultsPages, but not in categories fetch anymore -> delete
+  for (const pageId of pages.keys()) {
+    if (!pageIds.has(pageId)) {
+      pages.delete(pageId)
+    }
+  }
 
   // add emptycategory to objects without category for filter
   for (const pageId of pages.keys()) {

@@ -228,8 +228,6 @@ export function putCacheResults(resultsPages, title) {
       date: new Date(),
       pages: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
-    // reconstruct like this in get function
-    // console.log(new Map(JSON.parse(data.pages)))
 
     let objectStore = transaction.objectStore('results')
     objectStore.put(data, title)
@@ -264,8 +262,6 @@ export function putCacheResultsCategories(resultsPages, title) {
       date: new Date(),
       categories: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
-    // reconstruct like this in get function
-    // console.log(new Map(JSON.parse(categories.pages)))
 
     let objectStore = transaction.objectStore('resultscategories')
     objectStore.put(data, title)
@@ -300,8 +296,6 @@ export function putCacheResultsRedirects(resultsPages, title) {
       date: new Date(),
       redirects: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
-    // reconstruct like this in get function
-    // console.log(new Map(JSON.parse(redirects.pages)))
 
     let objectStore = transaction.objectStore('resultsredirects')
     objectStore.put(data, title)

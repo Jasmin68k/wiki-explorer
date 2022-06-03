@@ -75,8 +75,7 @@ import {
   wikiFetchAddRedirectsToPages,
   wikiFetchTitlePage,
   wikiFetchPages,
-  wikiFetchGetRedirectTarget,
-  wikiFetchSinglePage
+  wikiFetchGetRedirectTarget
 } from '../wikifetch.js'
 
 import {
