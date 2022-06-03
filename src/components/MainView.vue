@@ -80,6 +80,9 @@ import {
 
 import {
   openDatabase,
+  getCacheMainInfo,
+  getCacheCategories,
+  getCacheRedirects,
   putCacheMainInfo,
   putCacheCategories,
   putCacheRedirects,
@@ -240,17 +243,41 @@ async function getResultsRedirects() {
 async function getMainInfo() {
   global.setMainInfoDone(false)
 
-  global.statefull.titlePage = await wikiFetchTitlePage(
-    global.state.title,
-    global.state.language
-  )
-
-  global.setMainInfoDone(true)
+  let cacheerror = false
+  let cachedata
   try {
-    await putCacheMainInfo(global.statefull.titlePage)
+    cachedata = await getCacheMainInfo(global.state.title)
   } catch (error) {
     console.error(error.message)
+    cacheerror = true
   }
+
+  // add date/max age check later / undefined on successful request, but key does not exist in database
+  if (!cacheerror && !(cachedata === undefined)) {
+    global.statefull.titlePage.extract = cachedata.extract
+    global.statefull.titlePage.image = cachedata.image
+    global.statefull.titlePage.title = cachedata.title
+    global.statefull.titlePage.url = cachedata.url
+    global.statefull.titlePage.pageid = cachedata.pageid
+    global.statefull.titlePage.missing = cachedata.missing
+
+    // don't do this, deletes categories and redirects property
+    // then legnth not defined in CategoriesRedirectsTitle.vue
+    // global.statefull.titlePage = cachedata
+    // delete global.statefull.titlePage['date']
+  } else {
+    global.statefull.titlePage = await wikiFetchTitlePage(
+      global.state.title,
+      global.state.language
+    )
+
+    try {
+      await putCacheMainInfo(global.statefull.titlePage)
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+  global.setMainInfoDone(true)
 
   global.setRedirectsDone(false)
   global.setCategoriesDone(false)
@@ -261,11 +288,26 @@ async function getMainInfo() {
   }
 }
 async function getCategories() {
-  global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
-    global.state.title,
-    global.state.language,
-    global.statefull.titlePage
-  )
+  let cacheerror = false
+  let cachedata
+  try {
+    cachedata = await getCacheCategories(global.state.title)
+  } catch (error) {
+    console.error(error.message)
+    cacheerror = true
+  }
+
+  // add date/max age check later / undefined on successful request, but key does not exist in database
+  if (!cacheerror && !(cachedata === undefined)) {
+    global.statefull.titlePage.categories = cachedata.categories
+  } else {
+    global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
+      global.state.title,
+      global.state.language,
+      global.statefull.titlePage
+    )
+  }
+
   global.setCategoriesDone(true)
   try {
     await putCacheCategories(global.statefull.titlePage)
@@ -275,11 +317,25 @@ async function getCategories() {
 }
 
 async function getRedirects() {
-  global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
-    global.state.title,
-    global.state.language,
-    global.statefull.titlePage
-  )
+  let cacheerror = false
+  let cachedata
+  try {
+    cachedata = await getCacheRedirects(global.state.title)
+  } catch (error) {
+    console.error(error.message)
+    cacheerror = true
+  }
+
+  // add date/max age check later / undefined on successful request, but key does not exist in database
+  if (!cacheerror && !(cachedata === undefined)) {
+    global.statefull.titlePage.redirects = cachedata.redirects
+  } else {
+    global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
+      global.state.title,
+      global.state.language,
+      global.statefull.titlePage
+    )
+  }
 
   global.setRedirectsDone(true)
   try {
