@@ -86,7 +86,11 @@ export function getCacheResults(title) {
     let request = objectStore.get(title)
 
     request.onsuccess = () => {
-      resolve(request.result)
+      if (request.result) {
+        resolve(new Map(JSON.parse(request.result.pages)))
+      } else {
+        resolve(undefined)
+      }
     }
     request.onerror = (event) => {
       reject(event.target.error)
@@ -101,7 +105,11 @@ export function getCacheResultsCategories(title) {
     let request = objectStore.get(title)
 
     request.onsuccess = () => {
-      resolve(request.result)
+      if (request.result) {
+        resolve(new Map(JSON.parse(request.result.categories)))
+      } else {
+        resolve(undefined)
+      }
     }
     request.onerror = (event) => {
       reject(event.target.error)
@@ -116,7 +124,11 @@ export function getCacheResultsRedirects(title) {
     let request = objectStore.get(title)
 
     request.onsuccess = () => {
-      resolve(request.result)
+      if (request.result) {
+        resolve(new Map(JSON.parse(request.result.redirects)))
+      } else {
+        resolve(undefined)
+      }
     }
     request.onerror = (event) => {
       reject(event.target.error)

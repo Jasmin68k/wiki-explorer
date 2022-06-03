@@ -83,6 +83,9 @@ import {
   getCacheMainInfo,
   getCacheCategories,
   getCacheRedirects,
+  getCacheResults,
+  getCacheResultsCategories,
+  getCacheResultsRedirects,
   putCacheMainInfo,
   putCacheCategories,
   putCacheRedirects,
@@ -92,6 +95,7 @@ import {
 } from '../localcache.js'
 
 import { useI18n } from 'vue-i18n/index'
+import { Page } from '../datamodels'
 
 const { locale } = useI18n({})
 
@@ -170,17 +174,45 @@ const resultsCategoriesAllUnfiltered = computed(function () {
 
 async function getResults() {
   global.setInputsDisabled(true)
-  global.statefull.resultsPages = await wikiFetchPages(
-    global.state.title,
-    global.state.language
-  )
-  global.setGraphFirstItem(1)
-  global.setInputsDisabled(false)
+
+  let cacheerror = false
+  let cachedata
   try {
-    await putCacheResults(global.statefull.resultsPages, global.state.title)
+    cachedata = await getCacheResults(global.state.title)
   } catch (error) {
     console.error(error.message)
+    cacheerror = true
   }
+
+  // add date/max age check later / undefined on successful request, but key does not exist in database
+  if (!cacheerror && !(cachedata === undefined)) {
+    for (const pageId of cachedata.keys()) {
+      const resultPage = cachedata.get(pageId)
+
+      global.statefull.resultsPages.set(
+        pageId,
+        new Page({
+          title: resultPage.title,
+          url: resultPage.url,
+          pageid: resultPage.pageid,
+          missing: resultPage.missing
+        })
+      )
+    }
+  } else {
+    global.statefull.resultsPages = await wikiFetchPages(
+      global.state.title,
+      global.state.language
+    )
+    try {
+      await putCacheResults(global.statefull.resultsPages, global.state.title)
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+
+  global.setGraphFirstItem(1)
+  global.setInputsDisabled(false)
 
   global.setResultsCategoriesDone(false)
   if (global.state.resultsCategoriesEnabled) {
@@ -194,26 +226,49 @@ async function getResults() {
 }
 
 async function getResultsCategories() {
-  // with big pages this requires lots of api fetches, which makes up majority of the wait time
-
   // skip fetch when no results
   if (global.statefull.resultsPages.size > 0) {
-    global.statefull.resultsPages = await wikiFetchAddCategoriesToPages(
-      global.state.title,
-      global.state.language,
-      global.statefull.resultsPages
-    )
+    let cacheerror = false
+    let cachedata
+    try {
+      cachedata = await getCacheResultsCategories(global.state.title)
+    } catch (error) {
+      console.error(error.message)
+      cacheerror = true
+    }
+
+    // add date/max age check later / undefined on successful request, but key does not exist in database
+    if (!cacheerror && !(cachedata === undefined)) {
+      //add handling of possible discrepancy pageid not existing, due to different age cache fetch...fetch single
+      for (const pageId of cachedata.keys()) {
+        const resultPage = cachedata.get(pageId)
+        if (global.statefull.resultsPages.get(pageId)) {
+          resultPage.categories.forEach((category) =>
+            global.statefull.resultsPages.get(pageId).categories.push(category)
+          )
+        }
+        // else if not fetch single and add
+      }
+    } else {
+      // with big pages this requires lots of api fetches, which makes up majority of the wait time
+      global.statefull.resultsPages = await wikiFetchAddCategoriesToPages(
+        global.state.title,
+        global.state.language,
+        global.statefull.resultsPages
+      )
+
+      try {
+        await putCacheResultsCategories(
+          global.statefull.resultsPages,
+          global.state.title
+        )
+      } catch (error) {
+        console.error(error.message)
+      }
+    }
   }
 
   global.setResultsCategoriesDone(true)
-  try {
-    await putCacheResultsCategories(
-      global.statefull.resultsPages,
-      global.state.title
-    )
-  } catch (error) {
-    console.error(error.message)
-  }
 
   global.statefull.checkedCategories = new Set(
     resultsCategoriesAllUnfiltered.value
@@ -223,21 +278,44 @@ async function getResultsCategories() {
 async function getResultsRedirects() {
   // skip fetch when no results
   if (global.statefull.resultsPages.size > 0) {
-    global.statefull.resultsPages = await wikiFetchAddRedirectsToPages(
-      global.state.language,
-      global.statefull.resultsPages
-    )
-  }
+    let cacheerror = false
+    let cachedata
+    try {
+      cachedata = await getCacheResultsRedirects(global.state.title)
+    } catch (error) {
+      console.error(error.message)
+      cacheerror = true
+    }
 
-  global.setResultsRedirectsDone(true)
-  try {
-    await putCacheResultsRedirects(
-      global.statefull.resultsPages,
-      global.state.title
-    )
-  } catch (error) {
-    console.error(error.message)
+    // add date/max age check later / undefined on successful request, but key does not exist in database
+    if (!cacheerror && !(cachedata === undefined)) {
+      //add handling of possible discrepancy pageid not existing, due to different age cache fetch...fetch single
+      for (const pageId of cachedata.keys()) {
+        const resultPage = cachedata.get(pageId)
+        if (global.statefull.resultsPages.get(pageId)) {
+          resultPage.redirects.forEach((redirect) =>
+            global.statefull.resultsPages.get(pageId).redirects.push(redirect)
+          )
+        }
+        // else if not fetch single and add
+      }
+    } else {
+      global.statefull.resultsPages = await wikiFetchAddRedirectsToPages(
+        global.state.language,
+        global.statefull.resultsPages
+      )
+
+      try {
+        await putCacheResultsRedirects(
+          global.statefull.resultsPages,
+          global.state.title
+        )
+      } catch (error) {
+        console.error(error.message)
+      }
+    }
   }
+  global.setResultsRedirectsDone(true)
 }
 
 async function getMainInfo() {
