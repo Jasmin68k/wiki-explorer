@@ -75,7 +75,8 @@ import {
   wikiFetchAddRedirectsToPages,
   wikiFetchTitlePage,
   wikiFetchPages,
-  wikiFetchGetRedirectTarget
+  wikiFetchGetRedirectTarget,
+  wikiFetchSinglePage
 } from '../wikifetch.js'
 
 import {
@@ -239,17 +240,50 @@ async function getResultsCategories() {
 
     // add date/max age check later / undefined on successful request, but key does not exist in database
     if (!cacheerror && !(cachedata === undefined)) {
-      //add handling of possible discrepancy pageid not existing, due to different age cache fetch...fetch single
+      let pageIds = new Set()
+
       for (const pageId of cachedata.pages.keys()) {
-        const resultPage = cachedata.pages.get(pageId)
-        if (global.statefull.resultsPages.get(pageId)) {
-          resultPage.categories.forEach((category) =>
-            global.statefull.resultsPages.get(pageId).categories.push(category)
+        pageIds.add(pageId)
+
+        if (!global.statefull.resultsPages.get(pageId)) {
+          const newpage = await wikiFetchSinglePage(
+            cachedata.pages.get(pageId).title,
+            global.state.language
           )
+
+          if (newpage.missing !== '') {
+            global.statefull.resultsPages.set(
+              pageId,
+              new Page({
+                title: newpage.title,
+                url: newpage.fullurl,
+                pageid: newpage.pageid,
+                missing: false
+              })
+            )
+          } else {
+            global.statefull.resultsPages.set(
+              pageId,
+              new Page({
+                title: newpage.title,
+                url: newpage.fullurl,
+                pageid: pageId
+              })
+            )
+          }
         }
 
-        // else if not fetch single and add
-        // handle page still exists in resultsPages, but not in categories fetch anymore -> delete
+        const resultPage = cachedata.pages.get(pageId)
+
+        resultPage.categories.forEach((category) =>
+          global.statefull.resultsPages.get(pageId).categories.push(category)
+        )
+      }
+
+      for (const pageId of global.statefull.resultsPages.keys()) {
+        if (!pageIds.has(pageId)) {
+          global.statefull.resultsPages.delete(pageId)
+        }
       }
     } else {
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
