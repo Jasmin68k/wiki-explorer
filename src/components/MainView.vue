@@ -75,7 +75,8 @@ import {
   wikiFetchAddRedirectsToPages,
   wikiFetchTitlePage,
   wikiFetchPages,
-  wikiFetchGetRedirectTarget
+  wikiFetchGetRedirectTarget,
+  wikiFetchSinglePage
 } from '../wikifetch.js'
 
 import {
@@ -248,6 +249,7 @@ async function getResultsCategories() {
           )
         }
         // else if not fetch single and add
+        // handle page still exists in resultsPages, but not in categories fetch anymore -> delete
       }
     } else {
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
@@ -289,15 +291,14 @@ async function getResultsRedirects() {
 
     // add date/max age check later / undefined on successful request, but key does not exist in database
     if (!cacheerror && !(cachedata === undefined)) {
-      //add handling of possible discrepancy pageid not existing, due to different age cache fetch...fetch single
       for (const pageId of cachedata.keys()) {
         const resultPage = cachedata.get(pageId)
+        // redirects are added only to existing pages individually, this should always exist, but just to be sure
         if (global.statefull.resultsPages.get(pageId)) {
           resultPage.redirects.forEach((redirect) =>
             global.statefull.resultsPages.get(pageId).redirects.push(redirect)
           )
         }
-        // else if not fetch single and add
       }
     } else {
       global.statefull.resultsPages = await wikiFetchAddRedirectsToPages(

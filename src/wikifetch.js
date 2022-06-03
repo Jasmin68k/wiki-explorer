@@ -202,24 +202,28 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
 
         // ignore possibly non existing (ignored before) title page in results
         if (!(page.title === title)) {
-          const resultPage = pages.get(pageId)
-          if (page.categories) {
-            page.categories.forEach((category) =>
-              resultPage.categories.push(category.title)
-            )
+          if (pages.get(pageId)) {
+            const resultPage = pages.get(pageId)
+            if (page.categories) {
+              page.categories.forEach((category) =>
+                resultPage.categories.push(category.title)
+              )
 
-            // filter "Category:" at beginning
-            for (let i = 0; i < resultPage.categories.length; i++) {
-              // not sure it always starts with "Category:", check and only remove if it does
-              if (
-                resultPage.categories[i].startsWith(categoryPrefix[language])
-              ) {
-                resultPage.categories[i] = resultPage.categories[i].substring(
-                  categoryPrefix[language].length
-                )
+              // filter "Category:" at beginning
+              for (let i = 0; i < resultPage.categories.length; i++) {
+                // not sure it always starts with "Category:", check and only remove if it does
+                if (
+                  resultPage.categories[i].startsWith(categoryPrefix[language])
+                ) {
+                  resultPage.categories[i] = resultPage.categories[i].substring(
+                    categoryPrefix[language].length
+                  )
+                }
               }
             }
           }
+          // else if not fetch single and add
+          // handle page still exists in resultsPages, but not in categories fetch anymore -> delete
         }
       }
     } catch (error) {
@@ -532,4 +536,44 @@ export async function wikiFetchGetRedirectTarget(title, language) {
   }
 
   return redirectTarget
+}
+
+export async function wikiFetchSinglePage(title, language) {
+  let page = new Page()
+
+  page.missing = true
+
+  try {
+    let url =
+      'https://' +
+      language +
+      '.wikipedia.org/w/api.php?format=json&action=query&prop=info&redirects=1&indexpageids&inprop=url&titles=' +
+      title +
+      '&origin=*'
+
+    const response = await fetch(url, {
+      headers: fetchHeaders
+    })
+
+    // ok = true on http 200-299 good response
+    if (!response.ok) {
+      const message = `${response.status} ${response.statusText}`
+      throw new NetworkError(message)
+    }
+    // add error handling
+    const jsonData = await response.json()
+
+    const pageId = jsonData.query.pageids[0]
+    page.title = jsonData.query.pages[pageId].title
+    page.url = jsonData.query.pages[pageId].fullurl
+    page.pageid = pageId
+
+    if (jsonData.query.pages[pageId].missing !== '') {
+      page.missing = false
+    }
+  } catch (error) {
+    // add error/display for user or similar
+    console.error(error.message)
+  }
+  return page
 }
