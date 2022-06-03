@@ -186,8 +186,8 @@ async function getResults() {
 
   // add date/max age check later / undefined on successful request, but key does not exist in database
   if (!cacheerror && !(cachedata === undefined)) {
-    for (const pageId of cachedata.keys()) {
-      const resultPage = cachedata.get(pageId)
+    for (const pageId of cachedata.pages.keys()) {
+      const resultPage = cachedata.pages.get(pageId)
 
       global.statefull.resultsPages.set(
         pageId,
@@ -240,13 +240,14 @@ async function getResultsCategories() {
     // add date/max age check later / undefined on successful request, but key does not exist in database
     if (!cacheerror && !(cachedata === undefined)) {
       //add handling of possible discrepancy pageid not existing, due to different age cache fetch...fetch single
-      for (const pageId of cachedata.keys()) {
-        const resultPage = cachedata.get(pageId)
+      for (const pageId of cachedata.pages.keys()) {
+        const resultPage = cachedata.pages.get(pageId)
         if (global.statefull.resultsPages.get(pageId)) {
           resultPage.categories.forEach((category) =>
             global.statefull.resultsPages.get(pageId).categories.push(category)
           )
         }
+
         // else if not fetch single and add
         // handle page still exists in resultsPages, but not in categories fetch anymore -> delete
       }
@@ -290,8 +291,8 @@ async function getResultsRedirects() {
 
     // add date/max age check later / undefined on successful request, but key does not exist in database
     if (!cacheerror && !(cachedata === undefined)) {
-      for (const pageId of cachedata.keys()) {
-        const resultPage = cachedata.get(pageId)
+      for (const pageId of cachedata.pages.keys()) {
+        const resultPage = cachedata.pages.get(pageId)
         // redirects are added only to existing pages individually, this should always exist, but just to be sure
         if (global.statefull.resultsPages.get(pageId)) {
           resultPage.redirects.forEach((redirect) =>

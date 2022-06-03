@@ -87,7 +87,10 @@ export function getCacheResults(title) {
 
     request.onsuccess = () => {
       if (request.result) {
-        resolve(new Map(JSON.parse(request.result.pages)))
+        resolve({
+          date: request.result.date,
+          pages: new Map(JSON.parse(request.result.pages))
+        })
       } else {
         resolve(undefined)
       }
@@ -106,7 +109,10 @@ export function getCacheResultsCategories(title) {
 
     request.onsuccess = () => {
       if (request.result) {
-        resolve(new Map(JSON.parse(request.result.categories)))
+        resolve({
+          date: request.result.date,
+          pages: new Map(JSON.parse(request.result.pages))
+        })
       } else {
         resolve(undefined)
       }
@@ -125,7 +131,10 @@ export function getCacheResultsRedirects(title) {
 
     request.onsuccess = () => {
       if (request.result) {
-        resolve(new Map(JSON.parse(request.result.redirects)))
+        resolve({
+          date: request.result.date,
+          pages: new Map(JSON.parse(request.result.pages))
+        })
       } else {
         resolve(undefined)
       }
@@ -253,14 +262,15 @@ export function putCacheResultsCategories(resultsPages, title) {
     for (const pageId of resultsPagesDeepCopy.keys()) {
       const resultPage = resultsPagesDeepCopy.get(pageId)
       for (const key of Object.keys(resultPage)) {
-        if (!(key === 'categories')) {
+        // leave title for later single fetching in discrepancy check
+        if (!(key === 'categories' || key === 'title')) {
           delete resultPage[key]
         }
       }
     }
     let data = {
       date: new Date(),
-      categories: JSON.stringify(Array.from(resultsPagesDeepCopy))
+      pages: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
 
     let objectStore = transaction.objectStore('resultscategories')
@@ -294,7 +304,7 @@ export function putCacheResultsRedirects(resultsPages, title) {
     }
     let data = {
       date: new Date(),
-      redirects: JSON.stringify(Array.from(resultsPagesDeepCopy))
+      pages: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
 
     let objectStore = transaction.objectStore('resultsredirects')
