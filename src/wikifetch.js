@@ -83,7 +83,7 @@ export async function wikiFetchPages(title, language) {
                 // the values for pageId for all missing pages are consecutive negative integers starting at -1,
                 // which naturally do not reference an actual Wikipedia page, but are assigned here to
                 // Page's pageid to make it unique, too.
-                pageid: pageId
+                pageid: Number(pageId)
               })
             )
           }
@@ -158,14 +158,17 @@ export async function wikiFetchTitlePage(title, language) {
 
 /**
  * Query Wikipedia for all categories of all Wikipedia pages linked to from Wikipedia page given by title and language
- * and add those to given Map
+ * and add those to given Map, separate newly added and no longer existing pages
  * @param {String} title
  * @param {String} language two letter lower case ('en, 'de')
  * @param {Map<Page>} pages with keys pageId and values Page (imported class)
- * @returns {Map<Page>} pages with categories populated
+ * @returns {Object Map<Page> Map<Page> Set<String} pages with categories populated, added pages, pageids of deleted pages
  */
 export async function wikiFetchAddCategoriesToPages(title, language, pages) {
   let pageIds = new Set()
+  let categoriesAddedPages = new Map()
+  let categoriesDeletedPages = new Set()
+
   do {
     try {
       // separate categories results fetch for major speedup compared to getting info and categories prop at same time (more redundant props to go through)
@@ -207,12 +210,12 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
           pageIds.add(pageId)
           // fetch page if exists in categories, but not in original results
           // can happen, if changes between page fetch (mabye from cache) and categories fetch
-          if (!pages.get(pageId)) {
-            const newpage = await wikiFetchSinglePage(page.title, language)
+          if (!pages.get(pageId) && !categoriesAddedPages.get(pageId)) {
+            const newpage = await wikiFetchSinglePage(pageId, language)
 
             if (!(newpage.title === title)) {
               if (newpage.missing !== '') {
-                pages.set(
+                categoriesAddedPages.set(
                   pageId,
                   new Page({
                     title: newpage.title,
@@ -222,25 +225,32 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
                   })
                 )
               } else {
-                pages.set(
+                categoriesAddedPages.set(
                   pageId,
                   new Page({
                     title: newpage.title,
                     url: newpage.fullurl,
-                    pageid: pageId
+                    pageid: Number(pageId)
                   })
                 )
               }
             }
           }
-          const resultPage = pages.get(pageId)
+
+          let resultPage
 
           if (page.categories) {
-            page.categories.forEach((category) =>
+            page.categories.forEach((category) => {
+              if (pages.get(pageId)) {
+                resultPage = pages.get(pageId)
+              } else {
+                resultPage = categoriesAddedPages.get(pageId)
+              }
               resultPage.categories.push(category.title)
-            )
+            })
 
             // filter "Category:" at beginning
+
             for (let i = 0; i < resultPage.categories.length; i++) {
               // not sure it always starts with "Category:", check and only remove if it does
               if (
@@ -263,7 +273,7 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
   // handle page still exists in resultsPages, but not in categories fetch anymore -> delete
   for (const pageId of pages.keys()) {
     if (!pageIds.has(pageId)) {
-      pages.delete(pageId)
+      categoriesDeletedPages.add(pageId)
     }
   }
 
@@ -275,7 +285,18 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
     }
   }
 
-  return pages
+  for (const pageId of categoriesAddedPages.keys()) {
+    const resultPage = categoriesAddedPages.get(pageId)
+    if (resultPage.categories.length === 0) {
+      resultPage.categories = [noCategoryPrefix[language]]
+    }
+  }
+
+  return {
+    pages: pages,
+    addedPages: categoriesAddedPages,
+    deletedPages: categoriesDeletedPages
+  }
 }
 
 // Since redirects are being fetched in parallel individually for each Page for speed reasons, title is taken from Page in pages
@@ -573,17 +594,21 @@ export async function wikiFetchGetRedirectTarget(title, language) {
   return redirectTarget
 }
 
-export async function wikiFetchSinglePage(title, language) {
-  let page = new Page()
+/**
+ * Query Wikipedia for page given by pageid and language and return it
+ * @param {String} pageid
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Page} Page (imported class) with title, url, pageid and missing populated
+ */
 
-  page.missing = true
-
+export async function wikiFetchSinglePage(pageid, language) {
+  let page
   try {
     let url =
       'https://' +
       language +
-      '.wikipedia.org/w/api.php?format=json&action=query&prop=info&redirects=1&indexpageids&inprop=url&titles=' +
-      title +
+      '.wikipedia.org/w/api.php?format=json&action=query&prop=info&redirects=1&indexpageids&inprop=url&pageids=' +
+      pageid +
       '&origin=*'
 
     const response = await fetch(url, {
@@ -598,13 +623,24 @@ export async function wikiFetchSinglePage(title, language) {
     // add error handling
     const jsonData = await response.json()
 
-    const pageId = jsonData.query.pageids[0]
-    page.title = jsonData.query.pages[pageId].title
-    page.url = jsonData.query.pages[pageId].fullurl
-    page.pageid = pageId
-
-    if (jsonData.query.pages[pageId].missing !== '') {
-      page.missing = false
+    if (jsonData.query.pages[pageid].missing !== '') {
+      page = new Page({
+        title: jsonData.query.pages[pageid].title,
+        url: jsonData.query.pages[pageid].fullurl,
+        pageid: jsonData.query.pages[pageid].pageid,
+        missing: false
+      })
+    } else {
+      page = new Page({
+        title: jsonData.query.pages[pageid].title,
+        url: jsonData.query.pages[pageid].fullurl,
+        // in case of missing page jsonData.query.pages[pageId].pageid does not exist,
+        // which is otherwise identical to pageId.
+        // the values for pageId for all missing pages are consecutive negative integers starting at -1,
+        // which naturally do not reference an actual Wikipedia page, but are assigned here to
+        // Page's pageid to make it unique, too.
+        pageid: Number(pageid)
+      })
     }
   } catch (error) {
     // add error/display for user or similar

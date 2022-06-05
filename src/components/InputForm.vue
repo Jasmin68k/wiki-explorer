@@ -84,7 +84,9 @@
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone)
+              !global.state.resultsCategoriesDone) ||
+            (global.state.resultsRedirectsEnabled &&
+              !global.state.resultsRedirectsDone)
           "
         />
         <button
@@ -93,7 +95,9 @@
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone)
+              !global.state.resultsCategoriesDone) ||
+            (global.state.resultsRedirectsEnabled &&
+              !global.state.resultsRedirectsDone)
           "
         >
           <img
@@ -102,7 +106,9 @@
               itemdisabled:
                 global.state.inputsDisabled ||
                 (global.state.resultsCategoriesEnabled &&
-                  !global.state.resultsCategoriesDone)
+                  !global.state.resultsCategoriesDone) ||
+                (global.state.resultsRedirectsEnabled &&
+                  !global.state.resultsRedirectsDone)
             }"
             src="../assets/images/search.svg"
           />
@@ -178,9 +184,7 @@
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone) ||
-            (global.state.resultsRedirectsEnabled &&
-              !global.state.resultsRedirectsDone)
+              !global.state.resultsCategoriesDone)
           "
           @change="resultsCategoriesChanged($event.target.checked)"
         />
@@ -190,9 +194,7 @@
             itemdisabled:
               global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone) ||
-              (global.state.resultsRedirectsEnabled &&
-                !global.state.resultsRedirectsDone)
+                !global.state.resultsCategoriesDone)
           }"
           for="resultsCategories"
         >
@@ -208,9 +210,7 @@
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsRedirectsEnabled &&
-              !global.state.resultsRedirectsDone) ||
-            (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone)
+              !global.state.resultsRedirectsDone)
           "
           @change="resultsRedirectsChanged($event.target.checked)"
         />
@@ -220,9 +220,7 @@
             itemdisabled:
               global.state.inputsDisabled ||
               (global.state.resultsRedirectsEnabled &&
-                !global.state.resultsRedirectsDone) ||
-              (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone)
+                !global.state.resultsRedirectsDone)
           }"
           for="resultsRedirects"
         >

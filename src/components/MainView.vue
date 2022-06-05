@@ -105,6 +105,10 @@ const global = inject('global')
 const gridcontainer = ref(null)
 const inputarea = ref(null)
 
+let categoriesAddedPages = new Map()
+let categoriesDeletedPages = new Set()
+let redirectsAddedPages = new Set()
+
 const resultsCategoriesAll = computed(function () {
   if (
     !(
@@ -217,12 +221,12 @@ async function getResults() {
 
   global.setResultsCategoriesDone(false)
   if (global.state.resultsCategoriesEnabled) {
-    await getResultsCategories()
+    getResultsCategories()
   }
 
   global.setResultsRedirectsDone(false)
   if (global.state.resultsRedirectsEnabled) {
-    await getResultsRedirects()
+    getResultsRedirects()
   }
 }
 
@@ -247,27 +251,27 @@ async function getResultsCategories() {
 
         if (!global.statefull.resultsPages.get(pageId)) {
           const newpage = await wikiFetchSinglePage(
-            cachedata.pages.get(pageId).title,
+            pageId,
             global.state.language
           )
 
           if (newpage.missing !== '') {
-            global.statefull.resultsPages.set(
+            categoriesAddedPages.set(
               pageId,
               new Page({
                 title: newpage.title,
-                url: newpage.fullurl,
+                url: newpage.url,
                 pageid: newpage.pageid,
                 missing: false
               })
             )
           } else {
-            global.statefull.resultsPages.set(
+            categoriesAddedPages.set(
               pageId,
               new Page({
                 title: newpage.title,
-                url: newpage.fullurl,
-                pageid: pageId
+                url: newpage.url,
+                pageid: Number(pageId)
               })
             )
           }
@@ -275,23 +279,32 @@ async function getResultsCategories() {
 
         const resultPage = cachedata.pages.get(pageId)
 
-        resultPage.categories.forEach((category) =>
-          global.statefull.resultsPages.get(pageId).categories.push(category)
-        )
+        resultPage.categories.forEach((category) => {
+          if (global.statefull.resultsPages.get(pageId)) {
+            global.statefull.resultsPages.get(pageId).categories.push(category)
+          } else {
+            categoriesAddedPages.get(pageId).categories.push(category)
+          }
+        })
       }
 
       for (const pageId of global.statefull.resultsPages.keys()) {
         if (!pageIds.has(pageId)) {
-          global.statefull.resultsPages.delete(pageId)
+          categoriesDeletedPages.add(pageId)
         }
       }
     } else {
       // with big pages this requires lots of api fetches, which makes up majority of the wait time
-      global.statefull.resultsPages = await wikiFetchAddCategoriesToPages(
+
+      const wikiFetchCategories = await wikiFetchAddCategoriesToPages(
         global.state.title,
         global.state.language,
         global.statefull.resultsPages
       )
+
+      global.statefull.resultsPages = wikiFetchCategories.pages
+      categoriesAddedPages = wikiFetchCategories.addedPages
+      categoriesDeletedPages = wikiFetchCategories.deletedPages
 
       try {
         await putCacheResultsCategories(
@@ -302,6 +315,17 @@ async function getResultsCategories() {
         console.error(error.message)
       }
     }
+  }
+
+  // execute cache discrepancy cleanup if both categories and redirects are done
+  // this fails in EXTREMELY(!!!) unlikely case that there is actually something to execute (which won't happen too often)
+  // AND getResultsCategories() and getResultsRedirects() arrive here at EXACTLY(!!!)
+  // the same time. In that case, cache changes get lost and some discrepancy stays for the few entries.
+  if (
+    !global.state.resultsRedirectsEnabled ||
+    (global.state.resultsRedirectsEnabled && global.state.resultsRedirectsDone)
+  ) {
+    await executeCacheDeferred()
   }
 
   global.setResultsCategoriesDone(true)
@@ -347,37 +371,9 @@ async function getResultsRedirects() {
 
       //pageIds set has missing pageids
 
-      // cleanup possible cache discrepancy add redirects for pages not yet hit.
-
       if (pageIds.size > 0) {
-        // construct map with missing pages, can reuse same parallel wikifetch function
-        let resultsPagesMissing = new Map()
-
         pageIds.forEach((pageId) => {
-          resultsPagesMissing.set(
-            pageId,
-            new Page({
-              pageId,
-              title: global.statefull.resultsPages.get(pageId).title
-              // url: global.statefull.resultsPages.get(pageId).url,
-              // pageid: global.statefull.resultsPages.get(pageId).pageid,
-              // missing: global.statefull.resultsPages.get(pageId).missing,
-              // categories: global.statefull.resultsPages.get(pageId).categories
-            })
-          )
-        })
-
-        // fetch missing redirects
-
-        resultsPagesMissing = await wikiFetchAddRedirectsToPages(
-          global.state.language,
-          resultsPagesMissing
-        )
-
-        // add to resultsPages
-        pageIds.forEach((pageId) => {
-          global.statefull.resultsPages.get(pageId).redirects =
-            resultsPagesMissing.get(pageId).redirects
+          redirectsAddedPages.add(pageId)
         })
       }
     } else {
@@ -396,7 +392,92 @@ async function getResultsRedirects() {
       }
     }
   }
+
+  // execute cache discrepancy cleanup if both categories and redirects are done
+  // this fails in EXTREMELY(!!!) unlikely case that there is actually something to execute (which won't happen too often)
+  // AND getResultsCategories() and getResultsRedirects() arrive here at EXACTLY(!!!)
+  // the same time. In that case, cache changes get lost and some discrepancy stays for the few entries.
+  if (
+    !global.state.resultsCategoriesEnabled ||
+    (global.state.resultsCategoriesEnabled &&
+      global.state.resultsCategoriesDone)
+  ) {
+    await executeCacheDeferred()
+  }
+
   global.setResultsRedirectsDone(true)
+}
+
+// deferred to allow parallel fetching of categories and redirects
+// this is called from getResultsCategories() or getResultsRedirects(),
+// whichever finishes last
+async function executeCacheDeferred() {
+  // deleted categories
+  if (categoriesDeletedPages.size > 0) {
+    categoriesDeletedPages.forEach((pageId) => {
+      global.statefull.resultsPages.delete(pageId)
+      // not needed anymore
+      redirectsAddedPages.delete(pageId)
+    })
+    categoriesDeletedPages = new Set()
+  }
+
+  // added categories
+  if (categoriesAddedPages.size > 0) {
+    // first add redirects, if active
+    if (global.state.resultsCategoriesEnabled) {
+      await wikiFetchAddRedirectsToPages(
+        global.state.language,
+        categoriesAddedPages
+      )
+    }
+    // add to resultsPages
+    for (const pageId of categoriesAddedPages.keys()) {
+      global.statefull.resultsPages.set(
+        pageId,
+        new Page({
+          title: categoriesAddedPages.get(pageId).title,
+          url: categoriesAddedPages.get(pageId).url,
+          pageid: categoriesAddedPages.get(pageId).pageid,
+          missing: categoriesAddedPages.get(pageId).missing,
+          categories: categoriesAddedPages.get(pageId).categories,
+          redirects: categoriesAddedPages.get(pageId).redirects
+        })
+      )
+    }
+    categoriesAddedPages = new Map()
+  }
+
+  // added redirects
+  if (redirectsAddedPages.size > 0) {
+    let resultsPagesMissing = new Map()
+
+    redirectsAddedPages.forEach((pageId) => {
+      resultsPagesMissing.set(
+        pageId,
+        new Page({
+          title: global.statefull.resultsPages.get(pageId).title
+          // url: global.statefull.resultsPages.get(pageId).url,
+          // pageid: global.statefull.resultsPages.get(pageId).pageid,
+          // missing: global.statefull.resultsPages.get(pageId).missing,
+          // categories: global.statefull.resultsPages.get(pageId).categories
+        })
+      )
+    })
+
+    // fetch missing redirects
+    resultsPagesMissing = await wikiFetchAddRedirectsToPages(
+      global.state.language,
+      resultsPagesMissing
+    )
+
+    // add to resultsPages
+    redirectsAddedPages.forEach((pageId) => {
+      global.statefull.resultsPages.get(pageId).redirects =
+        resultsPagesMissing.get(pageId).redirects
+    })
+    redirectsAddedPages = new Set()
+  }
 }
 
 async function getMainInfo() {
@@ -534,7 +615,7 @@ async function resultsCategoriesChanged() {
     global.state.resultsCategoriesEnabled &&
     !global.state.resultsCategoriesDone
   ) {
-    await getResultsCategories()
+    getResultsCategories()
   }
   if (
     global.state.resultsCategoriesEnabled &&
@@ -550,7 +631,7 @@ async function resultsRedirectsChanged() {
     global.state.resultsRedirectsEnabled &&
     !global.state.resultsRedirectsDone
   ) {
-    await getResultsRedirects()
+    getResultsRedirects()
   }
 }
 function languageSwitched(value) {
