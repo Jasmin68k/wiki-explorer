@@ -178,7 +178,9 @@
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsCategoriesEnabled &&
-              !global.state.resultsCategoriesDone)
+              !global.state.resultsCategoriesDone) ||
+            (global.state.resultsRedirectsEnabled &&
+              !global.state.resultsRedirectsDone)
           "
           @change="resultsCategoriesChanged($event.target.checked)"
         />
@@ -188,7 +190,9 @@
             itemdisabled:
               global.state.inputsDisabled ||
               (global.state.resultsCategoriesEnabled &&
-                !global.state.resultsCategoriesDone)
+                !global.state.resultsCategoriesDone) ||
+              (global.state.resultsRedirectsEnabled &&
+                !global.state.resultsRedirectsDone)
           }"
           for="resultsCategories"
         >
@@ -204,7 +208,9 @@
           :disabled="
             global.state.inputsDisabled ||
             (global.state.resultsRedirectsEnabled &&
-              !global.state.resultsRedirectsDone)
+              !global.state.resultsRedirectsDone) ||
+            (global.state.resultsCategoriesEnabled &&
+              !global.state.resultsCategoriesDone)
           "
           @change="resultsRedirectsChanged($event.target.checked)"
         />
@@ -214,7 +220,9 @@
             itemdisabled:
               global.state.inputsDisabled ||
               (global.state.resultsRedirectsEnabled &&
-                !global.state.resultsRedirectsDone)
+                !global.state.resultsRedirectsDone) ||
+              (global.state.resultsCategoriesEnabled &&
+                !global.state.resultsCategoriesDone)
           }"
           for="resultsRedirects"
         >

@@ -217,12 +217,12 @@ async function getResults() {
 
   global.setResultsCategoriesDone(false)
   if (global.state.resultsCategoriesEnabled) {
-    getResultsCategories()
+    await getResultsCategories()
   }
 
   global.setResultsRedirectsDone(false)
   if (global.state.resultsRedirectsEnabled) {
-    getResultsRedirects()
+    await getResultsRedirects()
   }
 }
 
@@ -325,14 +325,60 @@ async function getResultsRedirects() {
 
     // add date/max age check later / undefined on successful request, but key does not exist in database
     if (!cacheerror && !(cachedata === undefined)) {
+      let pageIds = new Set()
+
+      // add all pages
+      for (const pageId of global.statefull.resultsPages.keys()) {
+        pageIds.add(pageId)
+      }
+
       for (const pageId of cachedata.pages.keys()) {
+        // remove pages hit with cache
+        pageIds.delete(pageId)
+
         const resultPage = cachedata.pages.get(pageId)
-        // redirects are added only to existing pages individually, this should always exist, but just to be sure
+        // redirects are added only to existing pages individually
         if (global.statefull.resultsPages.get(pageId)) {
           resultPage.redirects.forEach((redirect) =>
             global.statefull.resultsPages.get(pageId).redirects.push(redirect)
           )
         }
+      }
+
+      //pageIds set has missing pageids
+
+      // cleanup possible cache discrepancy add redirects for pages not yet hit.
+
+      if (pageIds.size > 0) {
+        // construct map with missing pages, can reuse same parallel wikifetch function
+        let resultsPagesMissing = new Map()
+
+        pageIds.forEach((pageId) => {
+          resultsPagesMissing.set(
+            pageId,
+            new Page({
+              pageId,
+              title: global.statefull.resultsPages.get(pageId).title
+              // url: global.statefull.resultsPages.get(pageId).url,
+              // pageid: global.statefull.resultsPages.get(pageId).pageid,
+              // missing: global.statefull.resultsPages.get(pageId).missing,
+              // categories: global.statefull.resultsPages.get(pageId).categories
+            })
+          )
+        })
+
+        // fetch missing redirects
+
+        resultsPagesMissing = await wikiFetchAddRedirectsToPages(
+          global.state.language,
+          resultsPagesMissing
+        )
+
+        // add to resultsPages
+        pageIds.forEach((pageId) => {
+          global.statefull.resultsPages.get(pageId).redirects =
+            resultsPagesMissing.get(pageId).redirects
+        })
       }
     } else {
       global.statefull.resultsPages = await wikiFetchAddRedirectsToPages(
@@ -488,7 +534,7 @@ async function resultsCategoriesChanged() {
     global.state.resultsCategoriesEnabled &&
     !global.state.resultsCategoriesDone
   ) {
-    getResultsCategories()
+    await getResultsCategories()
   }
   if (
     global.state.resultsCategoriesEnabled &&
@@ -504,7 +550,7 @@ async function resultsRedirectsChanged() {
     global.state.resultsRedirectsEnabled &&
     !global.state.resultsRedirectsDone
   ) {
-    getResultsRedirects()
+    await getResultsRedirects()
   }
 }
 function languageSwitched(value) {
