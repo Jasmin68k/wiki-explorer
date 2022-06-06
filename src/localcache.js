@@ -5,7 +5,8 @@ const osNames = [
   'redirects',
   'results',
   'resultscategories',
-  'resultsredirects'
+  'resultsredirects',
+  'redirecttargets'
 ]
 let db
 
@@ -69,6 +70,21 @@ export function getCacheRedirects(title) {
     let transaction = db.transaction(['redirects'])
     let objectStore = transaction.objectStore('redirects')
     let request = objectStore.get(title)
+
+    request.onsuccess = () => {
+      resolve(request.result)
+    }
+    request.onerror = (event) => {
+      reject(event.target.error)
+    }
+  })
+}
+
+export function getCacheRedirectTarget(search) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['redirecttargets'])
+    let objectStore = transaction.objectStore('redirecttargets')
+    let request = objectStore.get(search)
 
     request.onsuccess = () => {
       resolve(request.result)
@@ -309,5 +325,25 @@ export function putCacheResultsRedirects(resultsPages, title) {
 
     let objectStore = transaction.objectStore('resultsredirects')
     objectStore.put(data, title)
+  })
+}
+
+export function putCacheRedirectTarget(search, target) {
+  return new Promise((resolve, reject) => {
+    let transaction = db.transaction(['redirecttargets'], 'readwrite')
+    transaction.oncomplete = () => {
+      resolve()
+    }
+    transaction.onerror = (event) => {
+      reject(event.target.error)
+    }
+
+    let data = {
+      date: new Date(),
+      redirecttarget: target
+    }
+
+    let objectStore = transaction.objectStore('redirecttargets')
+    objectStore.put(data, search)
   })
 }

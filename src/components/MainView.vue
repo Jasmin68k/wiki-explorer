@@ -87,12 +87,14 @@ import {
   getCacheResults,
   getCacheResultsCategories,
   getCacheResultsRedirects,
+  getCacheRedirectTarget,
   putCacheMainInfo,
   putCacheCategories,
   putCacheRedirects,
   putCacheResults,
   putCacheResultsCategories,
-  putCacheResultsRedirects
+  putCacheResultsRedirects,
+  putCacheRedirectTarget
 } from '../localcache.js'
 
 import { useI18n } from 'vue-i18n/index'
@@ -675,31 +677,60 @@ async function getRedirects() {
 
 async function circleButtonClicked(clickData) {
   if (!global.state.displayResults[clickData.index].missing) {
-    global.setTitle(
-      await wikiFetchGetRedirectTarget(
-        global.state.displayResults[clickData.index].title,
-        global.state.language
-      )
-    )
-
-    if (global.state.title.length > 0) {
-      getMainInfo()
-      getResults()
-    }
+    const search = global.state.displayResults[clickData.index].title
+    startFetches(search)
   }
 }
 
 async function fetchDataClicked(value) {
   if (value) {
-    global.setTitle(
-      await wikiFetchGetRedirectTarget(value, global.state.language)
-    )
-    if (global.state.title.length > 0) {
-      getMainInfo()
-      getResults()
-    }
+    const search = value
+    startFetches(search)
   }
 }
+
+async function startFetches(search) {
+  if (cacheEnabled) {
+    let cacheerror = false
+    let cachedata
+    try {
+      cachedata = await getCacheRedirectTarget(search)
+    } catch (error) {
+      console.error(error.message)
+      cacheerror = true
+    }
+
+    // add date/max age check later / undefined on successful request, but key does not exist in database
+    if (
+      !cacheerror &&
+      !(cachedata === undefined) &&
+      cachedata.date > new Date() - cacheMaxAge
+    ) {
+      global.setTitle(cachedata.redirecttarget)
+    } else {
+      global.setTitle(
+        await wikiFetchGetRedirectTarget(search, global.state.language)
+      )
+
+      if (global.state.title.length > 0) {
+        try {
+          await putCacheRedirectTarget(search, global.state.title)
+        } catch (error) {
+          console.error(error.message)
+        }
+      }
+    }
+  } else {
+    global.setTitle(
+      await wikiFetchGetRedirectTarget(search, global.state.language)
+    )
+  }
+  if (global.state.title.length > 0) {
+    getMainInfo()
+    getResults()
+  }
+}
+
 async function resultsCategoriesChanged() {
   if (
     global.state.resultsCategoriesEnabled &&
