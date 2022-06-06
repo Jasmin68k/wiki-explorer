@@ -187,6 +187,8 @@ const resultsCategoriesAllUnfiltered = computed(function () {
 async function getResults() {
   global.setInputsDisabled(true)
 
+  global.statefull.resultsPages = new Map()
+
   if (cacheEnabled) {
     let cacheerror = false
     let cachedata
