@@ -107,6 +107,8 @@ const inputarea = ref(null)
 
 // ms - temp hardcoded 1 h
 const cacheMaxAge = 3600000
+// temp hardcoded
+const cacheEnabled = true
 
 let categoriesAddedPages = new Map()
 let categoriesDeletedPages = new Set()
@@ -183,44 +185,51 @@ const resultsCategoriesAllUnfiltered = computed(function () {
 async function getResults() {
   global.setInputsDisabled(true)
 
-  let cacheerror = false
-  let cachedata
-  try {
-    cachedata = await getCacheResults(global.state.title)
-  } catch (error) {
-    console.error(error.message)
-    cacheerror = true
-  }
+  if (cacheEnabled) {
+    let cacheerror = false
+    let cachedata
+    try {
+      cachedata = await getCacheResults(global.state.title)
+    } catch (error) {
+      console.error(error.message)
+      cacheerror = true
+    }
 
-  // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (
-    !cacheerror &&
-    !(cachedata === undefined) &&
-    cachedata.date > new Date() - cacheMaxAge
-  ) {
-    for (const pageId of cachedata.pages.keys()) {
-      const resultPage = cachedata.pages.get(pageId)
+    // add date/max age check later / undefined on successful request, but key does not exist in database
+    if (
+      !cacheerror &&
+      !(cachedata === undefined) &&
+      cachedata.date > new Date() - cacheMaxAge
+    ) {
+      for (const pageId of cachedata.pages.keys()) {
+        const resultPage = cachedata.pages.get(pageId)
 
-      global.statefull.resultsPages.set(
-        pageId,
-        new Page({
-          title: resultPage.title,
-          url: resultPage.url,
-          pageid: resultPage.pageid,
-          missing: resultPage.missing
-        })
+        global.statefull.resultsPages.set(
+          pageId,
+          new Page({
+            title: resultPage.title,
+            url: resultPage.url,
+            pageid: resultPage.pageid,
+            missing: resultPage.missing
+          })
+        )
+      }
+    } else {
+      global.statefull.resultsPages = await wikiFetchPages(
+        global.state.title,
+        global.state.language
       )
+      try {
+        await putCacheResults(global.statefull.resultsPages, global.state.title)
+      } catch (error) {
+        console.error(error.message)
+      }
     }
   } else {
     global.statefull.resultsPages = await wikiFetchPages(
       global.state.title,
       global.state.language
     )
-    try {
-      await putCacheResults(global.statefull.resultsPages, global.state.title)
-    } catch (error) {
-      console.error(error.message)
-    }
   }
 
   global.setGraphFirstItem(1)
@@ -240,73 +249,96 @@ async function getResults() {
 async function getResultsCategories() {
   // skip fetch when no results
   if (global.statefull.resultsPages.size > 0) {
-    let cacheerror = false
-    let cachedata
-    try {
-      cachedata = await getCacheResultsCategories(global.state.title)
-    } catch (error) {
-      console.error(error.message)
-      cacheerror = true
-    }
-
-    // add date/max age check later / undefined on successful request, but key does not exist in database
-    if (
-      !cacheerror &&
-      !(cachedata === undefined) &&
-      cachedata.date > new Date() - cacheMaxAge
-    ) {
-      let pageIds = new Set()
-
-      for (const pageId of cachedata.pages.keys()) {
-        pageIds.add(pageId)
-
-        if (!global.statefull.resultsPages.get(pageId)) {
-          const newpage = await wikiFetchSinglePage(
-            pageId,
-            global.state.language
-          )
-
-          if (newpage.missing !== '') {
-            categoriesAddedPages.set(
-              pageId,
-              new Page({
-                title: newpage.title,
-                url: newpage.url,
-                pageid: newpage.pageid,
-                missing: false
-              })
-            )
-          } else {
-            categoriesAddedPages.set(
-              pageId,
-              new Page({
-                title: newpage.title,
-                url: newpage.url,
-                pageid: Number(pageId)
-              })
-            )
-          }
-        }
-
-        const resultPage = cachedata.pages.get(pageId)
-
-        resultPage.categories.forEach((category) => {
-          if (global.statefull.resultsPages.get(pageId)) {
-            global.statefull.resultsPages.get(pageId).categories.push(category)
-          } else {
-            categoriesAddedPages.get(pageId).categories.push(category)
-          }
-        })
+    if (cacheEnabled) {
+      let cacheerror = false
+      let cachedata
+      try {
+        cachedata = await getCacheResultsCategories(global.state.title)
+      } catch (error) {
+        console.error(error.message)
+        cacheerror = true
       }
 
-      for (const pageId of global.statefull.resultsPages.keys()) {
-        if (!pageIds.has(pageId)) {
-          categoriesDeletedPages.add(pageId)
+      // add date/max age check later / undefined on successful request, but key does not exist in database
+      if (
+        !cacheerror &&
+        !(cachedata === undefined) &&
+        cachedata.date > new Date() - cacheMaxAge
+      ) {
+        let pageIds = new Set()
+
+        for (const pageId of cachedata.pages.keys()) {
+          pageIds.add(pageId)
+
+          if (!global.statefull.resultsPages.get(pageId)) {
+            const newpage = await wikiFetchSinglePage(
+              pageId,
+              global.state.language
+            )
+
+            if (newpage.missing !== '') {
+              categoriesAddedPages.set(
+                pageId,
+                new Page({
+                  title: newpage.title,
+                  url: newpage.url,
+                  pageid: newpage.pageid,
+                  missing: false
+                })
+              )
+            } else {
+              categoriesAddedPages.set(
+                pageId,
+                new Page({
+                  title: newpage.title,
+                  url: newpage.url,
+                  pageid: Number(pageId)
+                })
+              )
+            }
+          }
+
+          const resultPage = cachedata.pages.get(pageId)
+
+          resultPage.categories.forEach((category) => {
+            if (global.statefull.resultsPages.get(pageId)) {
+              global.statefull.resultsPages
+                .get(pageId)
+                .categories.push(category)
+            } else {
+              categoriesAddedPages.get(pageId).categories.push(category)
+            }
+          })
+        }
+
+        for (const pageId of global.statefull.resultsPages.keys()) {
+          if (!pageIds.has(pageId)) {
+            categoriesDeletedPages.add(pageId)
+          }
+        }
+      } else {
+        // with big pages this requires lots of api fetches, which makes up majority of the wait time
+
+        const wikiFetchCategories = await wikiFetchAddCategoriesToPages(
+          global.state.title,
+          global.state.language,
+          global.statefull.resultsPages
+        )
+
+        global.statefull.resultsPages = wikiFetchCategories.pages
+        categoriesAddedPages = wikiFetchCategories.addedPages
+        categoriesDeletedPages = wikiFetchCategories.deletedPages
+
+        try {
+          await putCacheResultsCategories(
+            global.statefull.resultsPages,
+            global.state.title
+          )
+        } catch (error) {
+          console.error(error.message)
         }
       }
     } else {
-      // with big pages this requires lots of api fetches, which makes up majority of the wait time
-
       const wikiFetchCategories = await wikiFetchAddCategoriesToPages(
         global.state.title,
         global.state.language,
@@ -316,17 +348,11 @@ async function getResultsCategories() {
       global.statefull.resultsPages = wikiFetchCategories.pages
       categoriesAddedPages = wikiFetchCategories.addedPages
       categoriesDeletedPages = wikiFetchCategories.deletedPages
-
-      try {
-        await putCacheResultsCategories(
-          global.statefull.resultsPages,
-          global.state.title
-        )
-      } catch (error) {
-        console.error(error.message)
-      }
     }
   }
+
+  // leave this here, added/deleted pages can happen with categories, even if all is being fetched from wikipedia
+  // (getting new list)
 
   // execute cache discrepancy cleanup if both categories and redirects are done
   // this fails in EXTREMELY(!!!) unlikely case that there is actually something to execute (which won't happen too often)
@@ -349,64 +375,74 @@ async function getResultsCategories() {
 async function getResultsRedirects() {
   // skip fetch when no results
   if (global.statefull.resultsPages.size > 0) {
-    let cacheerror = false
-    let cachedata
-    try {
-      cachedata = await getCacheResultsRedirects(global.state.title)
-    } catch (error) {
-      console.error(error.message)
-      cacheerror = true
-    }
-
-    // add date/max age check later / undefined on successful request, but key does not exist in database
-    if (
-      !cacheerror &&
-      !(cachedata === undefined) &&
-      cachedata.date > new Date() - cacheMaxAge
-    ) {
-      let pageIds = new Set()
-
-      // add all pages
-      for (const pageId of global.statefull.resultsPages.keys()) {
-        pageIds.add(pageId)
+    if (cacheEnabled) {
+      let cacheerror = false
+      let cachedata
+      try {
+        cachedata = await getCacheResultsRedirects(global.state.title)
+      } catch (error) {
+        console.error(error.message)
+        cacheerror = true
       }
 
-      for (const pageId of cachedata.pages.keys()) {
-        // remove pages hit with cache
-        pageIds.delete(pageId)
+      // add date/max age check later / undefined on successful request, but key does not exist in database
+      if (
+        !cacheerror &&
+        !(cachedata === undefined) &&
+        cachedata.date > new Date() - cacheMaxAge
+      ) {
+        let pageIds = new Set()
 
-        const resultPage = cachedata.pages.get(pageId)
-        // redirects are added only to existing pages individually
-        if (global.statefull.resultsPages.get(pageId)) {
-          resultPage.redirects.forEach((redirect) =>
-            global.statefull.resultsPages.get(pageId).redirects.push(redirect)
-          )
+        // add all pages
+        for (const pageId of global.statefull.resultsPages.keys()) {
+          pageIds.add(pageId)
         }
-      }
 
-      //pageIds set has missing pageids
+        for (const pageId of cachedata.pages.keys()) {
+          // remove pages hit with cache
+          pageIds.delete(pageId)
 
-      if (pageIds.size > 0) {
-        pageIds.forEach((pageId) => {
-          redirectsAddedPages.add(pageId)
-        })
+          const resultPage = cachedata.pages.get(pageId)
+          // redirects are added only to existing pages individually
+          if (global.statefull.resultsPages.get(pageId)) {
+            resultPage.redirects.forEach((redirect) =>
+              global.statefull.resultsPages.get(pageId).redirects.push(redirect)
+            )
+          }
+        }
+
+        //pageIds set has missing pageids
+
+        if (pageIds.size > 0) {
+          pageIds.forEach((pageId) => {
+            redirectsAddedPages.add(pageId)
+          })
+        }
+      } else {
+        global.statefull.resultsPages = await wikiFetchAddRedirectsToPages(
+          global.state.language,
+          global.statefull.resultsPages
+        )
+
+        try {
+          await putCacheResultsRedirects(
+            global.statefull.resultsPages,
+            global.state.title
+          )
+        } catch (error) {
+          console.error(error.message)
+        }
       }
     } else {
       global.statefull.resultsPages = await wikiFetchAddRedirectsToPages(
         global.state.language,
         global.statefull.resultsPages
       )
-
-      try {
-        await putCacheResultsRedirects(
-          global.statefull.resultsPages,
-          global.state.title
-        )
-      } catch (error) {
-        console.error(error.message)
-      }
     }
   }
+
+  // leave this here, added/deleted pages can happen with categories, even if all is being fetched from wikipedia
+  // (getting new list)
 
   // execute cache discrepancy cleanup if both categories and redirects are done
   // this fails in EXTREMELY(!!!) unlikely case that there is actually something to execute (which won't happen too often)
@@ -498,44 +534,52 @@ async function executeCacheDeferred() {
 async function getMainInfo() {
   global.setMainInfoDone(false)
 
-  let cacheerror = false
-  let cachedata
-  try {
-    cachedata = await getCacheMainInfo(global.state.title)
-  } catch (error) {
-    console.error(error.message)
-    cacheerror = true
-  }
+  if (cacheEnabled) {
+    let cacheerror = false
+    let cachedata
+    try {
+      cachedata = await getCacheMainInfo(global.state.title)
+    } catch (error) {
+      console.error(error.message)
+      cacheerror = true
+    }
 
-  // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (
-    !cacheerror &&
-    !(cachedata === undefined) &&
-    cachedata.date > new Date() - cacheMaxAge
-  ) {
-    global.statefull.titlePage.extract = cachedata.extract
-    global.statefull.titlePage.image = cachedata.image
-    global.statefull.titlePage.title = cachedata.title
-    global.statefull.titlePage.url = cachedata.url
-    global.statefull.titlePage.pageid = cachedata.pageid
-    global.statefull.titlePage.missing = cachedata.missing
+    // add date/max age check later / undefined on successful request, but key does not exist in database
+    if (
+      !cacheerror &&
+      !(cachedata === undefined) &&
+      cachedata.date > new Date() - cacheMaxAge
+    ) {
+      global.statefull.titlePage.extract = cachedata.extract
+      global.statefull.titlePage.image = cachedata.image
+      global.statefull.titlePage.title = cachedata.title
+      global.statefull.titlePage.url = cachedata.url
+      global.statefull.titlePage.pageid = cachedata.pageid
+      global.statefull.titlePage.missing = cachedata.missing
 
-    // don't do this, deletes categories and redirects property
-    // then legnth not defined in CategoriesRedirectsTitle.vue
-    // global.statefull.titlePage = cachedata
-    // delete global.statefull.titlePage['date']
+      // don't do this, deletes categories and redirects property
+      // then legnth not defined in CategoriesRedirectsTitle.vue
+      // global.statefull.titlePage = cachedata
+      // delete global.statefull.titlePage['date']
+    } else {
+      global.statefull.titlePage = await wikiFetchTitlePage(
+        global.state.title,
+        global.state.language
+      )
+
+      try {
+        await putCacheMainInfo(global.statefull.titlePage)
+      } catch (error) {
+        console.error(error.message)
+      }
+    }
   } else {
     global.statefull.titlePage = await wikiFetchTitlePage(
       global.state.title,
       global.state.language
     )
-
-    try {
-      await putCacheMainInfo(global.statefull.titlePage)
-    } catch (error) {
-      console.error(error.message)
-    }
   }
+
   global.setMainInfoDone(true)
 
   global.setRedirectsDone(false)
@@ -547,22 +591,36 @@ async function getMainInfo() {
   }
 }
 async function getCategories() {
-  let cacheerror = false
-  let cachedata
-  try {
-    cachedata = await getCacheCategories(global.state.title)
-  } catch (error) {
-    console.error(error.message)
-    cacheerror = true
-  }
+  if (cacheEnabled) {
+    let cacheerror = false
+    let cachedata
+    try {
+      cachedata = await getCacheCategories(global.state.title)
+    } catch (error) {
+      console.error(error.message)
+      cacheerror = true
+    }
 
-  // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (
-    !cacheerror &&
-    !(cachedata === undefined) &&
-    cachedata.date > new Date() - cacheMaxAge
-  ) {
-    global.statefull.titlePage.categories = cachedata.categories
+    // add date/max age check later / undefined on successful request, but key does not exist in database
+    if (
+      !cacheerror &&
+      !(cachedata === undefined) &&
+      cachedata.date > new Date() - cacheMaxAge
+    ) {
+      global.statefull.titlePage.categories = cachedata.categories
+    } else {
+      global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
+        global.state.title,
+        global.state.language,
+        global.statefull.titlePage
+      )
+    }
+
+    try {
+      await putCacheCategories(global.statefull.titlePage)
+    } catch (error) {
+      console.error(error.message)
+    }
   } else {
     global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
       global.state.title,
@@ -570,32 +628,40 @@ async function getCategories() {
       global.statefull.titlePage
     )
   }
-
   global.setCategoriesDone(true)
-  try {
-    await putCacheCategories(global.statefull.titlePage)
-  } catch (error) {
-    console.error(error.message)
-  }
 }
 
 async function getRedirects() {
-  let cacheerror = false
-  let cachedata
-  try {
-    cachedata = await getCacheRedirects(global.state.title)
-  } catch (error) {
-    console.error(error.message)
-    cacheerror = true
-  }
+  if (cacheEnabled) {
+    let cacheerror = false
+    let cachedata
+    try {
+      cachedata = await getCacheRedirects(global.state.title)
+    } catch (error) {
+      console.error(error.message)
+      cacheerror = true
+    }
 
-  // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (
-    !cacheerror &&
-    !(cachedata === undefined) &&
-    cachedata.date > new Date() - cacheMaxAge
-  ) {
-    global.statefull.titlePage.redirects = cachedata.redirects
+    // add date/max age check later / undefined on successful request, but key does not exist in database
+    if (
+      !cacheerror &&
+      !(cachedata === undefined) &&
+      cachedata.date > new Date() - cacheMaxAge
+    ) {
+      global.statefull.titlePage.redirects = cachedata.redirects
+    } else {
+      global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
+        global.state.title,
+        global.state.language,
+        global.statefull.titlePage
+      )
+    }
+
+    try {
+      await putCacheRedirects(global.statefull.titlePage)
+    } catch (error) {
+      console.error(error.message)
+    }
   } else {
     global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
       global.state.title,
@@ -605,11 +671,6 @@ async function getRedirects() {
   }
 
   global.setRedirectsDone(true)
-  try {
-    await putCacheRedirects(global.statefull.titlePage)
-  } catch (error) {
-    console.error(error.message)
-  }
 }
 
 async function circleButtonClicked(clickData) {
