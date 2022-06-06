@@ -254,9 +254,14 @@ export async function wikiFetchAddCategoriesToPages(language, pages) {
   let results = new Map()
 
   // initial throttle value in ms
-  const throttle = 20
-  // number of retries with throttle doubled each time
-  const retries = 10
+  const throttle = 0
+  // number of retries
+  const retries = 100
+
+  const batchsize = 480
+  const batchdelay = 10000
+
+  let batchcount = 0
 
   // parallelized fetching of redirects
   for (const pageId of pages.keys()) {
@@ -267,6 +272,11 @@ export async function wikiFetchAddCategoriesToPages(language, pages) {
       pageId,
       getSingleCategory(language, resultPage, throttle, retries)
     )
+    batchcount += 1
+    if (batchcount > batchsize) {
+      batchcount = 0
+      await new Promise((resolve) => setTimeout(resolve, batchdelay))
+    }
   }
   // page -> {Promise}
   for (const page of results.values()) {
@@ -464,7 +474,7 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
  * @param {String} language two letter lower case ('en, 'de')
  * @param {Page} resultPage (imported class)
  * @param {Number} throttle initial throttle value in ms
- * @param {Number} retries number of retries with throttle doubled each time
+ * @param {Number} retries number of retries with throttle increased each time
  */
 async function getSingleCategory(language, resultPage, throttle, retries) {
   let jsonCategories = {}
@@ -601,8 +611,10 @@ async function fetchRetry(url, options, retries, throttle) {
       }
       throw new NetworkError(message)
     }
-    await new Promise((resolve) => setTimeout(resolve, throttle * 2))
-    return await fetchRetry(url, options, retries - 1, throttle * 2)
+    // add 20ms for retry
+    const throttlenew = throttle + 20
+    await new Promise((resolve) => setTimeout(resolve, throttlenew))
+    return await fetchRetry(url, options, retries - 1, throttlenew)
   }
 }
 
