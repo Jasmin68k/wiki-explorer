@@ -675,13 +675,14 @@ async function getRedirects() {
 
 async function circleButtonClicked(clickData) {
   if (!global.state.displayResults[clickData.index].missing) {
-    if (!clickData.event.ctrlKey) {
-      global.setTitle(
-        await wikiFetchGetRedirectTarget(
-          global.state.displayResults[clickData.index].title,
-          global.state.language
-        )
+    global.setTitle(
+      await wikiFetchGetRedirectTarget(
+        global.state.displayResults[clickData.index].title,
+        global.state.language
       )
+    )
+
+    if (global.state.title.length > 0) {
       getMainInfo()
       getResults()
     }
@@ -693,9 +694,10 @@ async function fetchDataClicked(value) {
     global.setTitle(
       await wikiFetchGetRedirectTarget(value, global.state.language)
     )
-
-    getMainInfo()
-    getResults()
+    if (global.state.title.length > 0) {
+      getMainInfo()
+      getResults()
+    }
   }
 }
 async function resultsCategoriesChanged() {

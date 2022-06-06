@@ -582,8 +582,9 @@ export async function wikiFetchGetRedirectTarget(title, language) {
 
     const redirectFull = await response.json()
 
-    if (redirectFull.query.pages) {
-      const pageId = Object.keys(redirectFull.query.pages)[0]
+    const pageId = Object.keys(redirectFull.query.pages)[0]
+
+    if (redirectFull.query.pages[pageId].missing === undefined) {
       redirectTarget = redirectFull.query.pages[pageId].title
     }
   } catch (error) {
