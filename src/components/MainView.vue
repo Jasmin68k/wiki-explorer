@@ -105,6 +105,9 @@ const global = inject('global')
 const gridcontainer = ref(null)
 const inputarea = ref(null)
 
+// ms - temp hardcoded 1 h
+const cacheMaxAge = 3600000
+
 let categoriesAddedPages = new Map()
 let categoriesDeletedPages = new Set()
 let redirectsAddedPages = new Set()
@@ -190,7 +193,11 @@ async function getResults() {
   }
 
   // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (!cacheerror && !(cachedata === undefined)) {
+  if (
+    !cacheerror &&
+    !(cachedata === undefined) &&
+    cachedata.date > new Date() - cacheMaxAge
+  ) {
     for (const pageId of cachedata.pages.keys()) {
       const resultPage = cachedata.pages.get(pageId)
 
@@ -243,7 +250,11 @@ async function getResultsCategories() {
     }
 
     // add date/max age check later / undefined on successful request, but key does not exist in database
-    if (!cacheerror && !(cachedata === undefined)) {
+    if (
+      !cacheerror &&
+      !(cachedata === undefined) &&
+      cachedata.date > new Date() - cacheMaxAge
+    ) {
       let pageIds = new Set()
 
       for (const pageId of cachedata.pages.keys()) {
@@ -348,7 +359,11 @@ async function getResultsRedirects() {
     }
 
     // add date/max age check later / undefined on successful request, but key does not exist in database
-    if (!cacheerror && !(cachedata === undefined)) {
+    if (
+      !cacheerror &&
+      !(cachedata === undefined) &&
+      cachedata.date > new Date() - cacheMaxAge
+    ) {
       let pageIds = new Set()
 
       // add all pages
@@ -493,7 +508,11 @@ async function getMainInfo() {
   }
 
   // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (!cacheerror && !(cachedata === undefined)) {
+  if (
+    !cacheerror &&
+    !(cachedata === undefined) &&
+    cachedata.date > new Date() - cacheMaxAge
+  ) {
     global.statefull.titlePage.extract = cachedata.extract
     global.statefull.titlePage.image = cachedata.image
     global.statefull.titlePage.title = cachedata.title
@@ -538,7 +557,11 @@ async function getCategories() {
   }
 
   // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (!cacheerror && !(cachedata === undefined)) {
+  if (
+    !cacheerror &&
+    !(cachedata === undefined) &&
+    cachedata.date > new Date() - cacheMaxAge
+  ) {
     global.statefull.titlePage.categories = cachedata.categories
   } else {
     global.statefull.titlePage = await wikiFetchAddCategoriesToTitlePage(
@@ -567,7 +590,11 @@ async function getRedirects() {
   }
 
   // add date/max age check later / undefined on successful request, but key does not exist in database
-  if (!cacheerror && !(cachedata === undefined)) {
+  if (
+    !cacheerror &&
+    !(cachedata === undefined) &&
+    cachedata.date > new Date() - cacheMaxAge
+  ) {
     global.statefull.titlePage.redirects = cachedata.redirects
   } else {
     global.statefull.titlePage = await wikiFetchAddRedirectsToTitlePage(
