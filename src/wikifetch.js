@@ -136,7 +136,7 @@ export async function wikiFetchTitlePage(title, language) {
     }
     titlePage.title = jsonTitleData.query.pages[pageId].title
     titlePage.url = jsonTitleData.query.pages[pageId].fullurl
-    titlePage.pageid = pageId
+    titlePage.pageid = Number(pageId)
 
     if (jsonTitleData.query.pages[pageId].missing !== '') {
       titlePage.missing = false
