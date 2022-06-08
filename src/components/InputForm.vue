@@ -306,7 +306,10 @@
             <img class="helpicon" src="../assets/images/burger-menu.svg" />
           </label>
           <div id="optionsmenu">
-            <OptionsMenu @hideMenu="hideOptionsMenu"></OptionsMenu>
+            <OptionsMenu
+              ref="optionsmenu"
+              @hideMenu="hideOptionsMenu"
+            ></OptionsMenu>
           </div>
         </span>
       </form>
@@ -314,13 +317,15 @@
   </div>
 </template>
 <script setup>
-import { inject, onMounted } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 
 import { useI18n } from 'vue-i18n/index'
 import OptionsMenu from './OptionsMenu.vue'
 const { t } = useI18n({})
 
 const global = inject('global')
+
+const optionsmenu = ref(null)
 
 const emit = defineEmits([
   'fetchDataClicked',
@@ -422,6 +427,8 @@ onMounted(() => {
    * @param {String} redirects - Enable/disable results redirects, on or off valid (boolean to global.state.resultsRedirectsEnabled)
    * @param {String} titlefilter - String to filter results titles with (global.state.filter)
    * @param {String} categoriesfilter - String to filter results categories with (global.state.filterCategories)
+   * @param {String} cache - Enable/disable cache, on or off valid (boolean to global.state.cacheEnabled)
+   * @param {String} cachemaxage - Cache max age, valid 1h, 6h, 1d, 1w, 4w (global.state.cacheMaxAge)
    * @param {String} search - Wikipedia page to search for (global.state.title)
    */
 
@@ -433,6 +440,8 @@ onMounted(() => {
   const redirects = urlParameters.get('redirects')
   const titlefilter = urlParameters.get('titlefilter')
   const categoriesfilter = urlParameters.get('categoriesfilter')
+  const cache = urlParameters.get('cache')
+  const cachemaxage = urlParameters.get('cachemaxage')
   const search = urlParameters.get('search')
 
   if (mode === 'desktop' || mode === 'mobile') {
@@ -477,6 +486,43 @@ onMounted(() => {
       case 'off':
         resultsRedirectsChanged(false)
     }
+  }
+
+  if (cache === 'on' || cache === 'off') {
+    switch (cache) {
+      case 'on':
+        global.setCacheEnabled(true)
+        break
+      case 'off':
+        global.setCacheEnabled(false)
+    }
+    optionsmenu.value.cacheSettingsUpdated()
+  }
+
+  if (
+    cachemaxage === '1h' ||
+    cachemaxage === '6h' ||
+    cachemaxage === '1d' ||
+    cachemaxage === '1w' ||
+    cachemaxage === '4w'
+  ) {
+    switch (cachemaxage) {
+      case '1h':
+        global.setCacheMaxAge(global.constants.cachemaxage1h)
+        break
+      case '6h':
+        global.setCacheMaxAge(global.constants.cachemaxage6h)
+        break
+      case '1d':
+        global.setCacheMaxAge(global.constants.cachemaxage1d)
+        break
+      case '1w':
+        global.setCacheMaxAge(global.constants.cachemaxage1w)
+        break
+      case '4w':
+        global.setCacheMaxAge(global.constants.cachemaxage4w)
+    }
+    optionsmenu.value.cacheSettingsUpdated()
   }
 
   // do search last after evaluating all other parameters

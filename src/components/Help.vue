@@ -150,6 +150,8 @@
         {{ t('help-outro13h') }}<br />
         {{ t('help-outro13d') }}<br />
         {{ t('help-outro13e') }}<br />
+        {{ t('help-outro13f') }}<br />
+        {{ t('help-outro13g') }}<br />
         {{ t('help-outro13k') }}
       </p>
     </div>

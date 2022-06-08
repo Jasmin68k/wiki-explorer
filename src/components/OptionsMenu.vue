@@ -132,16 +132,16 @@ import { clearDatabase } from '../localcache.js'
 const { t } = useI18n({})
 const global = inject('global')
 const emit = defineEmits(['hideMenu'])
-
+defineExpose({ cacheSettingsUpdated })
+const cacheids = [
+  'cachedisable',
+  'cache1h',
+  'cache6h',
+  'cache1d',
+  'cache1w',
+  'cache4w'
+]
 async function menuItemSelected(id) {
-  const cacheids = [
-    'cachedisable',
-    'cache1h',
-    'cache6h',
-    'cache1d',
-    'cache1w',
-    'cache4w'
-  ]
   if (cacheids.includes(id)) {
     cacheids.forEach(
       (id) =>
@@ -198,7 +198,15 @@ async function menuItemSelected(id) {
       break
   }
 }
-onMounted(() => {
+
+function cacheSettingsUpdated() {
+  cacheids.forEach(
+    (id) =>
+      (document
+        .getElementById(id)
+        .getElementsByTagName('img')[0].style.visibility = 'hidden')
+  )
+
   if (!global.state.cacheEnabled) {
     document
       .getElementById('cachedisable')
@@ -235,11 +243,17 @@ onMounted(() => {
           .getElementsByTagName('img')[0].style.visibility = 'visible'
     }
   }
+}
+
+onMounted(() => {
+  cacheSettingsUpdated()
 })
 </script>
 
 <style scoped>
 .menu {
+  /* don't know, why resetting cursor is necessary to prevent changing to text cursor, when not disabled */
+  cursor: default;
   font-size: 85%;
   position: absolute;
   margin-right: 3px;
