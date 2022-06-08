@@ -48,11 +48,7 @@ const state = reactive({
       )
     }
 
-    if (
-      state.resultsCategoriesEnabled &&
-      state.resultsCategoriesDone &&
-      (!state.mobileMode || state.mobileMode)
-    ) {
+    if (state.resultsCategoriesEnabled && state.resultsCategoriesDone) {
       filtered = filtered.filter((page) =>
         page.categories
           ? page.categories.find((item) =>
