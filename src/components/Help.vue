@@ -7,7 +7,7 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/question-mark.svg" />
+        <img class="icon-help" src="../assets/images/burger-menu.svg" />
       </div>
     </div>
     <div class="help-text">
@@ -153,15 +153,26 @@
         {{ t('help-outro13k') }}
       </p>
     </div>
+
+    <div @click="closeButtonClicked" class="closebutton">
+      <img src="../assets/images/close-button.svg" />
+    </div>
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 
 import { useI18n } from 'vue-i18n/index'
+const global = inject('global')
 const { t } = useI18n({})
 
 const currentUrl = ref('')
+
+function closeButtonClicked() {
+  global.setShowHelp(false)
+  global.setInputsDisabled(false)
+}
+
 onMounted(() => {
   // both versions work
   // currentUrl.value = window.location.origin + window.location.pathname
@@ -170,6 +181,8 @@ onMounted(() => {
 </script>
 <style scoped>
 .grid-container-help {
+  position: relative;
+
   display: grid;
   grid-template-columns: minmax(110px, 1fr) minmax(190px, 7fr);
   grid-auto-rows: min-content;
@@ -258,5 +271,17 @@ onMounted(() => {
 }
 .twocolumns {
   grid-column: 1 / 3;
+}
+.closebutton {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 5;
+  width: 30px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .closebutton:hover {
+    filter: invert(0.5);
+  }
 }
 </style>

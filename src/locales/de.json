@@ -7,7 +7,7 @@
   "search-on-wikipedia": "Bei Wikipedia suchen...",
   "categories": "Kategorien",
   "redirects": "Weiterleitungen",
-  "help-help": "Zeige/verstecke diese Hilfe-Seite.",
+  "help-help": "Zeige/verstecke Optionen-Menü. In diesem Menü kann das maximale Alter für Daten, die im lokalen Zwischenspeicher hinterlegt sind (welcher die meisten von Wikipedia geholten Daten speichert und Suchen dramatisch beschleunigt auf Kosten davon, potentiell nicht immer komplett auf dem neuesten Stand zu sein), eingestellt werden oder der Zwischenspeicher kann deaktiviert sowie geleert werden. Auch ist dieser Hilfe-Text verfügbar.",
   "help-desktop-mobile": "Arbeitsplatzmodus oder mobiler Modus",
   "help-language": "Sprache für Wikipedia und Bedienelemente",
   "help-search": "Suche bei Wikipedia",
@@ -43,5 +43,15 @@
   "help-outro13j": "buttonmode - Bei Klick auf Ergebnistitel: Suche, zeige Kategorien/Weiterleitungen oder öffne Wikipedia, valide 'search', 'catsredir' oder 'wiki' (Details, s. oben)",
   "help-outro13k": "search - Wikipedia-Seite, nach der gesucht werden soll",
   "open": "Öffne",
-  "showcatsredir": "Kateg./Weiterl."
+  "showcatsredir": "Kateg./Weiterl.",
+  "cache": "Zwischenspeicher",
+  "cachedisabled": "Deaktiviert",
+  "cache1h": "1 Stunde",
+  "cache6h": "6 Stunden",
+  "cache1d": "1 Tag",
+  "cache1w": "1 Woche",
+  "cache4w": "4 Wochen",
+  "cacheflush": "Leeren",
+  "cacheflushed": "Geleert",
+  "help": "Hilfe"
 }

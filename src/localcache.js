@@ -35,6 +35,23 @@ export function openDatabase() {
   })
 }
 
+export function clearDatabase() {
+  return new Promise((resolve, reject) => {
+    for (let i = 0; i < osNames.length; i++) {
+      let transaction = db.transaction([osNames[i]], 'readwrite')
+      transaction.oncomplete = () => {
+        resolve()
+      }
+      transaction.onerror = (event) => {
+        reject(event.target.error)
+      }
+
+      let objectStore = transaction.objectStore(osNames[i])
+      objectStore.clear()
+    }
+  })
+}
+
 export function getCacheMainInfo(title) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['maininfo'])

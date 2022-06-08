@@ -7,7 +7,7 @@
   "search-on-wikipedia": "Search on Wikipedia...",
   "categories": "Categories",
   "redirects": "Redirects",
-  "help-help": "Show/hide this help page.",
+  "help-help": "Show/hide options menu. In this menu the maximum age for data stored in the local cache (which stores most fetches from Wikipedia and dramatically speeds up searches at the cost of potentially not always being completely up to date) can be set or the cache can be disabled altogether, as well as flushed. This help text is also available.",
   "help-desktop-mobile": "Desktop or mobile mode",
   "help-language": "Language for Wikipedia and user interface",
   "help-search": "Search on Wikipedia",
@@ -43,5 +43,15 @@
   "help-outro13j": "buttonmode - On title button click: Search, show categories/redirects or open Wikipedia on button click, valid 'search', 'catsredir' or 'wiki' (details, see above)",
   "help-outro13k": "search - Wikipedia page to search for",
   "open": "Open",
-  "showcatsredir": "Categories/redirects"
+  "showcatsredir": "Categories/redirects",
+  "cache": "Cache",
+  "cachedisabled": "Disabled",
+  "cache1h": "1 hour",
+  "cache6h": "6 hours",
+  "cache1d": "1 day",
+  "cache1w": "1 week",
+  "cache4w": "4 weeks",
+  "cacheflush": "Flush",
+  "cacheflushed": "Flushed",
+  "help": "Help"
 }

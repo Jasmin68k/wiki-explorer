@@ -15,7 +15,6 @@
     >
       <input-form
         @fetchDataClicked="fetchDataClicked"
-        @showHelpClicked="showHelpSwitched"
         @resultsCategoriesChanged="resultsCategoriesChanged"
         @resultsRedirectsChanged="resultsRedirectsChanged"
         @languageSwitched="languageSwitched"
@@ -107,11 +106,6 @@ const global = inject('global')
 const gridcontainer = ref(null)
 const inputarea = ref(null)
 
-// ms - temp hardcoded 1 h
-const cacheMaxAge = 3600000
-// temp hardcoded
-const cacheEnabled = true
-
 let categoriesAddedPages = new Map()
 let categoriesDeletedPages = new Set()
 let redirectsAddedPages = new Set()
@@ -189,7 +183,7 @@ async function getResults() {
 
   global.statefull.resultsPages = new Map()
 
-  if (cacheEnabled) {
+  if (global.state.cacheEnabled) {
     let cacheerror = false
     let cachedata
     try {
@@ -203,7 +197,7 @@ async function getResults() {
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
-      cachedata.date > new Date() - cacheMaxAge
+      cachedata.date > new Date() - global.state.cacheMaxAge
     ) {
       for (const pageId of cachedata.pages.keys()) {
         const resultPage = cachedata.pages.get(pageId)
@@ -253,7 +247,7 @@ async function getResults() {
 async function getResultsCategories() {
   // skip fetch when no results
   if (global.statefull.resultsPages.size > 0) {
-    if (cacheEnabled) {
+    if (global.state.cacheEnabled) {
       let cacheerror = false
       let cachedata
       try {
@@ -267,7 +261,7 @@ async function getResultsCategories() {
       if (
         !cacheerror &&
         !(cachedata === undefined) &&
-        cachedata.date > new Date() - cacheMaxAge
+        cachedata.date > new Date() - global.state.cacheMaxAge
       ) {
         let pageIds = new Set()
 
@@ -379,7 +373,7 @@ async function getResultsCategories() {
 async function getResultsRedirects() {
   // skip fetch when no results
   if (global.statefull.resultsPages.size > 0) {
-    if (cacheEnabled) {
+    if (global.state.cacheEnabled) {
       let cacheerror = false
       let cachedata
       try {
@@ -393,7 +387,7 @@ async function getResultsRedirects() {
       if (
         !cacheerror &&
         !(cachedata === undefined) &&
-        cachedata.date > new Date() - cacheMaxAge
+        cachedata.date > new Date() - global.state.cacheMaxAge
       ) {
         let pageIds = new Set()
 
@@ -538,7 +532,7 @@ async function executeCacheDeferred() {
 async function getMainInfo() {
   global.setMainInfoDone(false)
 
-  if (cacheEnabled) {
+  if (global.state.cacheEnabled) {
     let cacheerror = false
     let cachedata
     try {
@@ -552,7 +546,7 @@ async function getMainInfo() {
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
-      cachedata.date > new Date() - cacheMaxAge
+      cachedata.date > new Date() - global.state.cacheMaxAge
     ) {
       global.statefull.titlePage.extract = cachedata.extract
       global.statefull.titlePage.image = cachedata.image
@@ -595,7 +589,7 @@ async function getMainInfo() {
   }
 }
 async function getCategories() {
-  if (cacheEnabled) {
+  if (global.state.cacheEnabled) {
     let cacheerror = false
     let cachedata
     try {
@@ -609,7 +603,7 @@ async function getCategories() {
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
-      cachedata.date > new Date() - cacheMaxAge
+      cachedata.date > new Date() - global.state.cacheMaxAge
     ) {
       global.statefull.titlePage.categories = cachedata.categories
     } else {
@@ -636,7 +630,7 @@ async function getCategories() {
 }
 
 async function getRedirects() {
-  if (cacheEnabled) {
+  if (global.state.cacheEnabled) {
     let cacheerror = false
     let cachedata
     try {
@@ -650,7 +644,7 @@ async function getRedirects() {
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
-      cachedata.date > new Date() - cacheMaxAge
+      cachedata.date > new Date() - global.state.cacheMaxAge
     ) {
       global.statefull.titlePage.redirects = cachedata.redirects
     } else {
@@ -692,7 +686,7 @@ async function fetchDataClicked(value) {
 }
 
 async function startFetches(search) {
-  if (cacheEnabled) {
+  if (global.state.cacheEnabled) {
     let cacheerror = false
     let cachedata
     try {
@@ -706,7 +700,7 @@ async function startFetches(search) {
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
-      cachedata.date > new Date() - cacheMaxAge
+      cachedata.date > new Date() - global.state.cacheMaxAge
     ) {
       global.setTitle(cachedata.redirecttarget)
     } else {
@@ -762,10 +756,6 @@ function languageSwitched(value) {
   locale.value = value
 
   global.setLanguage(value)
-}
-
-function showHelpSwitched() {
-  global.setInputsDisabled(global.state.showHelp)
 }
 
 onMounted(async () => {

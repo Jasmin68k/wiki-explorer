@@ -294,17 +294,20 @@
           ><img class="mobileicon" src="../assets/images/smartphone.svg" />
         </label>
 
-        <span>
+        <span class="menuanchor">
           <input
-            id="showHelp"
+            id="showoptionsmenu"
             class="checkbox"
             type="checkbox"
-            :checked="global.state.showHelp"
-            @change="showHelpClicked($event.target.checked)"
+            @change="optionsMenuClicked($event.target.checked)"
           />
-          <label class="checkboxlabel" for="showHelp">
-            <img class="helpicon" src="../assets/images/question-mark.svg" />
+
+          <label class="checkboxlabel" for="showoptionsmenu">
+            <img class="helpicon" src="../assets/images/burger-menu.svg" />
           </label>
+          <div id="optionsmenu">
+            <OptionsMenu @hideMenu="hideOptionsMenu"></OptionsMenu>
+          </div>
         </span>
       </form>
     </div>
@@ -314,6 +317,7 @@
 import { inject, onMounted } from 'vue'
 
 import { useI18n } from 'vue-i18n/index'
+import OptionsMenu from './OptionsMenu.vue'
 const { t } = useI18n({})
 
 const global = inject('global')
@@ -321,7 +325,6 @@ const global = inject('global')
 const emit = defineEmits([
   'fetchDataClicked',
   'resultsRedirectsChanged',
-  'showHelpClicked',
   'resultsCategoriesChanged',
   'languageSwitched',
   'mode-switched',
@@ -379,10 +382,23 @@ async function modeSwitched(value) {
     global.setMobileMode(false)
   }
 }
-function showHelpClicked(value) {
-  global.setShowHelp(value)
-  emit('showHelpClicked', value)
+
+function optionsMenuClicked(value) {
+  switch (value) {
+    case true:
+      document.getElementById('optionsmenu').style.display = 'block'
+      break
+    case false:
+      document.getElementById('optionsmenu').style.display = 'none'
+      break
+  }
 }
+
+function hideOptionsMenu() {
+  document.getElementById('optionsmenu').style.display = 'none'
+  document.getElementById('showoptionsmenu').checked = false
+}
+
 onMounted(() => {
   // init
   languageSwitched('en')
@@ -612,5 +628,16 @@ onMounted(() => {
   vertical-align: middle;
   margin-left: 0.2em;
   margin-right: 0.2em;
+}
+
+.menuanchor {
+  /* for absolute positioning of menu */
+  position: relative;
+  /* expand span to dimensions of child (label) */
+  display: inline-block;
+}
+
+#optionsmenu {
+  display: none;
 }
 </style>

@@ -1,6 +1,15 @@
 import { reactive, computed, readonly } from 'vue'
 import { TitlePage } from './datamodels.js'
 
+const constants = {
+  // cache ages in ms
+  cachemaxage1h: 3600000,
+  cachemaxage6h: 21600000,
+  cachemaxage1d: 86400000,
+  cachemaxage1w: 604800000,
+  cachemaxage4w: 2419200000
+}
+
 const state = reactive({
   filter: '',
   filterCategories: '',
@@ -20,6 +29,8 @@ const state = reactive({
   pieAngleSaved: 0,
   activeTab: 'tab2',
   mainInfoDone: false,
+  cacheMaxAge: constants.cachemaxage4w,
+  cacheEnabled: true,
   filteredResults: computed(function () {
     if (state.inputsDisabled) {
       return []
@@ -170,8 +181,15 @@ const setCategoriesDone = (value) => {
 const setMainInfoDone = (value) => {
   state.mainInfoDone = value
 }
+const setCacheMaxAge = (value) => {
+  state.cacheMaxAge = value
+}
+const setCacheEnabled = (value) => {
+  state.cacheEnabled = value
+}
 
 export default {
+  constants: readonly(constants),
   state: readonly(state),
   statefull,
   setFilter,
@@ -191,5 +209,7 @@ export default {
   setPieAngleSaved,
   setActiveTab,
   setCategoriesDone,
-  setMainInfoDone
+  setMainInfoDone,
+  setCacheMaxAge,
+  setCacheEnabled
 }
