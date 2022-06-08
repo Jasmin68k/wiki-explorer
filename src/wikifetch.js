@@ -313,19 +313,47 @@ export async function wikiFetchAddRedirectsToPages(language, pages) {
   let results = new Map()
 
   // initial throttle value in ms
-  const throttle = 20
-  // number of retries with throttle doubled each time
-  const retries = 10
+  const throttle = 0
+  // number of ms to increase throttle each retry
+  const throttleincrease = 20
+  // number of retries
+  const retries = 100
 
+  // don't fire too many at once -> 429/ratelimited
+
+  // finetuned by hand
+  // up to 500 requests at once (with throttle 0) AND 500 requests per 10s seems safe
+  // number of requests to fire per batch
+  // using throttle 0 and batches makes it much faster for smaller pages
+  // retried fetch should ideally only happen, if these safe values fail
+  // or maybe if clicked many pages slightly below 500 in rapid succession
+
+  // with possible categories fetch in parallel, there are extra requests,
+  // so bit smaller than 500 - 480 seems ok
+  const batchsize = 480
+  const batchdelay = 10000
+
+  let batchcount = 0
   // parallelized fetching of redirects
   for (const pageId of pages.keys()) {
     const resultPage = pages.get(pageId)
-    // don't fire too many at once -> 429/ratelimited
+
     await new Promise((resolve) => setTimeout(resolve, throttle))
     results.set(
       pageId,
-      getSingleRedirect(language, resultPage, throttle, retries)
+      getSingleRedirect(
+        language,
+        resultPage,
+        throttle,
+        throttleincrease,
+        retries
+      )
     )
+    batchcount += 1
+    if (batchcount > batchsize) {
+      batchcount = 0
+      await new Promise((resolve) => setTimeout(resolve, batchdelay))
+    }
   }
   // page -> {Promise}
   for (const page of results.values()) {
@@ -469,9 +497,16 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
  * @param {String} language two letter lower case ('en, 'de')
  * @param {Page} resultPage (imported class)
  * @param {Number} throttle initial throttle value in ms
- * @param {Number} retries number of retries with throttle doubled each time
+ * @param {Number} throttleincrease number of ms to increase throttle each retry
+ * @param {Number} retries number of retries with throttle increased each time
  */
-async function getSingleRedirect(language, resultPage, throttle, retries) {
+async function getSingleRedirect(
+  language,
+  resultPage,
+  throttle,
+  throttleincrease,
+  retries
+) {
   let jsonRedirects = {}
 
   do {
@@ -495,7 +530,8 @@ async function getSingleRedirect(language, resultPage, throttle, retries) {
           headers: fetchHeaders
         },
         retries,
-        throttle
+        throttle,
+        throttleincrease
       )
 
       jsonRedirects = await response.json()
@@ -525,10 +561,11 @@ async function getSingleRedirect(language, resultPage, throttle, retries) {
  * @param {String} url url to fetch (resource)
  * @param {Object} options options for fetch (init)
  * @param {Number} retries maximum number of retries before failure
- * @param {Number} throttle initial throttle value in ms, doubles each failed request
+ * @param {Number} throttle initial throttle value in ms, increases each failed request
+ * @param {Number} throttleincrease number of ms to add to throttle value each retry
  * @returns {Promise<Response>}
  */
-async function fetchRetry(url, options, retries, throttle) {
+async function fetchRetry(url, options, retries, throttle, throttleincrease) {
   // wiki returns cross origin request blocked, code 429, when too fast
   let response = ''
   try {
@@ -549,8 +586,10 @@ async function fetchRetry(url, options, retries, throttle) {
       }
       throw new NetworkError(message)
     }
-    await new Promise((resolve) => setTimeout(resolve, throttle * 2))
-    return await fetchRetry(url, options, retries - 1, throttle * 2)
+    // add 20ms for retry
+    const throttlenew = throttle + throttleincrease
+    await new Promise((resolve) => setTimeout(resolve, throttlenew))
+    return await fetchRetry(url, options, retries - 1, throttlenew)
   }
 }
 
