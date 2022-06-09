@@ -647,8 +647,7 @@ onMounted(() => {
 
 .searchiconsmall,
 .titleiconsmall,
-.categoriesiconsmall,
-.wikipediaiconsmall {
+.categoriesiconsmall {
   width: 1.4em;
   height: 1.4em;
   vertical-align: middle;
