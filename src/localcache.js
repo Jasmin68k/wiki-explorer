@@ -10,6 +10,11 @@ const osNames = [
 ]
 let db
 
+/**
+ * Initialize local cache
+ * @returns {Promise} resolve empty or reject with error
+ */
+
 export function openDatabase() {
   return new Promise((resolve, reject) => {
     let request = indexedDB.open(dbName, 1)
@@ -35,6 +40,10 @@ export function openDatabase() {
   })
 }
 
+/**
+ * Flush local cache
+ * @returns {Promise} resolve empty or reject with error
+ */
 export function clearDatabase() {
   return new Promise((resolve, reject) => {
     for (let i = 0; i < osNames.length; i++) {
@@ -52,6 +61,13 @@ export function clearDatabase() {
   })
 }
 
+/**
+ * Get MainInfo from cache
+ * @param {String} title title to get from cache
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve with result or reject with error
+ */
+
 export function getCacheMainInfo(title, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['maininfo'])
@@ -67,6 +83,12 @@ export function getCacheMainInfo(title, language) {
   })
 }
 
+/**
+ * Get MainInfo categories from cache
+ * @param {String} title title to get from cache
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve with result or reject with error
+ */
 export function getCacheCategories(title, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['categories'])
@@ -82,6 +104,12 @@ export function getCacheCategories(title, language) {
   })
 }
 
+/**
+ * Get MainInfo redirects from cache
+ * @param {String} title title to get from cache
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve with result or reject with error
+ */
 export function getCacheRedirects(title, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['redirects'])
@@ -97,6 +125,12 @@ export function getCacheRedirects(title, language) {
   })
 }
 
+/**
+ * Get redirect target from cache
+ * @param {String} search original search term before redirect
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve with result or reject with error
+ */
 export function getCacheRedirectTarget(search, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['redirecttargets'])
@@ -112,6 +146,12 @@ export function getCacheRedirectTarget(search, language) {
   })
 }
 
+/**
+ * Get results pages from cache
+ * @param {String} title title to get from cache
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve with result or reject with error
+ */
 export function getCacheResults(title, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['results'])
@@ -134,6 +174,13 @@ export function getCacheResults(title, language) {
   })
 }
 
+/**
+ * Get results pages categories from cache
+ * @param {String} title title to get from cache
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve with result or reject with error
+ */
+
 export function getCacheResultsCategories(title, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['resultscategories'])
@@ -155,6 +202,13 @@ export function getCacheResultsCategories(title, language) {
     }
   })
 }
+
+/**
+ * Get results pages redirects from cache
+ * @param {String} title title to get from cache
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve with result or reject with error
+ */
 
 export function getCacheResultsRedirects(title, language) {
   return new Promise((resolve, reject) => {
@@ -179,6 +233,14 @@ export function getCacheResultsRedirects(title, language) {
 }
 
 // no add needed, put is fine (create or overwrite) for what we do
+
+/**
+ * Put MainInfo into cache
+ * @param {TitlePage} titlePage MainInfo in TitlePage (custom class)
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve empty or reject with error
+ */
+
 export function putCacheMainInfo(titlePage, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['maininfo'], 'readwrite')
@@ -204,6 +266,13 @@ export function putCacheMainInfo(titlePage, language) {
   })
 }
 
+/**
+ * Put MainInfo categories into cache
+ * @param {TitlePage} titlePage MainInfo categories in TitlePage (custom class)
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve empty or reject with error
+ */
+
 export function putCacheCategories(titlePage, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['categories'], 'readwrite')
@@ -224,6 +293,13 @@ export function putCacheCategories(titlePage, language) {
   })
 }
 
+/**
+ * Put MainInfo redirects into cache
+ * @param {TitlePage} titlePage MainInfo redirects in TitlePage (custom class)
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve empty or reject with error
+ */
+
 export function putCacheRedirects(titlePage, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['redirects'], 'readwrite')
@@ -243,6 +319,14 @@ export function putCacheRedirects(titlePage, language) {
     objectStore.put(data, language + '.' + titlePage.title)
   })
 }
+
+/**
+ * Put results pages into cache
+ * @param {Map<Page>} resultsPages Map with each result in Page (custom class)
+ * @param {String} title title from search
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve empty or reject with error
+ */
 
 export function putCacheResults(resultsPages, title, language) {
   return new Promise((resolve, reject) => {
@@ -275,6 +359,14 @@ export function putCacheResults(resultsPages, title, language) {
     objectStore.put(data, language + '.' + title)
   })
 }
+
+/**
+ * Put results pages categories into cache
+ * @param {Map<Page>} resultsPages Map with each result with categories in Page (custom class)
+ * @param {String} title title from search
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve empty or reject with error
+ */
 
 export function putCacheResultsCategories(resultsPages, title, language) {
   return new Promise((resolve, reject) => {
@@ -311,6 +403,14 @@ export function putCacheResultsCategories(resultsPages, title, language) {
   })
 }
 
+/**
+ * Put results pages redirects into cache
+ * @param {Map<Page>} resultsPages Map with each result with redirects in Page (custom class)
+ * @param {String} title title from search
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve empty or reject with error
+ */
+
 export function putCacheResultsRedirects(resultsPages, title, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['resultsredirects'], 'readwrite')
@@ -345,6 +445,13 @@ export function putCacheResultsRedirects(resultsPages, title, language) {
   })
 }
 
+/**
+ * Put MainInfo into cache
+ * @param {String} search original search term before redirect
+ * @param {String} target redirect target
+ * @param {String} language two letter lower case ('en, 'de')
+ * @returns {Promise} resolve empty or reject with error
+ */
 export function putCacheRedirectTarget(search, target, language) {
   return new Promise((resolve, reject) => {
     let transaction = db.transaction(['redirecttargets'], 'readwrite')
