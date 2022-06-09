@@ -105,7 +105,6 @@ ul {
   background-color: #ddd;
   border-radius: 0;
   border: 1px solid black;
-  margin-bottom: 1.5em;
 }
 @media (hover: hover) and (pointer: fine) {
   .wikibutton:hover {
