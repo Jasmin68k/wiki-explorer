@@ -210,6 +210,12 @@ onBeforeUnmount(() => {
   width: 100%;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .items:hover {
+    background-color: #ddd;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
