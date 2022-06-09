@@ -204,6 +204,7 @@ onBeforeUnmount(() => {
 
 .itemsinput {
   height: 25px;
+  accent-color: #ddd;
 }
 .itemslabel {
   line-height: 25px;
