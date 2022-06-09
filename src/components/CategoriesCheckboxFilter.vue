@@ -199,6 +199,9 @@ ul {
 }
 li {
   white-space: nowrap;
+  /* use padding, not margin, for space so calculateInitialRowHeight() gives correct value for total height */
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 * {
