@@ -187,7 +187,10 @@ async function getResults() {
     let cacheerror = false
     let cachedata
     try {
-      cachedata = await getCacheResults(global.state.title)
+      cachedata = await getCacheResults(
+        global.state.title,
+        global.state.language
+      )
     } catch (error) {
       console.error(error.message)
       cacheerror = true
@@ -218,7 +221,11 @@ async function getResults() {
         global.state.language
       )
       try {
-        await putCacheResults(global.statefull.resultsPages, global.state.title)
+        await putCacheResults(
+          global.statefull.resultsPages,
+          global.state.title,
+          global.state.language
+        )
       } catch (error) {
         console.error(error.message)
       }
@@ -251,7 +258,10 @@ async function getResultsCategories() {
       let cacheerror = false
       let cachedata
       try {
-        cachedata = await getCacheResultsCategories(global.state.title)
+        cachedata = await getCacheResultsCategories(
+          global.state.title,
+          global.state.language
+        )
       } catch (error) {
         console.error(error.message)
         cacheerror = true
@@ -330,7 +340,8 @@ async function getResultsCategories() {
         try {
           await putCacheResultsCategories(
             global.statefull.resultsPages,
-            global.state.title
+            global.state.title,
+            global.state.language
           )
         } catch (error) {
           console.error(error.message)
@@ -377,7 +388,10 @@ async function getResultsRedirects() {
       let cacheerror = false
       let cachedata
       try {
-        cachedata = await getCacheResultsRedirects(global.state.title)
+        cachedata = await getCacheResultsRedirects(
+          global.state.title,
+          global.state.language
+        )
       } catch (error) {
         console.error(error.message)
         cacheerror = true
@@ -425,7 +439,8 @@ async function getResultsRedirects() {
         try {
           await putCacheResultsRedirects(
             global.statefull.resultsPages,
-            global.state.title
+            global.state.title,
+            global.state.language
           )
         } catch (error) {
           console.error(error.message)
@@ -536,7 +551,10 @@ async function getMainInfo() {
     let cacheerror = false
     let cachedata
     try {
-      cachedata = await getCacheMainInfo(global.state.title)
+      cachedata = await getCacheMainInfo(
+        global.state.title,
+        global.state.language
+      )
     } catch (error) {
       console.error(error.message)
       cacheerror = true
@@ -566,7 +584,10 @@ async function getMainInfo() {
       )
 
       try {
-        await putCacheMainInfo(global.statefull.titlePage)
+        await putCacheMainInfo(
+          global.statefull.titlePage,
+          global.state.language
+        )
       } catch (error) {
         console.error(error.message)
       }
@@ -593,7 +614,10 @@ async function getCategories() {
     let cacheerror = false
     let cachedata
     try {
-      cachedata = await getCacheCategories(global.state.title)
+      cachedata = await getCacheCategories(
+        global.state.title,
+        global.state.language
+      )
     } catch (error) {
       console.error(error.message)
       cacheerror = true
@@ -615,7 +639,10 @@ async function getCategories() {
     }
 
     try {
-      await putCacheCategories(global.statefull.titlePage)
+      await putCacheCategories(
+        global.statefull.titlePage,
+        global.state.language
+      )
     } catch (error) {
       console.error(error.message)
     }
@@ -634,7 +661,10 @@ async function getRedirects() {
     let cacheerror = false
     let cachedata
     try {
-      cachedata = await getCacheRedirects(global.state.title)
+      cachedata = await getCacheRedirects(
+        global.state.title,
+        global.state.language
+      )
     } catch (error) {
       console.error(error.message)
       cacheerror = true
@@ -656,7 +686,7 @@ async function getRedirects() {
     }
 
     try {
-      await putCacheRedirects(global.statefull.titlePage)
+      await putCacheRedirects(global.statefull.titlePage, global.state.language)
     } catch (error) {
       console.error(error.message)
     }
@@ -690,7 +720,7 @@ async function startFetches(search) {
     let cacheerror = false
     let cachedata
     try {
-      cachedata = await getCacheRedirectTarget(search)
+      cachedata = await getCacheRedirectTarget(search, global.state.language)
     } catch (error) {
       console.error(error.message)
       cacheerror = true
@@ -710,7 +740,11 @@ async function startFetches(search) {
 
       if (global.state.title.length > 0) {
         try {
-          await putCacheRedirectTarget(search, global.state.title)
+          await putCacheRedirectTarget(
+            search,
+            global.state.title,
+            global.state.language
+          )
         } catch (error) {
           console.error(error.message)
         }
