@@ -103,7 +103,7 @@ function circleButtonMiddle(index) {
   height: 100%;
 }
 @media (hover: hover) and (pointer: fine) {
-  .circlebuttonactualhover:hover {
+  .circlebuttonactualhover:hover:not(.missing) {
     background-color: palegoldenrod;
   }
 }
