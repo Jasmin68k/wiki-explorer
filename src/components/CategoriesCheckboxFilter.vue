@@ -1,18 +1,19 @@
 <template>
   <div class="root" ref="root" :style="rootStyle">
     <div class="viewport" :style="viewportStyle">
-      <ul class="spacer" ref="spacer" :style="spacerStyle">
-        <li v-for="item in visibleItems" :key="item">
+      <div class="spacer" ref="spacer" :style="spacerStyle">
+        <div class="items" v-for="item in visibleItems" :key="item">
           <input
+            class="itemsinput"
             type="checkbox"
             :id="item"
             :value="item"
             v-model="global.statefull.checkedCategories"
             @change="resultsCategoriesCheckboxChanged"
           />
-          <label :for="item">{{ item }}</label>
-        </li>
-      </ul>
+          <label class="itemslabel" :for="item">{{ item }}</label>
+        </div>
+      </div>
     </div>
   </div>
   <div class="checkboxbuttonscontainer">
@@ -157,6 +158,7 @@ function calculateInitialRowHeight() {
       largestHeight = children[i].offsetHeight
     }
   }
+
   return largestHeight
 }
 
@@ -191,17 +193,21 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-ul {
-  list-style-type: none; /* Remove bullets */
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margins */
+.spacer {
   overflow: hidden;
 }
-li {
+
+.items {
   white-space: nowrap;
-  /* use padding, not margin, for space so calculateInitialRowHeight() gives correct value for total height */
-  padding-top: 3px;
-  padding-bottom: 3px;
+  display: flex;
+}
+
+.itemsinput {
+  height: 25px;
+}
+.itemslabel {
+  line-height: 25px;
+  width: 100%;
 }
 
 * {
