@@ -123,7 +123,7 @@
       }"
     >
       <form class="inputform" @submit.prevent="">
-        <label for="filter"
+        <label for="filter" class="filterlabel"
           ><img class="titleiconsmall" src="../assets/images/text-tool.svg"
         /></label>
         <input
@@ -144,7 +144,7 @@
       }"
     >
       <form class="inputform" @submit.prevent="">
-        <label for="filterCategories">
+        <label for="filterCategories" class="filterlabel">
           <img
             class="categoriesiconsmall"
             src="../assets/images/document.svg"
@@ -645,14 +645,21 @@ onMounted(() => {
   padding: 2px;
 }
 
-.searchiconsmall,
+.filterlabel {
+  display: flex;
+}
+
 .titleiconsmall,
 .categoriesiconsmall {
   width: 1.4em;
-  height: 1.4em;
-  vertical-align: middle;
+  height: auto;
 }
 
+.searchiconsmall {
+  width: 1.4em;
+  height: auto;
+  vertical-align: middle;
+}
 .catsrediricon {
   width: 1.3em;
   height: 1.3em;
