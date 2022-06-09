@@ -16,10 +16,18 @@
   >
     <div v-for="(page, index) in global.state.filteredResults" :key="index">
       <div class="title">
-        <h3>
+        <h3
+          :class="{
+            titlemissing: page.missing
+          }"
+        >
           {{ page.title }}
         </h3>
-        <button class="wikibutton" @click.prevent="wikiClicked(page.url)">
+        <button
+          v-if="!page.missing"
+          class="wikibutton"
+          @click.prevent="wikiClicked(page.url)"
+        >
           {{ t('open') }}
           <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
         </button>
@@ -114,5 +122,8 @@ ul {
 .wikipediaicon {
   height: 1.5em;
   vertical-align: top;
+}
+.titlemissing {
+  color: red;
 }
 </style>
