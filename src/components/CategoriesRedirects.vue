@@ -19,6 +19,10 @@
         <h3>
           {{ page.title }}
         </h3>
+        <button class="wikibutton" @click.prevent="wikiClicked(page.url)">
+          {{ t('open') }}
+          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+        </button>
       </div>
 
       <div
@@ -63,6 +67,10 @@ import { useI18n } from 'vue-i18n/index'
 const { t } = useI18n({})
 
 const global = inject('global')
+
+function wikiClicked(url) {
+  window.open(url, '_blank')
+}
 </script>
 
 <style scoped>
@@ -90,4 +98,22 @@ ul {
 /* .list-horizontal li:first-child:before {
   content: '';
 } */
+
+.wikibutton {
+  font-size: 100%;
+  vertical-align: middle;
+  background-color: #ddd;
+  border-radius: 0;
+  border: 1px solid black;
+  margin-bottom: 1.5em;
+}
+@media (hover: hover) and (pointer: fine) {
+  .wikibutton:hover {
+    filter: invert(0.25);
+  }
+}
+.wikipediaicon {
+  height: 1.5em;
+  vertical-align: top;
+}
 </style>
