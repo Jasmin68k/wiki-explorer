@@ -1,5 +1,11 @@
 <template>
   <div class="grid-container-help">
+    <div class="closebuttoncontainer twocolumns">
+      <div @click="closeButtonClicked" class="closebutton">
+        <img src="../assets/images/close-button.svg" />
+      </div>
+    </div>
+
     <div class="twocolumns help-text">
       <h1>Wiki-Explorer</h1>
       <p>{{ t('help-intro1') }}</p>
@@ -155,10 +161,6 @@
         {{ t('help-outro13k') }}
       </p>
     </div>
-
-    <div @click="closeButtonClicked" class="closebutton">
-      <img src="../assets/images/close-button.svg" />
-    </div>
   </div>
 </template>
 <script setup>
@@ -274,12 +276,16 @@ onMounted(() => {
 .twocolumns {
   grid-column: 1 / 3;
 }
+.closebuttoncontainer {
+  padding-right: 20px;
+  position: sticky;
+  top: 0;
+  height: 0;
+}
 .closebutton {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  z-index: 5;
+  padding-top: 20px;
   width: 30px;
+  float: right;
 }
 @media (hover: hover) and (pointer: fine) {
   .closebutton:hover {
