@@ -1,9 +1,12 @@
 <template>
-  <div class="menu" @click="menuItemSelected($event.target.parentElement.id)">
+  <div class="menu">
     <div class="menuheading">
-      <strong>{{ t('cache') }}</strong>
+      <span class="menutext">
+        <strong>{{ t('cache') }}</strong></span
+      >
     </div>
     <div
+      @click.prevent="cacheDisabledClicked"
       id="cachedisable"
       class="menuitem"
       :class="{
@@ -15,11 +18,13 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span>{{
-        t('cachedisabled')
-      }}</span>
+      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
+        class="menutext"
+        >{{ t('cachedisabled') }}</span
+      >
     </div>
     <div
+      @click.prevent="cache1hClicked"
       id="cache1h"
       class="menuitem"
       :class="{
@@ -31,11 +36,13 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span>{{
-        t('cache1h')
-      }}</span>
+      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
+        class="menutext"
+        >{{ t('cache1h') }}</span
+      >
     </div>
     <div
+      @click.prevent="cache6hClicked"
       id="cache6h"
       class="menuitem"
       :class="{
@@ -47,11 +54,13 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span>{{
-        t('cache6h')
-      }}</span>
+      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
+        class="menutext"
+        >{{ t('cache6h') }}</span
+      >
     </div>
     <div
+      @click.prevent="cache1dClicked"
       id="cache1d"
       class="menuitem"
       :class="{
@@ -63,11 +72,13 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span>{{
-        t('cache1d')
-      }}</span>
+      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
+        class="menutext"
+        >{{ t('cache1d') }}</span
+      >
     </div>
     <div
+      @click.prevent="cache1wClicked"
       id="cache1w"
       class="menuitem"
       :class="{
@@ -79,11 +90,13 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span>{{
-        t('cache1w')
-      }}</span>
+      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
+        class="menutext"
+        >{{ t('cache1w') }}</span
+      >
     </div>
     <div
+      @click.prevent="cache4wClicked"
       id="cache4w"
       class="menuitem"
       :class="{
@@ -95,11 +108,13 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span>{{
-        t('cache4w')
-      }}</span>
+      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
+        class="menutext"
+        >{{ t('cache4w') }}</span
+      >
     </div>
     <div
+      @click.prevent="cacheFlushClicked"
       id="cacheflush"
       class="menuitem"
       :class="{
@@ -112,14 +127,15 @@
       }"
     >
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
+        class="menutext"
         id="cacheflushtext"
         >{{ t('cacheflush') }}</span
       >
     </div>
     <div><hr /></div>
-    <div id="showhelp" class="menuitem">
+    <div @click.prevent="showHelpClicked" id="showhelp" class="menuitem">
       <img class="menuicon helpicon" src="../assets/images/question-mark.svg" />
-      <span>{{ t('help') }}</span>
+      <span class="menutext">{{ t('help') }}</span>
     </div>
   </div>
 </template>
@@ -133,6 +149,7 @@ const { t } = useI18n({})
 const global = inject('global')
 const emit = defineEmits(['hideMenu'])
 defineExpose({ cacheSettingsUpdated })
+
 const cacheids = [
   'cachedisable',
   'cache1h',
@@ -141,62 +158,82 @@ const cacheids = [
   'cache1w',
   'cache4w'
 ]
-async function menuItemSelected(id) {
-  if (cacheids.includes(id)) {
-    cacheids.forEach(
-      (id) =>
-        (document
-          .getElementById(id)
-          .getElementsByTagName('img')[0].style.visibility = 'hidden')
-    )
-    document
-      .getElementById(id)
-      .getElementsByTagName('img')[0].style.visibility = 'visible'
+
+function cacheDisabledClicked() {
+  allItemsUnchecked()
+  document
+    .getElementById('cachedisable')
+    .getElementsByTagName('img')[0].style.visibility = 'visible'
+  global.setCacheEnabled(false)
+}
+
+function cache1hClicked() {
+  allItemsUnchecked()
+  document
+    .getElementById('cache1h')
+    .getElementsByTagName('img')[0].style.visibility = 'visible'
+  global.setCacheEnabled(true)
+  global.setCacheMaxAge(global.constants.cachemaxage1h)
+}
+function cache6hClicked() {
+  allItemsUnchecked()
+  document
+    .getElementById('cache6h')
+    .getElementsByTagName('img')[0].style.visibility = 'visible'
+  global.setCacheEnabled(true)
+  global.setCacheMaxAge(global.constants.cachemaxage6h)
+}
+function cache1dClicked() {
+  allItemsUnchecked()
+  document
+    .getElementById('cache1d')
+    .getElementsByTagName('img')[0].style.visibility = 'visible'
+  global.setCacheEnabled(true)
+  global.setCacheMaxAge(global.constants.cachemaxage1d)
+}
+function cache1wClicked() {
+  allItemsUnchecked()
+  document
+    .getElementById('cache1w')
+    .getElementsByTagName('img')[0].style.visibility = 'visible'
+  global.setCacheEnabled(true)
+  global.setCacheMaxAge(global.constants.cachemaxage1w)
+}
+function cache4wClicked() {
+  allItemsUnchecked()
+  document
+    .getElementById('cache4w')
+    .getElementsByTagName('img')[0].style.visibility = 'visible'
+  global.setCacheEnabled(true)
+  global.setCacheMaxAge(global.constants.cachemaxage4w)
+}
+
+async function cacheFlushClicked() {
+  try {
+    await clearDatabase()
+  } catch (error) {
+    console.error(error.message)
   }
 
-  switch (id) {
-    case 'cachedisable':
-      global.setCacheEnabled(false)
-      break
-    case 'cache1h':
-      global.setCacheEnabled(true)
-      global.setCacheMaxAge(global.constants.cachemaxage1h)
-      break
-    case 'cache6h':
-      global.setCacheEnabled(true)
-      global.setCacheMaxAge(global.constants.cachemaxage6h)
-      break
-    case 'cache1d':
-      global.setCacheEnabled(true)
-      global.setCacheMaxAge(global.constants.cachemaxage1d)
-      break
-    case 'cache1w':
-      global.setCacheEnabled(true)
-      global.setCacheMaxAge(global.constants.cachemaxage1w)
-      break
-    case 'cache4w':
-      global.setCacheEnabled(true)
-      global.setCacheMaxAge(global.constants.cachemaxage4w)
-      break
-    case 'cacheflush':
-      try {
-        await clearDatabase()
-      } catch (error) {
-        console.error(error.message)
-      }
+  document.getElementById('cacheflushtext').innerText = t('cacheflushed')
+  setTimeout(() => {
+    document.getElementById('cacheflushtext').innerText = t('cacheflush')
+  }, 2000)
+}
 
-      document.getElementById('cacheflushtext').innerText = t('cacheflushed')
-      setTimeout(() => {
-        document.getElementById('cacheflushtext').innerText = t('cacheflush')
-      }, 2000)
-      break
+function showHelpClicked() {
+  global.setShowHelp(true)
+  global.setInputsDisabled(true)
+  emit('hideMenu')
+}
 
-    case 'showhelp':
-      global.setShowHelp(true)
-      global.setInputsDisabled(true)
-      emit('hideMenu')
-      break
-  }
+function allItemsUnchecked() {
+  cacheids.forEach(
+    (id) =>
+      (document
+        .getElementById(id)
+        .getElementsByTagName('img')[0].style.visibility = 'hidden')
+  )
 }
 
 function cacheSettingsUpdated() {
@@ -267,7 +304,6 @@ onMounted(() => {
   line-height: 25px;
   display: flex;
   align-items: center;
-  padding-right: 0.45em;
 }
 .menuicon {
   visibility: hidden;
@@ -276,8 +312,7 @@ onMounted(() => {
   padding-left: 0.45em;
 }
 .menuheading {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 0.45em;
 }
 @media (hover: hover) and (pointer: fine) {
   .menuitem:hover {
@@ -292,5 +327,8 @@ onMounted(() => {
 .disabled {
   pointer-events: none;
   opacity: 0.5;
+}
+.menutext {
+  margin-right: 0.45em;
 }
 </style>
