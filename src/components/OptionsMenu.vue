@@ -1,5 +1,5 @@
 <template>
-  <div class="menu">
+  <div class="menu" id="menucontainer">
     <div class="menuheading">
       <span class="menutext">
         <strong>{{ t('cache') }}</strong></span

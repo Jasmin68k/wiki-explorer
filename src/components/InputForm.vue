@@ -295,16 +295,13 @@
         </label>
 
         <span class="menuanchor">
-          <input
-            id="showoptionsmenu"
-            class="checkbox"
-            type="checkbox"
-            @change="optionsMenuClicked($event.target.checked)"
-          />
-
-          <label class="checkboxlabel" for="showoptionsmenu">
+          <div
+            @click.stop="optionsMenuClicked"
+            id="optionsmenuiconcontainer"
+            class="optionsmenuiconcontainer"
+          >
             <img class="helpicon" src="../assets/images/burger-menu.svg" />
-          </label>
+          </div>
           <div id="optionsmenu">
             <OptionsMenu
               ref="optionsmenu"
@@ -326,6 +323,7 @@ const { t } = useI18n({})
 const global = inject('global')
 
 const optionsmenu = ref(null)
+let optionsmenuvisible = false
 
 const emit = defineEmits([
   'fetchDataClicked',
@@ -388,23 +386,36 @@ async function modeSwitched(value) {
   }
 }
 
-function optionsMenuClicked(value) {
-  switch (value) {
-    case true:
-      document.getElementById('optionsmenu').style.display = 'block'
-      break
-    case false:
-      document.getElementById('optionsmenu').style.display = 'none'
-      break
+function optionsMenuClicked() {
+  if (!optionsmenuvisible) {
+    document.getElementById('optionsmenu').style.display = 'block'
+    document.getElementById('optionsmenuiconcontainer').style.backgroundColor =
+      'mistyrose'
+    optionsmenuvisible = true
+  } else {
+    document.getElementById('optionsmenu').style.display = 'none'
+    document.getElementById('optionsmenuiconcontainer').style.backgroundColor =
+      '#ddd'
+    optionsmenuvisible = false
   }
 }
 
 function hideOptionsMenu() {
   document.getElementById('optionsmenu').style.display = 'none'
-  document.getElementById('showoptionsmenu').checked = false
+  document.getElementById('optionsmenuiconcontainer').style.backgroundColor =
+    '#ddd'
+  optionsmenuvisible = false
 }
 
 onMounted(() => {
+  document.onclick = (event) => {
+    // defined in OptionsMenu.vue
+    const menu = document.getElementById('menucontainer')
+    if (!menu.contains(event.target) && optionsmenuvisible) {
+      hideOptionsMenu()
+    }
+  }
+
   // init
   languageSwitched('en')
 
@@ -587,7 +598,8 @@ onMounted(() => {
 }
 
 .radiolabel,
-.checkboxlabel {
+.checkboxlabel,
+.optionsmenuiconcontainer {
   display: inline-block;
   background-color: #ddd;
   padding: 1px 1px;
@@ -597,7 +609,8 @@ onMounted(() => {
 }
 @media (hover: hover) and (pointer: fine) {
   .radiobutton:hover + label,
-  .checkbox:hover + label {
+  .checkbox:hover + label,
+  .optionsmenuiconcontainer:hover {
     filter: invert(0.25);
   }
 }
