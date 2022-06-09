@@ -225,13 +225,6 @@ onMounted(() => {
   margin-right: -5px;
 }
 
-.icon-help-small-left2 {
-  width: 1.4em;
-  height: 1.4em;
-  vertical-align: middle;
-  font-size: 90%;
-}
-
 .icon-help-small-left3 {
   height: 1.75em;
   vertical-align: middle;
