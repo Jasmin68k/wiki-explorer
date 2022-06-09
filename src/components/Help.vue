@@ -41,21 +41,21 @@
     <div class="help-text">
       {{ t('help-language') }}
     </div>
-    <div>
+    <div class="icon-help-small-right-container">
       <input class="help-input" :placeholder="t('search-on-wikipedia')" />
       <img class="icon-help-small-right" src="../assets/images/search.svg" />
     </div>
     <div class="help-text">
       {{ t('help-search') }}
     </div>
-    <div>
+    <div class="icon-help-small-left-container">
       <img class="icon-help-small-left" src="../assets/images/text-tool.svg" />
       <input class="help-input" :placeholder="t('filter-results-titles')" />
     </div>
     <div class="help-text">
       {{ t('help-filter-titles') }}
     </div>
-    <div>
+    <div class="icon-help-small-left-container">
       <img class="icon-help-small-left" src="../assets/images/document.svg" />
       <input class="help-input" :placeholder="t('filter-results-categories')" />
     </div>
@@ -216,12 +216,14 @@ onMounted(() => {
   vertical-align: middle;
 }
 
+.icon-help-small-left-container,
+.icon-help-small-right-container {
+  display: flex;
+}
+
 .icon-help-small-left {
   width: 1.4em;
-  height: 1.4em;
-  vertical-align: middle;
-  font-size: 90%;
-  margin-top: 2px;
+  height: auto;
   margin-right: -5px;
 }
 
@@ -235,11 +237,9 @@ onMounted(() => {
 
 .icon-help-small-right {
   width: 1.4em;
-  height: 1.4em;
-  vertical-align: middle;
-  font-size: 83.3%;
-  margin-top: 2px;
+  height: auto;
   margin-left: 1px;
+  font-size: 83.3%;
 }
 
 .icon-help-small-right3 {
