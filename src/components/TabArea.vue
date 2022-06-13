@@ -16,9 +16,11 @@
       @click="tabSelection($event.target.id)"
     />
     <input
-      v-if="
-        global.state.resultsCategoriesEnabled ||
-        global.state.resultsRedirectsEnabled
+      :disabled="
+        !(
+          global.state.resultsCategoriesEnabled ||
+          global.state.resultsRedirectsEnabled
+        )
       "
       id="tab2"
       type="radio"
@@ -27,7 +29,7 @@
       @click="tabSelection($event.target.id)"
     />
     <input
-      v-if="global.state.resultsCategoriesEnabled"
+      :disabled="!global.state.resultsCategoriesEnabled"
       id="tab3"
       type="radio"
       name="tabs"
@@ -50,12 +52,22 @@
           /></div
       ></label>
       <label
-        v-if="
-          global.state.resultsCategoriesEnabled ||
-          global.state.resultsRedirectsEnabled
-        "
+        :class="{
+          itemdisabled: !(
+            global.state.resultsCategoriesEnabled ||
+            global.state.resultsRedirectsEnabled
+          )
+        }"
         for="tab2"
       >
+        <div
+          v-if="
+            !global.state.resultsCategoriesEnabled &&
+            !global.state.resultsRedirectsEnabled
+          "
+          class="tabiconcontainer"
+        ></div>
+
         <div
           v-if="
             global.state.resultsCategoriesEnabled &&
@@ -96,7 +108,9 @@
           />
         </div>
       </label>
-      <label v-if="global.state.resultsCategoriesEnabled" for="tab3"
+      <label
+        :class="{ itemdisabled: !global.state.resultsCategoriesEnabled }"
+        for="tab3"
         ><div class="tabiconcontainer">
           <span>
             <img class="tabdoubleicon" src="../assets/images/document.svg"
@@ -354,5 +368,8 @@ nav label:active {
   height: 100%;
   margin-left: 3px;
   margin-right: 3px;
+}
+.itemdisabled {
+  filter: invert(0.75);
 }
 </style>
