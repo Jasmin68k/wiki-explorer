@@ -330,8 +330,7 @@ const emit = defineEmits([
   'resultsRedirectsChanged',
   'resultsCategoriesChanged',
   'languageSwitched',
-  'mode-switched',
-  'closeCatsRedir'
+  'mode-switched'
 ])
 
 // can this be done more elegantly?
@@ -350,18 +349,10 @@ function resultsCategoriesChanged(value) {
   global.setResultsCategoriesEnabled(value)
   resetFirstItem()
   emit('resultsCategoriesChanged', value)
-
-  if (value === false && !global.state.resultsRedirectsEnabled) {
-    emit('closeCatsRedir')
-  }
 }
 function resultsRedirectsChanged(value) {
   global.setResultsRedirectsEnabled(value)
   emit('resultsRedirectsChanged', value)
-
-  if (value === false && !global.state.resultsCategoriesEnabled) {
-    emit('closeCatsRedir')
-  }
 }
 function titleChanged(value) {
   global.setTitle(value)
