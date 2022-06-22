@@ -71,7 +71,7 @@
       {{ t('help-categories-switch1') }}
       <span
         ><img
-          class="icon-help3"
+          class="icon-help2"
           :style="{
             filter:
               'invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg) brightness(105%) contrast(124%)'
@@ -92,7 +92,7 @@
       {{ t('help-redirects-switch1') }}
       <span
         ><img
-          class="icon-help3"
+          class="icon-help2"
           :style="{
             filter:
               'invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg) brightness(105%) contrast(124%)'
@@ -105,11 +105,11 @@
     <div>
       <div>
         <img
-          class="icon-help-small-left3"
+          class="icon-help-small-left2"
           src="../assets/images/left-arrow.svg"
         />
         <img
-          class="icon-help-small-right3"
+          class="icon-help-small-right2"
           src="../assets/images/right-arrow.svg"
         />
       </div>
@@ -205,13 +205,8 @@ onMounted(() => {
   height: 1.4em;
   vertical-align: middle;
 }
-.icon-help2 {
-  width: 1.3em;
-  height: 1.4em;
-  vertical-align: middle;
-}
 
-.icon-help3 {
+.icon-help2 {
   height: 1em;
   vertical-align: middle;
 }
@@ -227,7 +222,7 @@ onMounted(() => {
   margin-right: -5px;
 }
 
-.icon-help-small-left3 {
+.icon-help-small-left2 {
   height: 1.75em;
   vertical-align: middle;
   font-size: 90%;
@@ -242,7 +237,7 @@ onMounted(() => {
   font-size: 83.3%;
 }
 
-.icon-help-small-right3 {
+.icon-help-small-right2 {
   height: 1.75em;
   vertical-align: middle;
   font-size: 90%;
