@@ -300,7 +300,7 @@
             id="optionsmenuiconcontainer"
             class="optionsmenuiconcontainer"
           >
-            <img class="helpicon" src="../assets/images/burger-menu.svg" />
+            <img class="burgericon" src="../assets/images/burger-menu.svg" />
           </div>
           <div id="optionsmenu">
             <OptionsMenu
@@ -569,9 +569,6 @@ onMounted(() => {
 #filterCategories {
   flex-grow: 1;
 }
-.fontsize70 {
-  font-size: 70%;
-}
 
 .radiobutton,
 .checkbox {
@@ -614,19 +611,11 @@ onMounted(() => {
   background-color: transparent;
 }
 .categoriesicon,
-.titleicon,
-.checkboxfiltericon,
 .redirectsicon,
-.graphicon,
 .desktopicon,
 .mobileicon,
 .flagicon,
-.clickicon,
-.hovericon,
-.helpicon,
-.searchicon,
-.wikipediaiconcontainer,
-.catsredircontainer {
+.burgericon {
   width: 2.66em;
   height: 1.4em;
   vertical-align: middle;
@@ -651,11 +640,6 @@ onMounted(() => {
   height: auto;
   vertical-align: middle;
 }
-.catsrediricon {
-  width: 1.3em;
-  height: 1.3em;
-  vertical-align: middle;
-}
 
 .searchinputarea,
 .titleinputarea,
@@ -675,15 +659,6 @@ onMounted(() => {
   from {
     opacity: 0;
   }
-}
-.fetchingicon {
-  filter: invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg)
-    brightness(105%) contrast(124%);
-  animation: fadeIn 0.35s infinite alternate;
-  height: 1em;
-  vertical-align: middle;
-  margin-left: 0.2em;
-  margin-right: 0.2em;
 }
 
 .menuanchor {
