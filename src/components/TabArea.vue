@@ -16,12 +16,7 @@
       @click="tabSelection($event.target.id)"
     />
     <input
-      :disabled="
-        !(
-          global.state.resultsCategoriesEnabled ||
-          global.state.resultsRedirectsEnabled
-        )
-      "
+      :disabled="!global.state.resultsCategoriesEnabled"
       id="tab2"
       type="radio"
       name="tabs"
@@ -36,10 +31,18 @@
       @click="tabSelection($event.target.id)"
     />
     <input
+      :disabled="!global.state.resultsRedirectsEnabled"
       id="tab4"
       type="radio"
       name="tabs"
       ref="tab4"
+      @click="tabSelection($event.target.id)"
+    />
+    <input
+      id="tab5"
+      type="radio"
+      name="tabs"
+      ref="tab5"
       @click="tabSelection($event.target.id)"
     />
 
@@ -53,73 +56,36 @@
       ></label>
       <label
         :class="{
-          itemdisabled: !(
-            global.state.resultsCategoriesEnabled ||
-            global.state.resultsRedirectsEnabled
-          )
+          itemdisabled: !global.state.resultsCategoriesEnabled
         }"
         for="tab2"
       >
-        <div
-          v-if="
-            !global.state.resultsCategoriesEnabled &&
-            !global.state.resultsRedirectsEnabled
-          "
-          class="tabiconcontainer"
-        ></div>
-
-        <div
-          v-if="
-            global.state.resultsCategoriesEnabled &&
-            global.state.resultsRedirectsEnabled
-          "
-          class="tabiconcontainer"
-        >
-          <span>
-            <img class="tabdoubleicon" src="../assets/images/document.svg"
-          /></span>
-          <span>
-            <img
-              class="tabdoubleicon"
-              src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
-          /></span>
-        </div>
-
-        <div
-          v-if="
-            global.state.resultsCategoriesEnabled &&
-            !global.state.resultsRedirectsEnabled
-          "
-          class="tabiconcontainer"
-        >
+        <div class="tabiconcontainer">
           <img class="tabicon" src="../assets/images/document.svg" />
         </div>
-
-        <div
-          v-if="
-            !global.state.resultsCategoriesEnabled &&
-            global.state.resultsRedirectsEnabled
-          "
-          class="tabiconcontainer"
-        >
+      </label>
+      <label
+        :class="{ itemdisabled: !global.state.resultsCategoriesEnabled }"
+        for="tab3"
+      >
+        <div class="tabiconcontainer">
+          <img class="tabicon" src="../assets/images/document2.svg" />
+        </div>
+      </label>
+      <label
+        :class="{
+          itemdisabled: !global.state.resultsRedirectsEnabled
+        }"
+        for="tab4"
+      >
+        <div class="tabiconcontainer">
           <img
             class="tabicon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
           />
         </div>
       </label>
-      <label
-        :class="{ itemdisabled: !global.state.resultsCategoriesEnabled }"
-        for="tab3"
-        ><div class="tabiconcontainer">
-          <span>
-            <img class="tabdoubleicon" src="../assets/images/document.svg"
-          /></span>
-          <span>
-            <img class="tabdoubleicon" src="../assets/images/document2.svg"
-          /></span></div
-      ></label>
-      <label for="tab4" ref="label4"
+      <label for="tab5" ref="label4"
         ><div class="tabiconcontainer">
           <img class="tabicon" src="../assets/images/text-tool.svg" /></div
       ></label>
@@ -134,13 +100,11 @@
       >
       </Outgraph>
 
-      <CategoriesRedirects
-        v-if="
-          global.state.resultsCategoriesEnabled ||
-          global.state.resultsRedirectsEnabled
-        "
+      <Categories
+        v-if="global.state.resultsCategoriesEnabled"
         class="tab2"
-      ></CategoriesRedirects>
+      ></Categories>
+
       <div v-if="global.state.resultsCategoriesEnabled" class="tab3">
         <CategoriesCheckboxFilter
           v-if="
@@ -155,7 +119,12 @@
         ></CategoriesCheckboxFilter>
       </div>
 
-      <MainTitleInfo class="tab4"></MainTitleInfo>
+      <Redirects
+        v-if="global.state.resultsRedirectsEnabled"
+        class="tab4"
+      ></Redirects>
+
+      <MainTitleInfo class="tab5"></MainTitleInfo>
     </section>
   </div>
 </template>
@@ -170,15 +139,16 @@ import {
   onBeforeUnmount
 } from 'vue'
 import MainTitleInfo from './MainTitleInfo.vue'
-import CategoriesRedirects from './CategoriesRedirects.vue'
+import Categories from './Categories.vue'
 import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
+import Redirects from './Redirects.vue'
 import Outgraph from './Outgraph.vue'
 
 const global = inject('global')
 const emit = defineEmits(['circleButtonClicked'])
 const tab1 = ref(null)
 const tab2 = ref(null)
-const tab4 = ref(null)
+const tab5 = ref(null)
 const label4 = ref(null)
 const tabbed = ref(null)
 const scrollboxContainerHeight = ref(300)
@@ -193,14 +163,9 @@ const props = defineProps({
 // switch to graph when entering mobile
 watchEffect(() => {
   if (!global.state.mobileMode) {
-    if (tab2.value) {
-      tab2.value.checked = true
-      global.setActiveTab('tab2')
-    } else {
-      if (tab4.value) {
-        tab4.value.checked = true
-        global.setActiveTab('tab4')
-      }
+    if (tab5.value) {
+      tab5.value.checked = true
+      global.setActiveTab('tab5')
     }
   } else {
     if (tab1.value) {
@@ -213,21 +178,30 @@ watchEffect(() => {
 watchEffect(() => {
   if (
     !global.state.resultsCategoriesEnabled &&
-    global.state.activeTab === 'tab3'
+    global.state.activeTab === 'tab2'
   ) {
-    tab4.value.checked = true
-    global.setActiveTab('tab4')
+    tab5.value.checked = true
+    global.setActiveTab('tab5')
   }
 })
 
 watchEffect(() => {
   if (
     !global.state.resultsCategoriesEnabled &&
-    !global.state.resultsRedirectsEnabled &&
-    global.state.activeTab === 'tab2'
+    global.state.activeTab === 'tab3'
   ) {
-    tab4.value.checked = true
-    global.setActiveTab('tab4')
+    tab5.value.checked = true
+    global.setActiveTab('tab5')
+  }
+})
+
+watchEffect(() => {
+  if (
+    !global.state.resultsRedirectsEnabled &&
+    global.state.activeTab === 'tab4'
+  ) {
+    tab5.value.checked = true
+    global.setActiveTab('tab5')
   }
 })
 
@@ -270,9 +244,9 @@ onMounted(async () => {
       tab2.value.checked = true
       global.setActiveTab('tab2')
     } else {
-      if (tab4.value) {
-        tab4.value.checked = true
-        global.setActiveTab('tab4')
+      if (tab5.value) {
+        tab5.value.checked = true
+        global.setActiveTab('tab5')
       }
     }
   }
@@ -300,8 +274,9 @@ onBeforeUnmount(() => {
 
 #tab1:checked ~ section .tab1,
 #tab2:checked ~ section .tab2,
+#tab4:checked ~ section .tab4,
 #tab3:checked ~ section .tab3,
-#tab4:checked ~ section .tab4 {
+#tab5:checked ~ section .tab5 {
   display: block;
 }
 
@@ -331,7 +306,8 @@ nav label:active {
 #tab1:checked ~ nav label[for='tab1'],
 #tab2:checked ~ nav label[for='tab2'],
 #tab3:checked ~ nav label[for='tab3'],
-#tab4:checked ~ nav label[for='tab4'] {
+#tab4:checked ~ nav label[for='tab4'],
+#tab5:checked ~ nav label[for='tab5'] {
   background: mistyrose;
   color: black;
   position: relative;
@@ -342,13 +318,15 @@ nav label:active {
 }
 .tab2,
 .tab3,
-.tab4 {
+.tab4,
+.tab5 {
   overflow-y: auto;
 }
 .tab1,
 .tab2,
 .tab3,
-.tab4 {
+.tab4,
+.tab5 {
   position: absolute;
   top: 0;
   left: 0;
@@ -363,11 +341,6 @@ nav label:active {
 }
 .tabicon {
   height: 100%;
-}
-.tabdoubleicon {
-  height: 100%;
-  margin-left: 3px;
-  margin-right: 3px;
 }
 .itemdisabled {
   filter: invert(0.75);

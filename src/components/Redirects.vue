@@ -1,16 +1,7 @@
 <template>
   <div
     v-if="
-      (global.state.resultsCategoriesEnabled &&
-        global.state.resultsCategoriesDone &&
-        global.state.resultsRedirectsEnabled &&
-        global.state.resultsRedirectsDone) ||
-      (global.state.resultsCategoriesEnabled &&
-        global.state.resultsCategoriesDone &&
-        !global.state.resultsRedirectsEnabled) ||
-      (!global.state.resultsCategoriesEnabled &&
-        global.state.resultsRedirectsEnabled &&
-        global.state.resultsRedirectsDone)
+      global.state.resultsRedirectsEnabled && global.state.resultsRedirectsDone
     "
     class="container"
   >
@@ -31,22 +22,6 @@
           {{ t('open') }}
           <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
         </button>
-      </div>
-
-      <div
-        class="catsredirects"
-        v-if="
-          global.state.resultsCategoriesEnabled &&
-          global.state.resultsCategoriesDone &&
-          page.categories.length > 0
-        "
-      >
-        <h4>{{ t('categories') }}</h4>
-        <ul class="list-horizontal">
-          <li v-for="(category, index) in page.categories" :key="index">
-            {{ category }}
-          </li>
-        </ul>
       </div>
 
       <div
