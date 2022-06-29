@@ -85,7 +85,7 @@
           />
         </div>
       </label>
-      <label for="tab5" ref="label4"
+      <label for="tab5" ref="label5"
         ><div class="tabiconcontainer">
           <img class="tabicon" src="../assets/images/text-tool.svg" /></div
       ></label>
@@ -149,7 +149,7 @@ const emit = defineEmits(['circleButtonClicked'])
 const tab1 = ref(null)
 const tab2 = ref(null)
 const tab5 = ref(null)
-const label4 = ref(null)
+const label5 = ref(null)
 const tabbed = ref(null)
 const scrollboxContainerHeight = ref(300)
 const navHeight = ref(10)
@@ -227,7 +227,7 @@ async function windowResized() {
   await nextTick()
 
   // add proper check for highest of all labels and possible second row
-  navHeight.value = label4.value.getBoundingClientRect().height
+  navHeight.value = label5.value.getBoundingClientRect().height
 
   scrollboxContainerHeight.value =
     tabbed.value.getBoundingClientRect().height - navHeight.value
