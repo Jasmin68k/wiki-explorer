@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { inject, watchEffect, ref } from 'vue'
+import { inject, computed, watchEffect, ref } from 'vue'
 
 const global = inject('global')
 
@@ -77,6 +77,45 @@ function nextItem() {
   global.setGraphFirstItem(item)
   drawSlice()
 }
+
+const resultsClasses = computed(function () {
+  let classes = []
+
+  if (global.state.inputsDisabled) {
+    return classes
+  }
+
+  let resultsIndex = 0
+  let firstChar = global.state.filteredResults[resultsIndex].title
+    .charAt(0)
+    .toUpperCase()
+  let charCount = 1
+
+  while (resultsIndex < global.state.filteredResults.length) {
+    if (
+      global.state.filteredResults[resultsIndex + 1] &&
+      global.state.filteredResults[resultsIndex + 1].title
+        .charAt(0)
+        .toUpperCase() === firstChar
+    ) {
+      resultsIndex++
+      charCount++
+    } else {
+      classes.push([firstChar, charCount])
+
+      if (global.state.filteredResults[resultsIndex + 1]) {
+        firstChar = global.state.filteredResults[resultsIndex + 1].title
+          .charAt(0)
+          .toUpperCase()
+      }
+
+      resultsIndex++
+      charCount = 1
+    }
+  }
+
+  return classes
+})
 
 function prevItem() {
   let item = global.state.graphFirstItem
