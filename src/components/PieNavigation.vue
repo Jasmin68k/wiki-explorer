@@ -80,9 +80,10 @@ function nextItem() {
 
 const resultsClasses = computed(function () {
   let classes = []
+  let angles = []
 
   if (global.state.inputsDisabled) {
-    return classes
+    return angles
   }
 
   let resultsIndex = 0
@@ -101,7 +102,10 @@ const resultsClasses = computed(function () {
       resultsIndex++
       charCount++
     } else {
-      classes.push([firstChar, charCount])
+      classes.push([
+        firstChar,
+        charCount * (360 / global.state.filteredResults.length)
+      ])
 
       if (global.state.filteredResults[resultsIndex + 1]) {
         firstChar = global.state.filteredResults[resultsIndex + 1].title
@@ -114,7 +118,21 @@ const resultsClasses = computed(function () {
     }
   }
 
-  return classes
+  let classesIndex = 0
+
+  let classAngle = 0
+
+  while (classesIndex < classes.length) {
+    angles.push([
+      classes[classesIndex][0],
+      classes[classesIndex][1] + classAngle - classes[classesIndex][1] / 2
+    ])
+
+    classAngle += classes[classesIndex][1]
+    classesIndex++
+  }
+
+  return angles
 })
 
 function prevItem() {
