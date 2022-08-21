@@ -102,10 +102,15 @@ const resultsClasses = computed(function () {
       resultsIndex++
       charCount++
     } else {
-      classes.push([
-        firstChar,
-        charCount * (360 / global.state.filteredResults.length)
-      ])
+      // classes.push([
+      //         firstChar,
+      //         charCount * (360 / global.state.filteredResults.length)
+      //       ])
+
+      classes.push({
+        firstChar: firstChar,
+        sliceAngleWidth: charCount * (360 / global.state.filteredResults.length)
+      })
 
       if (global.state.filteredResults[resultsIndex + 1]) {
         firstChar = global.state.filteredResults[resultsIndex + 1].title
@@ -119,17 +124,68 @@ const resultsClasses = computed(function () {
   }
 
   let classesIndex = 0
-
   let classAngle = 0
+  let sliceAngle = 0
+  let startAngle = 0
+  let first = ''
+  let second = ''
+  let chars = ''
 
   while (classesIndex < classes.length) {
-    angles.push([
-      classes[classesIndex][0],
-      classes[classesIndex][1] + classAngle - classes[classesIndex][1] / 2
-    ])
+    sliceAngle += classes[classesIndex].sliceAngleWidth
 
-    classAngle += classes[classesIndex][1]
+    if (first === '') {
+      first = classes[classesIndex].firstChar
+    } else {
+      second = classes[classesIndex].firstChar
+    }
+    classAngle += classes[classesIndex].sliceAngleWidth
+
+    // minimum slice width in degrees
+    if (sliceAngle >= 10) {
+      if (second === '') {
+        chars = first
+      } else {
+        chars = first + '-' + second
+      }
+
+      angles.push({
+        chars: chars,
+        startAngle: startAngle,
+        endAngle: sliceAngle + startAngle,
+        midAngle: sliceAngle + startAngle - sliceAngle / 2
+      })
+      sliceAngle = 0
+      first = ''
+      second = ''
+      startAngle = classAngle
+    }
+
     classesIndex++
+
+    // if last slice < minimum width and not yet handled, add it
+    if (classesIndex + 1 === classes.length) {
+      let anglesLastChar = angles[angles.length - 1].chars.slice(-1)
+
+      if (!(anglesLastChar === classes[classesIndex.firstChar])) {
+        let addAngle = 360 - angles[angles.length - 1].endAngle
+        let lastChar = classes[classes.length - 1].firstChar
+        let lastClassChars = angles[angles.length - 1].chars
+
+        if (lastClassChars.length > 1) {
+          lastClassChars = lastClassChars.slice(0, -1).concat(lastChar)
+        } else {
+          lastClassChars = lastClassChars.concat('-').concat(lastChar)
+        }
+
+        angles[angles.length - 1].chars = lastClassChars
+        angles[angles.length - 1].endAngle += addAngle
+        angles[angles.length - 1].midAngle =
+          (angles[angles.length - 1].endAngle +
+            angles[angles.length - 1].startAngle) /
+          2
+      }
+    }
   }
 
   return angles
