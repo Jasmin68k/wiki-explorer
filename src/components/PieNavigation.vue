@@ -12,7 +12,37 @@
     @pointerup="mouseUp"
     @pointerleave="mouseUp"
     @wheel="wheelSpin($event)"
-  ></div>
+  >
+    <div v-if="resultsClasses.length > 0">
+      <div
+        v-for="(label, index) in resultsClasses"
+        :key="index"
+        class="labels"
+        :class="{
+          mobile: global.state.mobileMode
+        }"
+        :style="{
+          transform: global.state.mobileMode
+            ? 'rotate(' +
+              (label.midAngle + 270) +
+              'deg) translateX(' +
+              ((radius / 2) * 0.66 + 15 * 0.66) +
+              'px) rotate(' +
+              -1 * (label.midAngle + 270) +
+              'deg) translate(-50%, -50%)'
+            : 'rotate(' +
+              (label.midAngle + 270) +
+              'deg) translateX(' +
+              (radius / 2 + 15) +
+              'px) rotate(' +
+              -1 * (label.midAngle + 270) +
+              'deg) translate(-50%, -50%)'
+        }"
+      >
+        {{ label.chars }}
+      </div>
+    </div>
+  </div>
 
   <svg
     class="pieslicecontainer"
@@ -79,116 +109,118 @@ function nextItem() {
 }
 
 const resultsClasses = computed(function () {
-  let classes = []
-  let angles = []
+  if (global.state.filteredResults.length > 0) {
+    let classes = []
+    let angles = []
 
-  if (global.state.inputsDisabled) {
-    return angles
-  }
+    if (global.state.inputsDisabled) {
+      return angles
+    }
 
-  let resultsIndex = 0
-  let firstChar = global.state.filteredResults[resultsIndex].title
-    .charAt(0)
-    .toUpperCase()
-  let charCount = 1
+    let resultsIndex = 0
+    let firstChar = global.state.filteredResults[resultsIndex].title
+      .charAt(0)
+      .toUpperCase()
+    let charCount = 1
 
-  while (resultsIndex < global.state.filteredResults.length) {
-    if (
-      global.state.filteredResults[resultsIndex + 1] &&
-      global.state.filteredResults[resultsIndex + 1].title
-        .charAt(0)
-        .toUpperCase() === firstChar
-    ) {
-      resultsIndex++
-      charCount++
-    } else {
-      // classes.push([
-      //         firstChar,
-      //         charCount * (360 / global.state.filteredResults.length)
-      //       ])
-
-      classes.push({
-        firstChar: firstChar,
-        sliceAngleWidth: charCount * (360 / global.state.filteredResults.length)
-      })
-
-      if (global.state.filteredResults[resultsIndex + 1]) {
-        firstChar = global.state.filteredResults[resultsIndex + 1].title
+    while (resultsIndex < global.state.filteredResults.length) {
+      if (
+        global.state.filteredResults[resultsIndex + 1] &&
+        global.state.filteredResults[resultsIndex + 1].title
           .charAt(0)
-          .toUpperCase()
-      }
-
-      resultsIndex++
-      charCount = 1
-    }
-  }
-
-  let classesIndex = 0
-  let classAngle = 0
-  let sliceAngle = 0
-  let startAngle = 0
-  let first = ''
-  let second = ''
-  let chars = ''
-
-  while (classesIndex < classes.length) {
-    sliceAngle += classes[classesIndex].sliceAngleWidth
-
-    if (first === '') {
-      first = classes[classesIndex].firstChar
-    } else {
-      second = classes[classesIndex].firstChar
-    }
-    classAngle += classes[classesIndex].sliceAngleWidth
-
-    // minimum slice width in degrees
-    if (sliceAngle >= 10) {
-      if (second === '') {
-        chars = first
+          .toUpperCase() === firstChar
+      ) {
+        resultsIndex++
+        charCount++
       } else {
-        chars = first + '-' + second
-      }
+        classes.push({
+          firstChar: firstChar,
+          sliceAngleWidth:
+            charCount * (360 / global.state.filteredResults.length)
+        })
 
-      angles.push({
-        chars: chars,
-        startAngle: startAngle,
-        endAngle: sliceAngle + startAngle,
-        midAngle: sliceAngle + startAngle - sliceAngle / 2
-      })
-      sliceAngle = 0
-      first = ''
-      second = ''
-      startAngle = classAngle
-    }
-
-    classesIndex++
-
-    // if last slice < minimum width and not yet handled, add it
-    if (classesIndex + 1 === classes.length) {
-      let anglesLastChar = angles[angles.length - 1].chars.slice(-1)
-
-      if (!(anglesLastChar === classes[classesIndex.firstChar])) {
-        let addAngle = 360 - angles[angles.length - 1].endAngle
-        let lastChar = classes[classes.length - 1].firstChar
-        let lastClassChars = angles[angles.length - 1].chars
-
-        if (lastClassChars.length > 1) {
-          lastClassChars = lastClassChars.slice(0, -1).concat(lastChar)
-        } else {
-          lastClassChars = lastClassChars.concat('-').concat(lastChar)
+        if (global.state.filteredResults[resultsIndex + 1]) {
+          firstChar = global.state.filteredResults[resultsIndex + 1].title
+            .charAt(0)
+            .toUpperCase()
         }
 
-        angles[angles.length - 1].chars = lastClassChars
-        angles[angles.length - 1].endAngle += addAngle
-        angles[angles.length - 1].midAngle =
-          (angles[angles.length - 1].endAngle +
-            angles[angles.length - 1].startAngle) /
-          2
+        resultsIndex++
+        charCount = 1
       }
     }
-  }
 
-  return angles
+    let classesIndex = 0
+    let classAngle = 0
+    let sliceAngle = 0
+    let startAngle = 0
+    let first = ''
+    let second = ''
+    let chars = ''
+
+    while (classesIndex < classes.length) {
+      sliceAngle += classes[classesIndex].sliceAngleWidth
+
+      if (first === '') {
+        first = classes[classesIndex].firstChar
+      } else {
+        second = classes[classesIndex].firstChar
+      }
+      classAngle += classes[classesIndex].sliceAngleWidth
+
+      // minimum slice width in degrees
+      if (sliceAngle >= 15) {
+        if (second === '') {
+          chars = first
+        } else {
+          chars = first + '-' + second
+        }
+
+        angles.push({
+          chars: chars,
+          startAngle: startAngle,
+          endAngle: sliceAngle + startAngle,
+          midAngle: sliceAngle + startAngle - sliceAngle / 2
+        })
+        sliceAngle = 0
+        first = ''
+        second = ''
+        startAngle = classAngle
+      }
+
+      classesIndex++
+
+      // if last slice < minimum width and not yet handled, add it
+      // BUG: Overlapping labels still possible
+      // Example: 'wind instrument' -> T-W & U-W
+      if (classesIndex + 1 === classes.length) {
+        let anglesLastChar = angles[angles.length - 1].chars.slice(-1)
+
+        if (!(anglesLastChar === classes[classesIndex.firstChar])) {
+          let addAngle = 360 - angles[angles.length - 1].endAngle
+          let lastChar = classes[classes.length - 1].firstChar
+          let lastClassChars = angles[angles.length - 1].chars
+
+          if (lastClassChars.length > 1) {
+            lastClassChars = lastClassChars.slice(0, -1).concat(lastChar)
+          } else {
+            lastClassChars = lastClassChars.concat('-').concat(lastChar)
+          }
+
+          angles[angles.length - 1].chars = lastClassChars
+          angles[angles.length - 1].endAngle += addAngle
+          angles[angles.length - 1].midAngle =
+            (angles[angles.length - 1].endAngle +
+              angles[angles.length - 1].startAngle) /
+            2
+        }
+      }
+    }
+
+    return angles
+  } else {
+    return []
+  }
 })
 
 function prevItem() {
@@ -337,6 +369,17 @@ watchEffect(() => drawSlice(global.state.sizePerPage))
   transform: translate(-50%, -50%);
   z-index: 1;
   touch-action: none;
+}
+.labels {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  touch-action: none;
+  font-size: 75%;
+}
+.labels.mobile {
+  font-size: 49.5%;
 }
 .pieslicecontainer {
   position: absolute;
