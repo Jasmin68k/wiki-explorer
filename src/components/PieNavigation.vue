@@ -405,25 +405,25 @@ watchEffect(() => drawSlice(global.state.sizePerPage))
   position: absolute;
   transform: translate(-50%, -50%);
   height: 2.65em;
-  left: calc(50% - 114px);
-  top: calc(50% - 114px);
+  left: calc(50% - 120px);
+  top: calc(50% - 130px);
 }
 .leftarrow.mobile {
   height: 1.75em;
-  left: calc(50% - 75px);
-  top: calc(50% - 75px);
+  left: calc(50% - 79px);
+  top: calc(50% - 86px);
 }
 .rightarrow {
   position: absolute;
   transform: translate(-50%, -50%);
   height: 2.65em;
-  left: calc(50% + 114px);
-  top: calc(50% - 114px);
+  left: calc(50% + 120px);
+  top: calc(50% - 130px);
 }
 .rightarrow.mobile {
   height: 1.75em;
-  left: calc(50% + 75px);
-  top: calc(50% - 75px);
+  left: calc(50% + 79px);
+  top: calc(50% - 86px);
 }
 
 @media (hover: hover) and (pointer: fine) {
