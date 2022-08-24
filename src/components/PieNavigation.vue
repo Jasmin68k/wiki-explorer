@@ -109,6 +109,8 @@ function nextItem() {
 }
 
 const resultsClasses = computed(function () {
+  const minimumSliceWidth = 15
+
   if (global.state.filteredResults.length > 0) {
     let classes = []
     let angles = []
@@ -169,7 +171,7 @@ const resultsClasses = computed(function () {
       classAngle += classes[classesIndex].sliceAngleWidth
 
       // minimum slice width in degrees
-      if (sliceAngle >= 15) {
+      if (sliceAngle >= minimumSliceWidth) {
         if (second === '') {
           chars = first
         } else {
@@ -191,9 +193,12 @@ const resultsClasses = computed(function () {
       classesIndex++
 
       // if last slice < minimum width and not yet handled, add it
-      // BUG: Overlapping labels still possible
-      // Example: 'wind instrument' -> T-W & U-W
-      if (classesIndex + 1 === classes.length) {
+      if (
+        classesIndex + 1 === classes.length &&
+        angles[angles.length - 1].endAngle -
+          angles[angles.length - 1].startAngle <
+          minimumSliceWidth
+      ) {
         let anglesLastChar = angles[angles.length - 1].chars.slice(-1)
 
         if (!(anglesLastChar === classes[classesIndex.firstChar])) {
