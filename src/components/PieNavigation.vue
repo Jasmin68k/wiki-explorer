@@ -111,14 +111,9 @@ function nextItem() {
 const resultsClasses = computed(function () {
   const minimumSliceWidth = 15
 
-  if (global.state.filteredResults.length > 0) {
+  if (global.state.filteredResults.length > 0 && !global.state.inputsDisabled) {
     let classes = []
     let angles = []
-
-    if (global.state.inputsDisabled) {
-      return angles
-    }
-
     let resultsIndex = 0
     let firstChar = global.state.filteredResults[resultsIndex].title
       .charAt(0)
@@ -170,7 +165,6 @@ const resultsClasses = computed(function () {
       }
       classAngle += classes[classesIndex].sliceAngleWidth
 
-      // minimum slice width in degrees
       if (sliceAngle >= minimumSliceWidth) {
         if (second === '') {
           chars = first
