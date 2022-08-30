@@ -166,7 +166,7 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 
-import { useI18n } from 'vue-i18n/index'
+import { useI18n } from 'vue-i18n'
 const global = inject('global')
 const { t } = useI18n({})
 

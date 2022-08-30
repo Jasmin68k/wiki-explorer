@@ -96,7 +96,7 @@ import {
   putCacheRedirectTarget
 } from '../localcache.js'
 
-import { useI18n } from 'vue-i18n/index'
+import { useI18n } from 'vue-i18n'
 import { Page } from '../datamodels'
 
 const { locale } = useI18n({})

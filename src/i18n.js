@@ -1,4 +1,4 @@
-import { createI18n } from 'vue-i18n/index'
+import { createI18n } from 'vue-i18n'
 /*
  * The i18n resources in the path specified in the plugin `include` option can be read
  * as vue-i18n optimized locale messages using the import syntax

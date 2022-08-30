@@ -142,7 +142,7 @@
 
 <script setup>
 import { inject, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n/index'
+import { useI18n } from 'vue-i18n'
 import { clearDatabase } from '../localcache.js'
 
 const { t } = useI18n({})
