@@ -18,6 +18,7 @@ npm run build
 ### Serve production build
 ```
 npm run preview
+```
 
 ### Run linter
 ```
@@ -27,5 +28,4 @@ npm run lint
 ### Run formatter
 ```
 npm run format
-
-
+```
