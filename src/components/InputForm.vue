@@ -18,7 +18,7 @@
           id="en"
           value="en"
           name="language"
-          checked="true"
+          :checked="locale === 'en'"
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
@@ -45,6 +45,7 @@
           id="de"
           value="de"
           name="language"
+          :checked="locale === 'de'"
           :disabled="
             !global.state.showHelp &&
             (global.state.inputsDisabled ||
@@ -320,6 +321,8 @@ import { useI18n } from 'vue-i18n'
 import OptionsMenu from './OptionsMenu.vue'
 const { t } = useI18n({})
 
+const locale = import.meta.env.VITE_VUE_APP_I18N_LOCALE
+
 const global = inject('global')
 
 const optionsmenu = ref(null)
@@ -408,7 +411,7 @@ onMounted(() => {
   }
 
   // init
-  languageSwitched('en')
+  languageSwitched(import.meta.env.VITE_VUE_APP_I18N_LOCALE)
 
   if (window.matchMedia('(orientation: landscape)').matches) {
     if (window.innerWidth < 950) {
