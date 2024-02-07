@@ -7,7 +7,7 @@
     </div>
 
     <div class="twocolumns help-text">
-      <h1>Wiki-Explorer</h1>
+      <h1>{{ $t('title') }}</h1>
       <p>{{ $t('help-intro1') }}</p>
       <p>{{ $t('help-intro2') }}</p>
     </div>

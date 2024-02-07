@@ -60,6 +60,10 @@
 <script setup>
 import { inject, computed, ref, onMounted } from 'vue'
 
+// t used in languageSwitched(), otherwise $t globally available
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n({})
+
 import {
   wikiFetchAddCategoriesToTitlePage,
   wikiFetchAddCategoriesToPages,
@@ -89,7 +93,6 @@ import {
   putCacheRedirectTarget
 } from '../localcache.js'
 
-import { useI18n } from 'vue-i18n'
 import { Page } from '../datamodels'
 
 const { locale } = useI18n({})
@@ -783,6 +786,8 @@ function languageSwitched(value) {
   locale.value = value
 
   global.setLanguage(value)
+
+  document.title = t('title')
 }
 
 onMounted(async () => {

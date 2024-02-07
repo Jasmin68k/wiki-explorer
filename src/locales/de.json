@@ -53,5 +53,6 @@
   "cache4w": "4 Wochen",
   "cacheflush": "Leeren",
   "cacheflushed": "Geleert",
-  "help": "Hilfe"
+  "help": "Hilfe",
+  "title": "Wiki-Explorer"
 }
