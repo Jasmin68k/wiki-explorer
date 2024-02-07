@@ -17,7 +17,7 @@ let db
 
 export function openDatabase() {
   return new Promise((resolve, reject) => {
-    let request = indexedDB.open(dbName, 1)
+    const request = indexedDB.open(dbName, 1)
 
     request.onerror = (event) => {
       reject(event.target.error)
@@ -47,7 +47,7 @@ export function openDatabase() {
 export function clearDatabase() {
   return new Promise((resolve, reject) => {
     for (let i = 0; i < osNames.length; i++) {
-      let transaction = db.transaction([osNames[i]], 'readwrite')
+      const transaction = db.transaction([osNames[i]], 'readwrite')
       transaction.oncomplete = () => {
         resolve()
       }
@@ -55,7 +55,7 @@ export function clearDatabase() {
         reject(event.target.error)
       }
 
-      let objectStore = transaction.objectStore(osNames[i])
+      const objectStore = transaction.objectStore(osNames[i])
       objectStore.clear()
     }
   })
@@ -70,9 +70,9 @@ export function clearDatabase() {
 
 export function getCacheMainInfo(title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['maininfo'])
-    let objectStore = transaction.objectStore('maininfo')
-    let request = objectStore.get(language + '.' + title)
+    const transaction = db.transaction(['maininfo'])
+    const objectStore = transaction.objectStore('maininfo')
+    const request = objectStore.get(language + '.' + title)
 
     request.onsuccess = () => {
       resolve(request.result)
@@ -91,9 +91,9 @@ export function getCacheMainInfo(title, language) {
  */
 export function getCacheCategories(title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['categories'])
-    let objectStore = transaction.objectStore('categories')
-    let request = objectStore.get(language + '.' + title)
+    const transaction = db.transaction(['categories'])
+    const objectStore = transaction.objectStore('categories')
+    const request = objectStore.get(language + '.' + title)
 
     request.onsuccess = () => {
       resolve(request.result)
@@ -112,9 +112,9 @@ export function getCacheCategories(title, language) {
  */
 export function getCacheRedirects(title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['redirects'])
-    let objectStore = transaction.objectStore('redirects')
-    let request = objectStore.get(language + '.' + title)
+    const transaction = db.transaction(['redirects'])
+    const objectStore = transaction.objectStore('redirects')
+    const request = objectStore.get(language + '.' + title)
 
     request.onsuccess = () => {
       resolve(request.result)
@@ -133,9 +133,9 @@ export function getCacheRedirects(title, language) {
  */
 export function getCacheRedirectTarget(search, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['redirecttargets'])
-    let objectStore = transaction.objectStore('redirecttargets')
-    let request = objectStore.get(language + '.' + search)
+    const transaction = db.transaction(['redirecttargets'])
+    const objectStore = transaction.objectStore('redirecttargets')
+    const request = objectStore.get(language + '.' + search)
 
     request.onsuccess = () => {
       resolve(request.result)
@@ -154,9 +154,9 @@ export function getCacheRedirectTarget(search, language) {
  */
 export function getCacheResults(title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['results'])
-    let objectStore = transaction.objectStore('results')
-    let request = objectStore.get(language + '.' + title)
+    const transaction = db.transaction(['results'])
+    const objectStore = transaction.objectStore('results')
+    const request = objectStore.get(language + '.' + title)
 
     request.onsuccess = () => {
       if (request.result) {
@@ -183,9 +183,9 @@ export function getCacheResults(title, language) {
 
 export function getCacheResultsCategories(title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['resultscategories'])
-    let objectStore = transaction.objectStore('resultscategories')
-    let request = objectStore.get(language + '.' + title)
+    const transaction = db.transaction(['resultscategories'])
+    const objectStore = transaction.objectStore('resultscategories')
+    const request = objectStore.get(language + '.' + title)
 
     request.onsuccess = () => {
       if (request.result) {
@@ -212,9 +212,9 @@ export function getCacheResultsCategories(title, language) {
 
 export function getCacheResultsRedirects(title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['resultsredirects'])
-    let objectStore = transaction.objectStore('resultsredirects')
-    let request = objectStore.get(language + '.' + title)
+    const transaction = db.transaction(['resultsredirects'])
+    const objectStore = transaction.objectStore('resultsredirects')
+    const request = objectStore.get(language + '.' + title)
 
     request.onsuccess = () => {
       if (request.result) {
@@ -243,7 +243,7 @@ export function getCacheResultsRedirects(title, language) {
 
 export function putCacheMainInfo(titlePage, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['maininfo'], 'readwrite')
+    const transaction = db.transaction(['maininfo'], 'readwrite')
     transaction.oncomplete = () => {
       resolve()
     }
@@ -251,7 +251,7 @@ export function putCacheMainInfo(titlePage, language) {
       reject(event.target.error)
     }
 
-    let data = {
+    const data = {
       date: new Date(),
       extract: titlePage.extract,
       image: titlePage.image,
@@ -261,7 +261,7 @@ export function putCacheMainInfo(titlePage, language) {
       missing: titlePage.missing
     }
 
-    let objectStore = transaction.objectStore('maininfo')
+    const objectStore = transaction.objectStore('maininfo')
     objectStore.put(data, language + '.' + titlePage.title)
   })
 }
@@ -275,7 +275,7 @@ export function putCacheMainInfo(titlePage, language) {
 
 export function putCacheCategories(titlePage, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['categories'], 'readwrite')
+    const transaction = db.transaction(['categories'], 'readwrite')
     transaction.oncomplete = () => {
       resolve()
     }
@@ -283,12 +283,12 @@ export function putCacheCategories(titlePage, language) {
       reject(event.target.error)
     }
 
-    let data = {
+    const data = {
       date: new Date(),
       categories: [...titlePage.categories]
     }
 
-    let objectStore = transaction.objectStore('categories')
+    const objectStore = transaction.objectStore('categories')
     objectStore.put(data, language + '.' + titlePage.title)
   })
 }
@@ -302,7 +302,7 @@ export function putCacheCategories(titlePage, language) {
 
 export function putCacheRedirects(titlePage, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['redirects'], 'readwrite')
+    const transaction = db.transaction(['redirects'], 'readwrite')
     transaction.oncomplete = () => {
       resolve()
     }
@@ -310,12 +310,12 @@ export function putCacheRedirects(titlePage, language) {
       reject(event.target.error)
     }
 
-    let data = {
+    const data = {
       date: new Date(),
       redirects: [...titlePage.redirects]
     }
 
-    let objectStore = transaction.objectStore('redirects')
+    const objectStore = transaction.objectStore('redirects')
     objectStore.put(data, language + '.' + titlePage.title)
   })
 }
@@ -330,7 +330,7 @@ export function putCacheRedirects(titlePage, language) {
 
 export function putCacheResults(resultsPages, title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['results'], 'readwrite')
+    const transaction = db.transaction(['results'], 'readwrite')
     transaction.oncomplete = () => {
       resolve()
     }
@@ -350,12 +350,12 @@ export function putCacheResults(resultsPages, title, language) {
       delete resultPage['redirects']
     }
 
-    let data = {
+    const data = {
       date: new Date(),
       pages: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
 
-    let objectStore = transaction.objectStore('results')
+    const objectStore = transaction.objectStore('results')
     objectStore.put(data, language + '.' + title)
   })
 }
@@ -370,7 +370,7 @@ export function putCacheResults(resultsPages, title, language) {
 
 export function putCacheResultsCategories(resultsPages, title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['resultscategories'], 'readwrite')
+    const transaction = db.transaction(['resultscategories'], 'readwrite')
     transaction.oncomplete = () => {
       resolve()
     }
@@ -393,12 +393,12 @@ export function putCacheResultsCategories(resultsPages, title, language) {
         }
       }
     }
-    let data = {
+    const data = {
       date: new Date(),
       pages: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
 
-    let objectStore = transaction.objectStore('resultscategories')
+    const objectStore = transaction.objectStore('resultscategories')
     objectStore.put(data, language + '.' + title)
   })
 }
@@ -413,7 +413,7 @@ export function putCacheResultsCategories(resultsPages, title, language) {
 
 export function putCacheResultsRedirects(resultsPages, title, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['resultsredirects'], 'readwrite')
+    const transaction = db.transaction(['resultsredirects'], 'readwrite')
     transaction.oncomplete = () => {
       resolve()
     }
@@ -435,12 +435,12 @@ export function putCacheResultsRedirects(resultsPages, title, language) {
         }
       }
     }
-    let data = {
+    const data = {
       date: new Date(),
       pages: JSON.stringify(Array.from(resultsPagesDeepCopy))
     }
 
-    let objectStore = transaction.objectStore('resultsredirects')
+    const objectStore = transaction.objectStore('resultsredirects')
     objectStore.put(data, language + '.' + title)
   })
 }
@@ -454,7 +454,7 @@ export function putCacheResultsRedirects(resultsPages, title, language) {
  */
 export function putCacheRedirectTarget(search, target, language) {
   return new Promise((resolve, reject) => {
-    let transaction = db.transaction(['redirecttargets'], 'readwrite')
+    const transaction = db.transaction(['redirecttargets'], 'readwrite')
     transaction.oncomplete = () => {
       resolve()
     }
@@ -462,12 +462,12 @@ export function putCacheRedirectTarget(search, target, language) {
       reject(event.target.error)
     }
 
-    let data = {
+    const data = {
       date: new Date(),
       redirecttarget: target
     }
 
-    let objectStore = transaction.objectStore('redirecttargets')
+    const objectStore = transaction.objectStore('redirecttargets')
     objectStore.put(data, language + '.' + search)
   })
 }

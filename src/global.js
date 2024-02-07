@@ -98,7 +98,7 @@ const state = reactive({
     return array
   }),
   indexStart: computed(function () {
-    let indexStart = state.graphFirstItem - 1
+    const indexStart = state.graphFirstItem - 1
 
     return indexStart
   }),

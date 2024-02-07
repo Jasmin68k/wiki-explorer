@@ -116,7 +116,7 @@ function categoriesAll() {
   // e. g. none, scroll max down, filter categories, all
   // also triggers v-model update only at end, might even be faster
 
-  let checkedCategoriesTemp = new Set()
+  const checkedCategoriesTemp = new Set()
   // no duplicate check needed in Set
   props.items.forEach((item) => checkedCategoriesTemp.add(item))
   global.statefull.checkedCategories = checkedCategoriesTemp

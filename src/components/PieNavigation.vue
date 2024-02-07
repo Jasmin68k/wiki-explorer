@@ -91,7 +91,7 @@ defineProps({
   radius: { required: true, default: 260, type: Number }
 })
 
-let slice = ref('')
+const slice = ref('')
 let mousedown = false
 let angle = global.state.pieAngleSaved
 
@@ -112,8 +112,8 @@ const resultsClasses = computed(function () {
   const minimumSliceWidth = 15
 
   if (global.state.filteredResults.length > 0 && !global.state.inputsDisabled) {
-    let classes = []
-    let angles = []
+    const classes = []
+    const angles = []
     let resultsIndex = 0
     let firstChar = global.state.filteredResults[resultsIndex].title
       .charAt(0)
@@ -193,11 +193,11 @@ const resultsClasses = computed(function () {
           angles[angles.length - 1].startAngle <
           minimumSliceWidth
       ) {
-        let anglesLastChar = angles[angles.length - 1].chars.slice(-1)
+        const anglesLastChar = angles[angles.length - 1].chars.slice(-1)
 
         if (!(anglesLastChar === classes[classesIndex.firstChar])) {
-          let addAngle = 360 - angles[angles.length - 1].endAngle
-          let lastChar = classes[classes.length - 1].firstChar
+          const addAngle = 360 - angles[angles.length - 1].endAngle
+          const lastChar = classes[classes.length - 1].firstChar
           let lastClassChars = angles[angles.length - 1].chars
 
           if (lastClassChars.length > 1) {

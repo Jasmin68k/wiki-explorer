@@ -37,7 +37,7 @@ onMounted(() => {
 const pieNavigationRadius = 260
 
 const outgraphref = ref(null)
-let circleButtonCoordinates = reactive([])
+const circleButtonCoordinates = reactive([])
 // init empty, otherwise not defined and error in mobile mode switch back from other than outgraph mode
 circleButtonCoordinates.value = []
 
@@ -72,7 +72,7 @@ async function calcCoordinates() {
       const ySpace = height % itemHeight
 
       // using temp in order not to overwrite coordinates prop on buttons while calculating
-      let CoordinatesTemp = []
+      const CoordinatesTemp = []
 
       for (let y = 0; y < yCount; y++) {
         for (let x = 0; x < xCount; x++) {

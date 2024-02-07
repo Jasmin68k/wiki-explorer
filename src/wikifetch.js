@@ -5,17 +5,17 @@ let jsonData = {}
 
 // Api-User-Agent can be used instead of regular User-Agent (good practice, not always enforced by wikimedia)
 // User-Agent might not be possible to set in every browser
-let fetchHeaders = new Headers({
+const fetchHeaders = new Headers({
   'Api-User-Agent': 'WikiExplorer/0.1',
   'User-Agent': 'WikiExplorer/0.1'
 })
 
-let categoryPrefix = {
+const categoryPrefix = {
   en: 'Category:',
   de: 'Kategorie:'
 }
 
-let noCategoryPrefix = {
+const noCategoryPrefix = {
   en: '[ NO CATEGORY ]',
   de: '[ KEINE KATEGORIE ]'
 }
@@ -27,7 +27,7 @@ let noCategoryPrefix = {
  * @returns {Map<Page>} with keys pageId and values Page (imported class) with title, url, pageid and missing populated
  */
 export async function wikiFetchPages(title, language) {
-  let pages = new Map()
+  const pages = new Map()
 
   do {
     try {
@@ -105,14 +105,14 @@ export async function wikiFetchPages(title, language) {
  * @returns {TitlePage} (imported class) with extract, title, url, pageid and missing populated
  */
 export async function wikiFetchTitlePage(title, language) {
-  let titlePage = new TitlePage()
+  const titlePage = new TitlePage()
 
   titlePage.extract = ''
   titlePage.image = ''
   titlePage.missing = true
 
   try {
-    let mainInfoUrl =
+    const mainInfoUrl =
       'https://' +
       language +
       '.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info|pageimages&piprop=original&exintro&redirects=1&indexpageids&inprop=url&titles=' +
@@ -165,9 +165,9 @@ export async function wikiFetchTitlePage(title, language) {
  * @returns {Object Map<Page> Map<Page> Set<String} pages with categories populated, added pages, pageids of deleted pages
  */
 export async function wikiFetchAddCategoriesToPages(title, language, pages) {
-  let pageIds = new Set()
-  let categoriesAddedPages = new Map()
-  let categoriesDeletedPages = new Set()
+  const pageIds = new Set()
+  const categoriesAddedPages = new Map()
+  const categoriesDeletedPages = new Set()
 
   do {
     try {
@@ -310,7 +310,7 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
  */
 export async function wikiFetchAddRedirectsToPages(language, pages) {
   // results -> {Map<Promise>}
-  let results = new Map()
+  const results = new Map()
 
   // initial throttle value in ms
   const throttle = 0
@@ -402,7 +402,7 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
       }
       jsonCategories = await response.json()
 
-      let results = Object.values(jsonCategories.query.pages)
+      const results = Object.values(jsonCategories.query.pages)
 
       if (!results[0].categories) {
         continue
@@ -470,7 +470,7 @@ export async function wikiFetchAddRedirectsToTitlePage(title, language, page) {
       }
       jsonRedirects = await response.json()
 
-      let results = Object.values(jsonRedirects.query.pages)
+      const results = Object.values(jsonRedirects.query.pages)
 
       if (!results[0].redirects) {
         continue
@@ -536,7 +536,7 @@ async function getSingleRedirect(
 
       jsonRedirects = await response.json()
 
-      let results = Object.values(jsonRedirects.query.pages)
+      const results = Object.values(jsonRedirects.query.pages)
 
       if (!results[0].redirects) {
         continue
@@ -603,7 +603,7 @@ async function fetchRetry(url, options, retries, throttle, throttleincrease) {
 export async function wikiFetchGetRedirectTarget(title, language) {
   let redirectTarget = ''
   try {
-    let redirectTargetUrl =
+    const redirectTargetUrl =
       'https://' +
       language +
       '.wikipedia.org/w/api.php?action=query&format=json&titles=' +
@@ -644,7 +644,7 @@ export async function wikiFetchGetRedirectTarget(title, language) {
 export async function wikiFetchSinglePage(pageid, language) {
   let page
   try {
-    let url =
+    const url =
       'https://' +
       language +
       '.wikipedia.org/w/api.php?format=json&action=query&prop=info&redirects=1&indexpageids&inprop=url&pageids=' +

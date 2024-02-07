@@ -335,7 +335,7 @@ const emit = defineEmits([
 // can this be done more elegantly?
 function fetchData(submitEvent) {
   let value = ''
-  for (let element of submitEvent.target.elements) {
+  for (const element of submitEvent.target.elements) {
     if (element.id === 'title') {
       value = element.value
       break

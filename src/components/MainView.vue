@@ -113,7 +113,7 @@ const resultsCategoriesAll = computed(function () {
   ) {
     return []
   }
-  let allCategoriesSet = new Set()
+  const allCategoriesSet = new Set()
 
   for (const pageId of global.statefull.resultsPages.keys()) {
     const resultPage = global.statefull.resultsPages.get(pageId)
@@ -150,7 +150,7 @@ const resultsCategoriesAllUnfiltered = computed(function () {
   ) {
     return []
   }
-  let allCategoriesSet = new Set()
+  const allCategoriesSet = new Set()
 
   for (const pageId of global.statefull.resultsPages.keys()) {
     const resultPage = global.statefull.resultsPages.get(pageId)
@@ -266,7 +266,7 @@ async function getResultsCategories() {
         !(cachedata === undefined) &&
         cachedata.date > new Date() - global.state.cacheMaxAge
       ) {
-        let pageIds = new Set()
+        const pageIds = new Set()
 
         for (const pageId of cachedata.pages.keys()) {
           pageIds.add(pageId)
@@ -396,7 +396,7 @@ async function getResultsRedirects() {
         !(cachedata === undefined) &&
         cachedata.date > new Date() - global.state.cacheMaxAge
       ) {
-        let pageIds = new Set()
+        const pageIds = new Set()
 
         // add all pages
         for (const pageId of global.statefull.resultsPages.keys()) {
