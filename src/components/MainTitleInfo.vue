@@ -82,7 +82,6 @@
 
 <script setup>
 import { inject } from 'vue'
-import CategoriesRedirectsTitle from './CategoriesRedirectsTitle.vue'
 
 const global = inject('global')
 

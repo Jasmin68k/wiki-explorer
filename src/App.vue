@@ -4,7 +4,6 @@
 
 <script setup>
 import { provide } from 'vue'
-import MainView from './components/MainView.vue'
 import global from './global.js'
 
 provide('global', global)

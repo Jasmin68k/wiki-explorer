@@ -138,11 +138,6 @@ import {
   onMounted,
   onBeforeUnmount
 } from 'vue'
-import MainTitleInfo from './MainTitleInfo.vue'
-import Categories from './Categories.vue'
-import CategoriesCheckboxFilter from './CategoriesCheckboxFilter.vue'
-import Redirects from './Redirects.vue'
-import Outgraph from './Outgraph.vue'
 
 const global = inject('global')
 const emit = defineEmits(['circleButtonClicked'])

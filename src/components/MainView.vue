@@ -59,14 +59,7 @@
 
 <script setup>
 import { inject, computed, ref, onMounted } from 'vue'
-import InputForm from './InputForm.vue'
 
-import Outgraph from './Outgraph.vue'
-
-import StatusBar from './StatusBar.vue'
-
-import TabArea from './TabArea.vue'
-import Help from './Help.vue'
 import {
   wikiFetchAddCategoriesToTitlePage,
   wikiFetchAddCategoriesToPages,

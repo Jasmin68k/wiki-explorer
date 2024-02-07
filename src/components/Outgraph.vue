@@ -23,9 +23,6 @@ import {
   onUnmounted
 } from 'vue'
 
-import CircleButton from './CircleButton.vue'
-import PieNavigation from './PieNavigation.vue'
-
 const global = inject('global')
 
 const emit = defineEmits(['circleButtonClicked'])

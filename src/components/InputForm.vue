@@ -317,8 +317,6 @@
 <script setup>
 import { inject, onMounted, ref } from 'vue'
 
-import OptionsMenu from './OptionsMenu.vue'
-
 const locale = import.meta.env.VITE_VUE_APP_I18N_LOCALE
 
 const global = inject('global')
