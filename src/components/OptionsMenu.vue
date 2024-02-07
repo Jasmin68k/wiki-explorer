@@ -2,7 +2,7 @@
   <div class="menu" id="menucontainer">
     <div class="menuheading">
       <span class="menutext">
-        <strong>{{ t('cache') }}</strong></span
+        <strong>{{ $t('cache') }}</strong></span
       >
     </div>
     <div
@@ -20,7 +20,7 @@
     >
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
         class="menutext"
-        >{{ t('cachedisabled') }}</span
+        >{{ $t('cachedisabled') }}</span
       >
     </div>
     <div
@@ -38,7 +38,7 @@
     >
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
         class="menutext"
-        >{{ t('cache1h') }}</span
+        >{{ $t('cache1h') }}</span
       >
     </div>
     <div
@@ -56,7 +56,7 @@
     >
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
         class="menutext"
-        >{{ t('cache6h') }}</span
+        >{{ $t('cache6h') }}</span
       >
     </div>
     <div
@@ -74,7 +74,7 @@
     >
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
         class="menutext"
-        >{{ t('cache1d') }}</span
+        >{{ $t('cache1d') }}</span
       >
     </div>
     <div
@@ -92,7 +92,7 @@
     >
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
         class="menutext"
-        >{{ t('cache1w') }}</span
+        >{{ $t('cache1w') }}</span
       >
     </div>
     <div
@@ -110,7 +110,7 @@
     >
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
         class="menutext"
-        >{{ t('cache4w') }}</span
+        >{{ $t('cache4w') }}</span
       >
     </div>
     <div
@@ -129,24 +129,27 @@
       <img class="menuicon" src="../assets/images/check-mark.svg" /><span
         class="menutext"
         id="cacheflushtext"
-        >{{ t('cacheflush') }}</span
+        >{{ $t('cacheflush') }}</span
       >
     </div>
     <div><hr /></div>
     <div @click.prevent="showHelpClicked" id="showhelp" class="menuitem">
       <img class="menuicon helpicon" src="../assets/images/question-mark.svg" />
-      <span class="menutext">{{ t('help') }}</span>
+      <span class="menutext">{{ $t('help') }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
 import { inject, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { clearDatabase } from '../localcache.js'
 
+// t used in cacheFlushClicked(), otherwise $t globally available
+import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
+
 const global = inject('global')
+
 const emit = defineEmits(['hideMenu'])
 defineExpose({ cacheSettingsUpdated })
 

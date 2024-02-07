@@ -20,7 +20,7 @@
           class="wikibutton"
           @click.prevent="wikiClicked(page.url)"
         >
-          {{ t('open') }}
+          {{ $t('open') }}
           <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
         </button>
       </div>
@@ -33,7 +33,7 @@
           page.categories.length > 0
         "
       >
-        <h4>{{ t('categories') }}</h4>
+        <h4>{{ $t('categories') }}</h4>
         <ul class="list-horizontal">
           <li v-for="(category, index) in page.categories" :key="index">
             {{ category }}
@@ -46,9 +46,6 @@
 
 <script setup>
 import { inject } from 'vue'
-
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n({})
 
 const global = inject('global')
 

@@ -8,8 +8,8 @@
 
     <div class="twocolumns help-text">
       <h1>Wiki-Explorer</h1>
-      <p>{{ t('help-intro1') }}</p>
-      <p>{{ t('help-intro2') }}</p>
+      <p>{{ $t('help-intro1') }}</p>
+      <p>{{ $t('help-intro2') }}</p>
     </div>
     <div>
       <div class="icon-help-container">
@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="help-text">
-      {{ t('help-help') }}
+      {{ $t('help-help') }}
     </div>
     <div>
       <div class="icon-help-container">
@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="help-text">
-      {{ t('help-desktop-mobile') }}
+      {{ $t('help-desktop-mobile') }}
     </div>
     <div>
       <div class="icon-help-container">
@@ -39,28 +39,31 @@
       </div>
     </div>
     <div class="help-text">
-      {{ t('help-language') }}
+      {{ $t('help-language') }}
     </div>
     <div class="icon-help-small-right-container">
-      <input class="help-input" :placeholder="t('search-on-wikipedia')" />
+      <input class="help-input" :placeholder="$t('search-on-wikipedia')" />
       <img class="icon-help-small-right" src="../assets/images/search.svg" />
     </div>
     <div class="help-text">
-      {{ t('help-search') }}
+      {{ $t('help-search') }}
     </div>
     <div class="icon-help-small-left-container">
       <img class="icon-help-small-left" src="../assets/images/text-tool.svg" />
-      <input class="help-input" :placeholder="t('filter-results-titles')" />
+      <input class="help-input" :placeholder="$t('filter-results-titles')" />
     </div>
     <div class="help-text">
-      {{ t('help-filter-titles') }}
+      {{ $t('help-filter-titles') }}
     </div>
     <div class="icon-help-small-left-container">
       <img class="icon-help-small-left" src="../assets/images/document.svg" />
-      <input class="help-input" :placeholder="t('filter-results-categories')" />
+      <input
+        class="help-input"
+        :placeholder="$t('filter-results-categories')"
+      />
     </div>
     <div class="help-text">
-      {{ t('help-filter-categories') }}
+      {{ $t('help-filter-categories') }}
     </div>
     <div>
       <div class="icon-help-container">
@@ -68,7 +71,7 @@
       </div>
     </div>
     <div class="help-text">
-      {{ t('help-categories-switch1') }}
+      {{ $t('help-categories-switch1') }}
       <span
         ><img
           class="icon-help2"
@@ -78,7 +81,7 @@
           }"
           src="../assets/images/document.svg"
       /></span>
-      {{ t('help-categories-switch2') }}
+      {{ $t('help-categories-switch2') }}
     </div>
     <div>
       <div class="icon-help-container">
@@ -89,7 +92,7 @@
       </div>
     </div>
     <div class="help-text">
-      {{ t('help-redirects-switch1') }}
+      {{ $t('help-redirects-switch1') }}
       <span
         ><img
           class="icon-help2"
@@ -99,7 +102,7 @@
           }"
           src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
       /></span>
-      {{ t('help-redirects-switch2') }}
+      {{ $t('help-redirects-switch2') }}
     </div>
 
     <div>
@@ -115,50 +118,50 @@
       </div>
     </div>
     <div class="help-text">
-      {{ t('help-arrows') }}
+      {{ $t('help-arrows') }}
     </div>
     <div class="twocolumns help-text">
-      <h2>{{ t('help-outro0') }}</h2>
-      <p>{{ t('help-outro1') }}</p>
+      <h2>{{ $t('help-outro0') }}</h2>
+      <p>{{ $t('help-outro1') }}</p>
       <p>
-        <em>{{ currentUrl + t('help-outro2') }}</em>
+        <em>{{ currentUrl + $t('help-outro2') }}</em>
       </p>
-      <h3>{{ t('help-outro3') }}</h3>
-      <p>{{ t('help-outro4') }}</p>
+      <h3>{{ $t('help-outro3') }}</h3>
+      <p>{{ $t('help-outro4') }}</p>
       <p>
-        <a :href="currentUrl + t('help-outro5')" target="_blank">{{
-          currentUrl + t('help-outro5')
+        <a :href="currentUrl + $t('help-outro5')" target="_blank">{{
+          currentUrl + $t('help-outro5')
         }}</a>
       </p>
-      <p>{{ t('help-outro6') }}</p>
+      <p>{{ $t('help-outro6') }}</p>
       <p>
-        <a :href="currentUrl + t('help-outro7')" target="_blank">{{
-          currentUrl + t('help-outro7')
+        <a :href="currentUrl + $t('help-outro7')" target="_blank">{{
+          currentUrl + $t('help-outro7')
         }}</a>
       </p>
-      <p>{{ t('help-outro8') }}</p>
+      <p>{{ $t('help-outro8') }}</p>
       <p>
-        <a :href="currentUrl + t('help-outro9')" target="_blank">{{
-          currentUrl + t('help-outro9')
+        <a :href="currentUrl + $t('help-outro9')" target="_blank">{{
+          currentUrl + $t('help-outro9')
         }}</a>
       </p>
-      <p>{{ t('help-outro10') }}</p>
+      <p>{{ $t('help-outro10') }}</p>
       <p>
-        <a :href="currentUrl + t('help-outro11')" target="_blank">{{
-          currentUrl + t('help-outro11')
+        <a :href="currentUrl + $t('help-outro11')" target="_blank">{{
+          currentUrl + $t('help-outro11')
         }}</a>
       </p>
-      <p>{{ t('help-outro12') }}</p>
+      <p>{{ $t('help-outro12') }}</p>
       <p>
-        {{ t('help-outro13a') }}<br />
-        {{ t('help-outro13b') }}<br />
-        {{ t('help-outro13c') }}<br />
-        {{ t('help-outro13h') }}<br />
-        {{ t('help-outro13d') }}<br />
-        {{ t('help-outro13e') }}<br />
-        {{ t('help-outro13f') }}<br />
-        {{ t('help-outro13g') }}<br />
-        {{ t('help-outro13k') }}
+        {{ $t('help-outro13a') }}<br />
+        {{ $t('help-outro13b') }}<br />
+        {{ $t('help-outro13c') }}<br />
+        {{ $t('help-outro13h') }}<br />
+        {{ $t('help-outro13d') }}<br />
+        {{ $t('help-outro13e') }}<br />
+        {{ $t('help-outro13f') }}<br />
+        {{ $t('help-outro13g') }}<br />
+        {{ $t('help-outro13k') }}
       </p>
     </div>
   </div>
@@ -166,9 +169,7 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 
-import { useI18n } from 'vue-i18n'
 const global = inject('global')
-const { t } = useI18n({})
 
 const currentUrl = ref('')
 

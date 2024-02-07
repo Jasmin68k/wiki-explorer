@@ -79,7 +79,7 @@
           type="text"
           id="title"
           class="searchinputarea"
-          :placeholder="t('search-on-wikipedia')"
+          :placeholder="$t('search-on-wikipedia')"
           :value="global.state.title"
           @input="titleChanged($event.target.value)"
           :disabled="
@@ -131,7 +131,7 @@
           type="text"
           id="filter"
           class="titleinputarea"
-          :placeholder="t('filter-results-titles')"
+          :placeholder="$t('filter-results-titles')"
           :value="global.state.filter"
           @input="resetFirstItem(), filterChanged($event.target.value)"
           :disabled="global.state.inputsDisabled || global.state.mobileMode"
@@ -155,7 +155,7 @@
           type="text"
           id="filterCategories"
           class="categoriesinputarea"
-          :placeholder="t('filter-results-categories')"
+          :placeholder="$t('filter-results-categories')"
           :value="global.state.filterCategories"
           @input="
             resetFirstItem(), filterCategoriesChanged($event.target.value)
@@ -317,9 +317,7 @@
 <script setup>
 import { inject, onMounted, ref } from 'vue'
 
-import { useI18n } from 'vue-i18n'
 import OptionsMenu from './OptionsMenu.vue'
-const { t } = useI18n({})
 
 const locale = import.meta.env.VITE_VUE_APP_I18N_LOCALE
 

@@ -31,7 +31,7 @@
           </h4>
 
           <button class="wikibutton" @click.prevent="wikiClicked">
-            {{ t('open') }}
+            {{ $t('open') }}
             <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
           </button>
         </div>
@@ -49,7 +49,7 @@
             {{ global.statefull.titlePage.title }}
           </h4>
           <button class="wikibutton" @click.prevent="wikiClicked">
-            {{ t('open') }}
+            {{ $t('open') }}
             <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
           </button>
         </div>
@@ -67,7 +67,7 @@
             {{ global.statefull.titlePage.title }}
           </h4>
           <button class="wikibutton" @click.prevent="wikiClicked">
-            {{ t('open') }}
+            {{ $t('open') }}
             <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
           </button>
         </div>
@@ -83,9 +83,6 @@
 <script setup>
 import { inject } from 'vue'
 import CategoriesRedirectsTitle from './CategoriesRedirectsTitle.vue'
-
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n({})
 
 const global = inject('global')
 

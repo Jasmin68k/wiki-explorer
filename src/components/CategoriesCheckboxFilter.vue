@@ -18,10 +18,10 @@
   </div>
   <div class="checkboxbuttonscontainer">
     <button class="checkboxbuttons" @click.prevent="categoriesAll">
-      {{ t('all') }}
+      {{ $t('all') }}
     </button>
     <button class="checkboxbuttons" @click.prevent="categoriesNone">
-      {{ t('none') }}
+      {{ $t('none') }}
     </button>
   </div>
 </template>
@@ -32,9 +32,6 @@
 // https://codepen.io/zupkode/pen/oNgaqLv
 
 import { inject, computed, onMounted, onBeforeUnmount, ref } from 'vue'
-
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n({})
 
 const global = inject('global')
 

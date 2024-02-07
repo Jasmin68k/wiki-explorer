@@ -19,7 +19,7 @@
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
         <span v-show="global.state.filteredResults.length > 0"
-          >{{ t('results') }}{{ global.state.filteredResults.length }}</span
+          >{{ $t('results') }}{{ global.state.filteredResults.length }}</span
         >
         <span
           v-if="
@@ -58,9 +58,6 @@
 </template>
 <script setup>
 import { inject } from 'vue'
-
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n({})
 
 const global = inject('global')
 </script>

@@ -19,7 +19,7 @@
           class="wikibutton"
           @click.prevent="wikiClicked(page.url)"
         >
-          {{ t('open') }}
+          {{ $t('open') }}
           <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
         </button>
       </div>
@@ -32,7 +32,7 @@
           page.redirects.length > 0
         "
       >
-        <h4>{{ t('redirects') }}</h4>
+        <h4>{{ $t('redirects') }}</h4>
         <ul class="list-horizontal">
           <li v-for="(redirect, index) in page.redirects" :key="index">
             {{ redirect }}
@@ -45,9 +45,6 @@
 
 <script setup>
 import { inject } from 'vue'
-
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n({})
 
 const global = inject('global')
 
