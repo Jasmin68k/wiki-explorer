@@ -134,7 +134,7 @@
           :placeholder="$t('filter-results-titles')"
           :value="global.state.filter"
           @input="resetFirstItem(), filterChanged($event.target.value)"
-          :disabled="global.state.inputsDisabled || global.state.mobileMode"
+          :disabled="global.state.inputsDisabled"
         />
       </form>
     </div>
@@ -163,8 +163,7 @@
           :disabled="
             global.state.inputsDisabled ||
             !global.state.resultsCategoriesDone ||
-            !global.state.resultsCategoriesEnabled ||
-            global.state.mobileMode
+            !global.state.resultsCategoriesEnabled
           "
         />
       </form>
