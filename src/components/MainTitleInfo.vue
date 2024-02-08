@@ -115,6 +115,7 @@ img.svg-icon {
   margin: 0 0 10px 10px;
   padding-right: 10px;
   background-color: #ffffff;
+  background-clip: content-box;
 }
 .imageonly {
   width: 100%;
