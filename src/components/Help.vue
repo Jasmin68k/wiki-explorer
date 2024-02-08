@@ -172,6 +172,20 @@
         {{ $t('help-outro13g') }}<br />
         {{ $t('help-outro13k') }}
       </p>
+      <hr />
+      <p class="footer">
+        {{ $t('help-footer1') }}<br /><img
+          src="@/assets/images/github-mark.svg"
+          alt="GitHub"
+          class="inline-image"
+        />
+        <a href="https://github.com/Jasmin68k/wiki-explorer" target="_blank">{{
+          $t('help-footer2')
+        }}</a>
+        <br />
+        {{ $t('help-footer3') }}
+      </p>
+      <hr />
     </div>
   </div>
 </template>
@@ -292,5 +306,16 @@ img.svg-icon {
   .closebutton:hover {
     filter: brightness(1.2);
   }
+}
+.footer {
+  text-align: center;
+  font-size: 85%;
+  line-height: 1.5;
+}
+.inline-image {
+  height: 1em;
+  margin-right: 0.5em;
+  vertical-align: middle;
+  filter: invert(100%) brightness(90%);
 }
 </style>

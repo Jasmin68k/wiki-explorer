@@ -56,5 +56,8 @@
   "help": "Hilfe",
   "title": "Wiki-Explorer",
   "category-prefix": "Kategorie:",
-  "no-category-prefix": "[ KEINE KATEGORIE ]"
+  "no-category-prefix": "[ KEINE KATEGORIE ]",
+  "help-footer1": "Entwickelt von Jasmin68k",
+  "help-footer2": "Projekt auf GitHub ansehen",
+  "help-footer3": "Beiträge und Feedback sind willkommen."
 }
