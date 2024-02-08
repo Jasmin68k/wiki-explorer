@@ -54,5 +54,7 @@
   "cacheflush": "Leeren",
   "cacheflushed": "Geleert",
   "help": "Hilfe",
-  "title": "Wiki-Explorer"
+  "title": "Wiki-Explorer",
+  "category-prefix": "Kategorie:",
+  "no-category-prefix": "[ KEINE KATEGORIE ]"
 }

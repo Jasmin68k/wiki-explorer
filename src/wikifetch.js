@@ -1,5 +1,6 @@
 import { NetworkError, DataError } from '@/customerrors.js'
 import { Page, TitlePage } from '@/datamodels.js'
+import i18n from '@/i18n'
 
 let jsonData = {}
 
@@ -9,16 +10,6 @@ const fetchHeaders = new Headers({
   'Api-User-Agent': 'WikiExplorer/0.1',
   'User-Agent': 'WikiExplorer/0.1'
 })
-
-const categoryPrefix = {
-  en: 'Category:',
-  de: 'Kategorie:'
-}
-
-const noCategoryPrefix = {
-  en: '[ NO CATEGORY ]',
-  de: '[ KEINE KATEGORIE ]'
-}
 
 /**
  * Query Wikipedia for all Wikipedia pages linked to from Wikipedia page given by title and language
@@ -253,10 +244,12 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
             for (let i = 0; i < resultPage.categories.length; i++) {
               // not sure it always starts with "Category:", check and only remove if it does
               if (
-                resultPage.categories[i].startsWith(categoryPrefix[language])
+                resultPage.categories[i].startsWith(
+                  i18n.global.t('category-prefix')
+                )
               ) {
                 resultPage.categories[i] = resultPage.categories[i].substring(
-                  categoryPrefix[language].length
+                  i18n.global.t('category-prefix').length
                 )
               }
             }
@@ -280,14 +273,14 @@ export async function wikiFetchAddCategoriesToPages(title, language, pages) {
   for (const pageId of pages.keys()) {
     const resultPage = pages.get(pageId)
     if (resultPage.categories.length === 0) {
-      resultPage.categories = [noCategoryPrefix[language]]
+      resultPage.categories = [i18n.global.t('no-category-prefix')]
     }
   }
 
   for (const pageId of categoriesAddedPages.keys()) {
     const resultPage = categoriesAddedPages.get(pageId)
     if (resultPage.categories.length === 0) {
-      resultPage.categories = [noCategoryPrefix[language]]
+      resultPage.categories = [i18n.global.t('no-category-prefix')]
     }
   }
 
@@ -419,9 +412,9 @@ export async function wikiFetchAddCategoriesToTitlePage(title, language, page) {
   // filter "Category:" at beginning
   for (let i = 0; i < page.categories.length; i++) {
     // not sure it always starts with "Category:", check and only remove if it does
-    if (page.categories[i].startsWith(categoryPrefix[language])) {
+    if (page.categories[i].startsWith(i18n.global.t('category-prefix'))) {
       page.categories[i] = page.categories[i].substring(
-        categoryPrefix[language].length
+        i18n.global.t('category-prefix').length
       )
     }
   }
