@@ -546,6 +546,13 @@ onMounted(() => {
 })
 </script>
 <style scoped>
+.radiolabel,
+.checkboxlabel,
+.optionsmenuiconcontainer {
+  height: 23px;
+  line-height: 16px;
+}
+
 img.svg-icon {
   filter: invert(100%) brightness(90%);
 }
@@ -553,6 +560,10 @@ img.svg-icon {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+.inputform-flex-container input {
+  height: 23px;
 }
 
 #item2,
