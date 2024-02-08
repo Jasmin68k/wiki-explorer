@@ -62,7 +62,6 @@ async function calcCoordinates() {
       const pieMinY = height / 2 - pieHeight / 2
       const pieMaxY = height / 2 + pieHeight / 2
 
-      // fix button (max-)width/height later, still calced as in circle
       const itemWidth = global.state.mobileMode ? 150 * 0.66 : 150
       const itemHeight = global.state.mobileMode ? 100 * 0.66 : 100
 

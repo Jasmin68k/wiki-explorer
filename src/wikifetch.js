@@ -128,7 +128,6 @@ export async function wikiFetchTitlePage(title, language) {
       const message = `${response.status} ${response.statusText}`
       throw new NetworkError(message)
     }
-    // add error handling
     const jsonTitleData = await response.json()
     const pageId = jsonTitleData.query.pageids[0]
     if (jsonTitleData.query.pages[pageId].extract) {

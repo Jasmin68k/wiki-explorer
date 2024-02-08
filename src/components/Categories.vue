@@ -66,7 +66,6 @@ img.svg-icon {
   font-size: 90%;
 }
 .catsredirects {
-  /* font-size: 90%; */
   text-align: left;
   padding-right: 10px;
   padding-left: 5px;
@@ -81,10 +80,6 @@ ul {
 .list-horizontal li:before {
   content: '\00a0\2022\00a0';
 }
-
-/* .list-horizontal li:first-child:before {
-  content: '';
-} */
 
 .wikibutton {
   font-size: 100%;

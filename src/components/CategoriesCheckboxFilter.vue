@@ -79,7 +79,6 @@ const visibleNodeCount = computed(function () {
 })
 
 // Subset of items shown from the full array
-
 const visibleItems = computed(() =>
   props.items.slice(startIndex.value, startIndex.value + visibleNodeCount.value)
 )
@@ -144,8 +143,6 @@ function handleScroll() {
 
 // Find the largest height amongst all the children
 // Remember each row has to be of the same height
-// I am working on the different height version
-
 function calculateInitialRowHeight() {
   let largestHeight = 0
   const children = spacer.value.children
@@ -170,10 +167,6 @@ function initRowHeight() {
 }
 
 onMounted(() => {
-  // emit did not work for whatever reason
-  // $parent.windowResized()
-
-  // script setup testing with emit again
   emit('windowResize')
 
   root.value.addEventListener('scroll', handleScroll, {

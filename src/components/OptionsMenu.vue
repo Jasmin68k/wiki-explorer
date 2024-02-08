@@ -324,7 +324,6 @@ img.svg-icon {
 }
 @media (hover: hover) and (pointer: fine) {
   .menuitem:hover {
-    /* equals filter: invert(0.25) on #555 */
     background-color: #777;
   }
 }

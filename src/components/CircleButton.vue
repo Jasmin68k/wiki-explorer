@@ -105,7 +105,6 @@ function circleButtonMiddle(index) {
 }
 @media (hover: hover) and (pointer: fine) {
   .circlebuttonactualhover:hover:not(.missing) {
-    /* background-color: palegoldenrod; */
     filter: brightness(1.2);
   }
 }

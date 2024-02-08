@@ -192,7 +192,6 @@ async function getResults() {
       cacheerror = true
     }
 
-    // add date/max age check later / undefined on successful request, but key does not exist in database
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
@@ -263,7 +262,6 @@ async function getResultsCategories() {
         cacheerror = true
       }
 
-      // add date/max age check later / undefined on successful request, but key does not exist in database
       if (
         !cacheerror &&
         !(cachedata === undefined) &&
@@ -322,7 +320,6 @@ async function getResultsCategories() {
         }
       } else {
         // with big pages this requires lots of api fetches, which makes up majority of the wait time
-
         const wikiFetchCategories = await wikiFetchAddCategoriesToPages(
           global.state.title,
           global.state.language,
@@ -393,7 +390,6 @@ async function getResultsRedirects() {
         cacheerror = true
       }
 
-      // add date/max age check later / undefined on successful request, but key does not exist in database
       if (
         !cacheerror &&
         !(cachedata === undefined) &&
@@ -420,7 +416,6 @@ async function getResultsRedirects() {
         }
 
         //pageIds set has missing pageids
-
         if (pageIds.size > 0) {
           pageIds.forEach((pageId) => {
             redirectsAddedPages.add(pageId)
@@ -517,10 +512,6 @@ async function executeCacheDeferred() {
         pageId,
         new Page({
           title: global.statefull.resultsPages.get(pageId).title
-          // url: global.statefull.resultsPages.get(pageId).url,
-          // pageid: global.statefull.resultsPages.get(pageId).pageid,
-          // missing: global.statefull.resultsPages.get(pageId).missing,
-          // categories: global.statefull.resultsPages.get(pageId).categories
         })
       )
     })
@@ -556,7 +547,6 @@ async function getMainInfo() {
       cacheerror = true
     }
 
-    // add date/max age check later / undefined on successful request, but key does not exist in database
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
@@ -619,7 +609,6 @@ async function getCategories() {
       cacheerror = true
     }
 
-    // add date/max age check later / undefined on successful request, but key does not exist in database
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
@@ -666,7 +655,6 @@ async function getRedirects() {
       cacheerror = true
     }
 
-    // add date/max age check later / undefined on successful request, but key does not exist in database
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
@@ -722,7 +710,6 @@ async function startFetches(search) {
       cacheerror = true
     }
 
-    // add date/max age check later / undefined on successful request, but key does not exist in database
     if (
       !cacheerror &&
       !(cachedata === undefined) &&
@@ -782,7 +769,6 @@ async function resultsRedirectsChanged() {
   }
 }
 function languageSwitched(value) {
-  // $i18n.locale = value
   locale.value = value
 
   global.setLanguage(value)

@@ -68,8 +68,4 @@ ul {
 .list-horizontal li:before {
   content: '\00a0\2022\00a0';
 }
-
-/* .list-horizontal li:first-child:before {
-  content: '';
-} */
 </style>
