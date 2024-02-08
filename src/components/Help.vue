@@ -42,7 +42,11 @@
       {{ $t('help-language') }}
     </div>
     <div class="icon-help-small-right-container">
-      <input class="help-input" :placeholder="$t('search-on-wikipedia')" />
+      <input
+        class="help-input"
+        :placeholder="$t('search-on-wikipedia')"
+        @mousedown.prevent
+      />
       <img
         class="icon-help-small-right svg-icon"
         src="@/assets/images/search.svg"
@@ -56,7 +60,11 @@
         class="icon-help-small-left svg-icon"
         src="@/assets/images/text-tool.svg"
       />
-      <input class="help-input" :placeholder="$t('filter-results-titles')" />
+      <input
+        class="help-input"
+        :placeholder="$t('filter-results-titles')"
+        @mousedown.prevent
+      />
     </div>
     <div class="help-text">
       {{ $t('help-filter-titles') }}
@@ -69,6 +77,7 @@
       <input
         class="help-input"
         :placeholder="$t('filter-results-categories')"
+        @mousedown.prevent
       />
     </div>
     <div class="help-text">
@@ -241,6 +250,7 @@ img.svg-icon {
 .icon-help-small-left-container,
 .icon-help-small-right-container {
   display: flex;
+  justify-content: center;
 }
 
 .icon-help-small-left {
