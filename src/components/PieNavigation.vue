@@ -2,9 +2,9 @@
   <div
     class="piebackground"
     :style="{
-      width: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
+      width: global.state.mobileMode ? radius * 0.6 + 'px' : radius + 'px',
 
-      height: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
+      height: global.state.mobileMode ? radius * 0.6 + 'px' : radius + 'px',
       visibility: global.state.filteredResults.length > 0 ? 'visible' : 'hidden'
     }"
     @pointermove="pieNavigation($event)"
@@ -26,7 +26,7 @@
             ? 'rotate(' +
               (label.midAngle + 270) +
               'deg) translateX(' +
-              ((radius / 2) * 0.66 + 15 * 0.66) +
+              ((radius / 2) * 0.6 + 15 * 0.6) +
               'px) rotate(' +
               -1 * (label.midAngle + 270) +
               'deg) translate(-50%, -50%)'
@@ -48,8 +48,8 @@
     class="pieslicecontainer"
     viewBox="-1 -1 2 2"
     :style="{
-      width: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
-      height: global.state.mobileMode ? radius * 0.66 + 'px' : radius + 'px',
+      width: global.state.mobileMode ? radius * 0.6 + 'px' : radius + 'px',
+      height: global.state.mobileMode ? radius * 0.6 + 'px' : radius + 'px',
       visibility: global.state.filteredResults.length > 0 ? 'visible' : 'hidden'
     }"
   >
@@ -408,8 +408,8 @@ img.svg-icon {
 }
 .leftarrow.mobile {
   height: 1.75em;
-  left: calc(50% - 79px);
-  top: calc(50% - 86px);
+  left: calc(50% - 74px);
+  top: calc(50% - 76px);
 }
 .rightarrow {
   position: absolute;
@@ -420,8 +420,8 @@ img.svg-icon {
 }
 .rightarrow.mobile {
   height: 1.75em;
-  left: calc(50% + 79px);
-  top: calc(50% - 86px);
+  left: calc(50% + 74px);
+  top: calc(50% - 76px);
 }
 
 @media (hover: hover) and (pointer: fine) {

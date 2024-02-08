@@ -6,8 +6,8 @@
       left: coordinates.x + 'px',
       top: coordinates.y + 'px',
       'line-height': 100 + '%',
-      width: global.state.mobileMode ? 125 * 0.66 + 'px' : 125 + 'px',
-      height: global.state.mobileMode ? 75 * 0.66 + 'px' : 75 + 'px'
+      width: global.state.mobileMode ? 125 * 0.6 + 'px' : 125 + 'px',
+      height: global.state.mobileMode ? 75 * 0.6 + 'px' : 75 + 'px'
     }"
   >
     <button
@@ -23,7 +23,7 @@
       }"
       class="circlebuttonactual"
       :style="{
-        'font-size': global.state.mobileMode ? 83.4 * 0.66 + '%' : 83.4 + '%'
+        'font-size': global.state.mobileMode ? 83.4 * 0.6 + '%' : 83.4 + '%'
       }"
       :disabled="
         global.state.displayResults[index].missing ||

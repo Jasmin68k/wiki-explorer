@@ -51,10 +51,10 @@ async function calcCoordinates() {
       const height = outgraphref.value.offsetHeight
 
       const pieWidth = global.state.mobileMode
-        ? pieNavigationRadius * 0.66
+        ? pieNavigationRadius * 0.6
         : pieNavigationRadius
       const pieHeight = global.state.mobileMode
-        ? pieNavigationRadius * 0.66
+        ? pieNavigationRadius * 0.6
         : pieNavigationRadius
 
       const pieMinX = width / 2 - pieWidth / 2
@@ -62,8 +62,8 @@ async function calcCoordinates() {
       const pieMinY = height / 2 - pieHeight / 2
       const pieMaxY = height / 2 + pieHeight / 2
 
-      const itemWidth = global.state.mobileMode ? 150 * 0.66 : 150
-      const itemHeight = global.state.mobileMode ? 100 * 0.66 : 100
+      const itemWidth = global.state.mobileMode ? 150 * 0.6 : 150
+      const itemHeight = global.state.mobileMode ? 100 * 0.6 : 100
 
       const xCount = Math.floor(width / itemWidth)
       const yCount = Math.floor(height / itemHeight)
