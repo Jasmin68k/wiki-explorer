@@ -18,6 +18,10 @@ provide('global', global)
   color: #2c3e50;
 }
 
+#app input {
+  border: 1px solid black;
+}
+
 body,
 html {
   margin: 0;
