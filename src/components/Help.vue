@@ -2,7 +2,7 @@
   <div class="grid-container-help">
     <div class="closebuttoncontainer twocolumns">
       <div @click="closeButtonClicked" class="closebutton">
-        <img class="svg-icon" src="../assets/images/close-button.svg" />
+        <img class="svg-icon" src="@/assets/images/close-button.svg" />
       </div>
     </div>
 
@@ -13,10 +13,7 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img
-          class="icon-help svg-icon"
-          src="../assets/images/burger-menu.svg"
-        />
+        <img class="icon-help svg-icon" src="@/assets/images/burger-menu.svg" />
       </div>
     </div>
     <div class="help-text">
@@ -24,10 +21,10 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help svg-icon" src="../assets/images/desktop-pc.svg" />
+        <img class="icon-help svg-icon" src="@/assets/images/desktop-pc.svg" />
       </div>
       <div class="icon-help-container">
-        <img class="icon-help svg-icon" src="../assets/images/smartphone.svg" />
+        <img class="icon-help svg-icon" src="@/assets/images/smartphone.svg" />
       </div>
     </div>
     <div class="help-text">
@@ -35,10 +32,10 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/us-flag.svg" />
+        <img class="icon-help" src="@/assets/images/us-flag.svg" />
       </div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/de-flag.svg" />
+        <img class="icon-help" src="@/assets/images/de-flag.svg" />
       </div>
     </div>
     <div class="help-text">
@@ -48,7 +45,7 @@
       <input class="help-input" :placeholder="$t('search-on-wikipedia')" />
       <img
         class="icon-help-small-right svg-icon"
-        src="../assets/images/search.svg"
+        src="@/assets/images/search.svg"
       />
     </div>
     <div class="help-text">
@@ -57,7 +54,7 @@
     <div class="icon-help-small-left-container">
       <img
         class="icon-help-small-left svg-icon"
-        src="../assets/images/text-tool.svg"
+        src="@/assets/images/text-tool.svg"
       />
       <input class="help-input" :placeholder="$t('filter-results-titles')" />
     </div>
@@ -67,7 +64,7 @@
     <div class="icon-help-small-left-container">
       <img
         class="icon-help-small-left svg-icon"
-        src="../assets/images/document.svg"
+        src="@/assets/images/document.svg"
       />
       <input
         class="help-input"
@@ -79,7 +76,7 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help svg-icon" src="../assets/images/document.svg" />
+        <img class="icon-help svg-icon" src="@/assets/images/document.svg" />
       </div>
     </div>
     <div class="help-text">
@@ -91,7 +88,7 @@
             filter:
               'invert(86%) sepia(33%) saturate(941%) hue-rotate(250deg) brightness(120%) contrast(124%)'
           }"
-          src="../assets/images/document.svg"
+          src="@/assets/images/document.svg"
       /></span>
       {{ $t('help-categories-switch2') }}
     </div>
@@ -99,7 +96,7 @@
       <div class="icon-help-container svg-icon">
         <img
           class="icon-help svg-icon"
-          src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+          src="@/assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         />
       </div>
     </div>
@@ -112,7 +109,7 @@
             filter:
               'invert(86%) sepia(33%) saturate(941%) hue-rotate(250deg) brightness(120%) contrast(124%)'
           }"
-          src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+          src="@/assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
       /></span>
       {{ $t('help-redirects-switch2') }}
     </div>
@@ -121,11 +118,11 @@
       <div>
         <img
           class="icon-help-small-left2 svg-icon"
-          src="../assets/images/left-arrow.svg"
+          src="@/assets/images/left-arrow.svg"
         />
         <img
           class="icon-help-small-right2 svg-icon"
-          src="../assets/images/right-arrow.svg"
+          src="@/assets/images/right-arrow.svg"
         />
       </div>
     </div>

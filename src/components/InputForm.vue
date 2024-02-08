@@ -37,7 +37,7 @@
                   !global.state.resultsCategoriesDone))
           }"
           for="en"
-          ><img class="flagicon" src="../assets/images/us-flag.svg"
+          ><img class="flagicon" src="@/assets/images/us-flag.svg"
         /></label>
         <input
           class="radiobutton"
@@ -64,7 +64,7 @@
                   !global.state.resultsCategoriesDone))
           }"
           for="de"
-          ><img class="flagicon" src="../assets/images/de-flag.svg"
+          ><img class="flagicon" src="@/assets/images/de-flag.svg"
         /></label>
       </form>
     </div>
@@ -111,7 +111,7 @@
                 (global.state.resultsRedirectsEnabled &&
                   !global.state.resultsRedirectsDone)
             }"
-            src="../assets/images/search.svg"
+            src="@/assets/images/search.svg"
           />
         </button>
       </form>
@@ -127,7 +127,7 @@
         <label for="filter" class="filterlabel"
           ><img
             class="titleiconsmall svg-icon"
-            src="../assets/images/text-tool.svg"
+            src="@/assets/images/text-tool.svg"
         /></label>
         <input
           type="text"
@@ -150,7 +150,7 @@
         <label for="filterCategories" class="filterlabel">
           <img
             class="categoriesiconsmall svg-icon"
-            src="../assets/images/document.svg"
+            src="@/assets/images/document.svg"
           />
         </label>
         <input
@@ -202,7 +202,7 @@
         >
           <img
             class="categoriesicon svg-icon"
-            src="../assets/images/document.svg"
+            src="@/assets/images/document.svg"
           />
         </label>
       </span>
@@ -231,7 +231,7 @@
         >
           <img
             class="redirectsicon svg-icon"
-            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+            src="@/assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
           />
         </label>
       </span>
@@ -271,7 +271,7 @@
         >
           <img
             class="desktopicon svg-icon"
-            src="../assets/images/desktop-pc.svg"
+            src="@/assets/images/desktop-pc.svg"
           />
         </label>
         <input
@@ -301,7 +301,7 @@
           for="mobile"
           ><img
             class="mobileicon svg-icon"
-            src="../assets/images/smartphone.svg"
+            src="@/assets/images/smartphone.svg"
           />
         </label>
 
@@ -313,7 +313,7 @@
           >
             <img
               class="burgericon svg-icon"
-              src="../assets/images/burger-menu.svg"
+              src="@/assets/images/burger-menu.svg"
             />
           </div>
           <div id="optionsmenu">

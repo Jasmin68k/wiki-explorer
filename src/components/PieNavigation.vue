@@ -66,13 +66,13 @@
     class="pagecount"
   >
     <img
-      src="../assets/images/left-arrow.svg"
+      src="@/assets/images/left-arrow.svg"
       @click.prevent="prevItem"
       class="leftarrow svg-icon"
       :class="{ mobile: global.state.mobileMode }"
     />
     <img
-      src="../assets/images/right-arrow.svg"
+      src="@/assets/images/right-arrow.svg"
       @click.prevent="nextItem"
       class="rightarrow svg-icon"
       :class="{ mobile: global.state.mobileMode }"

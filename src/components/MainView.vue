@@ -73,7 +73,7 @@ import {
   wikiFetchPages,
   wikiFetchGetRedirectTarget,
   wikiFetchSinglePage
-} from '../wikifetch.js'
+} from '@/wikifetch.js'
 
 import {
   openDatabase,
@@ -91,9 +91,9 @@ import {
   putCacheResultsCategories,
   putCacheResultsRedirects,
   putCacheRedirectTarget
-} from '../localcache.js'
+} from '@/localcache.js'
 
-import { Page } from '../datamodels'
+import { Page } from '@/datamodels'
 
 const { locale } = useI18n({})
 

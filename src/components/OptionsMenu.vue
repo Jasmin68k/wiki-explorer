@@ -20,7 +20,7 @@
     >
       <img
         class="menuicon svg-icon"
-        src="../assets/images/check-mark.svg"
+        src="@/assets/images/check-mark.svg"
       /><span class="menutext">{{ $t('cachedisabled') }}</span>
     </div>
     <div
@@ -38,7 +38,7 @@
     >
       <img
         class="menuicon svg-icon"
-        src="../assets/images/check-mark.svg"
+        src="@/assets/images/check-mark.svg"
       /><span class="menutext">{{ $t('cache1h') }}</span>
     </div>
     <div
@@ -56,7 +56,7 @@
     >
       <img
         class="menuicon svg-icon"
-        src="../assets/images/check-mark.svg"
+        src="@/assets/images/check-mark.svg"
       /><span class="menutext">{{ $t('cache6h') }}</span>
     </div>
     <div
@@ -74,7 +74,7 @@
     >
       <img
         class="menuicon svg-icon"
-        src="../assets/images/check-mark.svg"
+        src="@/assets/images/check-mark.svg"
       /><span class="menutext">{{ $t('cache1d') }}</span>
     </div>
     <div
@@ -92,7 +92,7 @@
     >
       <img
         class="menuicon svg-icon"
-        src="../assets/images/check-mark.svg"
+        src="@/assets/images/check-mark.svg"
       /><span class="menutext">{{ $t('cache1w') }}</span>
     </div>
     <div
@@ -110,7 +110,7 @@
     >
       <img
         class="menuicon svg-icon"
-        src="../assets/images/check-mark.svg"
+        src="@/assets/images/check-mark.svg"
       /><span class="menutext">{{ $t('cache4w') }}</span>
     </div>
     <div
@@ -128,14 +128,14 @@
     >
       <img
         class="menuicon svg-icon"
-        src="../assets/images/check-mark.svg"
+        src="@/assets/images/check-mark.svg"
       /><span class="menutext" id="cacheflushtext">{{ $t('cacheflush') }}</span>
     </div>
     <div><hr /></div>
     <div @click.prevent="showHelpClicked" id="showhelp" class="menuitem">
       <img
         class="menuicon helpicon svg-icon"
-        src="../assets/images/question-mark.svg"
+        src="@/assets/images/question-mark.svg"
       />
       <span class="menutext">{{ $t('help') }}</span>
     </div>
@@ -144,7 +144,7 @@
 
 <script setup>
 import { inject, onMounted } from 'vue'
-import { clearDatabase } from '../localcache.js'
+import { clearDatabase } from '@/localcache.js'
 
 // t used in cacheFlushClicked(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'

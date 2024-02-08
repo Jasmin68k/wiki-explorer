@@ -51,7 +51,7 @@
         ><div class="tabiconcontainer">
           <img
             class="tabicon svg-icon"
-            src="../assets/images/analytics-graph.svg"
+            src="@/assets/images/analytics-graph.svg"
           /></div
       ></label>
       <label
@@ -61,7 +61,7 @@
         for="tab2"
       >
         <div class="tabiconcontainer">
-          <img class="tabicon svg-icon" src="../assets/images/document.svg" />
+          <img class="tabicon svg-icon" src="@/assets/images/document.svg" />
         </div>
       </label>
       <label
@@ -69,7 +69,7 @@
         for="tab3"
       >
         <div class="tabiconcontainer">
-          <img class="tabicon svg-icon" src="../assets/images/document2.svg" />
+          <img class="tabicon svg-icon" src="@/assets/images/document2.svg" />
         </div>
       </label>
       <label
@@ -81,7 +81,7 @@
         <div class="tabiconcontainer">
           <img
             class="tabicon svg-icon"
-            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+            src="@/assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
           />
         </div>
       </label>
@@ -89,7 +89,7 @@
         ><div class="tabiconcontainer">
           <img
             class="tabicon svg-icon"
-            src="../assets/images/text-tool.svg"
+            src="@/assets/images/text-tool.svg"
           /></div
       ></label>
     </nav>

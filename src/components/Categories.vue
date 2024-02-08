@@ -23,7 +23,7 @@
           {{ $t('open') }}
           <img
             class="wikipediaicon svg-icon"
-            src="../assets/images/wikipedia.svg"
+            src="@/assets/images/wikipedia.svg"
           />
         </button>
       </div>

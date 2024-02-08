@@ -1,5 +1,5 @@
-import { NetworkError, DataError } from './customerrors.js'
-import { Page, TitlePage } from './datamodels.js'
+import { NetworkError, DataError } from '@/customerrors.js'
+import { Page, TitlePage } from '@/datamodels.js'
 
 let jsonData = {}
 

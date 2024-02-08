@@ -1,5 +1,5 @@
 import { reactive, computed, readonly } from 'vue'
-import { TitlePage } from './datamodels.js'
+import { TitlePage } from '@/datamodels.js'
 
 const constants = {
   // cache ages in ms

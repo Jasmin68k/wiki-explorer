@@ -4,7 +4,7 @@
 
 <script setup>
 import { provide } from 'vue'
-import global from './global.js'
+import global from '@/global.js'
 
 provide('global', global)
 </script>

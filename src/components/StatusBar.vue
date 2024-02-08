@@ -7,7 +7,7 @@
             global.state.resultsCategoriesEnabled &&
             !global.state.resultsCategoriesDone
           "
-          ><img class="fetchingicon" src="../assets/images/document.svg"
+          ><img class="fetchingicon" src="@/assets/images/document.svg"
         /></span>
         <span
           v-show="
@@ -16,7 +16,7 @@
           "
           ><img
             class="fetchingicon"
-            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+            src="@/assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
         <span v-show="global.state.filteredResults.length > 0"
           >{{ $t('results') }}{{ global.state.filteredResults.length }}</span
@@ -43,14 +43,14 @@
           "
           ><img
             class="fetchingicon"
-            src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
+            src="@/assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         /></span>
         <span
           v-show="
             global.state.resultsCategoriesEnabled &&
             !global.state.resultsCategoriesDone
           "
-          ><img class="fetchingicon" src="../assets/images/document.svg"
+          ><img class="fetchingicon" src="@/assets/images/document.svg"
         /></span>
       </span>
     </div>
