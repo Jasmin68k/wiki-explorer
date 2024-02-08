@@ -69,8 +69,8 @@ const global = inject('global')
   }
 }
 .fetchingicon {
-  filter: invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg)
-    brightness(105%) contrast(124%);
+  filter: invert(86%) sepia(33%) saturate(941%) hue-rotate(250deg)
+    brightness(120%) contrast(124%);
   animation: fadeIn 0.35s infinite alternate;
   height: 1em;
   vertical-align: middle;

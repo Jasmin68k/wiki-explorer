@@ -102,7 +102,7 @@
           "
         >
           <img
-            class="searchiconsmall"
+            class="searchiconsmall svg-icon"
             :class="{
               itemdisabled:
                 global.state.inputsDisabled ||
@@ -125,7 +125,9 @@
     >
       <form class="inputform" @submit.prevent="">
         <label for="filter" class="filterlabel"
-          ><img class="titleiconsmall" src="../assets/images/text-tool.svg"
+          ><img
+            class="titleiconsmall svg-icon"
+            src="../assets/images/text-tool.svg"
         /></label>
         <input
           type="text"
@@ -147,7 +149,7 @@
       <form class="inputform" @submit.prevent="">
         <label for="filterCategories" class="filterlabel">
           <img
-            class="categoriesiconsmall"
+            class="categoriesiconsmall svg-icon"
             src="../assets/images/document.svg"
           />
         </label>
@@ -198,7 +200,10 @@
           }"
           for="resultsCategories"
         >
-          <img class="categoriesicon" src="../assets/images/document.svg" />
+          <img
+            class="categoriesicon svg-icon"
+            src="../assets/images/document.svg"
+          />
         </label>
       </span>
       <span>
@@ -225,7 +230,7 @@
           for="resultsRedirects"
         >
           <img
-            class="redirectsicon"
+            class="redirectsicon svg-icon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
           />
         </label>
@@ -264,7 +269,10 @@
           }"
           for="desktop"
         >
-          <img class="desktopicon" src="../assets/images/desktop-pc.svg" />
+          <img
+            class="desktopicon svg-icon"
+            src="../assets/images/desktop-pc.svg"
+          />
         </label>
         <input
           class="radiobutton"
@@ -291,7 +299,10 @@
                   !global.state.resultsCategoriesDone))
           }"
           for="mobile"
-          ><img class="mobileicon" src="../assets/images/smartphone.svg" />
+          ><img
+            class="mobileicon svg-icon"
+            src="../assets/images/smartphone.svg"
+          />
         </label>
 
         <span class="menuanchor">
@@ -300,7 +311,10 @@
             id="optionsmenuiconcontainer"
             class="optionsmenuiconcontainer"
           >
-            <img class="burgericon" src="../assets/images/burger-menu.svg" />
+            <img
+              class="burgericon svg-icon"
+              src="../assets/images/burger-menu.svg"
+            />
           </div>
           <div id="optionsmenu">
             <OptionsMenu
@@ -379,12 +393,12 @@ function optionsMenuClicked() {
   if (!optionsmenuvisible) {
     document.getElementById('optionsmenu').style.display = 'block'
     document.getElementById('optionsmenuiconcontainer').style.backgroundColor =
-      'mistyrose'
+      '7a4c65'
     optionsmenuvisible = true
   } else {
     document.getElementById('optionsmenu').style.display = 'none'
     document.getElementById('optionsmenuiconcontainer').style.backgroundColor =
-      '#ddd'
+      '#555'
     optionsmenuvisible = false
   }
 }
@@ -392,7 +406,7 @@ function optionsMenuClicked() {
 function hideOptionsMenu() {
   document.getElementById('optionsmenu').style.display = 'none'
   document.getElementById('optionsmenuiconcontainer').style.backgroundColor =
-    '#ddd'
+    '#555'
   optionsmenuvisible = false
 }
 
@@ -532,6 +546,9 @@ onMounted(() => {
 })
 </script>
 <style scoped>
+img.svg-icon {
+  filter: invert(100%) brightness(90%);
+}
 .inputform-flex-container {
   display: flex;
   flex-wrap: wrap;
@@ -576,20 +593,20 @@ onMounted(() => {
 }
 .radiobutton:checked + label,
 .checkbox:checked + label {
-  background-color: mistyrose;
+  background-color: #7a4c65;
 }
 .radiobutton:focus + label,
 .checkbox:focus + label {
-  border: 1px dashed black;
+  border: 1px dashed #666;
 }
 
 .radiolabel,
 .checkboxlabel,
 .optionsmenuiconcontainer {
   display: inline-block;
-  background-color: #ddd;
+  background-color: #555;
   padding: 1px 1px;
-  border: 1px solid black;
+  border: 1px solid #666;
   font-size: 85%;
   margin: 3px;
 }
@@ -597,11 +614,11 @@ onMounted(() => {
   .radiobutton:hover + label,
   .checkbox:hover + label,
   .optionsmenuiconcontainer:hover {
-    filter: invert(0.25);
+    filter: brightness(1.2);
   }
 }
 .itemdisabled {
-  filter: invert(0.75);
+  filter: brightness(0.6);
 }
 
 .searchbutton {

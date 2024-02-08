@@ -20,7 +20,10 @@
           @click.prevent="wikiClicked(page.url)"
         >
           {{ $t('open') }}
-          <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+          <img
+            class="wikipediaicon svg-icon"
+            src="../assets/images/wikipedia.svg"
+          />
         </button>
       </div>
 
@@ -54,6 +57,9 @@ function wikiClicked(url) {
 </script>
 
 <style scoped>
+img.svg-icon {
+  filter: invert(100%) brightness(90%);
+}
 .container {
   position: relative;
   font-size: 90%;
@@ -82,13 +88,13 @@ ul {
 .wikibutton {
   font-size: 100%;
   vertical-align: middle;
-  background-color: #ddd;
+  background-color: #555;
   border-radius: 0;
-  border: 1px solid black;
+  border: 1px solid #666;
 }
 @media (hover: hover) and (pointer: fine) {
   .wikibutton:hover {
-    filter: invert(0.25);
+    filter: brightness(1.2);
   }
 }
 .wikipediaicon {

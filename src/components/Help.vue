@@ -2,7 +2,7 @@
   <div class="grid-container-help">
     <div class="closebuttoncontainer twocolumns">
       <div @click="closeButtonClicked" class="closebutton">
-        <img src="../assets/images/close-button.svg" />
+        <img class="svg-icon" src="../assets/images/close-button.svg" />
       </div>
     </div>
 
@@ -13,7 +13,10 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/burger-menu.svg" />
+        <img
+          class="icon-help svg-icon"
+          src="../assets/images/burger-menu.svg"
+        />
       </div>
     </div>
     <div class="help-text">
@@ -21,10 +24,10 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/desktop-pc.svg" />
+        <img class="icon-help svg-icon" src="../assets/images/desktop-pc.svg" />
       </div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/smartphone.svg" />
+        <img class="icon-help svg-icon" src="../assets/images/smartphone.svg" />
       </div>
     </div>
     <div class="help-text">
@@ -43,20 +46,29 @@
     </div>
     <div class="icon-help-small-right-container">
       <input class="help-input" :placeholder="$t('search-on-wikipedia')" />
-      <img class="icon-help-small-right" src="../assets/images/search.svg" />
+      <img
+        class="icon-help-small-right svg-icon"
+        src="../assets/images/search.svg"
+      />
     </div>
     <div class="help-text">
       {{ $t('help-search') }}
     </div>
     <div class="icon-help-small-left-container">
-      <img class="icon-help-small-left" src="../assets/images/text-tool.svg" />
+      <img
+        class="icon-help-small-left svg-icon"
+        src="../assets/images/text-tool.svg"
+      />
       <input class="help-input" :placeholder="$t('filter-results-titles')" />
     </div>
     <div class="help-text">
       {{ $t('help-filter-titles') }}
     </div>
     <div class="icon-help-small-left-container">
-      <img class="icon-help-small-left" src="../assets/images/document.svg" />
+      <img
+        class="icon-help-small-left svg-icon"
+        src="../assets/images/document.svg"
+      />
       <input
         class="help-input"
         :placeholder="$t('filter-results-categories')"
@@ -67,7 +79,7 @@
     </div>
     <div>
       <div class="icon-help-container">
-        <img class="icon-help" src="../assets/images/document.svg" />
+        <img class="icon-help svg-icon" src="../assets/images/document.svg" />
       </div>
     </div>
     <div class="help-text">
@@ -77,16 +89,16 @@
           class="icon-help2"
           :style="{
             filter:
-              'invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg) brightness(105%) contrast(124%)'
+              'invert(86%) sepia(33%) saturate(941%) hue-rotate(250deg) brightness(120%) contrast(124%)'
           }"
           src="../assets/images/document.svg"
       /></span>
       {{ $t('help-categories-switch2') }}
     </div>
     <div>
-      <div class="icon-help-container">
+      <div class="icon-help-container svg-icon">
         <img
-          class="icon-help"
+          class="icon-help svg-icon"
           src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
         />
       </div>
@@ -98,7 +110,7 @@
           class="icon-help2"
           :style="{
             filter:
-              'invert(16%) sepia(63%) saturate(7441%) hue-rotate(0deg) brightness(105%) contrast(124%)'
+              'invert(86%) sepia(33%) saturate(941%) hue-rotate(250deg) brightness(120%) contrast(124%)'
           }"
           src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
       /></span>
@@ -108,11 +120,11 @@
     <div>
       <div>
         <img
-          class="icon-help-small-left2"
+          class="icon-help-small-left2 svg-icon"
           src="../assets/images/left-arrow.svg"
         />
         <img
-          class="icon-help-small-right2"
+          class="icon-help-small-right2 svg-icon"
           src="../assets/images/right-arrow.svg"
         />
       </div>
@@ -185,6 +197,9 @@ onMounted(() => {
 })
 </script>
 <style scoped>
+img.svg-icon {
+  filter: invert(100%) brightness(90%);
+}
 .grid-container-help {
   position: relative;
 
@@ -195,9 +210,9 @@ onMounted(() => {
 }
 .icon-help-container {
   display: inline-block;
-  background-color: #ddd;
+  background-color: #555;
   padding: 1px 1px;
-  border: 1px solid black;
+  border: 1px solid #666;
   font-size: 76.5%;
   margin: 3px;
 }
@@ -278,7 +293,7 @@ onMounted(() => {
 }
 @media (hover: hover) and (pointer: fine) {
   .closebutton:hover {
-    filter: invert(0.5);
+    filter: brightness(1.2);
   }
 }
 </style>

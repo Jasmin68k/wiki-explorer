@@ -50,7 +50,7 @@
       <label v-if="global.state.mobileMode" for="tab1"
         ><div class="tabiconcontainer">
           <img
-            class="tabicon"
+            class="tabicon svg-icon"
             src="../assets/images/analytics-graph.svg"
           /></div
       ></label>
@@ -61,7 +61,7 @@
         for="tab2"
       >
         <div class="tabiconcontainer">
-          <img class="tabicon" src="../assets/images/document.svg" />
+          <img class="tabicon svg-icon" src="../assets/images/document.svg" />
         </div>
       </label>
       <label
@@ -69,7 +69,7 @@
         for="tab3"
       >
         <div class="tabiconcontainer">
-          <img class="tabicon" src="../assets/images/document2.svg" />
+          <img class="tabicon svg-icon" src="../assets/images/document2.svg" />
         </div>
       </label>
       <label
@@ -80,14 +80,17 @@
       >
         <div class="tabiconcontainer">
           <img
-            class="tabicon"
+            class="tabicon svg-icon"
             src="../assets/images/forward-hand-drawn-arrow-pointing-to-right.svg"
           />
         </div>
       </label>
       <label for="tab5" ref="label5"
         ><div class="tabiconcontainer">
-          <img class="tabicon" src="../assets/images/text-tool.svg" /></div
+          <img
+            class="tabicon svg-icon"
+            src="../assets/images/text-tool.svg"
+          /></div
       ></label>
     </nav>
 
@@ -254,6 +257,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+img.svg-icon {
+  filter: invert(100%) brightness(90%);
+}
 .tabbed section {
   display: block;
   margin-left: 0;
@@ -278,20 +284,20 @@ onBeforeUnmount(() => {
 nav label {
   float: left;
   padding: 3px 3px;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
-  background: #ddd;
-  color: black;
+  border-top: 1px solid #666;
+  border-right: 1px solid #666;
+  background: #555;
+  color: #666;
   font-size: 85%;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #666;
 }
 
 nav label:nth-child(1) {
-  border-left: 1px solid black;
+  border-left: 1px solid #666;
 }
 @media (hover: hover) and (pointer: fine) {
   nav label:hover {
-    filter: invert(0.25);
+    filter: brightness(1.2);
   }
 }
 nav label:active {
@@ -303,7 +309,7 @@ nav label:active {
 #tab3:checked ~ nav label[for='tab3'],
 #tab4:checked ~ nav label[for='tab4'],
 #tab5:checked ~ nav label[for='tab5'] {
-  background: mistyrose;
+  background: #7a4c65;
   color: black;
   position: relative;
 }
@@ -338,6 +344,6 @@ nav label:active {
   height: 100%;
 }
 .itemdisabled {
-  filter: invert(0.75);
+  filter: brightness(0.6);
 }
 </style>

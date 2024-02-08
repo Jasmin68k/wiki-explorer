@@ -18,10 +18,10 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
-        class="menutext"
-        >{{ $t('cachedisabled') }}</span
-      >
+      <img
+        class="menuicon svg-icon"
+        src="../assets/images/check-mark.svg"
+      /><span class="menutext">{{ $t('cachedisabled') }}</span>
     </div>
     <div
       @click.prevent="cache1hClicked"
@@ -36,10 +36,10 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
-        class="menutext"
-        >{{ $t('cache1h') }}</span
-      >
+      <img
+        class="menuicon svg-icon"
+        src="../assets/images/check-mark.svg"
+      /><span class="menutext">{{ $t('cache1h') }}</span>
     </div>
     <div
       @click.prevent="cache6hClicked"
@@ -54,10 +54,10 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
-        class="menutext"
-        >{{ $t('cache6h') }}</span
-      >
+      <img
+        class="menuicon svg-icon"
+        src="../assets/images/check-mark.svg"
+      /><span class="menutext">{{ $t('cache6h') }}</span>
     </div>
     <div
       @click.prevent="cache1dClicked"
@@ -72,10 +72,10 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
-        class="menutext"
-        >{{ $t('cache1d') }}</span
-      >
+      <img
+        class="menuicon svg-icon"
+        src="../assets/images/check-mark.svg"
+      /><span class="menutext">{{ $t('cache1d') }}</span>
     </div>
     <div
       @click.prevent="cache1wClicked"
@@ -90,10 +90,10 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
-        class="menutext"
-        >{{ $t('cache1w') }}</span
-      >
+      <img
+        class="menuicon svg-icon"
+        src="../assets/images/check-mark.svg"
+      /><span class="menutext">{{ $t('cache1w') }}</span>
     </div>
     <div
       @click.prevent="cache4wClicked"
@@ -108,10 +108,10 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
-        class="menutext"
-        >{{ $t('cache4w') }}</span
-      >
+      <img
+        class="menuicon svg-icon"
+        src="../assets/images/check-mark.svg"
+      /><span class="menutext">{{ $t('cache4w') }}</span>
     </div>
     <div
       @click.prevent="cacheFlushClicked"
@@ -126,15 +126,17 @@
             !global.state.resultsRedirectsDone)
       }"
     >
-      <img class="menuicon" src="../assets/images/check-mark.svg" /><span
-        class="menutext"
-        id="cacheflushtext"
-        >{{ $t('cacheflush') }}</span
-      >
+      <img
+        class="menuicon svg-icon"
+        src="../assets/images/check-mark.svg"
+      /><span class="menutext" id="cacheflushtext">{{ $t('cacheflush') }}</span>
     </div>
     <div><hr /></div>
     <div @click.prevent="showHelpClicked" id="showhelp" class="menuitem">
-      <img class="menuicon helpicon" src="../assets/images/question-mark.svg" />
+      <img
+        class="menuicon helpicon svg-icon"
+        src="../assets/images/question-mark.svg"
+      />
       <span class="menutext">{{ $t('help') }}</span>
     </div>
   </div>
@@ -291,16 +293,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+img.svg-icon {
+  filter: invert(100%) brightness(90%);
+}
 .menu {
   /* don't know, why resetting cursor is necessary to prevent changing to text cursor, when not disabled */
   cursor: default;
   font-size: 85%;
   position: absolute;
   margin-right: 3px;
-  background-color: #ddd;
+  background-color: #555;
   right: 0;
   z-index: 10;
-  border: 1px solid black;
+  border: 1px solid #666;
 }
 .menuitem {
   height: 25px;
@@ -319,8 +324,8 @@ onMounted(() => {
 }
 @media (hover: hover) and (pointer: fine) {
   .menuitem:hover {
-    /* equals filter: invert(0.25) on #ddd */
-    background-color: #aeaeae;
+    /* equals filter: invert(0.25) on #555 */
+    background-color: #777;
   }
 }
 

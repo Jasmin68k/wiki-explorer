@@ -32,7 +32,10 @@
 
           <button class="wikibutton" @click.prevent="wikiClicked">
             {{ $t('open') }}
-            <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+            <img
+              class="wikipediaicon svg-icon"
+              src="../assets/images/wikipedia.svg"
+            />
           </button>
         </div>
         <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
@@ -50,7 +53,10 @@
           </h4>
           <button class="wikibutton" @click.prevent="wikiClicked">
             {{ $t('open') }}
-            <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+            <img
+              class="wikipediaicon svg-icon"
+              src="../assets/images/wikipedia.svg"
+            />
           </button>
         </div>
         <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
@@ -68,7 +74,10 @@
           </h4>
           <button class="wikibutton" @click.prevent="wikiClicked">
             {{ $t('open') }}
-            <img class="wikipediaicon" src="../assets/images/wikipedia.svg" />
+            <img
+              class="wikipediaicon svg-icon"
+              src="../assets/images/wikipedia.svg"
+            />
           </button>
         </div>
         <CategoriesRedirectsTitle></CategoriesRedirectsTitle>
@@ -91,6 +100,9 @@ function wikiClicked() {
 </script>
 
 <style scoped>
+img.svg-icon {
+  filter: invert(100%) brightness(90%);
+}
 .extract {
   text-align: justify;
   width: 100%;
@@ -102,6 +114,7 @@ function wikiClicked() {
   width: 50%;
   margin: 0 0 10px 10px;
   padding-right: 10px;
+  background-color: #ffffff;
 }
 .imageonly {
   width: 100%;
@@ -112,14 +125,14 @@ function wikiClicked() {
 .wikibutton {
   font-size: 90%;
   vertical-align: middle;
-  background-color: #ddd;
+  background-color: #555;
   border-radius: 0;
-  border: 1px solid black;
+  border: 1px solid #666;
   margin-bottom: 1.5em;
 }
 @media (hover: hover) and (pointer: fine) {
   .wikibutton:hover {
-    filter: invert(0.25);
+    filter: brightness(1.2);
   }
 }
 .wikipediaicon {

@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
 
 .itemsinput {
   height: 25px;
-  accent-color: #ddd;
+  accent-color: #555;
 }
 .itemslabel {
   line-height: 25px;
@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
 
 @media (hover: hover) and (pointer: fine) {
   .items:hover {
-    background-color: #ddd;
+    background-color: #555;
   }
 }
 
@@ -237,8 +237,8 @@ onBeforeUnmount(() => {
   margin-left: 3px;
   margin-right: 3px;
   border-radius: 0;
-  border: 1px solid black;
-  background-color: #ddd;
+  border: 1px solid #666;
+  background-color: #555;
 }
 .checkboxbuttons:hover {
   filter: invert(0.25);

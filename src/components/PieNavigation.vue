@@ -68,13 +68,13 @@
     <img
       src="../assets/images/left-arrow.svg"
       @click.prevent="prevItem"
-      class="leftarrow"
+      class="leftarrow svg-icon"
       :class="{ mobile: global.state.mobileMode }"
     />
     <img
       src="../assets/images/right-arrow.svg"
       @click.prevent="nextItem"
-      class="rightarrow"
+      class="rightarrow svg-icon"
       :class="{ mobile: global.state.mobileMode }"
     />
   </span>
@@ -352,15 +352,19 @@ watchEffect(() => resetSlice(global.state.indexStart))
 watchEffect(() => drawSlice(global.state.sizePerPage))
 </script>
 <style scoped>
+img.svg-icon {
+  filter: invert(100%) brightness(90%);
+}
+
 .piebackground {
   border-radius: 50%;
-  background-color: cornflowerblue;
+  background-color: rgb(29, 71, 148);
   /* border and outline half of pieslice stroke width, since half of the stroke on arc is clipped - could also remove arc (using border/outline),
   but might come in handy later for other designs
   could also draw lines and arc in separate paths with lines half stroke width of arc, making 1 px lines possible (arc using 2px,
   half of them clipped), then no outline/border combo needed here */
-  outline: 1px solid black;
-  border: 1px solid black;
+  outline: 1px solid #666;
+  border: 1px solid #666;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -389,9 +393,9 @@ watchEffect(() => drawSlice(global.state.sizePerPage))
   transform: translate(-50%, -50%) rotate(-90deg);
 }
 #pieslice {
-  stroke: black;
+  stroke: #666;
   stroke-width: 2px;
-  fill: lightblue;
+  fill: rgb(78, 147, 170);
   clip-path: url(#piesliceclip);
 }
 
@@ -423,7 +427,7 @@ watchEffect(() => drawSlice(global.state.sizePerPage))
 @media (hover: hover) and (pointer: fine) {
   .leftarrow:hover,
   .rightarrow:hover {
-    filter: invert(0.5);
+    filter: invert(100%) brightness(90%) brightness(1.2);
   }
 }
 </style>

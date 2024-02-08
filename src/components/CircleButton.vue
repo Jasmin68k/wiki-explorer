@@ -97,24 +97,26 @@ function circleButtonMiddle(index) {
 .circlebuttonactual {
   border: none;
   padding: 0;
-  background-color: lightgoldenrodyellow;
+  background-color: rgb(109, 108, 57);
+
   overflow-wrap: anywhere;
   width: 100%;
   height: 100%;
 }
 @media (hover: hover) and (pointer: fine) {
   .circlebuttonactualhover:hover:not(.missing) {
-    background-color: palegoldenrod;
+    /* background-color: palegoldenrod; */
+    filter: brightness(1.2);
   }
 }
 .circlebutton {
-  border: 1px solid black;
+  border: 1px solid #666;
   position: absolute;
   z-index: 3;
   /* move pixel position to center of button */
   transform: translate(-50%, -50%);
   padding: 0;
-  background-color: lightgoldenrodyellow;
+  background-color: rgb(109, 108, 57);
   overflow-wrap: anywhere;
 }
 
