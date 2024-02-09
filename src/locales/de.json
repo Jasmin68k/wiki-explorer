@@ -59,5 +59,15 @@
   "no-category-prefix": "[ KEINE KATEGORIE ]",
   "help-footer1": "Entwickelt von Jasmin68k",
   "help-footer2": "Projekt auf GitHub ansehen",
-  "help-footer3": "Beiträge und Feedback sind willkommen."
+  "help-footer3": "Beiträge und Feedback sind willkommen.",
+  "firefox-note1": "Wichtiger Hinweis für Nutzer von Firefox Mobile (Android/iOS)",
+  "firefox-note2": "Um Anzeigeprobleme zu vermeiden, befolgen Sie bitte diese Schritte in Ihrem mobilen Firefox-Browser:",
+  "firefox-note3": "Navigieren Sie zu 'Einstellungen'.",
+  "firefox-note4": "Gehen Sie zu 'Anpassen'.",
+  "firefox-note5": "Deaktivieren Sie die Option 'Zum Ausblenden der Symbolleiste scrollen'.",
+  "firefox-note6": "Warum dies wichtig ist:",
+  "firefox-note7": "Die Aktivierung von 'Zum Ausblenden der Symbolleiste scrollen' verursacht, dass die Symbolleiste (Adressleiste) unerwartet auftaucht.",
+  "firefox-note8": "Sie bezieht auch den von der Symbolleiste belegten Platz in die Berechnungen der Bildschirmhöhe ein, was zu einem Inhaltsüberlauf am unteren Rand der Seite führt.",
+  "firefox-note9": "Durch Deaktivieren dieser Einstellung bleibt die Werkzeugleiste immer sichtbar, was es Wiki-Explorer ermöglicht, korrekt zu skalieren und ordnungsgemäß zu funktionieren.",
+  "firefox-note10": "Bitte beachten Sie, dass dies ein browserspezifisches Problem ist und nicht von Wiki-Explorers Seite behoben werden kann."
 }

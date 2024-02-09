@@ -181,6 +181,24 @@
         {{ $t('help-outro13g') }}<br />
         {{ $t('help-outro13k') }}
       </p>
+      <h2>{{ $t('firefox-note1') }}</h2>
+      <p>{{ $t('firefox-note2') }}</p>
+      <ol>
+        <li>{{ $t('firefox-note3') }}</li>
+        <li>{{ $t('firefox-note4') }}</li>
+        <li>{{ $t('firefox-note5') }}</li>
+      </ol>
+      <h3>{{ $t('firefox-note6') }}</h3>
+      <ul>
+        <li>{{ $t('firefox-note7') }}</li>
+        <li>
+          {{ $t('firefox-note8') }}
+        </li>
+      </ul>
+      <p>{{ $t('firefox-note9') }}</p>
+      <p>
+        {{ $t('firefox-note10') }}
+      </p>
       <hr />
       <p class="footer">
         {{ $t('help-footer1') }}<br /><img

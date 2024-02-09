@@ -59,5 +59,15 @@
   "no-category-prefix": "[ NO CATEGORY ]",
   "help-footer1": "Developed by Jasmin68k",
   "help-footer2": "View the project on GitHub",
-  "help-footer3": "Contributions and feedback are welcome."
+  "help-footer3": "Contributions and feedback are welcome.",
+  "firefox-note1": "Important notice for Firefox Mobile users (Android/iOS)",
+  "firefox-note2": "To avoid display issues, please follow these steps in your Firefox mobile browser:",
+  "firefox-note3": "Navigate to 'Settings'.",
+  "firefox-note4": "Go to 'Customize'.",
+  "firefox-note5": "Disable the 'Scroll to hide toolbar' option.",
+  "firefox-note6": "Why this is important:",
+  "firefox-note7": "Enabling 'Scroll to hide toolbar' causes the tool (address) bar to pop up unexpectedly.",
+  "firefox-note8": "It also includes the space occupied by the tool bar in screen height calculations, resulting in content overflow at the bottom of the page.",
+  "firefox-note9": "By disabling this setting, the toolbar always remains visible, which allows Wiki Explorer to scale correctly and function properly.",
+  "firefox-note10": "Please note that this is a browser-specific issue and cannot be remedied from Wiki Explorer's end."
 }
