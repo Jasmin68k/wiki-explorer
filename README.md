@@ -10,32 +10,55 @@ You can try it out at [https://wiki-explorer.netlify.app/](https://wiki-explorer
 
 For additional details regarding usage, please check out the built-in help, accessible through the burger menu located in the upper right corner.
 
+## Important notice for Firefox Mobile users (Android/iOS)
+
+To avoid display issues, please follow these steps in your Firefox mobile browser:
+
+1. Navigate to 'Settings'.
+2. Go to 'Customize'.
+3. Disable the 'Scroll to hide toolbar' option.
+
+**Why this is important:**
+
+- Enabling 'Scroll to hide toolbar' causes the tool (address) bar to pop up unexpectedly.
+- It also includes the space occupied by the tool bar in screen height calculations, resulting in content overflow at the bottom of the page.
+
+By disabling this setting, the toolbar always remains visible, which allows Wiki Explorer to scale correctly and function properly.
+
+Please note that this is a browser-specific issue and cannot be remedied from Wiki Explorer's end.
+
 ## Project setup
+
 ```
 npm install
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
 npm run dev
 ```
 
 ### Compiles and minifies for production
+
 ```
 npm run build
 ```
 
 ### Serve production build
+
 ```
 npm run preview
 ```
 
 ### Run linter
+
 ```
 npm run lint
 ```
 
 ### Run formatter
+
 ```
 npm run format
 ```
